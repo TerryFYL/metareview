@@ -125,6 +125,93 @@ function ForestPlotControls({ lang, onDownloadSVG }: { lang: Lang; onDownloadSVG
   );
 }
 
+function FunnelPlotControls({ lang }: { lang: Lang }) {
+  const { plotSettings, setPlotSettings } = useUIStore();
+  const [showSettings, setShowSettings] = useState(false);
+
+  const downloadFunnelSVG = useCallback(() => {
+    const svg = document.querySelector('.funnel-plot-container svg');
+    if (!svg) return;
+    const serializer = new XMLSerializer();
+    const source = serializer.serializeToString(svg);
+    const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'funnel-plot.svg';
+    a.click();
+    URL.revokeObjectURL(url);
+  }, []);
+
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6 }}>
+        <button onClick={() => setShowSettings(!showSettings)} style={secondaryBtnStyle}>
+          {showSettings ? t('funnel.hideSettings', lang) : t('funnel.settings', lang)}
+        </button>
+        <button onClick={downloadFunnelSVG} style={secondaryBtnStyle}>
+          {t('funnel.download', lang)}
+        </button>
+      </div>
+      {showSettings && (
+        <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 8, padding: '14px 18px', marginTop: 10 }}>
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+            {/* Color Scheme */}
+            <div style={{ flex: '0 0 auto' }}>
+              <label style={settingsLabelStyle}>{t('forest.colorScheme', lang)}</label>
+              <select
+                value={plotSettings.colorScheme}
+                onChange={(e) => setPlotSettings({ colorScheme: e.target.value as 'default' | 'bw' | 'colorblind' })}
+                style={settingsSelectStyle}
+              >
+                <option value="default">{t('forest.colorDefault', lang)}</option>
+                <option value="bw">{t('forest.colorBW', lang)}</option>
+                <option value="colorblind">{t('forest.colorBlind', lang)}</option>
+              </select>
+            </div>
+            {/* Font Size */}
+            <div style={{ flex: '0 0 auto' }}>
+              <label style={settingsLabelStyle}>{t('forest.fontSize', lang)}</label>
+              <select
+                value={plotSettings.fontSize}
+                onChange={(e) => setPlotSettings({ fontSize: Number(e.target.value) })}
+                style={settingsSelectStyle}
+              >
+                {[9, 10, 11, 12, 13, 14].map(s => (
+                  <option key={s} value={s}>{s}pt</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          {/* Custom Labels */}
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 10 }}>
+            <div style={{ flex: '1 1 200px' }}>
+              <label style={settingsLabelStyle}>{t('funnel.customTitle', lang)}</label>
+              <input
+                type="text"
+                value={plotSettings.customTitle}
+                onChange={(e) => setPlotSettings({ customTitle: e.target.value })}
+                placeholder={t('funnel.customTitlePlaceholder', lang)}
+                style={settingsInputStyle}
+              />
+            </div>
+            <div style={{ flex: '1 1 160px' }}>
+              <label style={settingsLabelStyle}>{t('funnel.xLabelCustom', lang)}</label>
+              <input
+                type="text"
+                value={plotSettings.customXLabel}
+                onChange={(e) => setPlotSettings({ customXLabel: e.target.value })}
+                placeholder={t('funnel.xLabel', lang)}
+                style={settingsInputStyle}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 const settingsLabelStyle: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: '#6b7280', display: 'block', marginBottom: 3 };
 const settingsSelectStyle: React.CSSProperties = { padding: '5px 8px', border: '1px solid #d1d5db', borderRadius: 4, fontSize: 12, background: '#fff' };
 const settingsInputStyle: React.CSSProperties = { width: '100%', padding: '5px 8px', border: '1px solid #d1d5db', borderRadius: 4, fontSize: 12, boxSizing: 'border-box' as const };
@@ -496,8 +583,11 @@ export default function App() {
 
       {/* Funnel Plot Tab */}
       {activeTab === 'funnel' && result && (
-        <div className="funnel-plot-container" style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
-          <FunnelPlot result={result} />
+        <div>
+          <FunnelPlotControls lang={lang} />
+          <div className="funnel-plot-container" style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
+            <FunnelPlot result={result} />
+          </div>
         </div>
       )}
 

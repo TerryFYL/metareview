@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import type { MetaAnalysisResult } from '../lib/types';
 import { funnelPlotData } from '../lib/statistics';
+import { useUIStore, type ColorScheme } from '../store';
 
 interface FunnelPlotProps {
   result: MetaAnalysisResult;
@@ -11,12 +12,21 @@ interface FunnelPlotProps {
 
 const MARGIN = { top: 30, right: 30, bottom: 50, left: 60 };
 
+const FUNNEL_COLORS: Record<ColorScheme, { point: string; summary: string; funnel: string; funnelStroke: string }> = {
+  default: { point: '#2563eb', summary: '#dc2626', funnel: '#f3f4f6', funnelStroke: '#d1d5db' },
+  bw: { point: '#333333', summary: '#000000', funnel: '#f5f5f5', funnelStroke: '#999999' },
+  colorblind: { point: '#0072B2', summary: '#D55E00', funnel: '#f0f4f8', funnelStroke: '#a0aec0' },
+};
+
 export default function FunnelPlot({
   result,
   width = 500,
   height = 400,
 }: FunnelPlotProps) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const plotSettings = useUIStore((s) => s.plotSettings);
+  const colors = FUNNEL_COLORS[plotSettings.colorScheme];
+  const fontSize = plotSettings.fontSize;
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -68,8 +78,8 @@ export default function FunnelPlot({
 
     g.append('polygon')
       .attr('points', areaPoints)
-      .attr('fill', '#f3f4f6')
-      .attr('stroke', '#d1d5db')
+      .attr('fill', colors.funnel)
+      .attr('stroke', colors.funnelStroke)
       .attr('stroke-width', 1)
       .attr('stroke-dasharray', '4,3');
 
@@ -79,7 +89,7 @@ export default function FunnelPlot({
       .attr('x2', xScale(summaryEffect))
       .attr('y1', 0)
       .attr('y2', plotH)
-      .attr('stroke', '#dc2626')
+      .attr('stroke', colors.summary)
       .attr('stroke-width', 1)
       .attr('stroke-dasharray', '6,3');
 
@@ -91,7 +101,7 @@ export default function FunnelPlot({
       .attr('cx', (d) => xScale(d.x))
       .attr('cy', (d) => yScale(d.y))
       .attr('r', 4)
-      .attr('fill', '#2563eb')
+      .attr('fill', colors.point)
       .attr('stroke', '#fff')
       .attr('stroke-width', 1)
       .append('title')
@@ -102,29 +112,29 @@ export default function FunnelPlot({
       .attr('transform', `translate(0,${plotH})`)
       .call(d3.axisBottom(xScale).ticks(7))
       .selectAll('text')
-      .attr('font-size', 10);
+      .attr('font-size', fontSize - 1);
 
     // Y axis (inverted: 0 at top)
     g.append('g')
       .call(d3.axisLeft(yScale).ticks(5))
       .selectAll('text')
-      .attr('font-size', 10);
+      .attr('font-size', fontSize - 1);
 
     // Axis labels
     g.append('text')
       .attr('x', plotW / 2)
       .attr('y', plotH + 38)
       .attr('text-anchor', 'middle')
-      .attr('font-size', 11)
+      .attr('font-size', fontSize)
       .attr('fill', '#666')
-      .text('Effect Size');
+      .text(plotSettings.customXLabel || 'Effect Size');
 
     g.append('text')
       .attr('transform', 'rotate(-90)')
       .attr('x', -plotH / 2)
       .attr('y', -42)
       .attr('text-anchor', 'middle')
-      .attr('font-size', 11)
+      .attr('font-size', fontSize)
       .attr('fill', '#666')
       .text('Standard Error');
 
@@ -134,11 +144,11 @@ export default function FunnelPlot({
       .attr('x', width / 2)
       .attr('y', 18)
       .attr('text-anchor', 'middle')
-      .attr('font-size', 13)
+      .attr('font-size', fontSize + 2)
       .attr('font-weight', 'bold')
       .attr('fill', '#333')
-      .text('Funnel Plot');
-  }, [result, width, height]);
+      .text(plotSettings.customTitle || 'Funnel Plot');
+  }, [result, width, height, plotSettings]);
 
   return (
     <svg

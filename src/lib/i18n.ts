@@ -676,6 +676,46 @@ const translations = {
   'forest.rightLabel.zh': '右侧标签',
   'forest.rightLabel.en': 'Right Label',
 
+  // Funnel Plot Settings
+  'funnel.settings.zh': '漏斗图设置',
+  'funnel.settings.en': 'Funnel Settings',
+  'funnel.hideSettings.zh': '收起设置',
+  'funnel.hideSettings.en': 'Hide Settings',
+  'funnel.download.zh': '下载 SVG',
+  'funnel.download.en': 'Download SVG',
+  'funnel.title.zh': '漏斗图',
+  'funnel.title.en': 'Funnel Plot',
+  'funnel.xLabel.zh': '效应量',
+  'funnel.xLabel.en': 'Effect Size',
+  'funnel.yLabel.zh': '标准误',
+  'funnel.yLabel.en': 'Standard Error',
+  'funnel.customTitle.zh': '自定义标题',
+  'funnel.customTitle.en': 'Custom Title',
+  'funnel.customTitlePlaceholder.zh': '留空使用默认标题',
+  'funnel.customTitlePlaceholder.en': 'Leave empty for default',
+  'funnel.xLabelCustom.zh': 'X 轴标签',
+  'funnel.xLabelCustom.en': 'X-Axis Label',
+  'funnel.yLabelCustom.zh': 'Y 轴标签',
+  'funnel.yLabelCustom.en': 'Y-Axis Label',
+
+  // DataTable Batch Operations
+  'table.selectAll.zh': '全选',
+  'table.selectAll.en': 'Select All',
+  'table.selected.zh': '已选 {n} 项',
+  'table.selected.en': '{n} selected',
+  'table.batchDelete.zh': '批量删除',
+  'table.batchDelete.en': 'Delete Selected',
+  'table.batchSubgroup.zh': '批量设置亚组',
+  'table.batchSubgroup.en': 'Set Subgroup',
+  'table.batchSubgroupPrompt.zh': '输入亚组名称',
+  'table.batchSubgroupPrompt.en': 'Enter subgroup name',
+  'table.batchSubgroupApply.zh': '应用',
+  'table.batchSubgroupApply.en': 'Apply',
+
+  // PRISMA DOCX Export
+  'prisma.downloadDOCX.zh': '导出 Word',
+  'prisma.downloadDOCX.en': 'Export DOCX',
+
   // Footer
   'footer.text.zh': 'MetaReview — 开源免费的医学研究 Meta 分析平台',
   'footer.text.en': 'MetaReview — Open-source meta-analysis platform for medical research',

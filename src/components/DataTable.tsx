@@ -90,6 +90,9 @@ function getCellIssue(study: Study, key: string, measure: EffectMeasure): CellIs
 export default function DataTable({ studies, measure, onStudiesChange, lang, onUndo, onRedo, canUndo, canRedo }: DataTableProps) {
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [pasteToast, setPasteToast] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [batchSubgroup, setBatchSubgroup] = useState('');
+  const [showSubgroupInput, setShowSubgroupInput] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const tableRef = useRef<HTMLTableElement>(null);
 
@@ -199,7 +202,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
     // Focus the name cell of the new study after render
     setTimeout(() => {
       if (!tableRef.current) return;
-      const inputs = tableRef.current.querySelectorAll('tbody input');
+      const inputs = tableRef.current.querySelectorAll('tbody input[type="text"], tbody input[type="number"]');
       const lastRowFirstInput = inputs[inputs.length - columns.length] as HTMLInputElement | undefined;
       lastRowFirstInput?.focus();
     }, 50);
@@ -207,6 +210,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
 
   const removeStudy = (id: string) => {
     onStudiesChange(studies.filter((s) => s.id !== id));
+    setSelectedIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
   };
 
   const updateStudy = (id: string, field: string, value: string) => {
@@ -222,10 +226,44 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
     );
   };
 
+  // Batch operations
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === studies.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(studies.map(s => s.id)));
+    }
+  };
+
+  const batchDelete = () => {
+    if (selectedIds.size === 0) return;
+    onStudiesChange(studies.filter(s => !selectedIds.has(s.id)));
+    setSelectedIds(new Set());
+    trackFeature('batch_delete');
+  };
+
+  const applyBatchSubgroup = () => {
+    if (selectedIds.size === 0 || !batchSubgroup.trim()) return;
+    onStudiesChange(
+      studies.map(s => selectedIds.has(s.id) ? { ...s, subgroup: batchSubgroup.trim() } : s)
+    );
+    setShowSubgroupInput(false);
+    setBatchSubgroup('');
+    trackFeature('batch_subgroup');
+  };
+
   /** Navigate to adjacent cell via keyboard */
   const navigateCell = useCallback((currentInput: HTMLInputElement, direction: 'up' | 'down' | 'left' | 'right') => {
     if (!tableRef.current) return;
-    const inputs = Array.from(tableRef.current.querySelectorAll('tbody input')) as HTMLInputElement[];
+    const inputs = Array.from(tableRef.current.querySelectorAll('tbody input[type="text"], tbody input[type="number"]')) as HTMLInputElement[];
     const currentIdx = inputs.indexOf(currentInput);
     if (currentIdx === -1) return;
 
@@ -342,15 +380,60 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
     return undefined;
   };
 
+  const allSelected = studies.length > 0 && selectedIds.size === studies.length;
+  const someSelected = selectedIds.size > 0;
+
   return (
     <div onPaste={handlePaste}>
       {pasteToast && (
         <div style={toastStyle}>{pasteToast}</div>
       )}
+
+      {/* Batch action bar */}
+      {someSelected && (
+        <div style={batchBarStyle}>
+          <span style={{ fontSize: 12, color: '#374151', fontWeight: 500 }}>
+            {t('table.selected', lang).replace('{n}', String(selectedIds.size))}
+          </span>
+          <button onClick={batchDelete} style={batchDeleteBtnStyle}>
+            {t('table.batchDelete', lang)}
+          </button>
+          {!showSubgroupInput ? (
+            <button onClick={() => setShowSubgroupInput(true)} style={batchActionBtnStyle}>
+              {t('table.batchSubgroup', lang)}
+            </button>
+          ) : (
+            <span style={{ display: 'inline-flex', gap: 4, alignItems: 'center' }}>
+              <input
+                type="text"
+                value={batchSubgroup}
+                onChange={(e) => setBatchSubgroup(e.target.value)}
+                placeholder={t('table.batchSubgroupPrompt', lang)}
+                style={{ padding: '4px 8px', border: '1px solid #d1d5db', borderRadius: 4, fontSize: 12, width: 120 }}
+                onKeyDown={(e) => { if (e.key === 'Enter') applyBatchSubgroup(); if (e.key === 'Escape') setShowSubgroupInput(false); }}
+                autoFocus
+              />
+              <button onClick={applyBatchSubgroup} style={batchActionBtnStyle} disabled={!batchSubgroup.trim()}>
+                {t('table.batchSubgroupApply', lang)}
+              </button>
+            </span>
+          )}
+        </div>
+      )}
+
       <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
         <table ref={tableRef} style={{ borderCollapse: 'collapse', width: '100%', fontSize: 13, minWidth: 520 }}>
           <thead>
             <tr>
+              <th style={{ ...thStyle, width: '28px', padding: '8px 2px' }}>
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={toggleSelectAll}
+                  title={t('table.selectAll', lang)}
+                  style={{ cursor: 'pointer' }}
+                />
+              </th>
               <th style={thStyle}>#</th>
               {columns.map((col) => (
                 <th key={col.key} style={{ ...thStyle, width: col.width }}>
@@ -362,7 +445,15 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
           </thead>
           <tbody>
             {studies.map((study, idx) => (
-              <tr key={study.id} style={{ background: idx % 2 ? '#f9fafb' : '#fff' }}>
+              <tr key={study.id} style={{ background: selectedIds.has(study.id) ? '#eff6ff' : idx % 2 ? '#f9fafb' : '#fff' }}>
+                <td style={{ ...tdStyle, padding: '4px 2px', textAlign: 'center' }}>
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(study.id)}
+                    onChange={() => toggleSelect(study.id)}
+                    style={{ cursor: 'pointer' }}
+                  />
+                </td>
                 <td style={tdStyle}>{idx + 1}</td>
                 {columns.map((col) => {
                   const issue = getCellIssue(study, col.key, measure);
@@ -537,4 +628,37 @@ const toastStyle: React.CSSProperties = {
   color: '#16a34a',
   marginBottom: 8,
   fontWeight: 500,
+};
+
+const batchBarStyle: React.CSSProperties = {
+  display: 'flex',
+  gap: 8,
+  alignItems: 'center',
+  padding: '8px 12px',
+  background: '#eff6ff',
+  border: '1px solid #bfdbfe',
+  borderRadius: 6,
+  marginBottom: 8,
+  flexWrap: 'wrap',
+};
+
+const batchDeleteBtnStyle: React.CSSProperties = {
+  padding: '5px 12px',
+  background: '#fef2f2',
+  border: '1px solid #fecaca',
+  borderRadius: 4,
+  cursor: 'pointer',
+  fontSize: 12,
+  color: '#dc2626',
+  fontWeight: 500,
+};
+
+const batchActionBtnStyle: React.CSSProperties = {
+  padding: '5px 12px',
+  background: '#fff',
+  border: '1px solid #d1d5db',
+  borderRadius: 4,
+  cursor: 'pointer',
+  fontSize: 12,
+  color: '#374151',
 };

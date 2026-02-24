@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { t, type Lang } from '../lib/i18n';
+import { generatePRISMADOCX } from '../lib/report-docx';
 
 export interface PRISMAData {
   dbRecords: string;
@@ -110,6 +111,16 @@ export default function PRISMAFlow({ data, onChange, lang }: Props) {
     };
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(source);
   }, []);
+
+  const downloadDOCX = useCallback(async () => {
+    const blob = await generatePRISMADOCX(data);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'prisma-flowchart.docx';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }, [data]);
 
   // Input field component
   const field = (label: string, key: keyof PRISMAData, placeholder?: string) => (
@@ -255,6 +266,9 @@ export default function PRISMAFlow({ data, onChange, lang }: Props) {
         </button>
         <button onClick={downloadPNG} style={dlBtnStyle}>
           {t('prisma.downloadPNG', lang)}
+        </button>
+        <button onClick={downloadDOCX} style={{ ...dlBtnStyle, background: '#f0fdf4', borderColor: '#86efac', color: '#16a34a' }}>
+          {t('prisma.downloadDOCX', lang)}
         </button>
       </div>
 
