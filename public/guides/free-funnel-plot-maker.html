@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Funnel Plot Maker Online: Detect Publication Bias in Meta-Analysis | MetaReview</title>
+  <meta name="description" content="Create funnel plots online for free to detect publication bias in your meta-analysis. No coding required. Supports contour-enhanced funnel plots, Egger's test, Begg's test, and trim-and-fill analysis. Export SVG/PNG for journal submission." />
+  <meta name="keywords" content="free funnel plot maker, funnel plot generator online, publication bias test, funnel plot meta-analysis, Egger test online, trim and fill, contour enhanced funnel plot, publication bias detection tool, Begg test, funnel plot asymmetry, publication bias meta-analysis, free funnel plot software" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/free-funnel-plot-maker" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/free-funnel-plot-maker" />
+  <meta property="og:title" content="Free Funnel Plot Maker Online: Detect Publication Bias in Meta-Analysis" />
+  <meta property="og:description" content="Create funnel plots to detect publication bias in your meta-analysis. Free online tool with contour enhancement, Egger's test, trim-and-fill, and SVG export. No coding required." />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Create a Funnel Plot with MetaReview Free Online Tool",
+    "description": "A step-by-step guide to generating a funnel plot for publication bias detection using MetaReview's free online meta-analysis tool. No coding or software installation required.",
+    "totalTime": "PT8M",
+    "tool": {
+      "@type": "HowToTool",
+      "name": "MetaReview Free Online Funnel Plot Maker"
+    },
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "Enter Your Study Data", "text": "Open MetaReview in your browser and enter the study data for your meta-analysis. For binary outcomes, provide event counts and totals for intervention and control groups. For continuous outcomes, provide means, standard deviations, and sample sizes. Alternatively, import data from a CSV file. MetaReview validates your data in real time."},
+      {"@type": "HowToStep", "position": 2, "name": "Run the Meta-Analysis", "text": "Select your effect size measure (OR, RR, MD, or SMD) and analysis model (fixed-effect or random-effects). MetaReview automatically computes the pooled effect size, confidence intervals, study weights, and heterogeneity statistics. The funnel plot requires a completed meta-analysis as its foundation."},
+      {"@type": "HowToStep", "position": 3, "name": "Navigate to the Funnel Plot Tab", "text": "After the meta-analysis is complete, switch to the Funnel Plot view. MetaReview generates a standard funnel plot with each study plotted as a point, the x-axis showing effect sizes and the y-axis showing standard errors. The pooled effect estimate is marked as a vertical reference line, and pseudo 95% confidence limits are displayed."},
+      {"@type": "HowToStep", "position": 4, "name": "Enable Contour-Enhanced Funnel Plot", "text": "Toggle the contour enhancement option to overlay statistical significance regions on the funnel plot. Contour-enhanced funnel plots shade regions corresponding to p < 0.01, p < 0.05, and p < 0.10, helping you distinguish publication bias from other causes of asymmetry. If missing studies fall in non-significant regions, publication bias is a more plausible explanation."},
+      {"@type": "HowToStep", "position": 5, "name": "Run Egger's Regression Test", "text": "Click the Egger's test button to perform a formal statistical test for funnel plot asymmetry. MetaReview reports the regression intercept, its standard error, t-statistic, and p-value. A significant result (p < 0.10 is the conventional threshold) provides statistical evidence of asymmetry that may indicate publication bias. Review the result alongside the visual funnel plot."},
+      {"@type": "HowToStep", "position": 6, "name": "Apply Trim-and-Fill Analysis", "text": "Enable the trim-and-fill method to estimate the number and location of missing studies. MetaReview uses the Duval and Tweedie algorithm to identify asymmetry, impute hypothetical missing studies (shown as open circles), and recalculate an adjusted pooled estimate. Compare the original and adjusted estimates to assess the potential impact of publication bias on your conclusions."},
+      {"@type": "HowToStep", "position": 7, "name": "Export Your Funnel Plot", "text": "Download the funnel plot in SVG format for journal submission (vector graphics, infinite resolution) or PNG format for presentations and reports. The exported plot includes all annotations, contour shading, and trim-and-fill imputed studies if enabled. SVG files can be further edited in Inkscape or Adobe Illustrator if needed."}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is a funnel plot in meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A funnel plot is a scatter plot used in meta-analysis to detect publication bias. Each study is plotted as a point, with the effect size (e.g., odds ratio, mean difference) on the x-axis and a measure of study precision (usually standard error) on the y-axis. In the absence of publication bias, the plot should resemble a symmetric inverted funnel: large, precise studies cluster near the top around the pooled estimate, while smaller, less precise studies scatter more widely at the bottom but remain symmetrically distributed. Asymmetry in the funnel plot suggests that studies with certain results (typically small studies with non-significant findings) may be missing from the literature, which could bias the pooled estimate."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do you interpret funnel plot asymmetry?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Funnel plot asymmetry is assessed both visually and statistically. Visual inspection looks for gaps in the scatter pattern -- for example, if the bottom-right region is empty (for a treatment that reduces risk), it suggests small studies showing no benefit were not published. However, asymmetry has multiple possible causes beyond publication bias: true heterogeneity (smaller studies may differ systematically from larger ones in patient populations or intervention intensity), methodological quality differences (smaller studies may have lower quality, inflating effect sizes), chance variation (especially with fewer than 10 studies), and reporting biases other than publication bias. Statistical tests like Egger's regression test and Begg's rank correlation test provide formal assessments of asymmetry, but visual inspection and statistical tests should always be used together, not in isolation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is Egger's test for publication bias?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Egger's test (Egger et al., 1997) is a statistical test for funnel plot asymmetry that performs a linear regression of the standardized effect estimates (effect size divided by its standard error) against precision (the inverse of the standard error). If the regression intercept differs significantly from zero, this indicates funnel plot asymmetry. The test uses a conventional significance threshold of p < 0.10 rather than 0.05 because it has limited statistical power, especially with fewer than 10 studies. Egger's test is most appropriate for continuous effect measures or log-transformed ratio measures. For binary outcomes with odds ratios, Peters' test may be more appropriate as Egger's test can produce false positives when there is substantial heterogeneity or when events are rare."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the trim-and-fill method?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The trim-and-fill method, developed by Duval and Tweedie (2000), is a non-parametric technique that estimates the number and location of missing studies in a funnel plot due to publication bias. The algorithm works in three steps: (1) it 'trims' the most extreme small studies from the positive side of the funnel to make it symmetric, (2) it uses the trimmed funnel to re-estimate the center (pooled effect), and (3) it 'fills' in the missing studies as mirror images of the trimmed studies around the adjusted center. The imputed studies are typically shown as open circles on the funnel plot. The method also provides an adjusted pooled estimate that accounts for the hypothetically missing studies. While useful as a sensitivity analysis, trim-and-fill has limitations: it assumes the asymmetry is entirely due to publication bias, it can be unstable with substantial heterogeneity, and it may impute studies that do not actually exist."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many studies do you need for a funnel plot?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A funnel plot requires a minimum of about 10 studies to be meaningfully interpretable. With fewer than 10 studies, the visual pattern is too sparse to reliably detect asymmetry, and statistical tests for publication bias (Egger's test, Begg's test) have very low statistical power. The Cochrane Handbook explicitly recommends against using funnel plots or formal asymmetry tests when there are fewer than 10 studies in the meta-analysis, as the results would be unreliable and potentially misleading. With 10 to 30 studies, funnel plots become more informative but still require cautious interpretation. With more than 30 studies, both visual assessment and statistical tests become reasonably reliable. If you have fewer than 10 studies, consider alternative approaches to assessing publication bias risk, such as comparing the results to registered protocols or examining the grey literature."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is a contour-enhanced funnel plot?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A contour-enhanced funnel plot, introduced by Peters et al. (2008), adds shaded regions representing statistical significance levels (typically p < 0.01, p < 0.05, and p < 0.10) to a standard funnel plot. These contours help distinguish between publication bias and other causes of funnel plot asymmetry. The key insight is: if the missing studies (the gaps in the funnel) fall predominantly in areas of statistical non-significance (outside the shaded regions), this supports publication bias as the explanation, because non-significant results are less likely to be published. However, if the asymmetry exists in areas of statistical significance, the cause is more likely to be factors other than publication bias, such as true heterogeneity or methodological differences between small and large studies. Contour-enhanced funnel plots are recommended as an improvement over standard funnel plots because they provide additional diagnostic information at no extra cost."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I create a funnel plot without coding or R?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. MetaReview is a free, browser-based meta-analysis tool that generates funnel plots without any coding, programming, or software installation. You enter your study data through a point-and-click interface, run the meta-analysis, and switch to the funnel plot view. MetaReview supports standard funnel plots, contour-enhanced funnel plots, trim-and-fill analysis with imputed studies, and Egger's regression test -- all through a visual interface. You can export the funnel plot as SVG (for journal submission) or PNG (for presentations). Unlike R (which requires installing the metafor package and writing code like funnel() or regtest()), or Stata (which requires a paid license and commands like metafunnel and metabias), MetaReview eliminates all technical barriers. The entire process from data entry to funnel plot export takes under 10 minutes."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between Egger's test and Begg's test?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Egger's test and Begg's test are both statistical tests for funnel plot asymmetry, but they use different statistical approaches. Egger's test (1997) performs a weighted linear regression of the standardized effect estimate against its precision (1/SE) and tests whether the intercept differs from zero. It is generally considered more powerful and is more widely used. Begg's test (Begg and Mazumdar, 1994) uses a rank correlation approach, calculating Kendall's tau between the standardized effect estimates and their variances. It is less powerful than Egger's test but makes fewer distributional assumptions. Both tests have low statistical power when the number of studies is small (fewer than 10), and both use a significance threshold of p < 0.10 rather than 0.05. In practice, most researchers report Egger's test as the primary test and may include Begg's test as a supplementary analysis. For meta-analyses of binary outcomes with rare events, neither test performs well, and Peters' test is recommended as an alternative."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .toc { background: white; border-radius: 12px; padding: 24px 32px; margin-bottom: 40px; border: 1px solid #e5e7eb; }
+    .toc h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .toc a:hover { text-decoration: underline; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .step { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .step-number { display: inline-block; background: #1e40af; color: white; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-weight: 700; font-size: 14px; margin-right: 12px; }
+    .step h2 { display: inline; font-size: 20px; color: #111827; vertical-align: middle; }
+    .step h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .step p, .step li { font-size: 15px; color: #4b5563; }
+    .step ul, .step ol { padding-left: 20px; margin: 8px 0; }
+    .step li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .anatomy { background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; overflow-x: auto; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    .faq { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .faq h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .faq h3 { font-size: 16px; color: #1e40af; margin: 16px 0 8px; }
+    .faq p { font-size: 15px; color: #4b5563; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .step, .toc, .faq, .related, .section { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">Open Tool</a>
+      <a href="/guides/how-to-meta-analysis">Guides</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Free Funnel Plot Maker Online: Detect Publication Bias in Meta-Analysis</h1>
+  <p>Create funnel plots with contour enhancement, Egger's test, and trim-and-fill analysis. Free, no coding, no installation. Export publication-ready SVG or PNG.</p>
+</div>
+
+<div class="container">
+
+  <!-- Table of Contents -->
+  <div class="toc">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#what-is-funnel-plot">What Is a Funnel Plot and Why Does It Matter?</a></li>
+      <li><a href="#anatomy">Anatomy of a Funnel Plot</a></li>
+      <li><a href="#types">Types of Funnel Plots</a></li>
+      <li><a href="#interpretation">How to Interpret Funnel Plots</a></li>
+      <li><a href="#statistical-tests">Statistical Tests for Publication Bias</a></li>
+      <li><a href="#tools-comparison">Free Funnel Plot Tools Comparison</a></li>
+      <li><a href="#tutorial">Step-by-Step: Create a Funnel Plot with MetaReview</a></li>
+      <li><a href="#common-mistakes">Common Mistakes and How to Avoid Them</a></li>
+      <li><a href="#publication-standards">Publication Standards: Reporting Funnel Plots in Papers</a></li>
+      <li><a href="#faq">Frequently Asked Questions</a></li>
+    </ol>
+  </div>
+
+  <!-- Section 1: What Is a Funnel Plot and Why Does It Matter? -->
+  <div class="section" id="what-is-funnel-plot">
+    <h2>What Is a Funnel Plot and Why Does It Matter?</h2>
+    <p>A <strong>funnel plot</strong> is a scatter plot used in meta-analysis to visually assess whether the collection of studies included in your review is likely affected by <strong>publication bias</strong> -- the tendency for studies with statistically significant or favorable results to be published more readily than studies with null or unfavorable findings. First described by Light and Pillemer in their 1984 book <em>Summing Up: The Science of Reviewing Research</em>, the funnel plot has become one of the most important diagnostic tools in evidence synthesis, alongside the forest plot.</p>
+
+    <p style="margin-top:12px">The fundamental principle behind the funnel plot is elegantly simple. In any collection of studies examining the same question, you would expect a natural relationship between study size and the variability of results. Large studies, with their greater statistical power and precision, should produce effect estimates that cluster tightly around the true underlying effect. Small studies, being less precise, should produce effect estimates that scatter more widely. When you plot these studies with effect size on one axis and a measure of precision on the other, the resulting shape should resemble a symmetric, inverted funnel -- wide at the bottom (imprecise small studies) and narrow at the top (precise large studies), with the apex centered on the true effect.</p>
+
+    <h3>Why Publication Bias Matters</h3>
+    <p>Publication bias is one of the most serious threats to the validity of a meta-analysis. If studies with non-significant results are systematically less likely to be published, the pool of available literature represents a biased sample of all research conducted on the topic. A meta-analysis that synthesizes only published studies will inherit this bias, potentially overestimating the true effect size and leading to incorrect conclusions.</p>
+
+    <p style="margin-top:12px">The consequences of undetected publication bias are not merely academic. In clinical medicine, an overestimated treatment effect can lead to adoption of ineffective or harmful interventions. In public health policy, biased evidence synthesis can misallocate resources. In pharmacology, publication bias has contributed to the approval of drugs whose benefits were later found to be smaller than initially reported. The funnel plot, together with formal statistical tests, provides a first line of defense against these outcomes.</p>
+
+    <h3>Historical Context and Evolution</h3>
+    <p>When Light and Pillemer introduced the concept in 1984, they proposed plotting sample size against effect size as a simple visual check for bias. The method was refined throughout the 1990s, with important contributions from Begg and Mazumdar (1994), who developed a rank correlation test for funnel plot asymmetry, and Egger and colleagues (1997), who proposed a regression-based test that became the most widely used formal assessment of funnel plot asymmetry. Sterne and Egger (2001) recommended using standard error rather than sample size on the y-axis, as it more directly relates to the expected shape of the funnel under the null hypothesis of no bias. More recently, Peters and colleagues (2008) introduced the contour-enhanced funnel plot, which overlays regions of statistical significance to help distinguish publication bias from other causes of asymmetry.</p>
+
+    <p style="margin-top:12px">Today, the funnel plot is a standard component of any well-conducted meta-analysis. The PRISMA 2020 reporting guidelines require authors to assess the risk of bias due to missing results, and funnel plots with accompanying statistical tests are the primary method for doing so. The Cochrane Handbook for Systematic Reviews of Interventions dedicates an entire chapter to detecting reporting biases and recommends funnel plots when the meta-analysis includes at least 10 studies.</p>
+
+    <h3>The Core Assumption: Why the Funnel Shape?</h3>
+    <p>The expected funnel shape arises from basic sampling theory. The standard error of an effect estimate decreases as the sample size increases. Studies with larger sample sizes produce more precise estimates (smaller standard errors) that cluster near the true effect. Studies with smaller sample sizes produce less precise estimates (larger standard errors) that are distributed more widely around the true effect. Crucially, in the absence of selection bias, this wider distribution should be <strong>symmetric</strong> -- some small studies will overestimate the effect and some will underestimate it, with roughly equal probability.</p>
+
+    <p style="margin-top:12px">When this symmetry is violated -- when one side of the funnel is emptier than the other -- something has preferentially removed or prevented the publication of studies with certain characteristics. The most common explanation is publication bias: small studies that failed to find a significant effect were filed away in researchers' drawers (the "file drawer problem" described by Rosenthal in 1979) or were never submitted for publication because the authors or editors judged them as uninteresting. The funnel plot makes this absence visible.</p>
+
+    <div class="tip"><strong>Key takeaway:</strong> A funnel plot is not just a pretty picture. It is a diagnostic tool that can reveal whether your meta-analysis is built on a complete or a biased foundation of evidence. Every meta-analysis with 10 or more studies should include a funnel plot.</div>
+  </div>
+
+  <!-- Section 2: Anatomy of a Funnel Plot -->
+  <div class="section" id="anatomy">
+    <h2>Anatomy of a Funnel Plot</h2>
+    <p>Understanding the components of a funnel plot is essential for both creating and interpreting one correctly. Unlike a forest plot, which displays study results in a tabular format, the funnel plot is a true scatter plot where the position of each point conveys two pieces of information simultaneously: the study's effect estimate and its precision.</p>
+
+    <h3>The X-Axis: Effect Size</h3>
+    <p>The horizontal axis represents the <strong>effect size</strong> estimated by each study. This can be any standard meta-analytic effect measure:</p>
+    <ul>
+      <li><strong>Log odds ratio (log OR)</strong> -- Most common for binary outcomes. The log transformation is used because odds ratios are not symmetric on the natural scale (an OR of 0.5 and an OR of 2.0 are equidistant from 1.0 on the log scale).</li>
+      <li><strong>Log risk ratio (log RR)</strong> -- Also used for binary outcomes, especially in epidemiological studies.</li>
+      <li><strong>Mean difference (MD)</strong> -- For continuous outcomes measured on the same scale.</li>
+      <li><strong>Standardized mean difference (SMD)</strong> -- For continuous outcomes measured on different scales.</li>
+      <li><strong>Log hazard ratio (log HR)</strong> -- For time-to-event outcomes.</li>
+    </ul>
+    <p style="margin-top:12px">A vertical reference line is drawn at the pooled effect estimate from the meta-analysis. In a symmetric funnel, the points should be distributed evenly on both sides of this line. Some funnel plots also include a second reference line at the null effect (log OR = 0, MD = 0) for context.</p>
+
+    <h3>The Y-Axis: Precision Measure</h3>
+    <p>The vertical axis represents a measure of <strong>study precision</strong>. The most common choice is the <strong>standard error (SE)</strong> of the effect estimate, plotted with smaller values (higher precision) at the top and larger values (lower precision) at the bottom. This orientation produces the characteristic inverted funnel shape with the most precise studies at the apex.</p>
+    <p style="margin-top:12px">Alternative y-axis measures include:</p>
+    <ul>
+      <li><strong>1/SE (precision)</strong> -- The inverse of the standard error. Higher precision at the top, but the funnel shape is upright rather than inverted.</li>
+      <li><strong>Variance (SE&sup2;)</strong> -- Compresses the scale and can make asymmetry harder to detect visually.</li>
+      <li><strong>Sample size</strong> -- The original proposal by Light and Pillemer. Less preferred because the relationship between sample size and precision depends on the effect measure and study design.</li>
+      <li><strong>1/&radic;n</strong> -- A compromise between sample size and standard error.</li>
+    </ul>
+    <p style="margin-top:12px">The Cochrane Handbook and most methodological guidelines recommend using <strong>standard error</strong> on the y-axis (inverted, with 0 at the top) because it has the most direct relationship with the expected funnel shape and because the pseudo confidence interval bounds form straight lines when SE is used.</p>
+
+    <h3>Pseudo 95% Confidence Limits</h3>
+    <p>Most funnel plots include diagonal lines extending from the apex of the funnel that represent the expected <strong>pseudo 95% confidence region</strong>. These lines are calculated as the pooled effect estimate plus or minus 1.96 times the standard error at each level of precision. In the absence of heterogeneity and bias, approximately 95% of the study points should fall within these lines. Points falling outside the pseudo confidence limits are more extreme than expected and may warrant investigation.</p>
+    <p style="margin-top:12px">It is important to note that these are "pseudo" confidence limits, not true statistical confidence intervals. They assume a fixed-effect model with no between-study heterogeneity. When heterogeneity is present (which is common), the scatter of points will naturally extend beyond these limits even in the absence of bias.</p>
+
+    <h3>Visual Diagram of a Funnel Plot</h3>
+    <div class="anatomy">
+    SE (Standard Error)
+    0.0 |            .            &lt;-- Most precise studies (large N)
+        |          . . .
+        |        .   .   .
+        |      .   . . .   .
+    0.2 |    .   .   |   .   .
+        |  .   .     |     .   .
+        |.   .   .   |   .       .  &lt;-- Gap here = possible bias
+    0.4 |  .     .   |   .
+        |    .       |         .
+        |.           |   .
+    0.6 |            |                &lt;-- Least precise studies (small N)
+        +-----|------|------|-----
+          -1.0    0 (pooled)   1.0
+              Effect Size (log OR)
+
+    /          \     = Pseudo 95% confidence limits
+    |            = Pooled effect estimate
+    .            = Individual studies
+
+    Symmetric funnel = No evidence of publication bias
+    Asymmetric funnel (gap on one side) = Possible bias
+    </div>
+
+    <h3>What Symmetry Means</h3>
+    <p>A <strong>symmetric funnel plot</strong> suggests that there is no systematic relationship between study size and effect size. Studies of all sizes are evenly distributed around the pooled estimate, and there is no evidence that studies with particular results are missing. This is the expected pattern when publication and reporting decisions are independent of the results obtained.</p>
+
+    <h3>What Asymmetry Means</h3>
+    <p>An <strong>asymmetric funnel plot</strong> has a noticeably different density of points on one side compared to the other, typically at the bottom (among small, imprecise studies). The most common pattern in medical meta-analyses is a gap in the <strong>bottom-right region</strong> (for protective interventions with OR &lt; 1), suggesting that small studies showing no benefit or harm were not published. However, asymmetry can also appear in the bottom-left region, or in other patterns depending on the direction of the expected effect and the specific mechanisms driving the bias.</p>
+
+    <p style="margin-top:12px">It is critical to understand that funnel plot asymmetry does not automatically equal publication bias. There are several legitimate reasons why a funnel plot might be asymmetric, and distinguishing between these causes requires careful analysis and contextual judgment. We discuss these alternative explanations in the Interpretation section below.</p>
+
+    <div class="warn"><strong>Important nuance:</strong> The funnel plot tests for "small-study effects" -- the tendency for smaller studies to show different (usually larger) effects than larger studies. Publication bias is just one of several possible explanations for small-study effects. Other causes include lower methodological quality in smaller studies, genuine heterogeneity related to study size, and chance variation.</div>
+  </div>
+
+  <!-- Section 3: Types of Funnel Plots -->
+  <div class="section" id="types">
+    <h2>Types of Funnel Plots</h2>
+    <p>Over the decades since Light and Pillemer's original proposal, several variations of the funnel plot have been developed to address different analytical questions and to improve the diagnostic value of the visualization. Understanding these variants allows you to choose the most informative funnel plot for your specific situation.</p>
+
+    <h3>1. Standard Funnel Plot</h3>
+    <p>The <strong>standard funnel plot</strong> is the most basic and widely used version. It plots each study's effect size on the x-axis against its standard error on the y-axis (inverted), with a vertical line at the pooled estimate and diagonal pseudo 95% confidence limits. This is the funnel plot described in most textbooks and the version required by the Cochrane Handbook as a minimum for reporting.</p>
+    <p style="margin-top:12px"><strong>When to use:</strong> Always. The standard funnel plot should be the starting point for any assessment of publication bias. It provides a clear, uncluttered view of the distribution of studies and makes asymmetry easy to spot visually. Present it as your primary funnel plot, and use the enhanced versions below for additional diagnostic information.</p>
+    <p style="margin-top:12px"><strong>Limitations:</strong> The standard funnel plot relies entirely on visual inspection, which is subjective. Two reviewers may disagree about whether the funnel is asymmetric, especially with fewer than 20 studies. It also does not help distinguish publication bias from other causes of asymmetry.</p>
+
+    <h3>2. Contour-Enhanced Funnel Plot</h3>
+    <p>The <strong>contour-enhanced funnel plot</strong>, introduced by Peters, Sutton, Jones, Abrams, and Rushton in 2008, is an important advancement that adds shaded regions representing levels of statistical significance to the standard funnel plot. Typically, three contour regions are displayed:</p>
+    <ul>
+      <li><strong>p &lt; 0.01</strong> -- The innermost region (darkest shading), representing highly significant results.</li>
+      <li><strong>p &lt; 0.05</strong> -- The middle region, representing conventionally significant results.</li>
+      <li><strong>p &lt; 0.10</strong> -- The outermost region (lightest shading), representing marginally significant results.</li>
+    </ul>
+    <p style="margin-top:12px">The area outside all contour regions represents non-significant results (p &ge; 0.10).</p>
+    <p style="margin-top:12px"><strong>Why this matters:</strong> The contour-enhanced funnel plot addresses a critical limitation of the standard funnel plot by helping you determine <em>why</em> the funnel is asymmetric, not just <em>whether</em> it is asymmetric. The logic works as follows:</p>
+    <ul>
+      <li>If the "missing" studies (the empty gaps in the funnel) fall in <strong>non-significant regions</strong> (outside the contour lines), publication bias is the most plausible explanation. Non-significant results are less likely to be published, creating the gap.</li>
+      <li>If the asymmetry exists even in <strong>significant regions</strong> (within the contour lines), publication bias is a less likely explanation, and other factors such as genuine heterogeneity or methodological differences between small and large studies should be considered.</li>
+    </ul>
+    <p style="margin-top:12px"><strong>When to use:</strong> Whenever you detect or suspect funnel plot asymmetry, or as a routine enhancement to the standard funnel plot. Contour-enhanced funnel plots provide strictly more information than standard funnel plots and are increasingly expected by journal reviewers.</p>
+
+    <h3>3. Trim-and-Fill Funnel Plot</h3>
+    <p>The <strong>trim-and-fill funnel plot</strong> displays the results of the Duval and Tweedie (2000) trim-and-fill method. This method estimates the number of "missing" studies needed to make the funnel plot symmetric and imputes these hypothetical studies on the plot. The imputed studies are typically shown as <strong>open circles</strong> (to distinguish them from the real studies shown as filled circles), and an adjusted pooled estimate is calculated that includes both real and imputed studies.</p>
+    <p style="margin-top:12px">The trim-and-fill algorithm works in three iterative steps:</p>
+    <ol>
+      <li><strong>Trim:</strong> Remove the most extreme small studies from the side of the funnel that has excess studies (the asymmetric side) until the remaining studies form a symmetric funnel.</li>
+      <li><strong>Estimate:</strong> Re-estimate the pooled effect using only the remaining (trimmed) symmetric set of studies. This provides an adjusted center for the funnel.</li>
+      <li><strong>Fill:</strong> Replace the trimmed studies and add their mirror images on the opposite side of the adjusted center. These mirror-image studies are the imputed "missing" studies.</li>
+    </ol>
+    <p style="margin-top:12px"><strong>When to use:</strong> As a sensitivity analysis when the standard funnel plot shows asymmetry. The trim-and-fill method provides a quantitative estimate of how many studies might be missing and how the pooled estimate would change if those studies were included. However, it should not be treated as a definitive correction for publication bias -- it is an exploratory tool with important limitations (discussed in the Statistical Tests section below).</p>
+
+    <h3>4. Egger's Regression Line Funnel Plot</h3>
+    <p>Some researchers overlay the <strong>Egger's regression line</strong> on the funnel plot to provide a visual representation of the formal statistical test for asymmetry. This line is fitted by regressing the standardized effect estimates (effect size divided by its standard error, also known as the z-score) against precision (1/SE). When plotted on the standard funnel plot axes, this regression appears as a line whose angle reflects the degree of asymmetry.</p>
+    <p style="margin-top:12px">If the funnel is symmetric, the regression line should pass through the pooled estimate at the top of the funnel and remain centered. If there is asymmetry, the line will be tilted, with the direction of tilt indicating which side has excess studies. The intercept of the regression (when extrapolated to infinite precision) estimates the pooled effect in the absence of small-study effects.</p>
+    <p style="margin-top:12px"><strong>When to use:</strong> As a supplement to the standard funnel plot when you want to show the Egger's test result visually rather than reporting it only as a number in the text. This can be particularly effective in presentations where the audience may not be familiar with the statistical details of Egger's test.</p>
+
+    <h3>Choosing the Right Funnel Plot Type</h3>
+    <table class="data-table">
+      <tr><th>Funnel Plot Type</th><th>Primary Question</th><th>Best For</th><th>Limitations</th></tr>
+      <tr><td><strong>Standard</strong></td><td>Is the funnel symmetric?</td><td>Initial visual assessment, routine reporting</td><td>Subjective; cannot distinguish causes of asymmetry</td></tr>
+      <tr><td><strong>Contour-enhanced</strong></td><td>Is asymmetry due to publication bias or other factors?</td><td>Distinguishing publication bias from heterogeneity</td><td>Still partly subjective; requires understanding of significance regions</td></tr>
+      <tr><td><strong>Trim-and-fill</strong></td><td>How many studies might be missing and what is the adjusted effect?</td><td>Sensitivity analysis; estimating potential impact of bias</td><td>Assumes asymmetry is entirely due to bias; unstable with high heterogeneity</td></tr>
+      <tr><td><strong>Egger's regression line</strong></td><td>What does the formal asymmetry test look like visually?</td><td>Visual communication of Egger's test result</td><td>Adds complexity to the plot; may confuse non-statistical audiences</td></tr>
+    </table>
+
+    <div class="tip"><strong>Practical recommendation:</strong> For most meta-analyses, present the standard funnel plot as the primary figure and include the contour-enhanced version if asymmetry is detected. Report Egger's test results in the text. Apply trim-and-fill as a sensitivity analysis and describe the results narratively. This combination covers all the bases without overwhelming the reader with multiple funnel plot figures.</div>
+  </div>
+
+  <!-- Section 4: How to Interpret Funnel Plots -->
+  <div class="section" id="interpretation">
+    <h2>How to Interpret Funnel Plots</h2>
+    <p>Interpreting a funnel plot requires both pattern recognition and critical thinking. A common mistake is to equate any asymmetry with publication bias. In reality, funnel plot interpretation is more nuanced, and the implications of asymmetry depend heavily on the context of your meta-analysis.</p>
+
+    <h3>Pattern 1: Symmetric Funnel (No Evidence of Bias)</h3>
+    <p>A symmetric funnel plot displays an even distribution of studies around the pooled estimate at all levels of precision. The scatter of points widens evenly toward the bottom, and there are no obvious gaps on either side. The pseudo 95% confidence lines contain approximately 95% of the studies.</p>
+    <p style="margin-top:12px"><strong>Interpretation:</strong> There is no visual evidence of publication bias or small-study effects. This does not prove that publication bias is absent -- it only means that the available evidence does not suggest it. Publication bias can still exist even with a symmetric funnel plot if, for example, large studies are also subject to selective reporting, or if the bias affects all study sizes equally.</p>
+
+    <h3>Pattern 2: Asymmetric Funnel -- Missing Bottom-Right (Positive Publication Bias)</h3>
+    <p>In a meta-analysis of a treatment expected to reduce an outcome (OR &lt; 1 or negative MD), the most common asymmetry pattern is a gap in the <strong>bottom-right</strong> corner of the funnel. This region corresponds to small studies that found no benefit or a harmful effect. The absence of these studies suggests they were either not conducted, not submitted for publication, or rejected by journals because their results were "not interesting."</p>
+    <p style="margin-top:12px"><strong>Interpretation:</strong> This pattern is most consistent with classical publication bias. The pooled estimate may be overestimating the true beneficial effect of the intervention because the studies that would have pulled the estimate toward the null are missing. If the contour-enhanced funnel plot shows that the gap falls in regions of statistical non-significance, the case for publication bias is strengthened.</p>
+
+    <h3>Pattern 3: Asymmetric Funnel -- Missing Bottom-Left (Negative Publication Bias)</h3>
+    <p>Less commonly, the gap appears in the <strong>bottom-left</strong> corner, meaning small studies that showed a strong protective effect are missing. This can occur when the research community expects a treatment to be harmful or ineffective, and small studies showing unexpected benefit are viewed skeptically and less likely to be published.</p>
+    <p style="margin-top:12px"><strong>Interpretation:</strong> This pattern may indicate publication bias in the opposite direction -- beneficial findings being suppressed. It can also arise when the exposure or intervention being studied is generally considered harmful (e.g., environmental pollutants), and small studies showing no harm are more readily published. Context matters enormously when interpreting this pattern.</p>
+
+    <h3>Pattern 4: Hollow Funnel (Missing Center)</h3>
+    <p>Some funnel plots show a "hollow" pattern where studies cluster at the extreme edges of the funnel rather than filling in the center. There are large studies with precise estimates and small studies with extreme estimates, but few medium-sized studies with moderate effects.</p>
+    <p style="margin-top:12px"><strong>Interpretation:</strong> This pattern is unusual and may reflect a genuine bimodal distribution of true effects (e.g., the intervention works very well in some contexts and not at all in others) rather than publication bias. It can also occur when studies are drawn from very different populations or use different intervention intensities.</p>
+
+    <h3>Causes of Asymmetry Beyond Publication Bias</h3>
+    <p>This is one of the most important points in funnel plot interpretation: <strong>asymmetry does not equal publication bias</strong>. There are several legitimate, non-bias-related reasons why a funnel plot might be asymmetric.</p>
+
+    <h3>1. True Heterogeneity</h3>
+    <p>If the true effect genuinely varies across studies and this variation is correlated with study size, the funnel plot will be asymmetric even without any publication bias. For example, smaller studies may use higher doses of a drug (because they can afford to give more medication to fewer patients), leading to genuinely larger effects in smaller studies. This is not bias -- it is a real clinical phenomenon.</p>
+
+    <h3>2. Methodological Quality Differences</h3>
+    <p>Smaller studies often have lower methodological quality: less rigorous randomization, inadequate blinding, higher risk of performance and detection bias. These methodological weaknesses tend to inflate effect sizes. If smaller studies consistently have larger effects because they have lower quality, the funnel will be asymmetric, but the asymmetry reflects quality differences rather than selective publication.</p>
+
+    <h3>3. Chance Variation</h3>
+    <p>With fewer than 10 to 15 studies, the funnel plot is highly susceptible to chance variation. A few studies landing on one side by random chance can create the appearance of asymmetry. This is why both the Cochrane Handbook and PRISMA guidelines recommend against formal asymmetry testing with fewer than 10 studies.</p>
+
+    <h3>4. Selective Outcome Reporting</h3>
+    <p>Rather than entire studies being unpublished, individual outcomes within published studies may be selectively reported or omitted. A study may measure ten outcomes but only report the three that showed significant effects. This creates a form of reporting bias that can produce funnel plot asymmetry, but it operates at the outcome level rather than the study level.</p>
+
+    <h3>5. Choice of Effect Measure</h3>
+    <p>Some effect measures naturally produce asymmetric funnel plots even without bias. For example, odds ratios and risk ratios can show artificial correlation between the effect estimate and its standard error, especially when events are rare or common. Peters' test was specifically developed to address this artifact for binary outcomes.</p>
+
+    <div class="warn"><strong>Critical rule:</strong> Visual inspection of a funnel plot is necessary but never sufficient on its own. Always complement visual assessment with at least one formal statistical test (Egger's test is the most common) and consider all possible explanations for any asymmetry observed. The Cochrane Handbook explicitly states that "tests for funnel plot asymmetry should not be equated with tests for publication bias."</div>
+  </div>
+
+  <!-- Section 5: Statistical Tests for Publication Bias -->
+  <div class="section" id="statistical-tests">
+    <h2>Statistical Tests for Publication Bias</h2>
+    <p>Visual inspection of funnel plots is inherently subjective. Two experienced researchers may disagree about whether a given funnel plot is asymmetric. To complement the visual assessment, several formal statistical tests have been developed to quantify funnel plot asymmetry. Each test has different statistical properties, assumptions, and appropriate use cases.</p>
+
+    <h3>1. Egger's Regression Test</h3>
+    <p><strong>Egger's test</strong> (Egger, Davey Smith, Schneider, and Minder, 1997) is the most widely used statistical test for funnel plot asymmetry. It performs a weighted linear regression of the standardized effect estimates against their precision.</p>
+    <p style="margin-top:12px"><strong>The model:</strong></p>
+    <div class="anatomy">
+    SND = a + b x precision
+
+    Where:
+      SND = standardized normal deviate = effect size / SE
+      precision = 1 / SE
+      a = intercept (the key parameter)
+      b = slope
+
+    Null hypothesis: a = 0 (no asymmetry)
+    Test statistic: t = a / SE(a)
+    Significance threshold: p &lt; 0.10 (conventional)
+    </div>
+    <p style="margin-top:12px"><strong>Interpretation:</strong> If the intercept <em>a</em> is significantly different from zero (p &lt; 0.10), the funnel plot is considered asymmetric. A positive intercept indicates that smaller, less precise studies tend to report larger positive effects than larger studies. A negative intercept indicates the opposite pattern.</p>
+    <p style="margin-top:12px"><strong>Why p &lt; 0.10?</strong> The conventional threshold is 0.10 rather than 0.05 because Egger's test has limited statistical power, especially when the number of studies is small. Using a stricter threshold of 0.05 would miss too many genuine cases of asymmetry (high false negative rate). Even at 0.10, the test has poor power with fewer than 10 studies.</p>
+    <p style="margin-top:12px"><strong>Strengths:</strong> Well-established, widely recognized, straightforward to compute, and included in most meta-analysis software.</p>
+    <p style="margin-top:12px"><strong>Limitations:</strong> Can produce false positives when heterogeneity is substantial, when effects are measured as odds ratios with rare events, or when the number of studies is very small. Not recommended for meta-analyses with fewer than 10 studies.</p>
+
+    <h3>2. Begg's Rank Correlation Test</h3>
+    <p><strong>Begg and Mazumdar's test</strong> (1994) takes a non-parametric approach. It calculates the rank correlation (Kendall's tau) between the standardized effect estimates and their variances.</p>
+    <div class="anatomy">
+    Kendall's tau = (concordant pairs - discordant pairs) / total pairs
+
+    Where:
+      Standardized effect = (effect - pooled effect) / SE
+      Paired with variance = SE^2
+
+    Null hypothesis: tau = 0 (no correlation between effect and variance)
+    Significance threshold: p &lt; 0.10
+    </div>
+    <p style="margin-top:12px"><strong>Interpretation:</strong> A significant positive correlation (tau &gt; 0, p &lt; 0.10) indicates that studies with larger variances (smaller, less precise studies) tend to report larger effects, which is the pattern expected under publication bias.</p>
+    <p style="margin-top:12px"><strong>Strengths:</strong> Non-parametric -- makes fewer distributional assumptions than Egger's test. Less sensitive to outliers.</p>
+    <p style="margin-top:12px"><strong>Limitations:</strong> Generally less powerful than Egger's test, meaning it is more likely to miss genuine asymmetry. This lower power makes it less useful as a standalone test. It is best used as a supplementary check alongside Egger's test.</p>
+
+    <h3>3. Peters' Test</h3>
+    <p><strong>Peters' test</strong> (Peters, Sutton, Jones, Abrams, and Rushton, 2006) was developed specifically for meta-analyses of <strong>binary outcomes</strong> (odds ratios, risk ratios). It addresses a known limitation of Egger's test: when applied to odds ratios, Egger's test can produce false positives because there is an inherent mathematical correlation between the log odds ratio and its standard error, especially when events are rare.</p>
+    <p style="margin-top:12px">Peters' test regresses the effect estimates against the inverse of the total sample size (1/n) rather than against precision (1/SE), which breaks the spurious correlation that plagues Egger's test for binary outcomes.</p>
+    <p style="margin-top:12px"><strong>When to use:</strong> Whenever your meta-analysis uses odds ratios, risk ratios, or other ratio measures derived from 2x2 tables, Peters' test is preferable to Egger's test. For continuous outcomes (MD, SMD), Egger's test remains the standard choice.</p>
+
+    <h3>4. Trim-and-Fill Method</h3>
+    <p>The <strong>trim-and-fill method</strong> (Duval and Tweedie, 2000) goes beyond testing for asymmetry -- it attempts to <em>correct</em> for it by estimating the number and locations of missing studies and providing an adjusted pooled estimate.</p>
+    <div class="anatomy">
+    Algorithm (iterative):
+
+    Step 1: Estimate the number of asymmetric studies (k0)
+            using rank-based or linear estimators (R0 or L0)
+
+    Step 2: Trim k0 most extreme studies from the
+            asymmetric side
+
+    Step 3: Re-estimate pooled effect from remaining studies
+
+    Step 4: Fill: replace trimmed studies + add k0 mirror
+            images on the opposite side of the new center
+
+    Step 5: Repeat Steps 1-4 until k0 converges
+
+    Output:
+      - Number of imputed studies (k0)
+      - Adjusted pooled effect estimate with CI
+      - Funnel plot with imputed studies (open circles)
+    </div>
+    <p style="margin-top:12px"><strong>Interpretation:</strong> If trim-and-fill imputes zero studies, there is no evidence of asymmetry by this method. If it imputes studies and the adjusted pooled estimate changes substantially (e.g., the confidence interval now includes the null), the conclusions of the meta-analysis may be sensitive to publication bias. If the adjusted estimate changes only slightly, the conclusions are robust even if some studies are missing.</p>
+    <p style="margin-top:12px"><strong>Strengths:</strong> Provides a tangible, quantitative sensitivity analysis. Easy to understand and explain to non-statistical audiences. Produces a visually informative funnel plot with imputed studies.</p>
+    <p style="margin-top:12px"><strong>Limitations:</strong> The method assumes that funnel plot asymmetry is entirely due to publication bias, which is often not the case. It can impute "missing" studies that do not actually exist, leading to an over-correction. It performs poorly when between-study heterogeneity is substantial. The adjusted estimate should be interpreted as a sensitivity analysis, not as the "corrected" truth.</p>
+
+    <h3>5. P-Curve Analysis</h3>
+    <p><strong>P-curve analysis</strong> (Simonsohn, Nelson, and Simmons, 2014) takes a fundamentally different approach to assessing publication bias. Rather than looking at the distribution of effect sizes, it examines the distribution of statistically significant p-values across the included studies. The key insight is that when a real effect exists, the distribution of significant p-values should be right-skewed (more p-values near 0.01 than near 0.05). When significant p-values are obtained through p-hacking, selective reporting, or other questionable research practices, the distribution tends to be flat or left-skewed (more p-values near 0.05).</p>
+    <div class="anatomy">
+    Expected p-curve shapes:
+
+    Real effect present:         No real effect (p-hacking):
+
+    |####                        |              ####
+    |###                         |           ###
+    |##                          |        ##
+    |#                           |     #
+    |                            |
+    +----------                  +----------
+    0.01  0.05                   0.01  0.05
+    (Right-skewed)               (Left-skewed)
+    </div>
+    <p style="margin-top:12px"><strong>Strengths:</strong> Robust to many forms of publication bias that affect traditional funnel plots. Specifically designed to detect p-hacking and selective reporting. Does not rely on the relationship between effect size and study size.</p>
+    <p style="margin-top:12px"><strong>Limitations:</strong> Only uses statistically significant studies, discarding information from non-significant studies. Requires the exact p-values to be reported (or reconstructable) in the original papers. Less established than Egger's test and not yet routinely expected by journal reviewers.</p>
+
+    <h3>Summary: Which Tests to Use</h3>
+    <table class="data-table">
+      <tr><th>Test</th><th>What It Tests</th><th>Best For</th><th>Minimum Studies</th><th>Threshold</th></tr>
+      <tr><td><strong>Egger's</strong></td><td>Linear asymmetry</td><td>Continuous outcomes (MD, SMD)</td><td>10+</td><td>p &lt; 0.10</td></tr>
+      <tr><td><strong>Begg's</strong></td><td>Rank correlation</td><td>Supplementary to Egger's</td><td>10+</td><td>p &lt; 0.10</td></tr>
+      <tr><td><strong>Peters'</strong></td><td>Asymmetry for binary data</td><td>OR, RR from 2x2 tables</td><td>10+</td><td>p &lt; 0.10</td></tr>
+      <tr><td><strong>Trim-and-fill</strong></td><td>Missing studies</td><td>Sensitivity analysis</td><td>10+</td><td>N/A (descriptive)</td></tr>
+      <tr><td><strong>P-curve</strong></td><td>P-hacking, selective reporting</td><td>Questionable research practices</td><td>Varies</td><td>Binomial/continuous tests</td></tr>
+    </table>
+
+    <div class="tip"><strong>Recommended approach:</strong> For most meta-analyses, use Egger's test (or Peters' test for binary outcomes) as the primary formal test, report Begg's test as a supplementary analysis, and apply trim-and-fill as a sensitivity analysis if asymmetry is detected. Always present these results alongside the visual funnel plot, never in isolation.</div>
+  </div>
+
+  <!-- Section 6: Free Funnel Plot Tools Comparison -->
+  <div class="section" id="tools-comparison">
+    <h2>Free Funnel Plot Tools Comparison</h2>
+    <p>Researchers have multiple options for generating funnel plots. The right choice depends on your technical comfort level, budget, and analytical requirements. Below is a detailed comparison of the most widely available tools, covering every feature relevant to funnel plot creation and publication bias assessment.</p>
+
+    <table class="data-table">
+      <tr>
+        <th>Feature</th>
+        <th>MetaReview</th>
+        <th>R / metafor</th>
+        <th>RevMan 5</th>
+        <th>Stata</th>
+        <th>CMA</th>
+        <th>OpenMeta-Analyst</th>
+      </tr>
+      <tr>
+        <td><strong>Cost</strong></td>
+        <td>Free</td>
+        <td>Free (open source)</td>
+        <td>Free (Cochrane)</td>
+        <td>$295-$895/yr</td>
+        <td>$1,495+ (one-time)</td>
+        <td>Free (open source)</td>
+      </tr>
+      <tr>
+        <td><strong>Coding Required</strong></td>
+        <td>No</td>
+        <td>Yes (R)</td>
+        <td>No</td>
+        <td>Yes (Stata)</td>
+        <td>No</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Installation</strong></td>
+        <td>None (browser)</td>
+        <td>R + packages</td>
+        <td>Desktop</td>
+        <td>Desktop</td>
+        <td>Desktop</td>
+        <td>Desktop (Java)</td>
+      </tr>
+      <tr>
+        <td><strong>Standard Funnel Plot</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td><strong>Contour Enhancement</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Yes (user-written)</td>
+        <td>No</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Trim-and-Fill</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Egger's Test</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td><strong>Begg's Test</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td><strong>Peters' Test</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Yes (user-written)</td>
+        <td>No</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Interactive Plot</strong></td>
+        <td>Yes</td>
+        <td>Limited (plotly)</td>
+        <td>No</td>
+        <td>No</td>
+        <td>No</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Export SVG</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No (image only)</td>
+        <td>No (PDF/EPS)</td>
+        <td>No (image only)</td>
+        <td>No (image only)</td>
+      </tr>
+      <tr>
+        <td><strong>Export PNG</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td><strong>Y-Axis Options</strong></td>
+        <td>SE, 1/SE, N</td>
+        <td>All (fully flexible)</td>
+        <td>SE only</td>
+        <td>All (flexible)</td>
+        <td>SE, 1/SE, N</td>
+        <td>SE only</td>
+      </tr>
+      <tr>
+        <td><strong>Plot Customization</strong></td>
+        <td>Moderate</td>
+        <td>Unlimited</td>
+        <td>Limited</td>
+        <td>High</td>
+        <td>Moderate</td>
+        <td>Limited</td>
+      </tr>
+      <tr>
+        <td><strong>Learning Curve</strong></td>
+        <td>5 minutes</td>
+        <td>Days to weeks</td>
+        <td>1 hour</td>
+        <td>Days to weeks</td>
+        <td>1-2 hours</td>
+        <td>30 minutes</td>
+      </tr>
+      <tr>
+        <td><strong>Best For</strong></td>
+        <td>Fast, no-code results</td>
+        <td>Power users</td>
+        <td>Cochrane reviews</td>
+        <td>Statisticians</td>
+        <td>Funded labs</td>
+        <td>Legacy projects</td>
+      </tr>
+    </table>
+
+    <h3>MetaReview: The Best Free No-Code Option</h3>
+    <p><strong>MetaReview</strong> stands out as the most complete free, no-code funnel plot maker available. It supports all the key features that researchers need -- standard funnel plots, contour-enhanced funnel plots, trim-and-fill analysis, Egger's test, and Begg's test -- all through a point-and-click interface in the browser. No installation, no coding, no account registration. You enter your data, run the meta-analysis, switch to the funnel plot tab, and have a publication-ready figure ready for export in under 10 minutes.</p>
+    <p style="margin-top:12px">What sets MetaReview apart from other no-code options like RevMan and CMA is the combination of <strong>completeness and accessibility</strong>. RevMan does not support contour enhancement, trim-and-fill, or Egger's test. CMA supports these features but costs over $1,000. OpenMeta-Analyst is free but requires Java installation, lacks contour enhancement, and is no longer actively maintained. MetaReview provides all of these capabilities for free, in the browser, with modern UX.</p>
+
+    <h3>R / metafor: Maximum Flexibility for Power Users</h3>
+    <p>The R package <strong>metafor</strong> by Wolfgang Viechtbauer remains the gold standard for advanced publication bias assessment. It supports every funnel plot variant, every statistical test, multiple trim-and-fill estimators (R0, L0, Q0), and allows unlimited customization of plot appearance through base R or ggplot2 graphics. If you need meta-regression-based funnel plots, radial plots, or other specialized visualizations, metafor is the only tool that supports them all.</p>
+    <p style="margin-top:12px">However, this power comes at a cost: you need to be comfortable writing R code. Generating a contour-enhanced funnel plot with trim-and-fill overlay in metafor requires approximately 10-15 lines of code and a solid understanding of the function parameters. For researchers without programming experience, the learning curve is measured in days, not minutes.</p>
+
+    <h3>RevMan: Missing Key Features</h3>
+    <p><strong>RevMan 5</strong> (and RevMan Web) generates basic funnel plots, which is sufficient for Cochrane reviews where the editorial team handles additional analysis. However, RevMan does not support contour enhancement, does not perform trim-and-fill analysis, and does not compute Egger's or Begg's test. If you are using RevMan for a Cochrane review and need these features, you will need to supplement your analysis with another tool -- MetaReview or R -- for the publication bias assessment.</p>
+
+    <h3>Stata and CMA: Powerful but Paid</h3>
+    <p><strong>Stata</strong> with the <strong>metafunnel</strong>, <strong>metabias</strong>, and <strong>metatrim</strong> commands provides a comprehensive publication bias toolkit, but requires a paid license ($295-$895/year) and familiarity with Stata's command syntax. <strong>Comprehensive Meta-Analysis (CMA)</strong> is a well-designed desktop application with an intuitive GUI, but its price tag of $1,495 or more puts it out of reach for most individual researchers and students. Both tools are excellent if cost is not a constraint, but MetaReview provides comparable funnel plot capabilities at zero cost.</p>
+
+    <div class="tip"><strong>Bottom line:</strong> If you need a funnel plot quickly and for free -- with contour enhancement, Egger's test, and trim-and-fill -- use MetaReview. If you need maximum control over every statistical and visual detail, and you can write code, use R with metafor. Avoid RevMan for standalone publication bias assessment, as it lacks the necessary features.</div>
+  </div>
+
+  <!-- Section 7: Step-by-Step Tutorial -->
+  <div class="section" id="tutorial">
+    <h2>Step-by-Step: Create a Funnel Plot with MetaReview</h2>
+    <p>This section walks you through the complete process of generating a funnel plot for publication bias detection using MetaReview's free online tool. The workflow assumes you already have extracted study data ready. If you also need to create a forest plot, MetaReview generates both from the same data entry -- you do not need to enter data twice.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">1</span>
+    <h2>Enter Your Study Data</h2>
+    <p style="margin-top:16px">Open <a href="/" style="color:#1e40af">MetaReview</a> in your web browser. No registration or account creation is required. Choose your data type (binary or continuous) and enter the data for each study.</p>
+    <h3>For Binary Outcomes</h3>
+    <p>Enter the number of events and total participants for both the intervention and control groups. For example, if a study randomized 150 patients to treatment (23 events) and 148 to control (45 events), enter those four numbers along with the study name.</p>
+    <h3>For Continuous Outcomes</h3>
+    <p>Enter the mean, standard deviation, and sample size for both groups. For example, if the treatment group has a mean of -2.4, SD of 1.8, and N of 85, and the control group has a mean of -0.6, SD of 2.1, and N of 82, enter those six numbers along with the study name.</p>
+    <p style="margin-top:12px">Alternatively, click the CSV import button to upload a prepared spreadsheet with all your studies at once. This is the fastest method when you have more than 5-6 studies.</p>
+    <div class="tip"><strong>Data quality check:</strong> MetaReview validates your inputs in real time. It will flag impossible values such as events exceeding totals, negative standard deviations, and missing required fields. Always double-check your entered data against the original source publications before proceeding, as subtle data entry errors (transposed digits, swapped columns) will produce incorrect funnel plots.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <h2>Run the Meta-Analysis</h2>
+    <p style="margin-top:16px">Select your effect size measure (OR, RR, MD, or SMD) and analysis model (fixed-effect or random-effects). The funnel plot requires a completed meta-analysis because it needs the pooled effect estimate and the individual study standard errors, both of which are computed during the meta-analysis.</p>
+    <p style="margin-top:12px">For most meta-analyses, the <strong>random-effects model</strong> is the appropriate default choice. MetaReview computes the pooled effect, confidence intervals, heterogeneity statistics (I&sup2;, Q, tau&sup2;), and individual study weights automatically.</p>
+    <div class="tip"><strong>Model choice and funnel plots:</strong> The choice between fixed-effect and random-effects models affects the pooled estimate line on the funnel plot but does not change the position of individual study points. In practice, the difference is usually small. If you are presenting both models as a sensitivity analysis, you can generate funnel plots under each model to see if the asymmetry assessment changes.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <h2>Navigate to the Funnel Plot Tab</h2>
+    <p style="margin-top:16px">After the meta-analysis is complete, switch to the <strong>Funnel Plot</strong> view. MetaReview generates a standard funnel plot with the following elements:</p>
+    <ul>
+      <li>Each study plotted as a filled circle, with the effect size on the x-axis and standard error on the y-axis (inverted).</li>
+      <li>A vertical dashed line at the pooled effect estimate.</li>
+      <li>Diagonal lines representing the pseudo 95% confidence limits.</li>
+      <li>Axis labels and a legend identifying the reference lines.</li>
+    </ul>
+    <p style="margin-top:12px">Take a moment for visual inspection. Look at the overall shape: does it resemble a symmetric inverted funnel? Are there obvious gaps on one side, particularly among the smaller (less precise) studies at the bottom? This initial visual assessment will guide your next steps.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span>
+    <h2>Enable Contour-Enhanced Funnel Plot</h2>
+    <p style="margin-top:16px">Toggle the <strong>contour enhancement</strong> option to overlay statistical significance regions on the funnel plot. MetaReview shades three regions:</p>
+    <ul>
+      <li><strong>Darkest region:</strong> p &lt; 0.01 (highly significant results)</li>
+      <li><strong>Medium region:</strong> p &lt; 0.05 (conventionally significant results)</li>
+      <li><strong>Lightest region:</strong> p &lt; 0.10 (marginally significant results)</li>
+    </ul>
+    <p style="margin-top:12px">The unshaded area outside all contours represents non-significant results (p &ge; 0.10).</p>
+    <p style="margin-top:12px">Now re-examine the funnel. If there are gaps, do they fall in the non-significant (unshaded) areas? If yes, this strengthens the case for publication bias as the cause of the asymmetry. If the gaps are within the significance contours, other explanations (heterogeneity, methodological quality) are more likely.</p>
+    <div class="tip"><strong>Presentation tip:</strong> The contour-enhanced funnel plot is an excellent figure for presentations because it immediately makes the connection between significance and missingness visible to the audience. It is more informative than the standard funnel plot at no added complexity.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">5</span>
+    <h2>Run Egger's Regression Test</h2>
+    <p style="margin-top:16px">Click the <strong>Egger's test</strong> button to perform the formal statistical test for funnel plot asymmetry. MetaReview reports:</p>
+    <ul>
+      <li><strong>Regression intercept (a):</strong> The key parameter. A non-zero intercept indicates asymmetry.</li>
+      <li><strong>Standard error of the intercept:</strong> Used to compute the test statistic.</li>
+      <li><strong>t-statistic:</strong> The intercept divided by its standard error.</li>
+      <li><strong>p-value:</strong> The probability of observing an intercept this extreme under the null hypothesis of no asymmetry.</li>
+    </ul>
+    <p style="margin-top:12px"><strong>How to interpret:</strong> If p &lt; 0.10, there is statistically significant evidence of funnel plot asymmetry. If p &ge; 0.10, the test does not detect significant asymmetry. Remember that a non-significant Egger's test does not prove the absence of publication bias -- it only means the test did not detect it, which could be due to genuine absence of bias or insufficient power (especially with fewer than 15-20 studies).</p>
+    <div class="warn"><strong>Important caveat for binary outcomes:</strong> If your meta-analysis uses odds ratios or risk ratios, Egger's test can produce false positives due to the inherent mathematical relationship between log OR and its standard error. In this case, Peters' test is more appropriate. MetaReview supports Peters' test for binary outcome data -- use it as your primary test instead of Egger's when working with ratio measures from 2x2 tables.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">6</span>
+    <h2>Apply Trim-and-Fill Analysis</h2>
+    <p style="margin-top:16px">Enable the <strong>trim-and-fill</strong> method to estimate the number of potentially missing studies and assess the impact on the pooled estimate. MetaReview uses the Duval and Tweedie algorithm and reports:</p>
+    <ul>
+      <li><strong>Number of imputed studies (k0):</strong> How many hypothetical missing studies were identified. If k0 = 0, no asymmetry was detected by this method.</li>
+      <li><strong>Imputed study positions:</strong> Open circles on the funnel plot showing where the missing studies would fall.</li>
+      <li><strong>Adjusted pooled estimate:</strong> The recalculated pooled effect including both real and imputed studies, with its confidence interval.</li>
+    </ul>
+    <p style="margin-top:12px"><strong>How to interpret:</strong> Compare the original pooled estimate with the adjusted estimate. If the adjusted estimate is substantially different -- for example, if the original OR was 0.60 (95% CI: 0.45-0.80) and the adjusted OR is 0.78 (95% CI: 0.58-1.05) -- this suggests your conclusions may be sensitive to publication bias. If the adjusted estimate is similar to the original -- for example, adjusting from OR 0.60 to OR 0.63 -- your findings are robust to potential missing studies.</p>
+    <div class="tip"><strong>Reporting tip:</strong> In your manuscript, report the trim-and-fill results as a sensitivity analysis rather than as a correction. For example: "Trim-and-fill analysis identified 3 potentially missing studies. The adjusted pooled estimate including imputed studies was OR = 0.72 (95% CI: 0.55-0.94), compared to the original estimate of OR = 0.62 (95% CI: 0.48-0.80). The direction and statistical significance of the finding were unchanged, suggesting the conclusion is robust to potential publication bias."</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">7</span>
+    <h2>Export Your Funnel Plot</h2>
+    <p style="margin-top:16px">Click the download button to export your funnel plot. MetaReview supports two formats:</p>
+    <ul>
+      <li><strong>SVG (Scalable Vector Graphics):</strong> Resolution-independent vector format, ideal for journal submission. Can be scaled to any size without quality loss. Editable in Inkscape, Adobe Illustrator, or Affinity Designer.</li>
+      <li><strong>PNG (Portable Network Graphics):</strong> Raster format suitable for presentations, reports, and web use.</li>
+    </ul>
+    <p style="margin-top:12px">For journal submission, always choose SVG. If your journal requires TIFF or EPS, export as SVG first and convert using Inkscape (free). The exported plot includes all annotations: contour shading (if enabled), trim-and-fill imputed studies (if enabled), reference lines, and axis labels.</p>
+    <p style="margin-top:12px">You can generate multiple funnel plot exports -- for example, a standard funnel plot for the main text and a contour-enhanced version with trim-and-fill for a supplementary appendix.</p>
+    <div class="tip"><strong>Done!</strong> You now have a complete publication bias assessment: a visual funnel plot, a contour-enhanced diagnostic version, a formal statistical test (Egger's), and a sensitivity analysis (trim-and-fill). This combination is exactly what PRISMA 2020 and most journal reviewers expect.</div>
+  </div>
+
+  <!-- Section 8: Common Mistakes and How to Avoid Them -->
+  <div class="section" id="common-mistakes">
+    <h2>Common Mistakes and How to Avoid Them</h2>
+    <p>Funnel plots are deceptively simple in concept but frequently misinterpreted in practice. Even experienced meta-analysts make errors that can lead to incorrect conclusions about publication bias. This section covers the most common mistakes and how to avoid them.</p>
+
+    <h3>1. Over-Interpreting Asymmetry with Fewer Than 10 Studies</h3>
+    <p>This is the single most common mistake in funnel plot analysis. With fewer than 10 studies, the funnel plot is too sparse to reliably distinguish genuine asymmetry from chance variation. A few studies randomly landing on one side can create a pattern that looks like publication bias but is entirely due to sampling fluctuation.</p>
+    <p style="margin-top:12px"><strong>The rule:</strong> The Cochrane Handbook explicitly states that funnel plots and formal asymmetry tests (Egger's, Begg's) should not be used when there are fewer than 10 studies. With 10 to 20 studies, interpret with caution. With more than 20 studies, both visual and statistical assessments become more reliable.</p>
+    <p style="margin-top:12px"><strong>What to do instead:</strong> If you have fewer than 10 studies, acknowledge in your manuscript that publication bias could not be formally assessed due to the small number of studies. You can still discuss the risk qualitatively by noting whether your search included grey literature, trial registries, and unpublished data, and whether the included studies show any patterns suggestive of selective reporting.</p>
+
+    <h3>2. Equating Funnel Plot Asymmetry with Publication Bias</h3>
+    <p>As discussed in the interpretation section, asymmetry has multiple possible causes. Concluding that "the funnel plot was asymmetric, indicating publication bias" is an oversimplification that reviewers will rightfully challenge. True heterogeneity, differences in methodological quality between small and large studies, chance, and the choice of effect measure can all produce asymmetric funnel plots without any publication bias being present.</p>
+    <p style="margin-top:12px"><strong>Better language:</strong> "The funnel plot showed asymmetry (Egger's test p = 0.04), which may reflect publication bias, although other explanations such as genuine heterogeneity or methodological differences between small and large studies cannot be ruled out. Contour-enhanced funnel plot analysis suggested that the missing studies would have fallen in regions of statistical non-significance, supporting publication bias as the most likely explanation."</p>
+
+    <h3>3. Ignoring Contour-Enhanced Analysis</h3>
+    <p>Many researchers generate a standard funnel plot, note asymmetry, and jump straight to trim-and-fill without first using a contour-enhanced funnel plot to assess <em>why</em> the funnel is asymmetric. This misses a crucial diagnostic step. If the asymmetry is in regions of statistical significance, applying trim-and-fill (which assumes the asymmetry is due to publication bias) would be inappropriate and could lead to incorrect "adjustments."</p>
+    <p style="margin-top:12px"><strong>Best practice:</strong> Always examine a contour-enhanced funnel plot before applying trim-and-fill. If the gaps are in non-significant regions, trim-and-fill is a reasonable sensitivity analysis. If the gaps are in significant regions, focus on exploring heterogeneity instead.</p>
+
+    <h3>4. Not Reporting Statistical Tests Alongside Visual Inspection</h3>
+    <p>Presenting a funnel plot figure without any formal statistical test is incomplete. Visual inspection is subjective -- one researcher may see asymmetry where another sees an unremarkable pattern. Statistical tests provide an objective quantitative measure that complements the visual assessment.</p>
+    <p style="margin-top:12px"><strong>What to include:</strong> At a minimum, report Egger's test result (intercept, p-value) alongside the funnel plot. If using odds ratios, also report or substitute Peters' test. If asymmetry is detected, report trim-and-fill results (number of imputed studies, adjusted estimate). This combination of visual and statistical evidence is the current standard expected by PRISMA 2020 and most journals.</p>
+
+    <h3>5. Using Funnel Plots with Diagnostic Test Accuracy Studies</h3>
+    <p>Meta-analyses of diagnostic test accuracy (DTA) studies use paired sensitivity and specificity as outcomes, not a single effect size. Standard funnel plots, which are designed for a single effect measure, are not appropriate for DTA meta-analyses. The Cochrane Handbook for Diagnostic Test Accuracy Reviews recommends against using standard funnel plots for DTA reviews because the bivariate nature of the data (sensitivity and specificity are correlated) violates the assumptions underlying the funnel plot.</p>
+    <p style="margin-top:12px"><strong>Alternative:</strong> For DTA meta-analyses, consider using Deeks' funnel plot asymmetry test (Deeks, Macaskill, and Irwig, 2005), which is specifically designed for diagnostic accuracy studies. This test plots 1/&radic;(effective sample size) against the log diagnostic odds ratio and uses a regression-based test for asymmetry.</p>
+
+    <h3>6. Treating Trim-and-Fill as a Definitive Correction</h3>
+    <p>Some researchers report the trim-and-fill adjusted estimate as if it were the "true" effect corrected for publication bias. This overstates what the method can deliver. Trim-and-fill is a sensitivity analysis tool, not a bias correction method. It assumes all asymmetry is due to publication bias (which is rarely entirely true), it can impute non-existent studies, and it performs poorly in the presence of substantial heterogeneity.</p>
+    <p style="margin-top:12px"><strong>Correct framing:</strong> Present trim-and-fill results as a sensitivity analysis: "After adjusting for potentially missing studies using the trim-and-fill method, the pooled estimate was [adjusted result]. This sensitivity analysis suggests that [conclusions are/are not robust to potential publication bias]." Do not replace the original pooled estimate with the adjusted one.</p>
+
+    <h3>7. Forgetting to Report the Method and Parameters</h3>
+    <p>When reporting funnel plot analyses, some manuscripts fail to specify which y-axis measure was used (SE? 1/SE? sample size?), which asymmetry test was performed, what significance threshold was applied, and whether the trim-and-fill estimator was R0 or L0. These omissions make the analysis non-reproducible.</p>
+    <p style="margin-top:12px"><strong>What to report in Methods:</strong> Specify the y-axis measure (standard error is recommended), the asymmetry test(s) used (e.g., Egger's regression test), the significance threshold (p &lt; 0.10), and whether trim-and-fill was planned as a sensitivity analysis. If using MetaReview, you can state: "Funnel plot analysis was performed using MetaReview, including Egger's regression test for asymmetry and the Duval and Tweedie trim-and-fill method as a sensitivity analysis."</p>
+
+    <h3>8. Ignoring Heterogeneity When Interpreting Funnel Plots</h3>
+    <p>A funnel plot with substantial between-study heterogeneity (I&sup2; &gt; 50-75%) will naturally show wider scatter of points, and the pseudo 95% confidence limits (which assume no heterogeneity) will contain fewer than 95% of the studies. This extra scatter can mimic or mask asymmetry, making interpretation unreliable.</p>
+    <p style="margin-top:12px"><strong>What to do:</strong> If heterogeneity is high, interpret the funnel plot with extreme caution. Consider whether the heterogeneity can be explained by subgroup or meta-regression analysis, and if so, examine funnel plots within homogeneous subgroups. Some methodologists recommend against formal asymmetry testing when I&sup2; exceeds 50%, as the tests become unreliable.</p>
+
+    <div class="warn"><strong>Reviewer red flags:</strong> Journal reviewers are trained to check for these issues. A funnel plot of 7 studies with a definitive conclusion about publication bias, an Egger's test without reporting the p-value, or a trim-and-fill "correction" presented as the primary result will almost certainly trigger revision requests. Following the guidelines in this section will help your manuscript survive peer review.</div>
+  </div>
+
+  <!-- Section 9: Publication Standards: Reporting Funnel Plots in Papers -->
+  <div class="section" id="publication-standards">
+    <h2>Publication Standards: Reporting Funnel Plots in Papers</h2>
+    <p>Reporting publication bias assessment correctly is a requirement of the PRISMA 2020 statement and a routine expectation of journal reviewers. This section provides a comprehensive guide to what you should include in your Methods section, Results section, and supplementary materials regarding funnel plot analysis.</p>
+
+    <h3>PRISMA 2020 Requirements</h3>
+    <p>The <strong>PRISMA 2020</strong> (Preferred Reporting Items for Systematic reviews and Meta-Analyses) statement, published by Page et al. in 2021, includes specific items related to reporting biases:</p>
+    <ul>
+      <li><strong>Item 13b (Methods):</strong> "Describe any methods used to assess risk of bias due to missing results in a synthesis (arising from reporting biases)." This is where you state which funnel plot type, statistical tests, and sensitivity analyses you planned.</li>
+      <li><strong>Item 21 (Results):</strong> "Present assessments of risk of bias due to missing results in a synthesis (arising from reporting biases) for each synthesis assessed." This is where you present the funnel plot, report Egger's test results, and describe trim-and-fill findings.</li>
+    </ul>
+    <p style="margin-top:12px">Compliance with PRISMA 2020 is mandatory for many journals and is always recommended as a best practice. Failure to address reporting biases is one of the most common deficiencies flagged during peer review of meta-analyses.</p>
+
+    <h3>What to Include in the Methods Section</h3>
+    <p>In your Methods section, under a subheading such as "Assessment of Reporting Biases" or "Publication Bias Assessment," include the following:</p>
+    <ol>
+      <li><strong>Visual assessment method:</strong> "Funnel plots were constructed to visually assess publication bias for meta-analyses including 10 or more studies."</li>
+      <li><strong>Y-axis specification:</strong> "Funnel plots displayed the effect size on the x-axis and the standard error on the y-axis (inverted, with the most precise studies at the top)."</li>
+      <li><strong>Statistical tests:</strong> "Funnel plot asymmetry was assessed using Egger's regression test, with a significance threshold of p &lt; 0.10. For meta-analyses of binary outcomes using odds ratios, Peters' test was used as the primary asymmetry test due to the known limitations of Egger's test for ratio measures."</li>
+      <li><strong>Supplementary tests:</strong> "Begg's rank correlation test was performed as a supplementary analysis."</li>
+      <li><strong>Sensitivity analysis:</strong> "When funnel plot asymmetry was detected, the Duval and Tweedie trim-and-fill method was applied as a sensitivity analysis to estimate the potential number and impact of missing studies."</li>
+      <li><strong>Contour enhancement (if used):</strong> "Contour-enhanced funnel plots were generated to help distinguish publication bias from other causes of asymmetry, with contours representing significance levels of p &lt; 0.01, p &lt; 0.05, and p &lt; 0.10."</li>
+      <li><strong>Software:</strong> "Funnel plot analysis was performed using MetaReview (https://metareview-8c1.pages.dev)."</li>
+    </ol>
+
+    <h3>What to Include in the Results Section</h3>
+    <p>In your Results section, present the publication bias assessment for each primary outcome with 10 or more studies. Include:</p>
+    <ol>
+      <li><strong>Visual assessment finding:</strong> "The funnel plot for the primary outcome [name] appeared [symmetric/asymmetric] upon visual inspection (Figure X)."</li>
+      <li><strong>Egger's test result:</strong> "Egger's regression test [detected/did not detect] significant funnel plot asymmetry (intercept = [value], 95% CI: [lower] to [upper], p = [value])."</li>
+      <li><strong>Begg's test result (if reported):</strong> "Begg's rank correlation test was [consistent/inconsistent] with Egger's test (Kendall's tau = [value], p = [value])."</li>
+      <li><strong>Contour-enhanced interpretation (if applicable):</strong> "Contour-enhanced funnel plot analysis indicated that the asymmetry [was/was not] located primarily in regions of statistical non-significance, [supporting/not supporting] publication bias as the primary explanation."</li>
+      <li><strong>Trim-and-fill results (if applicable):</strong> "Trim-and-fill analysis identified [k0] potentially missing studies. The adjusted pooled estimate including imputed studies was [adjusted effect] (95% CI: [lower] to [upper]), compared to the original estimate of [original effect] (95% CI: [lower] to [upper]). The [direction/significance/conclusion] of the finding [was/was not] changed after adjustment."</li>
+    </ol>
+
+    <h3>Describing Trim-and-Fill Results Properly</h3>
+    <p>When reporting trim-and-fill results, use language that clearly frames them as a sensitivity analysis, not as a correction. Here are examples of appropriate phrasing:</p>
+    <ul>
+      <li><strong>Robust finding:</strong> "Trim-and-fill analysis imputed 2 potentially missing studies. The adjusted pooled odds ratio was 0.67 (95% CI: 0.52-0.86), consistent with the original estimate of 0.62 (95% CI: 0.48-0.80). This suggests the finding is robust to potential publication bias."</li>
+      <li><strong>Sensitive finding:</strong> "Trim-and-fill analysis imputed 5 potentially missing studies. The adjusted pooled mean difference was -0.8 (95% CI: -1.9 to 0.3), which includes the null value, compared to the original estimate of -1.4 (95% CI: -2.2 to -0.6). This suggests the statistical significance of the finding may be sensitive to publication bias, and the result should be interpreted with caution."</li>
+      <li><strong>No imputation needed:</strong> "Trim-and-fill analysis did not identify any missing studies, providing no evidence of publication bias by this method."</li>
+    </ul>
+
+    <h3>Figure Requirements for Funnel Plots</h3>
+    <p>When including a funnel plot as a figure in your manuscript, follow these guidelines:</p>
+    <ul>
+      <li><strong>Axis labels:</strong> Clearly label the x-axis with the effect measure (e.g., "Log Odds Ratio" or "Mean Difference") and the y-axis with the precision measure (e.g., "Standard Error").</li>
+      <li><strong>Reference lines:</strong> Include the vertical line at the pooled estimate and the diagonal pseudo 95% confidence limits.</li>
+      <li><strong>Legend:</strong> If the plot includes contour enhancement or trim-and-fill imputed studies, include a legend explaining the shading and symbol conventions.</li>
+      <li><strong>Figure caption:</strong> Write a descriptive caption that includes the outcome name, the number of studies, the effect measure, the asymmetry test result, and (if applicable) the trim-and-fill result.</li>
+    </ul>
+    <p style="margin-top:12px"><strong>Example caption:</strong> "Figure 3. Funnel plot of 15 studies examining the effect of intervention X on outcome Y. Effect sizes are log odds ratios (x-axis) plotted against standard error (y-axis). The vertical dashed line indicates the pooled estimate (log OR = -0.48). Pseudo 95% confidence limits are shown as diagonal lines. Egger's regression test indicated no significant asymmetry (intercept = -0.42, p = 0.32)."</p>
+
+    <h3>Journal-Specific Requirements</h3>
+    <p>While PRISMA 2020 provides the general framework, individual journals may have additional requirements or preferences:</p>
+    <ul>
+      <li><strong>Cochrane Reviews:</strong> Require funnel plots for primary outcomes when there are 10 or more studies. The Cochrane Handbook provides detailed guidance on interpretation and reporting.</li>
+      <li><strong>BMJ, Lancet, JAMA, NEJM:</strong> Expect PRISMA-compliant reporting and will typically request funnel plots during peer review if not initially provided. Some request funnel plots in supplementary materials rather than the main text.</li>
+      <li><strong>Journals with word limits:</strong> If the main text has strict word limits, include the funnel plot as a supplementary figure and reference it from the text. The statistical test results (Egger's p-value, trim-and-fill adjusted estimate) should still be reported in the main Results section.</li>
+      <li><strong>Systematic review registration (PROSPERO):</strong> If your review is registered in PROSPERO, the planned publication bias assessment methods should be listed in the registration and should match what you report in the paper.</li>
+    </ul>
+
+    <h3>Checklist: Publication Bias Reporting</h3>
+    <p>Use this checklist before submitting your manuscript to ensure you have covered all the essential elements of publication bias reporting:</p>
+    <table class="data-table">
+      <tr><th>Item</th><th>Section</th><th>Included?</th></tr>
+      <tr><td>Funnel plot assessment method described</td><td>Methods</td><td></td></tr>
+      <tr><td>Y-axis measure specified (SE recommended)</td><td>Methods</td><td></td></tr>
+      <tr><td>Statistical test(s) named with threshold</td><td>Methods</td><td></td></tr>
+      <tr><td>Trim-and-fill planned as sensitivity analysis</td><td>Methods</td><td></td></tr>
+      <tr><td>Software named</td><td>Methods</td><td></td></tr>
+      <tr><td>Funnel plot figure presented</td><td>Results / Supplement</td><td></td></tr>
+      <tr><td>Visual assessment finding described</td><td>Results</td><td></td></tr>
+      <tr><td>Egger's/Peters' test result with p-value</td><td>Results</td><td></td></tr>
+      <tr><td>Trim-and-fill result (if asymmetry detected)</td><td>Results</td><td></td></tr>
+      <tr><td>Conclusion about robustness stated</td><td>Discussion</td><td></td></tr>
+      <tr><td>Limitation if &lt;10 studies acknowledged</td><td>Discussion</td><td></td></tr>
+    </table>
+
+    <div class="tip"><strong>Final advice:</strong> When in doubt, provide more information rather than less. Reviewers and editors appreciate transparency about the limitations of publication bias assessment. Acknowledging that funnel plots and statistical tests have known limitations -- and explaining how you accounted for these limitations in your interpretation -- strengthens rather than weakens your manuscript.</div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <h2>Create Your Funnel Plot Now</h2>
+    <p>MetaReview is a free online funnel plot maker with contour enhancement, Egger's test, and trim-and-fill analysis. Detect publication bias in under 10 minutes. No installation, no coding, no cost.</p>
+    <a href="/">Open MetaReview - It's Free</a>
+  </div>
+
+  <!-- Email Subscription -->
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">Stay Updated</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">Get notified about new features, publication bias tips, and meta-analysis guides.</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="Enter your email" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Subscribe</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">No spam. Unsubscribe anytime.</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='Submitting...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-funnel-plot-en',lang:'en'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?"You're already subscribed!":'Subscribed! We\'ll notify you about new features.';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Please enter a valid email address.';btn.textContent='Subscribe';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Submission failed. Please try again later.';btn.textContent='Subscribe';btn.disabled=false;});
+  });
+  </script>
+
+  <!-- FAQ Section -->
+  <div class="faq" id="faq">
+    <h2>Frequently Asked Questions</h2>
+
+    <h3>What is a funnel plot in meta-analysis?</h3>
+    <p>A funnel plot is a scatter plot used in meta-analysis to detect publication bias and other small-study effects. Each study is represented as a point, with the effect size (such as log odds ratio, mean difference, or standardized mean difference) plotted on the x-axis and a measure of study precision (usually the standard error) on the y-axis, with the y-axis inverted so that the most precise studies appear at the top. In the absence of publication bias, the plot should resemble a symmetric inverted funnel: large, precise studies cluster tightly near the pooled estimate at the top, while smaller, less precise studies scatter more widely at the bottom but remain evenly distributed on both sides. The pooled effect estimate from the meta-analysis is drawn as a vertical reference line, and diagonal lines show the pseudo 95% confidence limits. Asymmetry in the funnel -- particularly gaps where small studies with unfavorable results would be expected to appear -- suggests that publication bias may be present, meaning that the available literature represents a biased sample of all research conducted on the topic. Funnel plots are recommended by PRISMA 2020 and the Cochrane Handbook for meta-analyses with 10 or more studies.</p>
+
+    <h3>How do you interpret funnel plot asymmetry?</h3>
+    <p>Interpreting funnel plot asymmetry requires both visual assessment and formal statistical testing, combined with careful consideration of alternative explanations. Visual inspection looks for gaps or sparse areas in the scatter pattern. The most common bias pattern in medical meta-analyses is a gap in the bottom corner corresponding to small studies with non-significant or unfavorable results, suggesting these studies were not published. However, asymmetry does not automatically equal publication bias. There are several legitimate causes of asymmetry. First, true heterogeneity can create asymmetry if the genuine treatment effect varies systematically with study size -- for example, if smaller studies tend to use higher intervention doses. Second, methodological quality differences between small and large studies can inflate effects in smaller studies without any selective publication. Third, with fewer than 10 studies, apparent asymmetry may simply reflect chance variation. Fourth, the choice of effect measure can create artificial asymmetry, particularly for odds ratios with rare events. To distinguish these causes, use contour-enhanced funnel plots (which overlay statistical significance regions), apply Egger's regression test or Peters' test as formal asymmetry tests, and consider whether the pattern is clinically plausible given what you know about the literature.</p>
+
+    <h3>What is Egger's test for publication bias?</h3>
+    <p>Egger's test, published by Matthias Egger, George Davey Smith, Martin Schneider, and Christoph Minder in 1997, is the most widely used formal statistical test for funnel plot asymmetry. The test performs a weighted linear regression where the dependent variable is the standardized normal deviate (the effect size divided by its standard error, which is essentially the z-score) and the independent variable is the precision (the inverse of the standard error, 1/SE). The key parameter is the regression intercept: if the funnel plot is symmetric, the intercept should be close to zero; if the funnel is asymmetric, the intercept will differ significantly from zero. The test uses a conventional significance threshold of p less than 0.10 rather than 0.05 because it has limited statistical power, particularly with fewer than 10 studies. A positive intercept suggests that smaller studies tend to report larger positive effects, consistent with the most common form of publication bias. Egger's test works well for continuous effect measures (mean difference, standardized mean difference) and log-transformed ratio measures, but can produce spurious results when applied to odds ratios with rare events, in which case Peters' test is recommended as an alternative. MetaReview computes Egger's test automatically and reports the intercept, standard error, t-statistic, and p-value.</p>
+
+    <h3>What is the trim-and-fill method?</h3>
+    <p>The trim-and-fill method, developed by Sue Duval and Richard Tweedie and published in 2000, is a non-parametric method for estimating the number and locations of hypothetically missing studies in a meta-analysis due to publication bias, and for calculating an adjusted pooled effect that accounts for these missing studies. The algorithm is iterative: it first estimates the number of asymmetric studies (k0) using rank-based estimators, then "trims" the most extreme small studies from the side of the funnel with excess studies to create a symmetric distribution, re-estimates the pooled effect from the trimmed set, and finally "fills" by adding mirror images of the trimmed studies on the opposite side of the adjusted pooled estimate. The imputed missing studies are typically displayed on the funnel plot as open circles, distinguishing them from the real studies shown as filled circles. The method provides three key outputs: the number of imputed studies, the locations of these studies in the effect size and standard error space, and an adjusted pooled estimate with confidence interval that includes both real and imputed data. While widely used and intuitive, the trim-and-fill method should be treated as a sensitivity analysis rather than a definitive correction for bias. It assumes all asymmetry is due to publication bias, can impute studies that do not actually exist, and performs poorly when between-study heterogeneity is substantial.</p>
+
+    <h3>How many studies do you need for a funnel plot?</h3>
+    <p>The widely accepted minimum is 10 studies for a funnel plot to be meaningfully interpretable. This recommendation comes from both the Cochrane Handbook for Systematic Reviews of Interventions and simulation studies that have evaluated the performance of funnel plots and statistical tests for asymmetry. With fewer than 10 studies, the funnel plot is too sparse to distinguish genuine asymmetry from random variation, and statistical tests like Egger's test and Begg's test have very low power, meaning they will fail to detect even substantial publication bias. Between 10 and 20 studies, funnel plots become more informative but should still be interpreted cautiously, as the visual impression can be misleading and statistical tests remain underpowered. With 20 or more studies, both visual assessment and statistical tests become reasonably reliable. With 30 or more studies, the assessment is most trustworthy. If your meta-analysis includes fewer than 10 studies, do not present a funnel plot or run asymmetry tests. Instead, acknowledge this limitation explicitly in your manuscript and consider alternative approaches to assessing the risk of reporting bias, such as comparing results to registered trial protocols, searching for unpublished data, and qualitatively assessing whether the included studies represent a complete picture of the evidence.</p>
+
+    <h3>What is a contour-enhanced funnel plot?</h3>
+    <p>A contour-enhanced funnel plot is an advancement over the standard funnel plot, introduced by Peters, Sutton, Jones, Abrams, and Rushton in 2008. It adds shaded regions representing conventional levels of statistical significance to the standard funnel plot display. Typically, three contour regions are shown: p less than 0.01 (darkest shading), p less than 0.05 (medium shading), and p less than 0.10 (lightest shading), with the area outside all contours representing non-significant results. The critical diagnostic value of the contour-enhanced funnel plot is its ability to help distinguish publication bias from other causes of funnel plot asymmetry. The reasoning is straightforward: if the "missing" studies (the gaps in the funnel) fall predominantly in regions of statistical non-significance (the unshaded area), this supports publication bias as the explanation, because non-significant results are the ones most likely to remain unpublished. Conversely, if the asymmetry or gaps occur within the significance contours, publication bias is a less plausible explanation, and other factors such as genuine heterogeneity, methodological quality differences, or chance variation should be explored. Contour-enhanced funnel plots are increasingly recommended as a standard enhancement to traditional funnel plots because they provide additional diagnostic information with no extra complexity in interpretation. MetaReview supports contour-enhanced funnel plots with a simple toggle option.</p>
+
+    <h3>Can I create a funnel plot without coding or R?</h3>
+    <p>Yes, MetaReview is a free, browser-based meta-analysis tool that generates funnel plots without any coding, programming knowledge, or software installation. You open MetaReview in any modern web browser (Chrome, Firefox, Safari, Edge), enter your study data through a point-and-click interface, run the meta-analysis by selecting your effect size and model, and then switch to the funnel plot view. MetaReview supports all the key funnel plot features that researchers need: standard funnel plots with pseudo 95% confidence limits, contour-enhanced funnel plots with significance regions, trim-and-fill analysis with imputed studies and adjusted estimates, Egger's regression test, and Begg's rank correlation test. You can export the funnel plot as SVG (for journal submission) or PNG (for presentations). The entire process from data entry to exported funnel plot takes under 10 minutes. By comparison, creating the same funnel plot in R requires installing R, RStudio, and the metafor package, then writing approximately 10 to 20 lines of code including function calls like funnel(), regtest(), and trimfill(). Stata requires a paid license and knowledge of commands like metafunnel and metabias. MetaReview eliminates all of these barriers while providing the same analytical capabilities.</p>
+
+    <h3>What is the difference between Egger's test and Begg's test?</h3>
+    <p>Egger's test and Begg's test are both formal statistical tests for funnel plot asymmetry, but they differ in their statistical methodology and power. Egger's test (Egger, Davey Smith, Schneider, and Minder, 1997) uses a parametric approach: it performs a weighted linear regression of the standardized normal deviates (effect size divided by standard error) against precision (1/SE) and tests whether the regression intercept differs significantly from zero. Begg's test (Begg and Mazumdar, 1994) uses a non-parametric approach: it calculates Kendall's rank correlation coefficient (tau) between the standardized effect estimates and their variances, testing whether there is a correlation between a study's effect size and its precision. In head-to-head comparisons, Egger's test is generally more powerful -- it is more likely to detect genuine funnel plot asymmetry when it exists. Begg's test makes fewer distributional assumptions and is less sensitive to outlying studies, but its lower statistical power means it misses genuine asymmetry more often. Both tests use a significance threshold of p less than 0.10 because neither has adequate power with small numbers of studies at the conventional 0.05 level. In practice, most researchers report Egger's test as the primary asymmetry test and may include Begg's test as a supplementary analysis. For meta-analyses using odds ratios from binary outcome data, both tests can produce spurious results, and Peters' test (which regresses against inverse total sample size rather than precision) is recommended as a more appropriate alternative.</p>
+  </div>
+
+  <!-- Related Guides -->
+  <div class="related">
+    <h2>Related Guides</h2>
+    <ul>
+      <li><a href="/guides/how-to-meta-analysis">How to Do a Meta-Analysis: Complete Step-by-Step Tutorial</a></li>
+      <li><a href="/guides/free-forest-plot-generator">Free Forest Plot Generator Online</a></li>
+      <li><a href="/guides/meta-analysis-steps">Complete Meta-Analysis Step-by-Step Guide (Chinese)</a></li>
+      <li><a href="/guides/forest-plot-generator">Forest Plot Guide (Chinese)</a></li>
+      <li><a href="/guides/effect-size-selection">Choosing Effect Sizes: OR, RR, MD, SMD Guide</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 Flow Diagram Guide</a></li>
+      <li><a href="/guides/survival-analysis-meta">Survival Data Meta-Analysis: HR Guide</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta-Analysis Software Comparison</a></li>
+      <li><a href="/guides/tumor-meta-analysis">Oncology Meta-Analysis Guide</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">Cardiovascular Meta-Analysis Guide</a></li>
+      <li><a href="/guides/diabetes-meta-analysis">Diabetes Meta-Analysis Guide</a></li>
+      <li><a href="/guides/covid-meta-analysis">COVID-19 Meta-Analysis Guide</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis">Psychiatric Meta-Analysis Guide</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> — Free Online Meta-Analysis Tool</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

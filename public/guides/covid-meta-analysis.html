@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COVID-19 Meta 分析完整指南：从病毒变异到疫苗效力的循证综合方法 | MetaReview</title>
+  <meta name="description" content="COVID-19 Meta 分析怎么做？本文详解新冠荟萃分析全流程：疫苗效力 VE 计算、抗病毒药（Paxlovid/瑞德西韦）效应量选择、变异株（Delta/Omicron）亚组分析、预印本纳入争议、发表偏倚与 GRADE 评估。附免费在线工具和经典试验案例。" />
+  <meta name="keywords" content="COVID meta分析, 新冠荟萃分析, COVID-19 meta-analysis, 新冠疫苗meta分析, 奥密克戎meta分析, COVID治疗meta分析, 新冠系统综述" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/covid-meta-analysis" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/covid-meta-analysis" />
+  <meta property="og:title" content="COVID-19 Meta 分析完整指南：从病毒变异到疫苗效力的循证综合方法" />
+  <meta property="og:description" content="新冠荟萃分析怎么做？疫苗效力 VE=1-RR、抗病毒药 OR/HR、变异株亚组分析、预印本纳入争议、经典试验解读。附免费在线工具。" />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "COVID-19 Meta 分析完整流程：从研究设计到发表",
+    "description": "详解 COVID-19 领域 Meta 分析的全流程指南，涵盖 PICO 框架、疫苗效力与治疗效应量选择、变异株异质性处理、预印本纳入策略、亚组分析、发表偏倚评估和工具实战。",
+    "totalTime": "PT45M",
+    "tool": {
+      "@type": "HowToTool",
+      "name": "MetaReview 免费在线 Meta 分析工具"
+    },
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "用 PICO 框架定义 COVID-19 研究问题", "text": "使用 PICO 框架定义 COVID-19 Meta 分析的研究问题。P 为确诊患者（轻/中/重/危重）或高危人群；I 为疫苗（mRNA/灭活/腺病毒载体/蛋白亚单位）或抗病毒药（Paxlovid/Molnupiravir/瑞德西韦）或免疫调节剂（地塞米松/托珠单抗/巴瑞替尼）；C 为安慰剂或标准治疗或不同疫苗间比较；O 为死亡率、住院率、重症转化率、症状缓解时间、病毒载量、Long COVID 发生率。"},
+      {"@type": "HowToStep", "position": 2, "name": "制定全面的文献检索策略", "text": "在 PubMed、Embase、Cochrane COVID-19 Study Register、WHO COVID-19 Database 中检索，同时纳入 medRxiv/bioRxiv 预印本和 ClinicalTrials.gov 注册信息。使用 MeSH 主题词（COVID-19、SARS-CoV-2）结合自由词（vaccine efficacy、antiviral treatment），注意预印本纳入的利弊需在方法中明确讨论。"},
+      {"@type": "HowToStep", "position": 3, "name": "选择合适的效应量", "text": "疫苗效力使用 VE = 1 - RR（或 1 - HR），治疗终点中死亡率和住院率使用 OR 或 HR，连续变量（病毒载量、症状评分）使用 MD 或 SMD，诊断准确性使用敏感度、特异度和 DOR。不同类型终点必须分别进行独立 Meta 分析。"},
+      {"@type": "HowToStep", "position": 4, "name": "提取 COVID-19 研究数据", "text": "从纳入文献中提取效应量（VE/OR/HR/MD）及 95% CI，记录关键调节变量：病毒变异株类型、疫苗接种剂次、患者疾病严重度分级、合并症情况、研究设计类型（RCT vs 观察性）。注意预印本数据可能在正式发表时有修订。"},
+      {"@type": "HowToStep", "position": 5, "name": "分析异质性来源", "text": "COVID-19 Meta 分析的核心异质性来源包括：病毒变异株差异（Alpha/Delta/Omicron BA.1/BA.2/BA.5/XBB）、疫苗接种状态和剂次、患者基线合并症、地区医疗资源差异、研究设计混杂（RCT vs 真实世界研究）。使用 I-squared、Q 检验和 tau-squared 量化异质性，结合预设亚组分析和 Meta-regression 探索来源。"},
+      {"@type": "HowToStep", "position": 6, "name": "执行亚组分析", "text": "按预设变量进行亚组分析：病毒变异株（原始株 vs Delta vs Omicron）、疫苗类型（mRNA vs 灭活 vs 腺病毒载体）、疾病严重度（轻/中 vs 重/危重）、年龄（65 岁以上 vs 以下）、基础疾病（糖尿病/肥胖/免疫抑制）、接种剂次（2 剂 vs 加强针）。每个亚组需进行交互检验。"},
+      {"@type": "HowToStep", "position": 7, "name": "评估发表偏倚与证据质量", "text": "COVID-19 领域面临独特挑战：政治压力导致研究结果可能被选择性报告、药企资助偏倚、大量预印本未经同行评审、研究因变异株更替快速过时。使用漏斗图、Egger 检验评估发表偏倚，用 GRADE 框架评估证据质量时需特别考虑间接性（变异株更替导致）和不精确性。"},
+      {"@type": "HowToStep", "position": 8, "name": "按 PRISMA 2020 撰写报告并用工具验证", "text": "报告需包括 PRISMA 流程图、纳入研究特征表、森林图（按终点分别呈现）、漏斗图、亚组分析森林图。讨论中结合 GRADE 评估，明确指出结论适用的变异株时期和疫苗接种背景。使用 MetaReview 可在 5 分钟内完成从数据输入到森林图生成的全流程。"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "COVID-19 疫苗效力的 Meta 分析应该用什么效应量？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "疫苗效力（Vaccine Efficacy/Effectiveness, VE）的标准计算公式是 VE = 1 - RR（或 1 - HR）。在 RCT 中（如 BNT162b2 III 期），通常使用 1 - HR 或 1 - IRR（发病率比）；在真实世界研究中，通常使用 1 - OR（test-negative design）或 1 - HR（队列研究）。Meta 分析合并时建议直接合并 RR 或 HR，再将合并后的效应量转化为 VE。注意不能直接合并 VE 百分比值，必须在 RR 或 HR 尺度上进行合并。不同研究设计（RCT vs 观察性）的效应量应分层分析。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "COVID Meta 分析中如何处理病毒变异株导致的异质性？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "病毒变异株差异是 COVID-19 Meta 分析最独特的异质性来源。处理策略：（1）在检索和数据提取阶段记录每项研究的主要流行变异株；（2）按变异株时期进行预设亚组分析（原始株/Alpha/Delta/Omicron BA.1/BA.2/BA.5/XBB）；（3）对疫苗效力研究，不同变异株时期的 VE 差异通常非常大（如 BNT162b2 对原始株 VE 95% vs 对 Omicron BA.1 约 30-40%），合并所有变异株数据可能毫无意义；（4）考虑将变异株作为 Meta-regression 的协变量；（5）在结论中明确指出结果适用的变异株时期。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "COVID-19 Meta 分析是否应该纳入预印本？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "这是 COVID-19 Meta 分析中最具争议的方法学问题。支持纳入的理由：（1）疫情期间大量关键证据首先以预印本发表，不纳入会导致严重的时效性问题；（2）一些重要的真实世界数据（如以色列、英国的大规模队列研究）以预印本形式快速发布；（3）排除预印本可能引入发表偏倚。反对纳入的理由：（1）预印本未经同行评审，数据质量无法保证；（2）部分预印本后来被撤回或数据大幅修正；（3）可能降低 GRADE 证据质量。推荐做法：在主要分析中纳入已发表的同行评审文献，将预印本作为敏感性分析单独检验其对结论的影响。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Paxlovid（奈玛特韦/利托那韦）的 Meta 分析有什么特殊考量？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Paxlovid Meta 分析的特殊考量包括：（1）关键 RCT（EPIC-HR）在 Delta 流行期完成，纳入的是未接种疫苗的高危患者，而真实世界使用主要在 Omicron 时期且大多数患者已接种疫苗，两者人群差异巨大；（2）Paxlovid 反弹现象（症状缓解后复阳）在 RCT 中未被充分报告，但在真实世界研究中频繁观察到；（3）药物相互作用（CYP3A 抑制）限制了某些合并症患者的使用，不同研究的排除标准差异可能导致人群异质性；（4）高危人群定义在不同研究中不一致（年龄、合并症、免疫状态）；（5）需分别分析住院/死亡（硬终点）和症状缓解时间（患者报告终点）。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "如何做灭活疫苗与 mRNA 疫苗的比较 Meta 分析？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "灭活疫苗（科兴 CoronaVac、国药 BBIBP-CorV）与 mRNA 疫苗（BNT162b2、mRNA-1273）的比较面临方法学挑战：（1）缺乏头对头 RCT，大多数证据来自观察性研究（test-negative design 或队列研究），需使用网络 Meta 分析或间接比较；（2）两类疫苗的临床试验在不同国家、不同变异株流行期进行，直接比较存在严重的混杂；（3）灭活疫苗数据主要来自中国、巴西、智利、印度尼西亚等中低收入国家，mRNA 数据主要来自欧美和以色列，地区医疗资源差异是重要混杂因素；（4）建议在同一地区、同一变异株时期的头对头观察性研究中进行比较，如智利和巴西同时使用两类疫苗的大规模队列数据。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Long COVID 的 Meta 分析有什么特殊挑战？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Long COVID（COVID 后遗症/新冠长期症状）的 Meta 分析面临多重挑战：（1）定义不统一——WHO 定义为感染后 3 个月仍有症状且持续至少 2 个月，但不同研究使用 4 周、8 周、12 周等不同时间阈值；（2）症状谱极广（疲劳、脑雾、呼吸困难、心悸等 200+ 种症状），合并"任何 Long COVID 症状"的发生率缺乏临床意义；（3）对照组定义困难——应与未感染者比较还是与感染后无后遗症者比较？（4）大量研究无对照组，仅报告感染后症状发生率；（5）选择偏倚严重——住院患者 vs 门诊患者 vs 社区人群的 Long COVID 发生率差异极大（10-80%）；（6）建议按具体症状（如疲劳、认知障碍）分别进行 Meta 分析，而非合并为单一终点。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "MetaReview 能做 COVID-19 相关的 Meta 分析吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "完全可以。MetaReview 支持 COVID-19 Meta 分析所需的全部功能：（1）RR 和 HR 用于疫苗效力分析（VE = 1 - RR），自动完成 log 变换和标准误计算；（2）OR 用于治疗效果的二分类终点（死亡率、住院率）；（3）MD/SMD 用于连续变量终点（病毒载量、症状评分）；（4）提供固定效应和随机效应模型；（5）自动生成森林图和漏斗图；（6）支持按变异株、疫苗类型、疾病严重度等进行亚组分析；（7）逐一剔除敏感性分析验证结论稳健性。所有计算在浏览器内完成，免费使用，无需安装软件或编写代码。"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .toc { background: white; border-radius: 12px; padding: 24px 32px; margin-bottom: 40px; border: 1px solid #e5e7eb; }
+    .toc h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .toc a:hover { text-decoration: underline; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    .faq { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .faq h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .faq h3 { font-size: 16px; color: #1e40af; margin: 16px 0 8px; }
+    .faq p { font-size: 15px; color: #4b5563; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .toc, .faq, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">打开工具</a>
+      <a href="/guides/meta-analysis-steps">Meta 分析步骤</a>
+      <a href="/guides/survival-analysis-meta">HR 生存分析</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>COVID-19 Meta 分析完整指南：从病毒变异到疫苗效力的循证综合方法</h1>
+  <p>新冠荟萃分析的疫苗效力 VE 计算、抗病毒药效应量选择、变异株异质性处理、预印本纳入争议、亚组分析策略与经典试验案例解读。适合感染科、呼吸科和公共卫生领域研究者。</p>
+</div>
+
+<div class="container">
+
+  <div class="toc">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#why">为什么 COVID-19 领域特别需要 Meta 分析</a></li>
+      <li><a href="#pico">PICO 框架在 COVID 研究中的应用</a></li>
+      <li><a href="#effect-size">COVID Meta 分析的效应量选择</a></li>
+      <li><a href="#search">检索策略：如何不遗漏关键证据</a></li>
+      <li><a href="#heterogeneity">COVID 研究的异质性挑战</a></li>
+      <li><a href="#subgroup">亚组分析策略</a></li>
+      <li><a href="#bias">发表偏倚与证据质量</a></li>
+      <li><a href="#cases">经典案例解析</a></li>
+      <li><a href="#tool">用 MetaReview 5 分钟完成 COVID Meta 分析</a></li>
+      <li><a href="#faq">常见问题</a></li>
+    </ol>
+  </div>
+
+  <!-- Section 1: Why COVID-19 needs meta-analysis -->
+  <div class="section" id="why">
+    <h2>为什么 COVID-19 领域特别需要 Meta 分析</h2>
+    <p>COVID-19 大流行催生了人类医学史上前所未有的研究爆发。截至 2024 年底，PubMed 中与 COVID-19 相关的文献已超过 40 万篇，其中包括数千项 RCT 和数万项观察性研究。然而，证据的"量"与"质"之间存在巨大鸿沟：单项研究的样本量、设计质量、研究时期（对应不同变异株）和地区背景差异极大，临床决策者面对海量且相互矛盾的证据往往无所适从。Meta 分析在这一背景下具有不可替代的循证价值。</p>
+
+    <h3>证据海量但质量参差</h3>
+    <p>COVID-19 研究的爆发式增长带来了前所未有的循证挑战：</p>
+    <ul>
+      <li><strong>研究数量爆炸</strong> -- 仅 2020-2021 年就有超过 2000 项 COVID-19 相关 RCT 注册在 ClinicalTrials.gov，涵盖疫苗、抗病毒药、免疫调节剂、康复期血浆、维生素补充等干预措施</li>
+      <li><strong>质量层次不齐</strong> -- 从 RECOVERY（超过 47,000 例）和 SOLIDARITY（超过 15,000 例）这样的大型平台试验，到只有几十例患者的单中心观察性研究，质量跨度极大</li>
+      <li><strong>研究设计多样</strong> -- RCT、队列研究、病例对照研究、test-negative design、自我对照病例系列（SCCS）等多种设计并存，合并分析时面临方法学挑战</li>
+      <li><strong>结论相互矛盾</strong> -- 同一干预（如羟氯喹、伊维菌素）在不同研究中得出完全相反的结论，公众和决策者困惑不已</li>
+    </ul>
+
+    <h3>预印本时代的循证困境</h3>
+    <p>COVID-19 大流行彻底改变了医学研究的发表模式。在传统的同行评审期刊发表周期（通常 3-12 个月）无法满足疫情时效需求的情况下，medRxiv 和 bioRxiv 成为关键证据的首发平台。据统计，2020 年发表的 COVID-19 研究中超过 30% 首先以预印本形式出现。这带来了双重挑战：</p>
+    <ul>
+      <li><strong>时效性需求</strong> -- 政策制定者需要在数周内（而非数月）获得循证证据支持疫苗接种策略和治疗方案</li>
+      <li><strong>质量控制缺失</strong> -- 预印本未经同行评审，数据错误、方法学缺陷、甚至学术不端的风险更高。多篇高影响力 COVID-19 预印本后来被撤回</li>
+    </ul>
+    <p>Meta 分析通过系统的质量评估（RoB 2.0 / ROBINS-I / NOS）和 GRADE 框架，能够将质量参差的个体研究整合为分层分级的循证结论，帮助决策者区分"强推荐"和"弱推荐"。</p>
+
+    <h3>快速循证综合的迫切需求</h3>
+    <p>传统 Meta 分析从方案注册到发表通常需要 6-18 个月。COVID-19 疫情催生了"活的系统综述"（Living Systematic Review）这一新范式——持续更新的系统综述，每当有新的重要证据发表就纳入重新分析。Cochrane COVID-19 Study Register 和 WHO 的 COVID-NMA 平台正是基于这一理念运作，为全球提供实时更新的治疗和疫苗效力证据。</p>
+
+    <div class="tip">WHO COVID-NMA 是 COVID-19 领域最重要的活系统综述平台之一（covid-nma.com），持续追踪所有 COVID-19 治疗和疫苗相关 RCT，定期更新 Meta 分析结果。研究者在开展新的 COVID-19 Meta 分析前，应首先检查该平台是否已有同一主题的最新综述。</div>
+  </div>
+
+  <!-- Section 2: PICO framework -->
+  <div class="section" id="pico">
+    <h2>PICO 框架在 COVID 研究中的应用</h2>
+    <p>COVID-19 的 PICO 框架比其他疾病领域更加复杂，因为疾病本身在不断演化：病毒持续变异，人群免疫背景不断改变（从零免疫到普遍接种再到反复感染后的混合免疫），治疗方案也从"无药可用"发展到多种有效干预并存。定义研究问题时必须将"时间维度"——即研究所处的变异株和疫苗接种背景——纳入 PICO 的每一个要素。</p>
+
+    <h3>Population（人群）</h3>
+    <table class="data-table">
+      <tr><th>人群类别</th><th>典型定义</th><th>代表研究</th></tr>
+      <tr><td>确诊轻/中症患者（门诊）</td><td>SARS-CoV-2 阳性，症状发作 &le;5 天，无需住院</td><td>EPIC-HR（Paxlovid）, MOVe-OUT（Molnupiravir）</td></tr>
+      <tr><td>住院中/重症患者</td><td>需要住院但不需有创通气</td><td>RECOVERY（地塞米松）, ACTT-1（瑞德西韦）</td></tr>
+      <tr><td>危重症患者（ICU）</td><td>需要有创通气或 ECMO</td><td>REMAP-CAP（托珠单抗+巴瑞替尼）</td></tr>
+      <tr><td>高危人群（预防）</td><td>未感染但暴露风险高的医护人员、密接者</td><td>疫苗 III 期试验, 暴露后预防试验</td></tr>
+      <tr><td>免疫抑制人群</td><td>器官移植、血液肿瘤、自身免疫病使用免疫抑制剂</td><td>免疫抑制人群疫苗反应研究</td></tr>
+      <tr><td>Long COVID 患者</td><td>感染后 &ge;12 周仍有持续症状</td><td>Long COVID 干预试验</td></tr>
+    </table>
+
+    <h3>Intervention（干预）</h3>
+    <p>COVID-19 干预措施涵盖预防和治疗两大类，每类内部又有多种机制：</p>
+    <p><strong>疫苗（预防）：</strong></p>
+    <ul>
+      <li><strong>mRNA 疫苗</strong>：BNT162b2（辉瑞-BioNTech Comirnaty）、mRNA-1273（Moderna Spikevax）</li>
+      <li><strong>腺病毒载体疫苗</strong>：ChAdOx1 nCoV-19（阿斯利康 Vaxzevria）、Ad26.COV2.S（强生 Janssen）、Gam-COVID-Vac（Sputnik V）、Ad5-nCoV（康希诺克威莎）</li>
+      <li><strong>灭活疫苗</strong>：CoronaVac（科兴）、BBIBP-CorV（国药北京生物）、Covaxin（Bharat Biotech）</li>
+      <li><strong>蛋白亚单位疫苗</strong>：NVX-CoV2373（Novavax）、ZF2001（智飞龙科马）</li>
+    </ul>
+    <p><strong>抗病毒药物（治疗）：</strong></p>
+    <ul>
+      <li><strong>蛋白酶抑制剂</strong>：奈玛特韦/利托那韦（Paxlovid）</li>
+      <li><strong>RdRp 抑制剂</strong>：瑞德西韦（Remdesivir）、莫诺拉韦（Molnupiravir）</li>
+    </ul>
+    <p><strong>免疫调节剂（治疗）：</strong></p>
+    <ul>
+      <li><strong>糖皮质激素</strong>：地塞米松（Dexamethasone）</li>
+      <li><strong>IL-6 受体拮抗剂</strong>：托珠单抗（Tocilizumab）、赛瑞单抗（Sarilumab）</li>
+      <li><strong>JAK 抑制剂</strong>：巴瑞替尼（Baricitinib）、托法替布（Tofacitinib）</li>
+    </ul>
+
+    <h3>Comparison（对照）</h3>
+    <ul>
+      <li><strong>安慰剂</strong> -- 疫苗 III 期 RCT 和大多数治疗 RCT 的标准对照</li>
+      <li><strong>标准治疗</strong> -- RECOVERY 试验采用"标准治疗"作为对照，随疫情发展标准治疗本身也在变化（后期加入地塞米松成为标准）</li>
+      <li><strong>不同疫苗间比较</strong> -- 混合接种（heterologous prime-boost）研究中的头对头比较</li>
+      <li><strong>不同治疗方案间比较</strong> -- 如瑞德西韦 5 天 vs 10 天疗程</li>
+    </ul>
+
+    <h3>Outcome（结局指标）</h3>
+    <table class="data-table">
+      <tr><th>终点类型</th><th>具体指标</th><th>数据类型</th><th>效应量</th></tr>
+      <tr><td>疫苗效力</td><td>有症状感染（symptomatic infection）</td><td>二分类/时间-事件</td><td>VE = 1-RR 或 1-HR</td></tr>
+      <tr><td>疫苗效力</td><td>住院、重症、死亡</td><td>二分类/时间-事件</td><td>VE = 1-RR 或 1-OR</td></tr>
+      <tr><td>治疗效果</td><td>28 天全因死亡率</td><td>二分类</td><td>OR / RR</td></tr>
+      <tr><td>治疗效果</td><td>住院风险（门诊患者）</td><td>二分类/时间-事件</td><td>OR / HR</td></tr>
+      <tr><td>治疗效果</td><td>重症转化（WHO 临床分级恶化）</td><td>有序分类</td><td>OR（比例 OR）</td></tr>
+      <tr><td>症状终点</td><td>症状缓解时间（天）</td><td>连续变量/时间-事件</td><td>MD / HR</td></tr>
+      <tr><td>病毒学终点</td><td>病毒载量变化（log<sub>10</sub> copies/mL）</td><td>连续变量</td><td>MD</td></tr>
+      <tr><td>病毒学终点</td><td>病毒转阴时间</td><td>时间-事件</td><td>HR</td></tr>
+      <tr><td>安全性终点</td><td>严重不良事件（SAE）</td><td>二分类</td><td>OR / RR</td></tr>
+      <tr><td>长期终点</td><td>Long COVID 发生率</td><td>二分类</td><td>OR / RR</td></tr>
+    </table>
+
+    <h3>PICO 示例：Paxlovid 降低 COVID-19 门诊高危患者住院/死亡风险</h3>
+    <table class="data-table">
+      <tr><th>PICO 元素</th><th>定义</th><th>关键考量</th></tr>
+      <tr><td><strong>P</strong></td><td>SARS-CoV-2 阳性的门诊成人患者，症状发作 &le;5 天，至少有 1 项重症高危因素（年龄 &ge;60、肥胖、糖尿病、心血管病、免疫抑制等）</td><td>是否限定疫苗接种状态？哪些高危因素纳入？变异株时期？</td></tr>
+      <tr><td><strong>I</strong></td><td>奈玛特韦 300mg / 利托那韦 100mg，每 12 小时一次，连续 5 天</td><td>肾功能不全患者的剂量调整研究是否纳入？</td></tr>
+      <tr><td><strong>C</strong></td><td>安慰剂或标准治疗（不含其他抗病毒药）</td><td>标准治疗是否包括地塞米松？不同研究的标准治疗定义可能不同</td></tr>
+      <tr><td><strong>O</strong></td><td>主要：28 天住院或死亡复合终点；次要：症状缓解时间、病毒载量变化、SAE</td><td>住院定义是否统一（&ge;24 小时住院 vs 急诊观察）？</td></tr>
+    </table>
+
+    <div class="warn">COVID-19 PICO 框架的核心特殊性：必须明确"研究时期"对应的主要流行变异株和人群疫苗接种状态。一项 2020 年（原始株、零疫苗接种）的瑞德西韦 RCT 和一项 2023 年（XBB 亚变体、广泛混合免疫）的真实世界研究，即使 PICO 其他要素相同，也可能不适合直接合并分析。</div>
+  </div>
+
+  <!-- Section 3: Effect size selection -->
+  <div class="section" id="effect-size">
+    <h2>COVID Meta 分析的效应量选择</h2>
+    <p>COVID-19 Meta 分析涉及的终点类型比任何单一疾病领域都更加多样：从疫苗效力（VE）到治疗死亡率（OR/RR/HR），从病毒载量变化（MD）到诊断测试准确性（敏感度/特异度/DOR）。选择正确的效应量并理解其在 COVID 语境中的具体含义，是合并分析的方法学基础。</p>
+
+    <h3>疫苗效力：VE = 1 - RR</h3>
+    <p>疫苗效力/有效性（Vaccine Efficacy/Effectiveness）是 COVID-19 疫苗研究中最核心的效应量：</p>
+    <div class="formula">
+      VE = 1 - RR = 1 - (接种组发病率 / 未接种组发病率)<br>
+      例如：VE = 95% 意味着接种组的发病风险仅为未接种组的 5%
+    </div>
+    <ul>
+      <li><strong>RCT 中的 VE</strong> -- 基于每千人-年发病率计算 IRR（incidence rate ratio），或使用 Cox 模型的 HR。BNT162b2 III 期试验报告 VE = 95.0% (95% CI: 90.3%-97.6%)，对应 HR 约 0.05</li>
+      <li><strong>观察性研究中的 VE</strong> -- Test-negative design 中通常使用 1-OR 估算 VE，队列研究使用 1-HR 或 1-RR</li>
+      <li><strong>Meta 分析合并方法</strong> -- 不能直接合并 VE 百分比值（因为 VE 不服从正态分布，尤其在接近 100% 时）。正确做法是先合并 log(RR) 或 log(HR)，再将合并结果转换为 VE</li>
+    </ul>
+    <div class="warn">疫苗效力 Meta 分析中，VE 针对的结局必须统一：预防有症状感染的 VE、预防住院的 VE、预防死亡的 VE 是三个完全不同的终点，必须分别进行独立 Meta 分析。Omicron 时期 mRNA 疫苗预防感染的 VE 可能仅有 30-40%，但预防重症/死亡的 VE 仍可达 70-90%。</div>
+
+    <h3>治疗结局：OR / RR / HR</h3>
+    <p>COVID-19 治疗 Meta 分析中的效应量选择取决于终点类型和报告方式：</p>
+    <table class="data-table">
+      <tr><th>终点</th><th>首选效应量</th><th>适用场景</th><th>注意事项</th></tr>
+      <tr><td>28 天死亡率</td><td>OR 或 RR</td><td>RECOVERY 等报告固定时间点死亡率的试验</td><td>事件率高（&gt;10%）时 OR 和 RR 差异显著，优先用 RR</td></tr>
+      <tr><td>住院或死亡复合终点</td><td>HR 或 RR</td><td>门诊治疗试验（EPIC-HR 等）</td><td>时间-事件数据用 HR，固定时间点用 RR</td></tr>
+      <tr><td>WHO 临床分级变化</td><td>比例 OR</td><td>WHO 11 点序贯量表（ordinal scale）</td><td>使用比例优势模型（proportional odds），需验证比例假设</td></tr>
+      <tr><td>有创通气或死亡</td><td>OR 或 HR</td><td>住院患者试验</td><td>复合终点各组分应分别报告</td></tr>
+      <tr><td>ICU 入住</td><td>OR / RR</td><td>住院患者进展为危重症</td><td>不同医院 ICU 入住标准不同，是异质性来源</td></tr>
+    </table>
+
+    <h3>连续变量：MD / SMD</h3>
+    <ul>
+      <li><strong>病毒载量变化</strong> -- 以 log<sub>10</sub> copies/mL 为单位的均数差（MD），反映抗病毒药物的病毒学疗效</li>
+      <li><strong>症状评分变化</strong> -- 不同研究使用不同症状量表时，需用标准化均数差（SMD）</li>
+      <li><strong>住院天数</strong> -- 使用 MD，但分布通常偏态严重（少数危重患者住院数月），需注意是否用中位数和 IQR 报告</li>
+      <li><strong>氧合指数变化（PaO<sub>2</sub>/FiO<sub>2</sub>）</strong> -- 反映呼吸功能改善，使用 MD</li>
+    </ul>
+
+    <h3>诊断准确性：Se / Sp / DOR</h3>
+    <p>COVID-19 诊断测试的 Meta 分析（如快速抗原检测 vs RT-PCR）使用特殊的诊断准确性效应量：</p>
+    <ul>
+      <li><strong>敏感度（Sensitivity）</strong> -- 感染者中检测阳性的比例</li>
+      <li><strong>特异度（Specificity）</strong> -- 未感染者中检测阴性的比例</li>
+      <li><strong>诊断比值比（DOR）</strong> -- DOR = (Se / (1-Se)) / ((1-Sp) / Sp)，综合反映诊断效能</li>
+      <li><strong>分析方法</strong> -- 使用双变量模型（bivariate model）或 HSROC 模型同时估计敏感度和特异度</li>
+    </ul>
+    <div class="formula">
+      诊断 Meta 分析：不能简单合并敏感度或特异度<br>
+      必须使用双变量模型考虑两者之间的负相关（阈值效应）
+    </div>
+
+    <h3>效应量选择总结</h3>
+    <table class="data-table">
+      <tr><th>研究问题</th><th>首选效应量</th><th>说明</th></tr>
+      <tr><td>疫苗预防感染</td><td>VE = 1 - RR（或 1 - HR）</td><td>合并在 RR/HR 尺度上进行</td></tr>
+      <tr><td>疫苗预防重症/死亡</td><td>VE = 1 - OR（或 1 - HR）</td><td>观察性研究多用 OR（test-negative design）</td></tr>
+      <tr><td>抗病毒药降低死亡率</td><td>OR 或 RR</td><td>事件率 &gt;10% 时优先用 RR</td></tr>
+      <tr><td>免疫调节剂降低死亡率</td><td>OR 或 RR</td><td>RECOVERY/REMAP-CAP 等大型平台试验</td></tr>
+      <tr><td>治疗缩短症状持续时间</td><td>MD（天）或 HR</td><td>时间-事件数据用 HR，连续数据用 MD</td></tr>
+      <tr><td>治疗降低病毒载量</td><td>MD（log<sub>10</sub> copies/mL）</td><td>需统一采样时间点</td></tr>
+      <tr><td>快速抗原检测准确性</td><td>Se、Sp、DOR</td><td>双变量模型</td></tr>
+    </table>
+    <p>详细的效应量选择方法请看：<a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</a></p>
+  </div>
+
+  <!-- Section 4: Search strategy -->
+  <div class="section" id="search">
+    <h2>检索策略：如何不遗漏关键证据</h2>
+    <p>COVID-19 的文献检索面临"信息过载"和"证据分散"的双重挑战。一方面，相关文献数量以每月数千篇的速度增长；另一方面，关键证据可能分散在传统数据库、预印本服务器、临床试验注册平台、政府报告和WHO 技术文件等多个来源。建立系统、可复现的多源检索策略是 COVID-19 Meta 分析的方法学基石。</p>
+
+    <h3>必检数据库</h3>
+    <table class="data-table">
+      <tr><th>数据库</th><th>特点</th><th>COVID-19 检索要点</th></tr>
+      <tr><td>PubMed / MEDLINE</td><td>生物医学核心数据库</td><td>使用 MeSH 主题词 "COVID-19"[Mesh] AND "SARS-CoV-2"[Mesh]，注意 MeSH 词在 2020 年中才正式收录</td></tr>
+      <tr><td>Embase</td><td>药物和药理学重点</td><td>Emtree 术语检索，药物治疗相关文献覆盖优于 PubMed</td></tr>
+      <tr><td>Cochrane COVID-19 Study Register</td><td>Cochrane 专门建立的 COVID 注册库</td><td>整合了 PubMed、Embase、ClinicalTrials.gov、WHO ICTRP 和预印本数据</td></tr>
+      <tr><td>WHO COVID-19 Research Database</td><td>WHO 全球文献汇总</td><td>包含多语言文献，覆盖 CNKI、万方等中文数据库的 COVID 研究</td></tr>
+    </table>
+
+    <h3>预印本服务器</h3>
+    <p>COVID-19 Meta 分析中，预印本检索是一项特殊但不可回避的需求：</p>
+    <ul>
+      <li><strong>medRxiv</strong> -- 临床医学和公共卫生预印本的主要平台，大量 COVID-19 流行病学和临床研究首发于此</li>
+      <li><strong>bioRxiv</strong> -- 基础生物学预印本，涵盖病毒学、免疫学和疫苗研发的基础研究</li>
+      <li><strong>SSRN Preprints (Lancet)</strong> -- Lancet 系列期刊的预印本平台，部分 COVID 研究在此首发</li>
+      <li><strong>Research Square</strong> -- 自然系列期刊相关的预印本平台</li>
+    </ul>
+
+    <h3>临床试验注册平台</h3>
+    <ul>
+      <li><strong>ClinicalTrials.gov</strong> -- 检索已注册但尚未发表结果的 COVID RCT，识别潜在的发表偏倚</li>
+      <li><strong>WHO ICTRP</strong> -- 国际临床试验注册平台，覆盖中国临床试验注册中心（ChiCTR）等区域注册库</li>
+      <li><strong>EU Clinical Trials Register</strong> -- 欧洲临床试验注册</li>
+    </ul>
+
+    <h3>预印本纳入的利弊争议</h3>
+    <p>这是 COVID-19 Meta 分析中最具争议性的方法学问题之一：</p>
+    <table class="data-table">
+      <tr><th>支持纳入</th><th>反对纳入</th></tr>
+      <tr><td>疫情期间关键证据的首发平台，排除导致时效性严重滞后</td><td>未经同行评审，数据质量和方法学严谨性无法保证</td></tr>
+      <tr><td>大规模真实世界数据（如以色列 Clalit Health 数据）首先以预印本发布</td><td>部分预印本数据在正式发表时大幅修正，影响 Meta 分析稳定性</td></tr>
+      <tr><td>排除预印本可能引入系统性偏倚（阳性结果更快被期刊接收）</td><td>多篇 COVID-19 预印本因数据造假或严重错误被撤回（如 Surgisphere 事件）</td></tr>
+      <tr><td>Cochrane Rapid Reviews 方法学指南允许在时效性需求下纳入预印本</td><td>降低 GRADE 证据质量评级（出版物质量维度）</td></tr>
+    </table>
+    <div class="tip">推荐做法：主要分析仅纳入同行评审发表的文献，在预设的敏感性分析中加入预印本数据，检验预印本的纳入/排除对合并效应量和结论的影响。如果影响显著，需在讨论中详细说明。</div>
+
+    <h3>检索词构建示例</h3>
+    <p>以"Paxlovid 治疗 COVID-19 门诊患者的有效性"为例：</p>
+    <div class="formula">
+      PubMed 策略：<br>
+      ("COVID-19"[Mesh] OR "SARS-CoV-2"[Mesh] OR "coronavirus disease 2019")<br>
+      AND<br>
+      ("nirmatrelvir" OR "ritonavir" OR "Paxlovid" OR "PF-07321332")<br>
+      AND<br>
+      ("randomized controlled trial"[pt] OR "controlled clinical trial"[pt]<br>
+      OR "cohort studies"[Mesh] OR "effectiveness" OR "real-world")
+    </div>
+    <div class="warn">COVID-19 文献的检索更新频率应高于传统 Meta 分析。建议在投稿前至少重新检索一次，因为新的关键 RCT 或大型队列研究可能在几周内改变证据格局。如果条件允许，考虑采用"活的系统综述"模式，每 3-6 个月更新一次。</div>
+  </div>
+
+  <!-- Section 5: Heterogeneity challenges -->
+  <div class="section" id="heterogeneity">
+    <h2>COVID 研究的异质性挑战</h2>
+    <p>异质性是所有 Meta 分析都需面对的问题，但 COVID-19 领域的异质性具有独特的时间动态特征：病毒在变、人群免疫在变、治疗标准在变。一项 2020 年 3 月的武汉研究和一项 2023 年 1 月的美国研究，即使研究同一干预措施，其背景条件也截然不同。理解并恰当处理这些异质性来源，是 COVID-19 Meta 分析的核心方法学挑战。</p>
+
+    <h3>病毒变异株差异</h3>
+    <p>这是 COVID-19 Meta 分析最独特、最棘手的异质性来源：</p>
+    <table class="data-table">
+      <tr><th>变异株</th><th>主要流行时期</th><th>对疫苗效力的影响</th><th>对治疗效果的影响</th></tr>
+      <tr><td>原始株 / D614G</td><td>2020.1 - 2020.12</td><td>mRNA VE &ge;90%, 灭活 VE 50-80%</td><td>基准参考</td></tr>
+      <tr><td>Alpha (B.1.1.7)</td><td>2020.12 - 2021.6</td><td>VE 轻度下降（约 5-10%）</td><td>与原始株相似</td></tr>
+      <tr><td>Delta (B.1.617.2)</td><td>2021.4 - 2021.12</td><td>VE 中度下降（预防感染 VE 约 60-80%）</td><td>可能更高致病性，治疗需求增加</td></tr>
+      <tr><td>Omicron BA.1</td><td>2021.11 - 2022.3</td><td>VE 大幅下降（预防感染 VE 约 30-40%，预防重症仍 70-90%）</td><td>内在致病性降低，但免疫逃逸增强</td></tr>
+      <tr><td>Omicron BA.2/BA.5</td><td>2022.3 - 2022.12</td><td>进一步免疫逃逸</td><td>与 BA.1 相似</td></tr>
+      <tr><td>XBB/EG.5/JN.1 等</td><td>2023.1 - 至今</td><td>持续免疫逃逸，更新疫苗 VE 数据有限</td><td>Paxlovid 体外活性保留</td></tr>
+    </table>
+
+    <h3>疫苗接种状态</h3>
+    <p>人群免疫背景的变化对治疗效果 Meta 分析的影响常被低估：</p>
+    <ul>
+      <li><strong>Paxlovid 的关键悖论</strong> -- EPIC-HR 在 Delta 时期纳入未接种疫苗的高危患者，住院/死亡 HR = 0.13（相对风险降低 87%）。但真实世界中 Omicron 时期已接种患者的获益幅度显著缩小（多项研究 VE 约 40-60%），因为基线风险本身已大幅降低</li>
+      <li><strong>分层分析</strong> -- 治疗效果 Meta 分析应按疫苗接种状态（未接种 / 2 剂 / 3 剂+）分层</li>
+    </ul>
+
+    <h3>研究设计混杂</h3>
+    <p>COVID-19 领域同时存在大量 RCT 和观察性研究，两者的合并需要谨慎处理：</p>
+    <ul>
+      <li><strong>RCT</strong> -- 偏倚风险低，但样本量可能有限，且研究时期常落后于疫情演变</li>
+      <li><strong>观察性研究</strong> -- 样本量大、反映真实世界、覆盖最新变异株，但存在选择偏倚、混杂等问题</li>
+      <li><strong>处理建议</strong> -- 主要分析仅纳入 RCT；如纳入观察性研究，应分层分析并在讨论中明确说明。GRADE 评估中 RCT 起始于"高"证据质量，观察性研究起始于"低"</li>
+    </ul>
+
+    <h3>地区医疗资源差异</h3>
+    <ul>
+      <li>高收入国家与低收入国家的 ICU 救治能力、氧气供应、医护比直接影响死亡率基线水平</li>
+      <li>不同国家的治疗方案和给药时间不同（如地塞米松在 RECOVERY 中的早期使用 vs 某些国家的延迟使用）</li>
+      <li>COVID-19 检测能力差异导致确诊标准和病例严重度分布不同</li>
+    </ul>
+
+    <h3>I-squared 的 COVID 语境解读</h3>
+    <ul>
+      <li><strong>疫苗效力（同一变异株时期）</strong> -- I&sup2; 通常为 30-60%，反映不同研究设计和人群特征的差异</li>
+      <li><strong>疫苗效力（跨变异株）</strong> -- I&sup2; 极高（80-95%），因为不同变异株时期 VE 差异巨大，此时合并所有数据可能毫无意义</li>
+      <li><strong>地塞米松降低死亡率</strong> -- I&sup2; 通常较低（0-30%），因为 RECOVERY 贡献了大部分权重，且机制明确</li>
+      <li><strong>抗病毒药疗效（跨变异株和接种状态）</strong> -- I&sup2; 中等偏高（40-70%），主要来源于基线风险差异</li>
+    </ul>
+    <div class="tip">COVID-19 Meta 分析中，高 I&sup2; 不一定是方法学问题，更常反映的是病毒、人群和医疗背景的真实演变。面对高 I&sup2;，首先检查是否因跨变异株合并导致，如果是，则应按变异株分层而非追求合并一个总效应量。</div>
+  </div>
+
+  <!-- Section 6: Subgroup analysis -->
+  <div class="section" id="subgroup">
+    <h2>亚组分析策略</h2>
+    <p>COVID-19 Meta 分析的亚组分析具有直接的政策转化价值。它回答的是"哪种疫苗对哪个人群在哪个变异株时期最有效""哪些患者从 Paxlovid 中获益最大"等具体临床和公共卫生问题。与其他疾病领域不同，COVID-19 的亚组变量中有一个维度是时间动态的——变异株类型。</p>
+
+    <h3>核心亚组变量</h3>
+    <table class="data-table">
+      <tr><th>亚组变量</th><th>分组方式</th><th>临床/政策意义</th></tr>
+      <tr><td>病毒变异株</td><td>原始株 vs Alpha vs Delta vs Omicron（BA.1/BA.2/BA.5/XBB）</td><td>决定疫苗更新策略和治疗方案调整</td></tr>
+      <tr><td>疫苗类型</td><td>mRNA vs 灭活 vs 腺病毒载体 vs 蛋白亚单位</td><td>指导不同国家/地区的疫苗选择</td></tr>
+      <tr><td>疾病严重度</td><td>轻/中症（门诊）vs 重症（住院需氧）vs 危重（有创通气/ECMO）</td><td>不同严重度对应完全不同的治疗策略（如地塞米松仅用于需氧患者）</td></tr>
+      <tr><td>年龄</td><td>&ge;65 岁 vs 18-64 岁 vs &lt;18 岁（儿童/青少年）</td><td>老年人重症风险高但疫苗免疫应答可能弱；儿童风险低但心肌炎风险需关注</td></tr>
+      <tr><td>基础疾病</td><td>糖尿病 / 肥胖 / 心血管病 / 慢性肺病 / 免疫抑制</td><td>高危人群的治疗优先级和加强针策略</td></tr>
+      <tr><td>接种剂次</td><td>未接种 vs 2 剂基础免疫 vs 3 剂（加强针）vs 4 剂+</td><td>决定加强针策略和混合接种方案</td></tr>
+      <tr><td>距末次接种时间</td><td>&lt;3 个月 vs 3-6 个月 vs &gt;6 个月</td><td>评估免疫衰减（waning immunity），指导加强针间隔</td></tr>
+      <tr><td>研究设计</td><td>RCT vs 观察性研究（队列/test-negative design）</td><td>评估不同设计类型的效应量一致性</td></tr>
+      <tr><td>混合接种方案</td><td>同源接种（homologous）vs 异源接种（heterologous prime-boost）</td><td>指导混合接种策略（如灭活 + mRNA 加强）</td></tr>
+    </table>
+
+    <h3>变异株亚组分析的特殊处理</h3>
+    <p>变异株是 COVID-19 Meta 分析中最核心但也最难处理的亚组变量：</p>
+    <ol>
+      <li><strong>确定研究对应的主要变异株</strong> -- 根据研究时期和地区，对照全球基因组监测数据（GISAID）确定当时主要流行的变异株。多数研究并不直接报告所有纳入患者的基因测序结果</li>
+      <li><strong>处理过渡时期</strong> -- 变异株替代不是瞬间发生的，Delta 向 Omicron 过渡期间两株共存，此时期的研究应标注为"混合"或排除</li>
+      <li><strong>Meta-regression</strong> -- 以研究中期日期或该时期的主要变异株占比作为连续/分类协变量</li>
+      <li><strong>网络 Meta 分析</strong> -- 当比较多种疫苗在不同变异株时期的效力时，可考虑使用 NMA 框架</li>
+    </ol>
+
+    <h3>疾病严重度亚组的临床转化</h3>
+    <p>COVID-19 治疗的核心原则是"分级分层治疗"，Meta 分析的亚组结果直接指导这一决策：</p>
+    <ul>
+      <li><strong>轻/中症门诊患者</strong> -- Paxlovid（高危人群 NNT 约 18-22）、Molnupiravir（NNT 约 33）有效；地塞米松无效甚至有害</li>
+      <li><strong>住院需氧患者</strong> -- 地塞米松（NNT 约 25）、瑞德西韦、托珠单抗（联合激素）有效；Paxlovid 获益不确定</li>
+      <li><strong>危重症（有创通气）</strong> -- 地塞米松有效；托珠单抗/巴瑞替尼获益证据一致性较弱</li>
+    </ul>
+
+    <div class="warn">亚组分析的多重比较问题在 COVID-19 Meta 分析中尤为突出：变异株 x 疫苗类型 x 剂次 x 年龄 = 数十个亚组。必须严格控制预设亚组数量（建议不超过 5-6 个核心变量），对所有亚组进行交互检验（p<sub>interaction</sub>），并在结果报告中区分"预设分析"和"探索性分析"。</div>
+
+    <div class="tip">MetaReview 支持自定义亚组分析，自动计算每个亚组的合并效应量和 p<sub>interaction</sub>，并在森林图中按亚组分层展示。你可以按变异株时期或疫苗类型快速生成分层森林图，直观呈现不同亚组间的效应差异。</div>
+  </div>
+
+  <!-- Section 7: Publication bias and evidence quality -->
+  <div class="section" id="bias">
+    <h2>发表偏倚与证据质量</h2>
+    <p>COVID-19 领域的发表偏倚和证据质量问题具有独特的复杂性。一方面，疫情的公共卫生紧迫性推动了前所未有的研究透明度（大型平台试验的快速发布、预印本的广泛使用）；另一方面，政治压力、商业利益、信息疫情（infodemic）和学术不端也带来了严重的证据污染。</p>
+
+    <h3>COVID-19 领域特殊的偏倚来源</h3>
+    <ul>
+      <li><strong>政治压力与选择性报告</strong> -- 疫情期间，部分国家对疫苗和治疗数据的透明度存在争议。某些国家的疫苗临床试验数据公开程度有限，影响独立验证</li>
+      <li><strong>药企资助偏倚</strong> -- 疫苗和抗病毒药的关键 RCT 均由制造商资助和执行。虽然这是药物开发的常态，但在高度政治化的 COVID-19 语境中，独立验证（如 CDC/UKHSA 的真实世界数据）尤为重要</li>
+      <li><strong>预印本的质量风险</strong> -- 未经同行评审的研究可能存在数据错误或方法学缺陷。Surgisphere 事件（基于伪造数据的羟氯喹/氯喹研究发表在 Lancet 和 NEJM 后被撤回）是最著名的案例</li>
+      <li><strong>研究快速过时</strong> -- 变异株更替导致早期研究结论可能不再适用于当前流行株。一篇 2021 年发表的 Delta 时期疫苗效力 Meta 分析，其结论在 Omicron 出现后几乎完全失效</li>
+      <li><strong>"伊维菌素效应"</strong> -- 大量低质量研究（包括疑似数据造假的试验）支持某些无效治疗，如果不加甄别地纳入会污染 Meta 分析结论</li>
+    </ul>
+
+    <h3>评估方法</h3>
+    <table class="data-table">
+      <tr><th>方法</th><th>适用条件</th><th>COVID 语境注意事项</th></tr>
+      <tr><td>漏斗图</td><td>纳入 &ge;10 篇研究</td><td>COVID 治疗 Meta 分析通常满足这一条件</td></tr>
+      <tr><td>Egger 检验</td><td>连续型效应量</td><td>结合漏斗图使用，注意小样本研究过多时检验效力下降</td></tr>
+      <tr><td>Trim-and-fill 法</td><td>漏斗图不对称时</td><td>估计潜在"缺失"研究数量并调整合并效应量</td></tr>
+      <tr><td>ClinicalTrials.gov 交叉检索</td><td>任何 Meta 分析</td><td>特别重要——检索已注册但未发表结果的 COVID RCT</td></tr>
+      <tr><td>PROSPERO 检索</td><td>检查同一主题是否有已注册的系统综述</td><td>COVID-19 相关 PROSPERO 注册超过 6000 条</td></tr>
+    </table>
+
+    <h3>GRADE 评估中的 COVID 特殊考量</h3>
+    <p>使用 GRADE 框架评估 COVID-19 证据质量时，需要特别关注以下降级因素：</p>
+    <table class="data-table">
+      <tr><th>GRADE 维度</th><th>COVID-19 特殊考量</th><th>降级可能性</th></tr>
+      <tr><td>偏倚风险</td><td>大型平台试验（RECOVERY、SOLIDARITY）偏倚风险低；小型单中心试验和预印本偏倚风险高</td><td>根据具体研究评估</td></tr>
+      <tr><td>不一致性</td><td>跨变异株研究间效应量差异大是预期中的不一致性，不应机械降级</td><td>同一变异株时期内不一致性才应降级</td></tr>
+      <tr><td>间接性</td><td>核心问题——RCT 的变异株/接种背景可能已不同于当前临床实践</td><td>经常需要降级</td></tr>
+      <tr><td>不精确性</td><td>大型平台试验通常精确性足够；但亚组分析（如特定变异株+特定疫苗类型）可能样本量不足</td><td>亚组分析常需降级</td></tr>
+      <tr><td>发表偏倚</td><td>大型 RCT 无论阳性/阴性结果都会发表；小型研究可能存在偏倚</td><td>视研究类型而定</td></tr>
+    </table>
+
+    <div class="tip">COVID-19 GRADE 评估中最重要的降级因素往往是"间接性"——因为病毒变异株的快速更替，一项在 Delta 时期完成的 RCT 对 Omicron 时期的指导价值存在明显的间接性限制。这是传统 GRADE 框架在应对快速演化疾病时面临的独特挑战。WHO 和 Cochrane 建议在评估间接性时，明确考虑"研究所处流行时期与当前临床实践的时间距离"。</div>
+  </div>
+
+  <!-- Section 8: Classic cases -->
+  <div class="section" id="cases">
+    <h2>经典案例解析</h2>
+    <p>以下是 COVID-19 领域具有里程碑意义的临床试验。它们不仅改变了全球治疗指南，也构成了 COVID-19 Meta 分析的核心数据来源。理解每项试验的设计特点、关键结果和在 Meta 分析中的特殊处理需求，是开展高质量 COVID-19 荟萃分析的基础。</p>
+
+    <h3>案例 1：RECOVERY -- 地塞米松改写 COVID-19 治疗史</h3>
+    <p><strong>试验背景</strong>：RECOVERY（Randomised Evaluation of COVID-19 Therapy）是全球最大的 COVID-19 治疗平台试验，由英国牛津大学协调，累计随机化超过 47,000 例住院患者。地塞米松臂是其最具里程碑意义的发现之一。</p>
+    <ul>
+      <li><strong>设计</strong>：开放标签、随机对照，地塞米松 6mg/天 x 10 天 vs 标准治疗，纳入 6,425 例住院患者（2,104 例地塞米松 vs 4,321 例标准治疗）</li>
+      <li><strong>主要终点</strong>：28 天全因死亡率</li>
+      <li><strong>核心结果</strong>：总人群 RR = 0.83 (95% CI: 0.75-0.93, p &lt; 0.001)</li>
+      <li><strong>关键亚组</strong>：有创通气患者 RR = 0.64 (95% CI: 0.51-0.81)；仅需氧患者 RR = 0.82 (95% CI: 0.72-0.94)；不需氧患者 RR = 1.19 (95% CI: 0.92-1.55, 无获益甚至可能有害)</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：RECOVERY 的地塞米松数据与 WHO REACT 工作组的 Meta 分析完美互补。后者合并了 7 项 RCT（RECOVERY + 6 项其他试验）共 1,703 例危重患者，证实全身糖皮质激素降低 28 天死亡率（OR 0.66, 95% CI: 0.53-0.82）。这一 Meta 分析直接导致 WHO 将地塞米松列为 COVID-19 重症/危重症的强推荐治疗。注意：地塞米松在不需氧患者中可能有害这一亚组发现，需在 Meta 分析中按疾病严重度分层。</p>
+
+    <h3>案例 2：BNT162b2 III 期试验 -- mRNA 疫苗的时代开端</h3>
+    <p><strong>试验背景</strong>：辉瑞-BioNTech 的 BNT162b2（Comirnaty）III 期试验（C4591001）是全球首个报告结果的 COVID-19 疫苗 RCT，纳入 43,548 名 &ge;16 岁受试者。</p>
+    <ul>
+      <li><strong>设计</strong>：双盲、安慰剂对照、1:1 随机，BNT162b2 30&mu;g 两剂（间隔 21 天）vs 安慰剂</li>
+      <li><strong>主要终点</strong>：第二剂后 &ge;7 天的有症状 COVID-19（确诊后首次发作）</li>
+      <li><strong>核心结果</strong>：VE = 95.0% (95% CI: 90.3%-97.6%)，接种组 8 例 vs 安慰剂组 162 例</li>
+      <li><strong>亚组结果</strong>：&ge;65 岁 VE = 94.7%；不同种族、性别、BMI 亚组 VE 一致高（&ge;90%）</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：BNT162b2 III 期数据是所有 mRNA 疫苗 VE Meta 分析的起始数据点。与 mRNA-1273（Moderna，VE 94.1%）和 ChAdOx1 nCoV-19（AstraZeneca，VE 70.4%）合并分析时，可评估不同疫苗平台的效力差异。但注意：III 期试验在原始株流行期进行，其 VE 数据已不直接适用于 Omicron 时期。后续大量真实世界研究（以色列 Clalit、英国 UKHSA、美国 CDC VISION 网络）提供了不同变异株时期的 VE 更新数据。</p>
+
+    <h3>案例 3：EPIC-HR -- Paxlovid 的关键证据</h3>
+    <p><strong>试验背景</strong>：EPIC-HR（Evaluation of Protease Inhibition for COVID-19 in High-Risk Patients）是奈玛特韦/利托那韦（Paxlovid）的注册试验，在 Delta/Omicron 过渡期进行。</p>
+    <ul>
+      <li><strong>设计</strong>：双盲、安慰剂对照 RCT，纳入 2,246 例未接种疫苗的高危门诊成人（症状发作 &le;5 天）</li>
+      <li><strong>主要终点</strong>：28 天内住院或全因死亡</li>
+      <li><strong>核心结果（最终分析）</strong>：住院/死亡 0.72% vs 6.45%，相对风险降低 88.9%（p &lt; 0.001）</li>
+      <li><strong>病毒学终点</strong>：第 5 天病毒载量下降 0.87 log<sub>10</sub> copies/mL（vs 安慰剂）</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：EPIC-HR 是 Paxlovid 获 EUA 的核心数据，但其外推性面临挑战：（1）仅纳入未接种疫苗的患者，而实际使用人群大多已接种；（2）以 Delta 为主（约 70% Delta，30% 其他变异株包括早期 Omicron），Omicron 时期的疗效可能不同。多项真实世界研究（如 Arbel 2022 NEJM、Wong 2022 Lancet）在 Omicron 时期已接种人群中验证了 Paxlovid 的有效性，但获益幅度小于 EPIC-HR。Meta 分析中需按疫苗接种状态和变异株分层。</p>
+
+    <h3>案例 4：托珠单抗 -- REMAP-CAP 与 RECOVERY 的互补</h3>
+    <p><strong>试验背景</strong>：托珠单抗（IL-6 受体拮抗剂）的疗效证据主要来自两项大型试验。</p>
+    <ul>
+      <li><strong>REMAP-CAP 免疫调节域</strong>：自适应平台试验，纳入 353 例 ICU 危重患者。托珠单抗组 28 天器官支持无存活天数中位 10 天 vs 对照组 0 天（aOR 1.64, 95% CrI: 1.25-2.14），住院死亡率 28.0% vs 35.8%</li>
+      <li><strong>RECOVERY 托珠单抗臂</strong>：4,116 例住院患者（低氧 + CRP &ge;75 mg/L）。28 天死亡率 31% vs 35%（RR 0.85, 95% CI: 0.76-0.94），机械通气率降低</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：WHO REACT 工作组的 IL-6 受体拮抗剂 Meta 分析合并了 27 项 RCT 共 10,930 例患者，证实托珠单抗降低 28 天全因死亡率（OR 0.86, 95% CI: 0.79-0.95），联合糖皮质激素时获益更显著。关键方法学要点：托珠单抗的获益与是否同时使用激素密切相关（早期试验未联合激素，疗效不显著；REMAP-CAP 和 RECOVERY 中 &gt;80% 联合使用激素，疗效显著），Meta 分析中按激素联用状态分层是关键的预设亚组。</p>
+
+    <h3>案例 5：WHO SOLIDARITY -- 全球最大的 COVID-19 治疗平台试验</h3>
+    <p><strong>试验背景</strong>：SOLIDARITY 是 WHO 主导的全球多中心平台试验，在 30 个国家的 405 家医院中纳入超过 15,000 例住院患者，评估瑞德西韦、羟氯喹、洛匹那韦/利托那韦和干扰素的疗效。</p>
+    <ul>
+      <li><strong>瑞德西韦</strong>：28 天死亡率 RR = 0.95 (95% CI: 0.81-1.11, p = 0.50) -- 无显著降低死亡率</li>
+      <li><strong>羟氯喹</strong>：RR = 1.19 (95% CI: 0.89-1.59) -- 无效</li>
+      <li><strong>洛匹那韦/利托那韦</strong>：RR = 1.00 (95% CI: 0.79-1.25) -- 无效</li>
+      <li><strong>干扰素</strong>：RR = 1.16 (95% CI: 0.96-1.39) -- 无效</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：SOLIDARITY 的瑞德西韦结论与 ACTT-1（缩短恢复时间但未降低死亡率）和 WHO Meta 分析（瑞德西韦对死亡率无显著影响）一致。羟氯喹和洛匹那韦的阴性结果终结了两场持续数月的全球争论。SOLIDARITY 因其样本量大和全球多中心设计，在 Meta 分析中对合并效应量的影响权重极大，需注意评估单一大型试验对合并结论的主导效应（通过逐一剔除敏感性分析）。</p>
+
+    <div class="warn">引用 COVID-19 经典试验时需特别注意：（1）标注试验进行时期对应的主要变异株——这决定了结论的时效性和外推性；（2）开放标签试验（如 RECOVERY）的主观终点结论需谨慎解读，客观终点（死亡率）更可靠；（3）EUA（紧急使用授权）试验的中期分析结果可能因提前揭盲而存在效应量高估。</div>
+  </div>
+
+  <!-- Section 9: Tool practice -->
+  <div class="section" id="tool">
+    <h2>用 MetaReview 5 分钟完成 COVID Meta 分析</h2>
+    <p>以"地塞米松降低 COVID-19 住院患者 28 天死亡率"为例，演示在 MetaReview 中完成一次 COVID-19 治疗 Meta 分析的全过程。</p>
+
+    <h3>第 1 步：准备数据</h3>
+    <p>从 WHO REACT 工作组 Meta 分析和原始试验中提取以下糖皮质激素 RCT 数据（28 天全因死亡率 OR）：</p>
+    <table class="data-table">
+      <tr><th>研究</th><th>药物</th><th>样本量</th><th>OR (死亡)</th><th>95% CI</th></tr>
+      <tr><td>RECOVERY (2020)</td><td>地塞米松 6mg/d</td><td>6425</td><td>0.83</td><td>0.75 - 0.93</td></tr>
+      <tr><td>CoDEX (2020)</td><td>地塞米松 20mg/d x5 + 10mg/d x5</td><td>299</td><td>0.77</td><td>0.46 - 1.28</td></tr>
+      <tr><td>REMAP-CAP Corticosteroid (2020)</td><td>氢化可的松</td><td>403</td><td>0.69</td><td>0.43 - 1.12</td></tr>
+      <tr><td>CAPE COVID (2020)</td><td>氢化可的松</td><td>149</td><td>0.65</td><td>0.29 - 1.48</td></tr>
+      <tr><td>Steroids-SARI (2020)</td><td>甲泼尼龙</td><td>47</td><td>0.91</td><td>0.29 - 2.87</td></tr>
+      <tr><td>COVID STEROID (2020)</td><td>氢化可的松</td><td>30</td><td>0.38</td><td>0.08 - 1.90</td></tr>
+      <tr><td>DEXA-COVID 19 (2020)</td><td>地塞米松</td><td>12</td><td>0.20</td><td>0.01 - 4.30</td></tr>
+    </table>
+
+    <h3>第 2 步：打开 MetaReview 并输入数据</h3>
+    <ol>
+      <li>访问 MetaReview 主页，效应量类型选择 <strong>Odds Ratio</strong></li>
+      <li>逐行输入：Study（研究名称+年份）、OR、CI Lower、CI Upper</li>
+      <li>MetaReview 自动完成 log(OR) 变换和标准误计算</li>
+    </ol>
+
+    <h3>第 3 步：选择模型并运行分析</h3>
+    <ol>
+      <li>选择<strong>固定效应模型</strong>（各试验使用不同糖皮质激素但机制相似，且 RECOVERY 权重占主导）或<strong>随机效应模型</strong>（考虑药物和剂量差异）</li>
+      <li>点击 <strong>Run Meta-Analysis</strong></li>
+      <li>预期结果：合并 OR 约 0.66 (95% CI: 0.53-0.82)，表明糖皮质激素降低 COVID-19 重症患者死亡风险约 34%</li>
+    </ol>
+
+    <h3>第 4 步：生成森林图并解读</h3>
+    <ol>
+      <li>MetaReview 自动生成<strong>森林图</strong>，RECOVERY 的方块最大（权重最高），小型试验的置信区间很宽</li>
+      <li>查看异质性统计量 -- I&sup2; 预期很低（&lt;10%），因为各试验效应方向一致</li>
+      <li>切换到<strong>漏斗图</strong> -- 7 项研究的漏斗图较为对称</li>
+    </ol>
+
+    <h3>第 5 步：敏感性分析</h3>
+    <ol>
+      <li><strong>逐一剔除</strong>：排除 RECOVERY 后合并 OR 是否仍显著？（检验 RECOVERY 是否主导了结论）</li>
+      <li><strong>固定 vs 随机效应对比</strong>：两种模型结果差异小说明异质性不影响结论</li>
+      <li><strong>仅保留地塞米松研究</strong>：评估地塞米松单独的效应量（排除氢化可的松和甲泼尼龙）</li>
+    </ol>
+
+    <div class="tip">整个流程从数据输入到森林图和敏感性分析完成只需约 5 分钟。如果你正在做 COVID-19 疫苗效力的 Meta 分析，将效应量类型切换为 Risk Ratio，输入 RR 和 95% CI，合并后将 1 - pooled RR 转换为 VE 即可。MetaReview 所有计算在浏览器本地完成，不上传任何数据。</div>
+  </div>
+
+  <div class="cta">
+    <h2>开始你的 COVID-19 Meta 分析</h2>
+    <p>MetaReview 支持 VE(RR)、OR、HR、MD 等全部效应量，从数据输入到森林图只需 5 分钟。免费、无需安装、无需编程。</p>
+    <a href="/">打开 MetaReview</a>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:18px;color:#1e40af;margin:0 0 8px">获取更新通知</h3>
+    <p style="font-size:14px;color:#64748b;margin:0 0 16px">留下邮箱，第一时间获取新功能通知和 Meta 分析技巧。</p>
+    <form id="email-form" style="display:flex;gap:8px;max-width:400px;margin:0 auto">
+      <input id="email-input" type="email" placeholder="输入邮箱地址" required style="flex:1;padding:10px 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;outline:none;">
+      <button type="submit" style="background:#1e40af;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;white-space:nowrap;">订阅</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:8px 12px;border-radius:6px;font-size:14px;"></div>
+    <p style="font-size:12px;color:#94a3b8;margin:8px 0 0">我们不会发送垃圾邮件，随时可退订。</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='提交中...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-covid',lang:'zh'})})
+    .then(r=>r.json()).then(d=>{msg.style.display='block';if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'你已经订阅过了！':'订阅成功！我们会在有新功能时通知你。';document.getElementById('email-form').style.display='none';}else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='请输入有效的邮箱地址。';btn.textContent='订阅';btn.disabled=false;}}).catch(()=>{msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='提交失败，请稍后重试。';btn.textContent='订阅';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="faq" id="faq">
+    <h2>常见问题</h2>
+
+    <h3>COVID-19 疫苗效力的 Meta 分析应该用什么效应量？</h3>
+    <p>疫苗效力（VE）的标准公式是 VE = 1 - RR（或 1 - HR）。RCT 中通常使用 1 - HR 或 1 - IRR，观察性研究（test-negative design）中通常使用 1 - OR。Meta 分析合并时必须在 RR 或 HR 尺度上进行合并（即合并 log(RR) 或 log(HR)），再将合并结果转换为 VE。不能直接合并 VE 百分比值。不同研究设计（RCT vs 观察性）的效应量应分层分析。</p>
+
+    <h3>COVID Meta 分析中如何处理病毒变异株导致的异质性？</h3>
+    <p>变异株差异是 COVID-19 Meta 分析最独特的异质性来源。应在数据提取阶段记录每项研究的主要流行变异株，按变异株时期进行预设亚组分析。对疫苗效力研究，不同变异株时期的 VE 差异通常非常大（如 mRNA 疫苗对原始株 VE 95% vs 对 Omicron 约 30-40%），合并所有变异株数据可能毫无临床意义。</p>
+
+    <h3>COVID-19 Meta 分析是否应该纳入预印本？</h3>
+    <p>这是最具争议的方法学问题。推荐做法：主要分析仅纳入同行评审发表文献，在预设敏感性分析中加入预印本数据，检验其对结论的影响。如果影响显著，需在讨论中详细说明。注意部分 COVID-19 预印本后来被撤回或数据大幅修正。</p>
+
+    <h3>Paxlovid 的 Meta 分析有什么特殊考量？</h3>
+    <p>Paxlovid Meta 分析的核心挑战是外推性：关键 RCT（EPIC-HR）在 Delta 时期纳入未接种疫苗的高危患者（住院/死亡相对风险降低 89%），而真实世界使用主要在 Omicron 时期且大多数患者已接种疫苗，获益幅度显著缩小。需按疫苗接种状态和变异株时期分层分析，并注意 Paxlovid 反弹现象和药物相互作用对研究人群的影响。</p>
+
+    <h3>如何做灭活疫苗与 mRNA 疫苗的比较 Meta 分析？</h3>
+    <p>两类疫苗缺乏头对头 RCT，需使用网络 Meta 分析或间接比较。关键挑战包括：试验在不同国家/不同变异株时期进行，地区医疗资源差异是重要混杂因素。建议利用同一地区同时使用两类疫苗的大规模队列数据（如智利、巴西）进行头对头比较。</p>
+
+    <h3>Long COVID 的 Meta 分析有什么特殊挑战？</h3>
+    <p>Long COVID Meta 分析面临多重挑战：定义不统一（WHO 12 周 vs 研究自定义 4-8 周）、症状谱极广（200+ 种症状）、对照组定义困难、选择偏倚严重（住院 vs 社区人群 Long COVID 发生率从 10% 到 80%）。建议按具体症状（疲劳、认知障碍、呼吸困难）分别进行 Meta 分析，而非合并为单一终点。</p>
+
+    <h3>MetaReview 能做 COVID-19 相关的 Meta 分析吗？</h3>
+    <p>完全可以。MetaReview 支持 COVID-19 Meta 分析所需的全部功能：RR/HR 用于疫苗效力分析（VE = 1 - RR），OR 用于治疗死亡率和住院率，MD/SMD 用于病毒载量和症状评分等连续终点。提供固定效应和随机效应模型，自动生成森林图和漏斗图，支持按变异株、疫苗类型、疾病严重度进行亚组分析。免费使用，无需安装，无需编程。</p>
+  </div>
+
+  <div class="related">
+    <h2>相关指南</h2>
+    <ul>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤：从研究问题到发表的全流程指南</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图怎么画？在线生成森林图完全指南（免费工具）</a></li>
+      <li><a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 流程图：在线制作模板与填写指南</a></li>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析：HR 的提取、计算与解读指南</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta 分析软件对比：MetaReview vs RevMan vs R vs Stata</a></li>
+      <li><a href="/guides/tumor-meta-analysis">肿瘤 Meta 分析完整指南</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">心血管 Meta 分析完整指南</a></li>
+      <li><a href="/guides/diabetes-meta-analysis">糖尿病 Meta 分析完整指南</a></li>
+      <li><a href="/guides/how-to-meta-analysis">如何做 Meta 分析？新手入门完全指南</a></li>
+      <li><a href="/guides/free-forest-plot-generator">Free Forest Plot Generator: Create Publication-Ready Plots Online</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis">精神科 Meta 分析完整指南</a></li>
+      <li><a href="/guides/free-funnel-plot-maker">Free Funnel Plot Maker: Detect Publication Bias Online</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> — 免费在线 Meta 分析工具</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

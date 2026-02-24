@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>精神科 Meta 分析完整指南：从量表选择到药物疗效的循证综合方法 | MetaReview</title>
+  <meta name="description" content="精神科 Meta 分析怎么做？本文详解精神科荟萃分析全流程：抑郁症/焦虑症/精神分裂症量表选择、SSRI/SNRI 效应量计算、安慰剂效应处理、网络 Meta 分析（NMA）经典案例、发表偏倚评估。附免费在线工具和 Cipriani 2018 Lancet 案例解读。" />
+  <meta name="keywords" content="精神科meta分析, 精神科荟萃分析, 抑郁症meta分析, 焦虑症meta分析, 精神分裂症meta分析, psychiatry meta-analysis, 抗抑郁药meta分析, 心理治疗meta分析, SSRI meta分析" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/psychiatric-meta-analysis" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/psychiatric-meta-analysis" />
+  <meta property="og:title" content="精神科 Meta 分析完整指南：从量表选择到药物疗效的循证综合方法" />
+  <meta property="og:description" content="精神科荟萃分析怎么做？HAMD/MADRS/PANSS 量表处理、SMD 核心地位、安慰剂效应控制、网络 Meta 分析案例、发表偏倚重灾区。附免费在线工具。" />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "精神科 Meta 分析完整流程：从研究设计到发表",
+    "description": "详解精神科领域 Meta 分析的全流程指南，涵盖 PICO 框架、量表选择与转换、SMD 效应量计算、安慰剂效应处理、异质性分析、网络 Meta 分析、发表偏倚评估和工具实战。",
+    "totalTime": "PT45M",
+    "tool": {
+      "@type": "HowToTool",
+      "name": "MetaReview 免费在线 Meta 分析工具"
+    },
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "用 PICO 框架定义精神科研究问题", "text": "使用 PICO 框架定义精神科 Meta 分析的研究问题。P 为特定精神障碍人群（MDD、GAD、精神分裂症、双相障碍、PTSD、OCD、ADHD），I 为目标干预（SSRIs、SNRIs、非典型抗精神病药、CBT、IPT、EMDR），C 为安慰剂、活性对照或等待名单，O 为量表评分变化（HAMD、MADRS、PANSS、Y-BOCS）、缓解率、响应率、脱落率和不良反应。"},
+      {"@type": "HowToStep", "position": 2, "name": "制定文献检索策略", "text": "在 PubMed、Embase、Cochrane Library、PsycINFO 和 ClinicalTrials.gov 中检索。使用 MeSH 主题词（如 Depressive Disorder Major、Antidepressive Agents）结合自由词（SSRI、cognitive behavioral therapy），检索 APA 和 ECNP 会议摘要获取最新数据。特别关注 FDA 审批档案中的未发表试验数据。"},
+      {"@type": "HowToStep", "position": 3, "name": "选择合适的效应量", "text": "精神科 Meta 分析的核心效应量是标准化均数差（SMD/Hedges' g），因为不同试验使用不同量表（HAMD-17 vs MADRS vs PHQ-9）。二分类结局（缓解率、响应率）使用 OR 或 RR，可转换为 NNT 增强临床可解读性。时间至复发使用 HR。"},
+      {"@type": "HowToStep", "position": 4, "name": "处理量表差异与测量问题", "text": "统一量表版本（HAMD-17 vs HAMD-21），区分患者自评（PHQ-9、BDI）和医生他评（HAMD、MADRS），评估评定者间信度。注意基线严重度对效应量的影响（Kirsch 2008 争议），必要时进行基线严重度的 Meta-regression。"},
+      {"@type": "HowToStep", "position": 5, "name": "分析异质性来源", "text": "精神科 Meta 分析的异质性来源包括：安慰剂响应率变异（30-50%）、诊断标准差异（DSM-IV vs DSM-5 vs ICD-10）、合并症（焦虑+抑郁）、治疗持续时间和剂量差异、发表年代效应。使用 I-squared、Q 检验和 tau-squared 评估，通过亚组分析和 Meta-regression 解释。"},
+      {"@type": "HowToStep", "position": 6, "name": "执行亚组与网络 Meta 分析", "text": "按药物类别（SSRI vs SNRI vs TCA vs 非典型）、严重度（轻/中/重度）、年龄（儿童青少年 vs 成人 vs 老年）、治疗模式（单药 vs 联合）进行亚组分析。精神科是网络 Meta 分析（NMA）应用最广泛的领域，Cipriani 2018 Lancet 比较 21 种抗抑郁药是经典范例。"},
+      {"@type": "HowToStep", "position": 7, "name": "评估发表偏倚", "text": "精神科是发表偏倚的重灾区。Turner 2008 NEJM 研究揭示 FDA 注册的 74 项抗抑郁药试验中，阳性结果几乎全部发表（37/38），而阴性结果仅 3/36 如实发表。必须检索 FDA 审批数据、ClinicalTrials.gov，使用漏斗图、Egger 检验和 Trim-and-fill 法评估。"},
+      {"@type": "HowToStep", "position": 8, "name": "按 PRISMA 2020 撰写报告", "text": "结果部分包括 PRISMA 流程图、纳入研究特征表、森林图（按量表或药物分层）、漏斗图和亚组分析。讨论部分结合 GRADE 框架评估证据质量，将 SMD 转换为临床可解释指标（HAMD 分数变化、NNT），对比最新临床指南推荐。"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "精神科 Meta 分析为什么首选标准化均数差（SMD）而不是均数差（MD）？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "精神科 Meta 分析中不同试验经常使用不同的评定量表。例如抑郁症试验可能使用 HAMD-17（0-52 分）、HAMD-21（0-64 分）、MADRS（0-60 分）或 PHQ-9（0-27 分），这些量表的分数范围和单位完全不同，无法直接用均数差（MD）合并。标准化均数差（SMD）通过将每项研究的效应量除以其标准差来消除量表差异，使不同量表的研究可以在同一尺度上合并。推荐使用 Hedges' g 而非 Cohen's d，因为 Hedges' g 对小样本研究进行了校正，更适合精神科常见的中小样本 RCT。SMD 的解读标准：0.2 为小效应，0.5 为中效应，0.8 为大效应。多数抗抑郁药 vs 安慰剂的 SMD 在 0.3 左右。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "精神科 Meta 分析中安慰剂效应为什么这么大？如何处理？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "精神科疾病（尤其是抑郁症和焦虑症）的安慰剂响应率异常高（30-50%），远高于大多数躯体疾病。原因包括：（1）精神科评定依赖主观量表，期望效应强；（2）临床试验中的额外关注和定期随访本身具有治疗作用；（3）均值回归效应——患者往往在症状最严重时入组；（4）自然波动和自愈趋势。处理方法：始终以安慰剂校正后的效应量（drug-placebo difference）进行分析；在 Meta-regression 中将安慰剂组响应率作为协变量；按试验发表年代分层（近年试验安慰剂响应率更高）；注意安慰剂对照和等待名单对照的区别（等待名单组没有安慰剂效应，效应量会更大）。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "HAMD-17、HAMD-21 和 MADRS 在 Meta 分析中如何统一处理？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "三种量表的处理策略：（1）首选方案：使用 SMD（Hedges' g），将所有量表标准化后合并，这是最简洁的方法；（2）次选方案：选择报告最多的量表（通常是 HAMD-17）作为主要分析，其他量表的研究在敏感性分析中处理；（3）转换方案：使用已发表的量表对应关系（如 Leucht 2013 提出的 HAMD-MADRS 转换公式）将不同量表转换为同一量表后用 MD 合并。注意 HAMD-17 和 HAMD-21 虽然都是 HAMD，但总分范围不同（52 vs 64），不能直接以 MD 合并。如果仅关注 HAMD-17 的前 17 项，两者可兼容。在方法部分必须明确说明量表统一策略。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "什么是网络 Meta 分析（NMA），为什么精神科特别需要？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "网络 Meta 分析（Network Meta-Analysis, NMA）可以同时比较多种干预措施，即使它们之间没有直接的头对头试验。精神科特别需要 NMA 的原因：（1）同类药物众多——仅 SSRI 就有氟西汀、舍曲林、帕罗西汀、西酞普兰、艾司西酞普兰、氟伏沙明 6 种，加上 SNRI、TCA、非典型抗抑郁药等共 20+ 种，两两头对头试验不现实；（2）临床决策需要排名——医生需要知道哪种药物疗效最好、耐受性最佳；（3）经典范例引领——Cipriani 2018 在 Lancet 发表的 21 种抗抑郁药 NMA（522 项 RCT，116,477 例患者）被引用超过 5000 次，证明了 NMA 在精神科的巨大价值。NMA 需要满足一致性假设（consistency assumption），即直接证据和间接证据不矛盾。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "抗抑郁药 Meta 分析中发表偏倚有多严重？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "精神科是发表偏倚最严重的医学领域之一。Turner 2008 年在 NEJM 发表的里程碑研究分析了 FDA 注册的 74 项抗抑郁药试验：（1）38 项 FDA 认定为阳性的试验中，37 项发表了，且几乎全部报告为阳性；（2）36 项 FDA 认定为阴性或可疑的试验中，仅 14 项发表，其中 11 项被包装为阳性结果；（3）仅根据发表文献分析，94% 的试验显示抗抑郁药有效；但根据 FDA 完整数据，仅 51% 为阳性。这导致仅基于发表文献的 Meta 分析会高估抗抑郁药效应量约 32%。应对策略：检索 ClinicalTrials.gov 和 FDA 审批档案、使用漏斗图和 Egger 检验、纳入 Cochrane 未发表试验登记系统数据。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "儿童青少年和老年人群的精神科 Meta 分析有什么特殊考量？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "儿童青少年（<18 岁）：（1）药物疗效数据远少于成人，不应将成人数据外推至儿童；（2）FDA 黑框警告——SSRI 可能增加儿童青少年自杀意念风险，安全性终点必须包含自杀相关事件；（3）氟西汀是唯一获 FDA 批准用于儿童抑郁的 SSRI，其他药物证据较弱；（4）安慰剂响应率在儿童中更高（可达 50-60%）。老年人群（>65 岁）：（1）需考虑多药联用和药物相互作用；（2）抗胆碱能负荷和跌倒风险是关键安全终点；（3）老年抑郁常合并认知下降，需在亚组分析中区分；（4）量表选择可能不同（如使用 GDS 老年抑郁量表）。两个人群都应在单独的 Meta 分析中评估，不与成人数据混合。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "MetaReview 能做精神科相关的 Meta 分析吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "完全可以。MetaReview 支持精神科 Meta 分析所需的全部功能：（1）SMD（Hedges' g）用于不同量表（HAMD、MADRS、PANSS、PHQ-9 等）的标准化合并；（2）MD 用于同一量表内的均数差分析；（3）OR/RR 用于缓解率、响应率、脱落率等二分类终点；（4）HR 用于复发时间等生存数据；（5）固定效应和随机效应模型；（6）自动生成森林图和漏斗图；（7）支持按药物类别（SSRI vs SNRI vs 安慰剂）、疾病严重度等进行亚组分析；（8）逐一剔除敏感性分析。所有计算在浏览器内完成，免费使用，无需安装软件或编写代码。"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .toc { background: white; border-radius: 12px; padding: 24px 32px; margin-bottom: 40px; border: 1px solid #e5e7eb; }
+    .toc h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .toc a:hover { text-decoration: underline; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    .faq { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .faq h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .faq h3 { font-size: 16px; color: #1e40af; margin: 16px 0 8px; }
+    .faq p { font-size: 15px; color: #4b5563; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .toc, .faq, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">打开工具</a>
+      <a href="/guides/meta-analysis-steps">Meta 分析步骤</a>
+      <a href="/guides/survival-analysis-meta">HR 生存分析</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>精神科 Meta 分析完整指南：从量表选择到药物疗效的循证综合方法</h1>
+  <p>精神科荟萃分析的效应量选择、HAMD/MADRS/PANSS 量表处理、安慰剂效应控制、SSRI/SNRI/非典型药物比较、网络 Meta 分析经典案例与发表偏倚评估。适合精神科研究生和临床研究者。</p>
+</div>
+
+<div class="container">
+
+  <div class="toc">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#why">为什么精神科研究特别需要 Meta 分析</a></li>
+      <li><a href="#pico">PICO 框架在精神科研究中的应用</a></li>
+      <li><a href="#effect-size">精神科 Meta 分析的效应量选择</a></li>
+      <li><a href="#scales">精神科研究的量表与测量问题</a></li>
+      <li><a href="#heterogeneity">异质性的特殊挑战</a></li>
+      <li><a href="#subgroup-nma">亚组与网络 Meta 分析</a></li>
+      <li><a href="#publication-bias">发表偏倚：精神科的"重灾区"</a></li>
+      <li><a href="#classic-cases">经典案例解析</a></li>
+      <li><a href="#tool-practice">用 MetaReview 5 分钟完成精神科 Meta 分析</a></li>
+      <li><a href="#faq">常见问题</a></li>
+    </ol>
+  </div>
+
+  <!-- Section 1: Why psychiatric research especially needs meta-analysis -->
+  <div class="section" id="why">
+    <h2>为什么精神科研究特别需要 Meta 分析</h2>
+    <p>精神障碍是全球疾病负担最重的领域之一。根据 GBD（Global Burden of Disease）2019 数据，精神障碍影响全球近 10 亿人，抑郁症和焦虑症分别位居致残原因的第 2 和第 8 位。中国精神障碍的终生患病率约 16.6%，抑郁症患病率约 3.4%，精神分裂症患病率约 0.6%。然而，精神科临床研究面临的方法学挑战比大多数医学领域更为严峻，这使得 Meta 分析在精神科循证医学中的地位不可替代。</p>
+    <h3>效应量普遍较小</h3>
+    <p>与降压药降低 10-15 mmHg 血压或他汀类降低 30-40% LDL-C 这种显而易见的疗效不同，精神科药物的效应量往往较小。以抑郁症为例，多数抗抑郁药 vs 安慰剂的 SMD 仅为 0.3 左右（Cohen's d），对应 HAMD-17 量表约 2 分的差异。这意味着单项 RCT 若样本量不够大（通常需要 300+ 例/组），很容易因统计效力不足而得出阴性结果。Meta 分析通过合并多项试验增加总样本量，是检测这种小效应量的最佳工具。</p>
+    <h3>安慰剂效应显著</h3>
+    <p>精神科是安慰剂效应最强的医学领域之一。抑郁症临床试验中，安慰剂组的响应率通常高达 30-50%，有些试验甚至超过 50%。这不仅削弱了"药物-安慰剂差异"，还导致不同试验之间安慰剂响应率的巨大变异，成为重要的异质性来源。近 30 年来，安慰剂响应率呈逐年上升趋势，使得近期试验比早期试验更难获得阳性结果——这种"年代效应"在 Meta 分析中必须考虑。</p>
+    <h3>量表评估的主观性</h3>
+    <p>精神科疾病不像糖尿病（HbA1c）或高血压（收缩压）那样有客观的生物标志物。疾病严重程度的评估依赖于主观量表，不同量表的分数范围、条目数量和评分标准各不相同。例如抑郁症就有 HAMD-17（0-52 分）、HAMD-21（0-64 分）、MADRS（0-60 分）、PHQ-9（0-27 分）、BDI-II（0-63 分）等十余种量表。不同试验使用不同量表，无法直接以原始分数进行比较——这正是 Meta 分析通过标准化均数差（SMD）统一尺度的核心价值所在。</p>
+    <h3>需要大样本汇总才能得出可靠结论</h3>
+    <p>综合以上三个因素，精神科领域单项 RCT 的证据强度天然受限。一项典型的抗抑郁药 RCT 纳入 200-400 例患者，随访 6-8 周，结果可能受安慰剂响应、评定者偏倚和量表选择的多重影响。只有通过 Meta 分析汇总数十甚至数百项试验的数据，才能：</p>
+    <ul>
+      <li>可靠地估计药物 vs 安慰剂的真实效应量</li>
+      <li>比较不同药物之间的相对疗效和耐受性</li>
+      <li>识别对特定亚组（如重度抑郁 vs 轻度抑郁、老年 vs 青壮年）更有效的治疗方案</li>
+      <li>检测发表偏倚和 industry-sponsored bias 对整体证据的扭曲</li>
+      <li>为临床指南（如 NICE、APA、中国精神障碍防治指南）提供最高等级的循证依据</li>
+    </ul>
+    <div class="tip">Cipriani 等人 2018 年在 Lancet 发表的里程碑研究合并了 522 项 RCT、116,477 例患者的数据，比较了 21 种抗抑郁药的疗效和可接受性，结论是所有抗抑郁药均优于安慰剂（SMD 0.19-0.53），但药物间差异显著——艾司西酞普兰、米氮平和阿米替林疗效最好，氟西汀和文拉法辛可接受性最佳。这种规模的结论不可能从任何单项 RCT 中获得。</div>
+  </div>
+
+  <!-- Section 2: PICO framework in psychiatric research -->
+  <div class="section" id="pico">
+    <h2>PICO 框架在精神科研究中的应用</h2>
+    <p>精神科 Meta 分析的 PICO 框架需要兼顾诊断分类的复杂性、干预手段的多样性（药物 + 心理治疗 + 物理治疗）以及结局评估的主观性。一个精确的 PICO 框架是避免"将苹果和橘子混在一起"的前提。</p>
+    <h3>Population（人群）</h3>
+    <p>精神科的诊断系统本身就是异质性的重要来源。定义目标人群时需明确：</p>
+    <table class="data-table">
+      <tr><th>诊断类别</th><th>典型诊断标准</th><th>核心量表</th><th>常见分型/亚型</th></tr>
+      <tr><td>重性抑郁障碍（MDD）</td><td>DSM-5 / ICD-10 / ICD-11</td><td>HAMD-17, MADRS, PHQ-9</td><td>首发 vs 复发、伴焦虑特征、伴精神病性特征、围产期抑郁</td></tr>
+      <tr><td>广泛性焦虑障碍（GAD）</td><td>DSM-5 / ICD-10</td><td>HAM-A, GAD-7</td><td>伴/不伴抑郁共病</td></tr>
+      <tr><td>精神分裂症</td><td>DSM-5 / ICD-10</td><td>PANSS, BPRS, CGI</td><td>首发 vs 慢性、治疗抵抗性（TRS）</td></tr>
+      <tr><td>双相障碍</td><td>DSM-5 / ICD-10</td><td>YMRS（躁狂）, HAMD/MADRS（抑郁）</td><td>I 型 vs II 型、躁狂期 vs 抑郁期 vs 维持期</td></tr>
+      <tr><td>创伤后应激障碍（PTSD）</td><td>DSM-5 / ICD-11</td><td>CAPS-5, PCL-5</td><td>急性 vs 慢性、战斗相关 vs 非战斗相关</td></tr>
+      <tr><td>强迫症（OCD）</td><td>DSM-5 / ICD-10</td><td>Y-BOCS</td><td>治疗抵抗性 OCD</td></tr>
+      <tr><td>注意缺陷多动障碍（ADHD）</td><td>DSM-5 / ICD-10</td><td>ADHD-RS, CGI</td><td>儿童 vs 成人、注意缺陷为主 vs 多动冲动为主 vs 混合型</td></tr>
+    </table>
+    <div class="warn">DSM-IV 与 DSM-5 的诊断标准存在差异。例如 DSM-5 取消了抑郁症的"丧亲排除"标准，PTSD 从焦虑障碍分类中独立出来成为"创伤和应激相关障碍"。纳入跨越 DSM 版本的试验时，需在方法中说明如何处理诊断标准差异。</div>
+    <h3>Intervention（干预）</h3>
+    <p>精神科干预手段分为三大类：</p>
+    <p><strong>药物治疗：</strong></p>
+    <ul>
+      <li><strong>SSRIs</strong>：氟西汀（fluoxetine）、舍曲林（sertraline）、帕罗西汀（paroxetine）、西酞普兰（citalopram）、艾司西酞普兰（escitalopram）、氟伏沙明（fluvoxamine）</li>
+      <li><strong>SNRIs</strong>：文拉法辛（venlafaxine）、度洛西汀（duloxetine）、去甲文拉法辛（desvenlafaxine）</li>
+      <li><strong>非典型抗抑郁药</strong>：米氮平（mirtazapine）、安非他酮（bupropion）、伏硫西汀（vortioxetine）、阿戈美拉汀（agomelatine）</li>
+      <li><strong>三环类（TCA）</strong>：阿米替林（amitriptyline）、氯米帕明（clomipramine）、丙咪嗪（imipramine）</li>
+      <li><strong>非典型抗精神病药</strong>：利培酮（risperidone）、奥氮平（olanzapine）、喹硫平（quetiapine）、阿立哌唑（aripiprazole）、鲁拉西酮（lurasidone）、卡利拉嗪（cariprazine）</li>
+      <li><strong>情绪稳定剂</strong>：锂盐（lithium）、丙戊酸盐（valproate）、拉莫三嗪（lamotrigine）</li>
+      <li><strong>抗焦虑药</strong>：苯二氮卓类（阿普唑仑、氯硝西泮）、丁螺环酮（buspirone）、普瑞巴林（pregabalin）</li>
+    </ul>
+    <p><strong>心理治疗：</strong></p>
+    <ul>
+      <li><strong>认知行为治疗（CBT）</strong> -- 抑郁症、焦虑症、OCD、PTSD 的一线心理治疗</li>
+      <li><strong>人际治疗（IPT）</strong> -- 抑郁症的循证心理治疗</li>
+      <li><strong>眼动脱敏与再加工（EMDR）</strong> -- PTSD 的一线心理治疗</li>
+      <li><strong>辩证行为治疗（DBT）</strong> -- 边缘型人格障碍的标准治疗</li>
+      <li><strong>接纳承诺治疗（ACT）</strong> -- 焦虑和抑郁的第三波 CBT</li>
+      <li><strong>正念减压疗法（MBSR/MBCT）</strong> -- 抑郁复发预防</li>
+    </ul>
+    <p><strong>物理治疗：</strong></p>
+    <ul>
+      <li><strong>电休克治疗（ECT）</strong> -- 治疗抵抗性抑郁和紧张症的金标准</li>
+      <li><strong>经颅磁刺激（rTMS/TMS）</strong> -- FDA 批准用于 MDD 和 OCD</li>
+      <li><strong>深部脑刺激（DBS）</strong> -- 难治性 OCD 的探索性治疗</li>
+    </ul>
+    <h3>Comparison（对照）</h3>
+    <p>精神科 Meta 分析中对照组的选择极为关键，因为它直接决定了效应量的大小和临床可解读性：</p>
+    <table class="data-table">
+      <tr><th>对照类型</th><th>含义</th><th>效应量影响</th><th>适用场景</th></tr>
+      <tr><td>安慰剂（Placebo）</td><td>外观一致的惰性药丸</td><td>效应量较小（包含安慰剂效应）</td><td>药物疗效评估的金标准</td></tr>
+      <tr><td>活性对照（Active comparator）</td><td>另一种已证实有效的药物</td><td>效应量更小（两种有效药比较）</td><td>头对头比较，NMA</td></tr>
+      <tr><td>等待名单（Waitlist）</td><td>延迟接受治疗</td><td>效应量偏大（无安慰剂效应）</td><td>心理治疗试验常用</td></tr>
+      <tr><td>常规治疗（TAU）</td><td>Treatment as usual</td><td>效应量中等</td><td>实效研究</td></tr>
+      <tr><td>注意力对照（Attention control）</td><td>等量的非特异性关注</td><td>控制非特异性因素</td><td>心理治疗试验的优质对照</td></tr>
+    </table>
+    <div class="warn">等待名单对照和安慰剂对照不能在同一个 Meta 分析中混合。等待名单组缺乏安慰剂效应（没有治疗期望），使用等待名单对照的试验效应量会系统性地偏大。药物试验和心理治疗试验的对照类型通常不同，合并分析时必须按对照类型分层。</div>
+    <h3>Outcome（结局指标）</h3>
+    <table class="data-table">
+      <tr><th>结局类型</th><th>具体指标</th><th>数据类型</th><th>效应量</th></tr>
+      <tr><td>症状严重度变化</td><td>HAMD/MADRS/PANSS/Y-BOCS 评分变化</td><td>连续变量</td><td>SMD (Hedges' g)</td></tr>
+      <tr><td>响应率</td><td>HAMD 评分下降 &ge;50%</td><td>二分类</td><td>OR/RR</td></tr>
+      <tr><td>缓解率</td><td>HAMD &le;7 或 MADRS &le;10</td><td>二分类</td><td>OR/RR</td></tr>
+      <tr><td>脱落率（可接受性）</td><td>因任何原因提前退出</td><td>二分类</td><td>OR/RR</td></tr>
+      <tr><td>因不良反应脱落</td><td>因副作用退出</td><td>二分类</td><td>OR/RR</td></tr>
+      <tr><td>复发时间</td><td>至首次复发事件的时间</td><td>时间-事件</td><td>HR</td></tr>
+      <tr><td>特定不良反应</td><td>体重增加、性功能障碍、锥体外系反应、QTc 延长</td><td>二分类</td><td>OR/RR</td></tr>
+      <tr><td>自杀相关事件</td><td>自杀意念、自杀未遂、自杀死亡</td><td>二分类</td><td>OR/RR (Peto OR)</td></tr>
+    </table>
+    <h3>PICO 示例：SSRIs 治疗成人 MDD 的急性期疗效</h3>
+    <table class="data-table">
+      <tr><th>PICO 元素</th><th>定义</th><th>关键考量</th></tr>
+      <tr><td><strong>P</strong></td><td>18-65 岁成人 MDD 患者（DSM-IV/DSM-5/ICD-10），HAMD-17 &ge;17 或 MADRS &ge;20</td><td>排除双相抑郁、精神病性抑郁、产后抑郁？基线严重度如何分层？</td></tr>
+      <tr><td><strong>I</strong></td><td>SSRIs（氟西汀 20-60mg/舍曲林 50-200mg/艾司西酞普兰 10-20mg 等），单药治疗</td><td>是否将所有 SSRIs 作为一类合并？不同剂量如何处理？</td></tr>
+      <tr><td><strong>C</strong></td><td>安慰剂</td><td>仅纳入双盲 RCT，排除开放标签试验</td></tr>
+      <tr><td><strong>O</strong></td><td>主要：HAMD/MADRS 评分变化（SMD）；次要：响应率（OR）、缓解率（OR）、因不良反应脱落率（OR）</td><td>急性期通常为 6-12 周，是否限定最短治疗时间？</td></tr>
+    </table>
+    <div class="tip">在 PROSPERO 注册方案时，必须明确诊断标准版本、量表版本、最短治疗时间、对照类型和主要效应量。精神科 Meta 分析中"P"的精确定义至关重要——一个混合了轻度抑郁、中重度抑郁和治疗抵抗性抑郁的分析可能得出无意义的合并结论。</div>
+  </div>
+
+  <!-- Section 3: Effect size selection -->
+  <div class="section" id="effect-size">
+    <h2>精神科 Meta 分析的效应量选择</h2>
+    <p>效应量的选择是精神科 Meta 分析最关键的方法学决策之一。与心血管或糖尿病领域不同，精神科的核心挑战在于：几乎所有主要结局指标都依赖于主观评定量表，不同量表的分数不可直接比较。这使得 SMD（标准化均数差）成为精神科 Meta 分析的核心效应量。</p>
+    <h3>SMD（标准化均数差）：精神科的核心效应量</h3>
+    <p>当不同试验使用不同量表测量同一构念（如"抑郁严重度"）时，必须使用 SMD 将效应量标准化到同一尺度：</p>
+    <div class="formula">
+      SMD = (Mean<sub>treatment</sub> - Mean<sub>control</sub>) / SD<sub>pooled</sub><br>
+      Hedges' g = SMD &times; (1 - 3 / (4(n<sub>1</sub>+n<sub>2</sub>-2) - 1))
+    </div>
+    <p>SMD 的精神科解读标准（Cohen 1988）：</p>
+    <table class="data-table">
+      <tr><th>SMD 范围</th><th>效应大小</th><th>精神科典型对应</th></tr>
+      <tr><td>0.2</td><td>小效应</td><td>多数抗抑郁药 vs 安慰剂（轻度抑郁）</td></tr>
+      <tr><td>0.5</td><td>中效应</td><td>CBT vs 等待名单（抑郁症）、抗精神病药 vs 安慰剂（精神分裂症）</td></tr>
+      <tr><td>0.8</td><td>大效应</td><td>氯氮平 vs 安慰剂（治疗抵抗性精神分裂症）、ECT vs 假刺激</td></tr>
+    </table>
+    <div class="tip">推荐使用 Hedges' g 而非 Cohen's d。两者区别在于 Hedges' g 对小样本研究进行了偏差校正，更适合精神科常见的中小样本 RCT（n=50-200/组）。当单组样本量 > 50 时，两者差异可忽略不计。</div>
+    <h3>OR/RR：二分类结局</h3>
+    <p>精神科常用的二分类结局指标及其效应量：</p>
+    <ul>
+      <li><strong>响应率</strong> -- 定义为量表评分下降 &ge;50%（如 HAMD-17 从基线下降 50%）。使用 OR 或 RR</li>
+      <li><strong>缓解率</strong> -- 定义为达到症状缓解阈值（如 HAMD-17 &le;7 或 MADRS &le;10）。使用 OR 或 RR</li>
+      <li><strong>脱落率</strong> -- 因任何原因提前退出（衡量治疗"可接受性"），使用 OR 或 RR</li>
+      <li><strong>因不良反应脱落</strong> -- 衡量药物耐受性，使用 OR 或 RR</li>
+      <li><strong>自杀相关事件</strong> -- 罕见事件，推荐使用 Peto OR（对稀少事件更稳健）</li>
+    </ul>
+    <div class="formula">
+      NNT = 1 / (CER &times; (OR - 1) / (OR - 1 + 1/CER))<br>
+      其中 CER = 对照组事件率（安慰剂组缓解率）
+    </div>
+    <p>NNT（Number Needed to Treat）是将 OR/RR 转换为临床可理解指标的重要方法。例如，抗抑郁药缓解的 NNT 约为 7-8，意味着每治疗 7-8 个患者有 1 个额外达到缓解。</p>
+    <h3>HR：时间-事件数据</h3>
+    <p>HR 在精神科 Meta 分析中主要用于维持期/预防复发试验：</p>
+    <ul>
+      <li><strong>至复发时间</strong> -- 抗抑郁药维持治疗 vs 安慰剂（停药）的复发率比较</li>
+      <li><strong>至首次住院时间</strong> -- 抗精神病药长效针剂 vs 口服制剂的住院风险比较</li>
+      <li><strong>锂盐预防双相复发</strong> -- 至首次躁狂/抑郁发作的时间</li>
+    </ul>
+    <h3>效应量选择总结</h3>
+    <table class="data-table">
+      <tr><th>终点</th><th>首选效应量</th><th>备选效应量</th><th>说明</th></tr>
+      <tr><td>症状评分变化（多种量表）</td><td>SMD (Hedges' g)</td><td>--</td><td>精神科最核心的效应量</td></tr>
+      <tr><td>症状评分变化（同一量表）</td><td>MD</td><td>SMD</td><td>仅当所有试验使用同一量表同一版本时</td></tr>
+      <tr><td>响应率</td><td>OR</td><td>RR, NNT</td><td>HAMD 下降 &ge;50%</td></tr>
+      <tr><td>缓解率</td><td>OR</td><td>RR, NNT</td><td>HAMD &le;7 或 MADRS &le;10</td></tr>
+      <tr><td>脱落率（可接受性）</td><td>OR</td><td>RR</td><td>Cipriani 2018 以此衡量可接受性</td></tr>
+      <tr><td>复发时间</td><td>HR</td><td>--</td><td>维持期试验</td></tr>
+      <tr><td>自杀相关事件</td><td>Peto OR</td><td>OR</td><td>罕见事件，Peto OR 更稳健</td></tr>
+      <tr><td>体重变化</td><td>MD (kg)</td><td>--</td><td>抗精神病药的重要安全终点</td></tr>
+    </table>
+    <div class="warn">核心原则：不同量表测量的连续变量必须用 SMD 合并，绝对不能用 MD。将 HAMD-17 的分数变化和 MADRS 的分数变化直接以 MD 合并是最常见的初学者错误，因为两个量表的分数范围和单位完全不同。</div>
+    <p>详细的效应量选择方法请看：<a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</a></p>
+  </div>
+
+  <!-- Section 4: Scales and measurement issues -->
+  <div class="section" id="scales">
+    <h2>精神科研究的量表与测量问题</h2>
+    <p>量表选择和测量标准化是精神科 Meta 分析中最棘手的方法学问题。与实验室检查（如 HbA1c、LDL-C）不同，精神科量表的评分受评定者训练水平、患者配合度和文化背景的多重影响。</p>
+    <h3>抑郁症主要评定量表对比</h3>
+    <table class="data-table">
+      <tr><th>量表</th><th>条目数</th><th>分数范围</th><th>评定方式</th><th>缓解阈值</th><th>响应定义</th><th>优缺点</th></tr>
+      <tr><td>HAMD-17</td><td>17</td><td>0-52</td><td>医生他评</td><td>&le;7</td><td>下降 &ge;50%</td><td>最广泛使用，FDA 认可；条目权重不均，躯体症状偏重</td></tr>
+      <tr><td>HAMD-21</td><td>21</td><td>0-64</td><td>医生他评</td><td>&le;7（前17项）</td><td>下降 &ge;50%</td><td>增加 4 项非核心抑郁条目；与 HAMD-17 部分兼容</td></tr>
+      <tr><td>MADRS</td><td>10</td><td>0-60</td><td>医生他评</td><td>&le;10</td><td>下降 &ge;50%</td><td>对抗抑郁药变化更敏感；条目更均衡</td></tr>
+      <tr><td>PHQ-9</td><td>9</td><td>0-27</td><td>患者自评</td><td>&le;4</td><td>下降 &ge;50%</td><td>简短高效，适合大样本筛查；自评可能有偏差</td></tr>
+      <tr><td>BDI-II</td><td>21</td><td>0-63</td><td>患者自评</td><td>&le;13</td><td>下降 &ge;50%</td><td>认知症状评估详细；自评量表</td></tr>
+      <tr><td>CGI-S</td><td>1</td><td>1-7</td><td>医生他评</td><td>&le;2</td><td>--</td><td>全局严重度评估，简单直观但不够精细</td></tr>
+    </table>
+    <h3>评定者间信度问题</h3>
+    <p>HAMD 和 MADRS 作为医生他评量表，评定者间信度（inter-rater reliability）直接影响数据质量：</p>
+    <ul>
+      <li>训练有素的评定者之间 HAMD 的组内相关系数（ICC）通常为 0.80-0.95</li>
+      <li>多中心试验中不同中心的评定标准可能不一致，引入"中心效应"作为异质性来源</li>
+      <li>结构化访谈工具（如 SIGMA for HAMD、GRID-HAMD）可提高评定者间一致性</li>
+      <li>部分试验使用中心化评定（centralized raters）通过电话/视频评分，减少中心间差异</li>
+    </ul>
+    <h3>患者自评 vs 医生他评</h3>
+    <p>这是精神科 Meta 分析中一个被低估的方法学问题：</p>
+    <ul>
+      <li>医生他评（HAMD、MADRS）往往显示更大的药物-安慰剂差异</li>
+      <li>患者自评（PHQ-9、BDI-II）的药物-安慰剂差异通常更小</li>
+      <li>原因可能包括：医生评定受期望效应影响更大（尤其在非盲试验中）、患者自评受健康素养和文化因素影响</li>
+      <li>Meta 分析中应将医生他评和患者自评结果分开报告，或在敏感性分析中检验评定方式对效应量的影响</li>
+    </ul>
+    <h3>基线严重度对效应量的影响——Kirsch 2008 争议</h3>
+    <p>2008 年 Kirsch 等人在 PLoS Medicine 发表的重磅 Meta 分析利用 FDA 注册数据分析了 6 种新一代抗抑郁药的疗效，结论引发了巨大争议：</p>
+    <ul>
+      <li>总体 SMD 约为 0.32，刚好超过 NICE 建议的 0.50 临床显著性阈值的一半</li>
+      <li>在轻度和中度抑郁患者中，药物-安慰剂差异未达到临床显著性（HAMD 差异 &lt;3 分）</li>
+      <li>仅在重度抑郁（基线 HAMD &ge;28）中，药物-安慰剂差异达到临床显著性</li>
+      <li>Kirsch 认为"重度患者的效应主要是安慰剂组响应率下降，而非药物组疗效增加"</li>
+    </ul>
+    <p>这一争议的核心方法学启示：</p>
+    <ol>
+      <li>基线严重度是精神科 Meta 分析中最重要的效应修饰因素之一</li>
+      <li>必须在亚组分析或 Meta-regression 中检验基线严重度对效应量的影响</li>
+      <li>"临床显著性"的阈值如何定义（SMD 0.50？HAMD 3 分？）本身就有争议</li>
+      <li>安慰剂组的响应率不是常数——它随基线严重度、试验年代和中心数量变化</li>
+    </ol>
+    <div class="tip">Fournier 等人 2010 年在 JAMA 发表的 IPD（个体患者数据）Meta 分析进一步证实了基线严重度效应：在轻度抑郁中（HAMD &lt;19），抗抑郁药的获益微乎其微（d = 0.11）；在重度抑郁中（HAMD &ge;25），获益具有临床显著性（d = 0.47）。这提示精神科 Meta 分析若不按基线严重度分层，得出的"平均效应量"可能误导临床实践。</div>
+    <h3>精神分裂症量表的特殊处理</h3>
+    <p>精神分裂症的核心量表 PANSS（阳性和阴性症状量表，30 项，分数范围 30-210）有其独特的分析挑战：</p>
+    <ul>
+      <li>PANSS 总分可以拆分为阳性症状分量表（7 项）、阴性症状分量表（7 项）和一般精神病理分量表（16 项）</li>
+      <li>Meta 分析时需明确使用总分还是分量表分数——不同抗精神病药对阳性和阴性症状的改善程度可能不同</li>
+      <li>Leucht 等人 2005 年提出的 PANSS 转换公式允许将 BPRS（简明精神病评定量表）与 PANSS 在同一 Meta 分析中合并</li>
+      <li>PANSS 的响应定义为总分下降 &ge;20%（最低阈值）、&ge;30%、&ge;50%（高阈值）或 &ge;70%，不同阈值对应不同的临床意义</li>
+    </ul>
+  </div>
+
+  <!-- Section 5: Heterogeneity challenges -->
+  <div class="section" id="heterogeneity">
+    <h2>异质性的特殊挑战</h2>
+    <p>精神科 Meta 分析的异质性问题比大多数医学领域更加突出。安慰剂效应的高度变异、诊断标准的演变、共病的普遍存在以及治疗方案的巨大差异，使得 I&sup2; 值经常偏高。理解和解释异质性是精神科 Meta 分析的核心能力。</p>
+    <h3>安慰剂响应率变异（30-50%）</h3>
+    <p>安慰剂组的响应率是精神科 Meta 分析中最重要的异质性来源之一：</p>
+    <ul>
+      <li>抑郁症试验的安慰剂响应率从 20% 到 50% 不等，这种变异直接影响药物-安慰剂差异</li>
+      <li>影响安慰剂响应率的因素包括：试验中心数量（多中心 > 单中心）、纳入标准严格程度、随访频率、基线严重度、地理区域</li>
+      <li>近 30 年来安慰剂响应率呈上升趋势（可能与试验设计变化和受试者期望增加有关）</li>
+      <li>处理方法：在 Meta-regression 中将安慰剂组响应率或发表年代作为协变量</li>
+    </ul>
+    <h3>诊断标准差异</h3>
+    <p>跨越不同诊断系统版本的试验合并时需注意：</p>
+    <table class="data-table">
+      <tr><th>诊断系统转换</th><th>关键变化</th><th>对 Meta 分析的影响</th></tr>
+      <tr><td>DSM-IV &rarr; DSM-5</td><td>MDD 取消丧亲排除；PTSD 重新分类；SSD 取代躯体化障碍</td><td>DSM-5 可能纳入更广泛的抑郁患者，影响基线严重度分布</td></tr>
+      <tr><td>ICD-10 &rarr; ICD-11</td><td>抑郁症分类简化；复杂 PTSD 新增；游戏障碍新增</td><td>ICD-11 的诊断标准可能与 DSM-5 趋于一致</td></tr>
+      <tr><td>PANSS vs BPRS</td><td>PANSS 30 项 vs BPRS 18 项</td><td>需要量表转换或使用 SMD</td></tr>
+    </table>
+    <h3>合并症问题</h3>
+    <p>精神障碍之间的共病率极高，这是精神科 Meta 分析异质性的重要来源：</p>
+    <ul>
+      <li><strong>抑郁+焦虑</strong> -- 50-60% 的 MDD 患者同时满足一种或多种焦虑障碍的诊断标准。部分试验排除焦虑共病，部分不排除，导致人群异质性</li>
+      <li><strong>精神分裂症+物质使用</strong> -- 约 50% 的精神分裂症患者有物质使用共病，多数 RCT 排除此类患者，限制了结果的外推性</li>
+      <li><strong>双相+焦虑</strong> -- 约 40-60% 的双相障碍患者有焦虑共病，影响治疗选择和预后</li>
+      <li>处理方法：在纳排标准中明确是否排除特定共病；按共病状态进行亚组分析；在讨论中说明共病对结论外推性的限制</li>
+    </ul>
+    <h3>治疗持续时间差异</h3>
+    <p>精神科急性期 RCT 的治疗持续时间差异显著：</p>
+    <ul>
+      <li>抑郁症试验：4 周到 12 周不等，最常见为 6 周和 8 周</li>
+      <li>精神分裂症试验：4 周到 26 周不等</li>
+      <li>焦虑症试验：4 周到 12 周</li>
+      <li>OCD 试验通常需要更长时间（8-12 周）才能看到效果</li>
+    </ul>
+    <p>处理方法：在纳排标准中设定最短治疗时间（如 &ge;6 周）；按治疗时间进行敏感性分析；在 Meta-regression 中检验治疗时间对效应量的影响。</p>
+    <h3>剂量差异</h3>
+    <p>同一药物的不同剂量可能有不同的疗效和耐受性曲线：</p>
+    <ul>
+      <li>多数 SSRIs 的剂量-疗效曲线相对平坦（如艾司西酞普兰 10mg vs 20mg 疗效差异不大，但 20mg 副作用更多）</li>
+      <li>文拉法辛的疗效可能在高剂量（225-375mg）时更强</li>
+      <li>抗精神病药通常有更陡峭的剂量-疗效曲线</li>
+      <li>处理方法：按剂量范围（低/中/高）进行亚组分析；使用"最低有效剂量"作为主要分析</li>
+    </ul>
+    <h3>发表年代效应</h3>
+    <p>精神科试验结果存在显著的发表年代效应——近年试验的效应量普遍小于早期试验：</p>
+    <ul>
+      <li>可能原因：安慰剂响应率上升、试验设计更严格（多中心、中心化评定）、"研究参与者综合征"（专业受试者对安慰剂更敏感）</li>
+      <li>处理方法：在 Meta-regression 中以发表年份为协变量；按发表年代分层（如 2000 年前 vs 2000 年后）</li>
+    </ul>
+    <div class="warn">在精神科 Meta 分析中，I&sup2; > 50% 是常态而非例外。遇到高 I&sup2; 时，不要急于选择固定效应模型"消除"异质性——这只会掩盖问题。正确做法是使用随机效应模型，同时通过亚组分析和 Meta-regression 解释异质性来源。如果异质性无法合理解释，应考虑是否有必要进行合并分析。</div>
+  </div>
+
+  <!-- Section 6: Subgroup and network meta-analysis -->
+  <div class="section" id="subgroup-nma">
+    <h2>亚组与网络 Meta 分析</h2>
+    <p>精神科拥有医学领域中最丰富的亚组分析维度和最成熟的网络 Meta 分析（NMA）应用。从药物类别到疾病严重度，从年龄分层到治疗模式，每一个亚组都可能指向不同的临床决策。</p>
+    <h3>精神科 Meta 分析的核心亚组变量</h3>
+    <table class="data-table">
+      <tr><th>亚组变量</th><th>分组方式</th><th>临床意义</th></tr>
+      <tr><td>药物类别</td><td>SSRI vs SNRI vs TCA vs 非典型抗抑郁药</td><td>不同类别的疗效-耐受性权衡不同</td></tr>
+      <tr><td>疾病严重度</td><td>轻度（HAMD 8-13）vs 中度（14-18）vs 重度（19-22）vs 极重度（&ge;23）</td><td>Kirsch 争议的核心——轻度患者是否需要药物治疗</td></tr>
+      <tr><td>年龄分层</td><td>儿童青少年（&lt;18 岁）vs 成人（18-65 岁）vs 老年（&gt;65 岁）</td><td>FDA 儿童 SSRI 黑框警告；老年人药代动力学差异</td></tr>
+      <tr><td>治疗模式</td><td>单药 vs 药物联合 vs 药物+心理治疗</td><td>联合治疗是否优于单一治疗</td></tr>
+      <tr><td>急性期 vs 维持期</td><td>6-12 周急性治疗 vs 6-24 月维持治疗/复发预防</td><td>维持期的效应量和研究设计完全不同于急性期</td></tr>
+      <tr><td>首发 vs 复发</td><td>首次发作 vs 多次复发</td><td>复发患者可能对药物更敏感，但安慰剂响应率更低</td></tr>
+      <tr><td>治疗抵抗</td><td>治疗抵抗性（TRD/TRS）vs 非治疗抵抗性</td><td>治疗抵抗性人群是特殊亚组，效应量通常更小</td></tr>
+      <tr><td>资助来源</td><td>Industry-sponsored vs Investigator-initiated</td><td>药企资助试验的效应量可能偏大（Ebrahim 2016 BMJ）</td></tr>
+    </table>
+    <h3>网络 Meta 分析（NMA）：精神科的"杀手级应用"</h3>
+    <p>精神科是网络 Meta 分析应用最广泛、最成功的医学领域。NMA 允许同时比较多种干预措施，即使它们之间没有直接的头对头 RCT，通过"借用"共同对照（通常是安慰剂）的间接比较实现。</p>
+    <h3>为什么精神科特别适合 NMA</h3>
+    <ul>
+      <li><strong>药物选择众多</strong> -- 仅抑郁症就有 20+ 种常用抗抑郁药，焦虑症有 10+ 种，精神分裂症有 15+ 种抗精神病药。两两头对头 RCT 不现实</li>
+      <li><strong>共同对照丰富</strong> -- 绝大多数精神科 RCT 都有安慰剂组，为间接比较提供了良好的"网络连接"</li>
+      <li><strong>临床需要排名</strong> -- 临床医生需要知道"哪个药最好、哪个药最安全"，NMA 的排名概率（SUCRA/P-score）直接回答这个问题</li>
+      <li><strong>数据量庞大</strong> -- 精神科 RCT 数量远超大多数领域（抑郁症 500+ 项 RCT），为 NMA 提供了充足的证据网络</li>
+    </ul>
+    <h3>Cipriani 2018 Lancet：NMA 的经典范例</h3>
+    <p>Cipriani 等人 2018 年在 Lancet 发表的"21 种抗抑郁药网络 Meta 分析"是精神科 NMA 的里程碑：</p>
+    <ul>
+      <li>纳入 522 项双盲 RCT，116,477 例成人 MDD 患者</li>
+      <li>同时比较了 21 种抗抑郁药的<strong>疗效</strong>（响应率 OR）和<strong>可接受性</strong>（脱落率 OR）</li>
+      <li>所有 21 种药物均显著优于安慰剂（OR 1.15-2.13）</li>
+      <li>疗效最好：阿米替林（OR 2.13）、米氮平（OR 1.89）、度洛西汀（OR 1.85）、文拉法辛（OR 1.78）、帕罗西汀（OR 1.75）</li>
+      <li>可接受性最好：阿戈美拉汀（OR 0.84）、氟西汀（OR 0.88）、伏硫西汀（OR 0.91）</li>
+      <li>综合疗效和可接受性：艾司西酞普兰、米氮平、帕罗西汀、阿戈美拉汀和舍曲林表现最均衡</li>
+    </ul>
+    <h3>NMA 的关键方法学要求</h3>
+    <ol>
+      <li><strong>一致性假设（Consistency）</strong> -- 直接证据和间接证据的效应量一致。使用 node-splitting 或 SIDE 检验评估局部不一致性</li>
+      <li><strong>传递性假设（Transitivity）</strong> -- 比较的试验在效应修饰因素（基线严重度、年龄、试验年代等）上大致可比</li>
+      <li><strong>网络连通性</strong> -- 所有药物通过直接或间接比较形成连通网络。孤立节点无法纳入</li>
+      <li><strong>排名解读</strong> -- SUCRA 值表示每种药物是最优的概率，0% = 最差，100% = 最好。应结合 SUCRA 和点估计值，避免仅依赖排名</li>
+    </ol>
+    <div class="tip">MetaReview 目前支持两两比较（pairwise）的 Meta 分析，适合按药物类别（如所有 SSRIs vs 安慰剂）进行分层分析。对于完整的网络 Meta 分析（同时比较 10+ 种药物），推荐使用 R 的 netmeta 包或 Stata 的 network 命令。MetaReview 可用于 NMA 前的数据整理和初步探索。</div>
+  </div>
+
+  <!-- Section 7: Publication bias -->
+  <div class="section" id="publication-bias">
+    <h2>发表偏倚：精神科的"重灾区"</h2>
+    <p>精神科是发表偏倚最严重、研究最充分的医学领域。从 Turner 2008 年的开创性研究到 Roest 2015 年对苯二氮卓类的分析，大量证据表明仅依赖发表文献进行的 Meta 分析会系统性地高估精神科药物的疗效。</p>
+    <h3>Turner 2008：揭露抗抑郁药的选择性发表</h3>
+    <p>Turner 等人 2008 年在 NEJM 发表的研究堪称发表偏倚研究的里程碑。他们获取了 FDA 注册的所有 74 项新一代抗抑郁药（12 种药物）临床试验数据，将 FDA 判定结果与发表文献进行对比：</p>
+    <table class="data-table">
+      <tr><th>FDA 判定结果</th><th>试验数</th><th>发表数</th><th>发表时报告为阳性</th></tr>
+      <tr><td>阳性（有效）</td><td>38</td><td>37 (97%)</td><td>37 (100%)</td></tr>
+      <tr><td>阴性/可疑（无效）</td><td>36</td><td>14 (39%)</td><td>11 (79%)</td></tr>
+    </table>
+    <p>关键发现：</p>
+    <ul>
+      <li>阳性试验几乎全部发表（37/38, 97%），阴性试验大量未发表（22/36, 61% 未发表）</li>
+      <li>14 项已发表的阴性试验中，11 项通过选择性报告被"包装"为阳性结果</li>
+      <li>仅根据发表文献：94% 的试验显示抗抑郁药有效；根据 FDA 完整数据：仅 51% 为阳性</li>
+      <li>仅基于发表文献的效应量高估约 32%（SMD 0.37 vs 0.15-0.31 取决于药物）</li>
+    </ul>
+    <h3>FDA 审批数据 vs 发表数据差异</h3>
+    <p>除了 Turner 2008，还有多项研究揭示了精神科药物的 FDA-发表差异：</p>
+    <ul>
+      <li><strong>抗精神病药</strong> -- Turner 2012 分析了 24 项抗精神病药试验，发现类似但较轻的发表偏倚（效应量高估约 8%）</li>
+      <li><strong>抗焦虑药</strong> -- Roest 2015 分析了 FDA 注册的 57 项抗焦虑药试验（SSRIs/SNRIs 治疗焦虑症），发现 41% 的阴性试验未发表或被重新解读为阳性</li>
+      <li><strong>ADHD 药物</strong> -- 非兴奋剂类 ADHD 药物也存在选择性发表，但兴奋剂类（哌甲酯）因效应量大，发表偏倚影响较小</li>
+    </ul>
+    <h3>Industry-sponsored bias</h3>
+    <p>药企资助的试验在精神科尤为普遍（抗抑郁药和抗精神病药 RCT 中超过 70% 为药企资助），这带来多层面的偏倚：</p>
+    <ul>
+      <li><strong>发表偏倚</strong> -- 药企有动机不发表阴性结果</li>
+      <li><strong>选择性报告</strong> -- 在多个结局指标中选择性报告最有利的结果</li>
+      <li><strong>对照组选择</strong> -- 使用低剂量活性对照或不适当的对照药物</li>
+      <li><strong>Ebrahim 2016 BMJ 系统综述</strong> -- 药企资助的精神科 RCT 比独立研究更可能报告有利于赞助方的结论（OR 4.54）</li>
+    </ul>
+    <h3>小样本研究过度乐观</h3>
+    <p>精神科存在大量小样本 RCT（n &lt; 50/组），这些研究更容易产生：</p>
+    <ul>
+      <li><strong>偶然的极端效应量</strong> -- 小样本的效应量估计方差更大，更容易出现偶然的"阳性结果"</li>
+      <li><strong>漏斗图不对称</strong> -- 小样本阳性研究被选择性发表，大样本研究（无论阳性阴性都会发表）集中在漏斗图中部</li>
+      <li>Sterne 等人在 Cochrane Handbook 中建议：纳入 &ge;10 项研究时才进行漏斗图和 Egger 检验</li>
+    </ul>
+    <h3>Cochrane vs 非 Cochrane 综述的差异</h3>
+    <p>Cochrane 系统综述因其严格的方法学标准（必须检索未发表文献、必须评估偏倚风险、必须检索试验注册库），通常比非 Cochrane 综述得出更保守的效应量估计：</p>
+    <ul>
+      <li>Cochrane 抑郁症综述的效应量平均比非 Cochrane 综述低 15-20%</li>
+      <li>差异主要来自：Cochrane 纳入了更多未发表的阴性试验、使用了 intention-to-treat 分析、排除了高偏倚风险的试验</li>
+      <li>进行精神科 Meta 分析时，应以 Cochrane 方法学为标杆</li>
+    </ul>
+    <h3>发表偏倚的评估方法</h3>
+    <table class="data-table">
+      <tr><th>方法</th><th>适用条件</th><th>精神科注意事项</th></tr>
+      <tr><td>漏斗图</td><td>&ge;10 项研究</td><td>精神科 Meta 分析通常有足够多的研究支持漏斗图</td></tr>
+      <tr><td>Egger 检验</td><td>连续型效应量（SMD、MD）</td><td>SMD 可能存在 Egger 检验的假阳性（因 SMD 与 SE 的数学关联）</td></tr>
+      <tr><td>Peter 检验</td><td>二分类效应量（OR）</td><td>响应率 OR 的发表偏倚评估</td></tr>
+      <tr><td>Trim-and-fill</td><td>漏斗图不对称时</td><td>估计"缺失"研究并调整合并效应量</td></tr>
+      <tr><td>对比分析法</td><td>有 FDA 或注册库数据时</td><td>最可靠的方法：直接比较发表 vs 未发表试验的效应量</td></tr>
+      <tr><td>ClinicalTrials.gov 交叉检索</td><td>任何 Meta 分析</td><td>检索所有注册但未发表的试验</td></tr>
+    </table>
+    <div class="warn">在精神科 Meta 分析中，如果不系统检索 ClinicalTrials.gov、FDA 审批数据和 Cochrane 试验注册库中的未发表数据，你的结论几乎一定会高估药物疗效。Turner 2008 的研究已经给出了明确的证据：仅依赖发表文献会使抗抑郁药效应量高估约 1/3。</div>
+  </div>
+
+  <!-- Section 8: Classic cases -->
+  <div class="section" id="classic-cases">
+    <h2>经典案例解析</h2>
+    <p>以下四项研究代表了精神科 Meta 分析的方法学巅峰，每一项都改变了临床实践或引发了深远的学术讨论。理解它们的设计、方法和局限性，是做好精神科 Meta 分析的基础。</p>
+
+    <h3>案例 1：Cipriani 2018 -- 21 种抗抑郁药的网络 Meta 分析（Lancet）</h3>
+    <p><strong>研究背景</strong>：这是迄今为止精神科领域规模最大、影响最深远的 Meta 分析。由牛津大学 Andrea Cipriani 领导，合并了截至 2016 年的所有成人 MDD 急性期双盲 RCT。</p>
+    <ul>
+      <li><strong>规模</strong>：522 项 RCT，116,477 例患者，21 种抗抑郁药 + 安慰剂</li>
+      <li><strong>主要终点</strong>：疗效（响应率 OR）和可接受性（全因脱落率 OR）</li>
+      <li><strong>核心结论</strong>：所有 21 种抗抑郁药均显著优于安慰剂（OR 1.15-2.13）。头对头比较中，阿戈美拉汀、阿米替林、艾司西酞普兰、米氮平、帕罗西汀、文拉法辛和伏硫西汀疗效相对最好；可接受性最好的是阿戈美拉汀、西酞普兰、艾司西酞普兰、氟西汀、舍曲林和伏硫西汀</li>
+      <li><strong>被引次数</strong>：超过 5000 次（精神科引用最高的 Meta 分析之一）</li>
+    </ul>
+    <p><strong>方法学亮点</strong>：</p>
+    <ul>
+      <li>使用贝叶斯网络 Meta 分析框架，允许 21 种药物的同时比较和排名</li>
+      <li>进行了严格的一致性检验（node-splitting），确认直接和间接证据一致</li>
+      <li>按 industry-sponsored vs 独立研究、基线严重度、发表偏倚风险进行了预设亚组分析</li>
+      <li>提供了所有成对比较的 OR、95% CrI 和 SUCRA 排名</li>
+    </ul>
+    <p><strong>局限性和争议</strong>：纳入的 RCT 中约 82% 为药企资助，可能存在系统性偏倚；未区分首发 vs 复发抑郁；未分析不同剂量的效应差异；头对头试验数量较少，间接比较的不确定性较大。</p>
+
+    <h3>案例 2：Leucht 2013 -- 15 种抗精神病药的网络 Meta 分析（Lancet）</h3>
+    <p><strong>研究背景</strong>：Stefan Leucht 领导的这项 NMA 首次全面比较了 15 种抗精神病药在精神分裂症急性期的疗效和副作用谱。</p>
+    <ul>
+      <li><strong>规模</strong>：212 项 RCT，43,049 例精神分裂症患者</li>
+      <li><strong>主要终点</strong>：总体症状改善（PANSS/BPRS 总分变化，SMD）、全因脱落率、体重增加、锥体外系反应（EPS）、催乳素升高、QTc 延长、镇静</li>
+      <li><strong>核心发现</strong>：氯氮平（clozapine）疗效最好（SMD -0.88）但副作用最多；奥氮平（SMD -0.59）和利培酮（SMD -0.56）综合表现较好；所有抗精神病药的"疗效-副作用"权衡各不相同</li>
+    </ul>
+    <p><strong>方法学贡献</strong>：同时报告了 7 个维度的效应量（疗效、脱落、体重、EPS、催乳素、QTc、镇静），使临床医生可以根据患者的具体情况权衡利弊。这种"多维度比较"成为后续精神科 NMA 的标准模式。</p>
+
+    <h3>案例 3：Cuijpers 2019 -- 心理治疗 vs 药物治疗 Meta 分析</h3>
+    <p><strong>研究背景</strong>：Pim Cuijpers 是心理治疗 Meta 分析领域最多产的研究者。他系统比较了心理治疗（主要是 CBT）与药物治疗（主要是抗抑郁药）在成人抑郁症中的疗效。</p>
+    <ul>
+      <li><strong>核心发现</strong>：急性期 CBT 和抗抑郁药疗效相当（直接比较 SMD 接近 0），但两者联合优于单一治疗（SMD -0.30 到 -0.50）</li>
+      <li><strong>长期获益</strong>：CBT 的长期复发预防效果优于药物（停药后复发率：药物 50-60% vs CBT 30-40%）</li>
+      <li><strong>等待名单偏倚</strong>：当对照组为等待名单时，CBT 的 SMD 约 0.8-1.0（大效应）；当对照组为"积极安慰剂"（支持性治疗）时，SMD 降至 0.2-0.3（小效应）。Cuijpers 反复强调等待名单对照会严重高估心理治疗疗效</li>
+    </ul>
+    <p><strong>方法学启示</strong>：心理治疗 Meta 分析面临独特挑战——治疗师技能差异（therapist effects）、治疗忠实度（treatment fidelity）、无法实现双盲——这些都是药物试验中不存在的异质性来源。</p>
+
+    <h3>案例 4：Kirsch 2008 -- 抗抑郁药 vs 安慰剂争议（PLoS Medicine）</h3>
+    <p><strong>研究背景</strong>：Irving Kirsch 利用信息自由法案（FOIA）获取了 FDA 注册的 35 项新一代抗抑郁药（氟西汀、文拉法辛、奈法唑酮、帕罗西汀）RCT 数据，分析了药物-安慰剂差异。</p>
+    <ul>
+      <li><strong>核心发现</strong>：总体加权 SMD = 0.32，低于 NICE 建议的 0.50 临床显著性阈值</li>
+      <li><strong>基线严重度效应</strong>：轻度和中度抑郁中药物-安慰剂差异不显著；仅在极重度抑郁（基线 HAMD &ge;28）中达到临床显著性</li>
+      <li><strong>Kirsch 的解读</strong>：重度患者的"显著差异"主要是因为安慰剂组响应率下降（而非药物疗效增加），暗示"抗抑郁药的临床获益主要是增强的安慰剂效应"</li>
+    </ul>
+    <p><strong>争议和反驳</strong>：</p>
+    <ul>
+      <li>NICE 的 0.50 SMD 阈值缺乏经验基础，为什么 0.32 就不具临床意义？</li>
+      <li>Kirsch 仅分析了 4 种药物的 FDA 数据，不代表所有抗抑郁药</li>
+      <li>Gibbons 2012 在 Archives of General Psychiatry 使用 IPD 分析反驳：在中重度患者中抗抑郁药确实有临床获益</li>
+      <li>Cipriani 2018 的大规模 NMA 证实所有抗抑郁药均显著优于安慰剂，但同时承认效应量"modest"</li>
+    </ul>
+    <p><strong>方法学遗产</strong>：Kirsch 2008 虽然结论有争议，但其方法学贡献巨大——它开创了使用 FDA 注册数据进行 Meta 分析的先河，揭示了发表偏倚的严重性，并将"基线严重度作为效应修饰因素"推到了精神科 Meta 分析方法学的核心位置。</p>
+
+    <div class="warn">引用这些经典研究时注意：（1）Cipriani 2018 和 Leucht 2013 的数据截止到 2016 和 2012 年，近年获批的新药（如 esketamine、brexanolone、pimavanserin）未纳入；（2）Kirsch 2008 仅分析了 4 种药物，不能推广到所有抗抑郁药；（3）Cuijpers 的心理治疗 Meta 分析多次更新，引用时注意使用最新版本。</div>
+  </div>
+
+  <!-- Section 9: MetaReview tutorial -->
+  <div class="section" id="tool-practice">
+    <h2>用 MetaReview 5 分钟完成精神科 Meta 分析</h2>
+    <p>以"SSRIs 治疗成人 MDD 的急性期疗效（HAMD/MADRS 评分变化）"为例，演示在 MetaReview 中完成一次完整精神科 Meta 分析的全过程。</p>
+    <h3>第 1 步：准备数据</h3>
+    <p>从文献中提取以下 6 项 SSRI vs 安慰剂 RCT 的数据（示例数据）：</p>
+    <table class="data-table">
+      <tr><th>研究</th><th>药物</th><th>量表</th><th>N (药物/安慰剂)</th><th>Mean change (药物)</th><th>SD (药物)</th><th>Mean change (安慰剂)</th><th>SD (安慰剂)</th></tr>
+      <tr><td>Study A (2015)</td><td>艾司西酞普兰 10mg</td><td>MADRS</td><td>150/148</td><td>-14.2</td><td>9.5</td><td>-10.8</td><td>9.8</td></tr>
+      <tr><td>Study B (2016)</td><td>舍曲林 100mg</td><td>HAMD-17</td><td>120/118</td><td>-10.5</td><td>7.2</td><td>-8.1</td><td>7.5</td></tr>
+      <tr><td>Study C (2017)</td><td>氟西汀 20mg</td><td>HAMD-17</td><td>180/175</td><td>-9.8</td><td>7.8</td><td>-8.0</td><td>7.6</td></tr>
+      <tr><td>Study D (2018)</td><td>艾司西酞普兰 20mg</td><td>HAMD-17</td><td>200/198</td><td>-11.2</td><td>8.1</td><td>-8.9</td><td>8.3</td></tr>
+      <tr><td>Study E (2019)</td><td>帕罗西汀 30mg</td><td>MADRS</td><td>140/135</td><td>-13.5</td><td>10.2</td><td>-10.0</td><td>9.9</td></tr>
+      <tr><td>Study F (2020)</td><td>舍曲林 50mg</td><td>MADRS</td><td>160/158</td><td>-12.8</td><td>9.0</td><td>-10.5</td><td>9.3</td></tr>
+    </table>
+    <p>注意：6 项研究使用了 3 种不同量表（MADRS 和 HAMD-17），因此<strong>必须使用 SMD</strong> 而非 MD。</p>
+    <h3>第 2 步：打开 MetaReview 并输入数据</h3>
+    <ol>
+      <li>访问 MetaReview 主页，效应量类型选择 <strong>SMD（Hedges' g）</strong></li>
+      <li>数据输入模式选择<strong>均数和标准差</strong>（Mean &plusmn; SD）</li>
+      <li>逐行输入：Study 名称、Treatment N、Treatment Mean、Treatment SD、Control N、Control Mean、Control SD</li>
+      <li>MetaReview 自动计算每项研究的 Hedges' g 和标准误</li>
+    </ol>
+    <h3>第 3 步：选择模型并运行分析</h3>
+    <ol>
+      <li>选择<strong>随机效应模型</strong>（不同 SSRI 药物、不同剂量、不同量表、不同人群）</li>
+      <li>点击 <strong>Run Meta-Analysis</strong></li>
+      <li>查看合并 SMD（Hedges' g）、95% CI、p 值和异质性统计量（I&sup2;、Q、&tau;&sup2;）</li>
+    </ol>
+    <p>预期结果：合并 Hedges' g 约 -0.30 到 -0.35 (95% CI: -0.45 to -0.20)，表明 SSRIs 相对安慰剂有小到中等的疗效优势（0.3 SD 单位）。这与大规模 Meta 分析的结论一致。</p>
+    <h3>第 4 步：生成森林图和漏斗图</h3>
+    <ol>
+      <li>MetaReview 自动生成<strong>森林图</strong>，展示每项研究的 Hedges' g 和 95% CI 以及合并效应菱形</li>
+      <li>切换到<strong>漏斗图</strong>视图 -- 检查是否存在漏斗图不对称（小样本阳性研究偏多）</li>
+      <li>查看<strong>逐一剔除</strong>敏感性分析：排除效应量最大/最小的研究后合并 SMD 变化多大？</li>
+    </ol>
+    <h3>第 5 步：扩展 -- 响应率的二分类分析</h3>
+    <p>在 MetaReview 中新建一个分析，使用 OR 或 RR 分析响应率（HAMD/MADRS 下降 &ge;50%）：</p>
+    <table class="data-table">
+      <tr><th>研究</th><th>药物组响应</th><th>药物组总数</th><th>安慰剂组响应</th><th>安慰剂组总数</th></tr>
+      <tr><td>Study A</td><td>75</td><td>150</td><td>52</td><td>148</td></tr>
+      <tr><td>Study B</td><td>55</td><td>120</td><td>38</td><td>118</td></tr>
+      <tr><td>Study C</td><td>72</td><td>180</td><td>58</td><td>175</td></tr>
+      <tr><td>Study D</td><td>98</td><td>200</td><td>69</td><td>198</td></tr>
+      <tr><td>Study E</td><td>63</td><td>140</td><td>44</td><td>135</td></tr>
+      <tr><td>Study F</td><td>72</td><td>160</td><td>55</td><td>158</td></tr>
+    </table>
+    <p>预期结果：合并 OR 约 1.5-1.7，对应 NNT 约 7-8，意味着每治疗 7-8 个 MDD 患者有 1 个额外达到治疗响应。</p>
+    <div class="tip">整个流程从数据输入到两张森林图（SMD + 响应率 OR）生成只需 5 分钟。MetaReview 的所有计算在浏览器本地完成，数据不会上传至服务器，保护你的未发表数据安全。精神科 Meta 分析建议同时报告连续变量（SMD）和二分类（响应率/缓解率 OR）两组结果，以提高临床可解读性。</div>
+  </div>
+
+  <div class="cta">
+    <h2>开始你的精神科 Meta 分析</h2>
+    <p>MetaReview 支持 SMD、MD、OR、RR、HR 等全部效应量，从数据输入到森林图只需 5 分钟。免费、无需安装、无需编程。</p>
+    <a href="/">打开 MetaReview</a>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:18px;color:#1e40af;margin:0 0 8px">获取更新通知</h3>
+    <p style="font-size:14px;color:#64748b;margin:0 0 16px">留下邮箱，第一时间获取新功能通知和 Meta 分析技巧。</p>
+    <form id="email-form" style="display:flex;gap:8px;max-width:400px;margin:0 auto">
+      <input id="email-input" type="email" placeholder="输入邮箱地址" required style="flex:1;padding:10px 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;outline:none;">
+      <button type="submit" style="background:#1e40af;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;white-space:nowrap;">订阅</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:8px 12px;border-radius:6px;font-size:14px;"></div>
+    <p style="font-size:12px;color:#94a3b8;margin:8px 0 0">我们不会发送垃圾邮件，随时可退订。</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='提交中...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-psychiatric',lang:'zh'})})
+    .then(r=>r.json()).then(d=>{msg.style.display='block';if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'你已经订阅过了！':'订阅成功！我们会在有新功能时通知你。';document.getElementById('email-form').style.display='none';}else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='请输入有效的邮箱地址。';btn.textContent='订阅';btn.disabled=false;}}).catch(()=>{msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='提交失败，请稍后重试。';btn.textContent='订阅';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="faq" id="faq">
+    <h2>常见问题</h2>
+
+    <h3>精神科 Meta 分析为什么首选标准化均数差（SMD）而不是均数差（MD）？</h3>
+    <p>精神科 Meta 分析中不同试验经常使用不同的评定量表（如 HAMD-17、MADRS、PHQ-9），这些量表的分数范围和单位完全不同，无法直接用 MD 合并。SMD 通过将效应量除以标准差来消除量表差异。推荐使用 Hedges' g（对小样本有偏差校正）。SMD 0.2 为小效应，0.5 为中效应，0.8 为大效应。多数抗抑郁药 vs 安慰剂的 SMD 约 0.3。</p>
+
+    <h3>精神科 Meta 分析中安慰剂效应为什么这么大？如何处理？</h3>
+    <p>精神科疾病的安慰剂响应率异常高（30-50%），原因包括主观量表的期望效应、临床试验中的额外关注具有治疗作用、均值回归和自然波动。处理方法：始终使用安慰剂校正后的效应量；在 Meta-regression 中将安慰剂响应率或发表年代作为协变量；注意等待名单对照和安慰剂对照的区别。</p>
+
+    <h3>HAMD-17、HAMD-21 和 MADRS 在 Meta 分析中如何统一处理？</h3>
+    <p>首选方案是使用 SMD（Hedges' g）将所有量表标准化后合并。次选方案是选择报告最多的量表（通常 HAMD-17）作为主要分析。HAMD-17 和 HAMD-21 虽然都是 HAMD，但总分范围不同（52 vs 64），不能直接以 MD 合并。在方法部分必须明确说明量表统一策略。</p>
+
+    <h3>什么是网络 Meta 分析（NMA），为什么精神科特别需要？</h3>
+    <p>NMA 可以同时比较多种干预措施，即使它们之间没有直接的头对头试验。精神科同类药物众多（20+ 种抗抑郁药），两两头对头 RCT 不现实，且临床决策需要排名。Cipriani 2018 在 Lancet 发表的 21 种抗抑郁药 NMA（522 项 RCT，116,477 例患者）是经典范例。NMA 需要满足一致性假设和传递性假设。</p>
+
+    <h3>抗抑郁药 Meta 分析中发表偏倚有多严重？</h3>
+    <p>Turner 2008 NEJM 研究揭示：FDA 注册的 74 项抗抑郁药试验中，阳性结果 97% 发表，阴性结果仅 39% 发表（且多被包装为阳性）。仅基于发表文献，94% 的试验显示有效；根据 FDA 完整数据，仅 51% 为阳性。发表文献的效应量高估约 32%。必须检索 ClinicalTrials.gov 和 FDA 审批数据。</p>
+
+    <h3>儿童青少年和老年人群的精神科 Meta 分析有什么特殊考量？</h3>
+    <p>儿童青少年：药物数据远少于成人，不应外推；FDA 黑框警告 SSRI 可能增加自杀意念风险；氟西汀是唯一获批用于儿童抑郁的 SSRI；安慰剂响应率更高（50-60%）。老年人：需考虑多药联用和跌倒风险；老年抑郁常合并认知下降；量表可能不同（如 GDS）。两个人群都应独立分析。</p>
+
+    <h3>MetaReview 能做精神科相关的 Meta 分析吗？</h3>
+    <p>完全可以。MetaReview 支持 SMD（Hedges' g）、MD、OR/RR、HR 等全部效应量类型，提供固定效应和随机效应模型，自动生成森林图和漏斗图，支持按药物类别或疾病严重度进行亚组分析，以及逐一剔除敏感性分析。免费使用，无需安装，无需编程。</p>
+  </div>
+
+  <div class="related">
+    <h2>相关指南</h2>
+    <ul>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤：从研究问题到发表的全流程指南</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图怎么画？在线生成森林图完全指南（免费工具）</a></li>
+      <li><a href="/guides/effect-size-selection">OR、RR、HR、MD、SMD 怎么选？Meta 分析效应量完整指南</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 流程图：在线制作模板与填写指南</a></li>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析：HR 的提取、计算与解读指南</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta 分析软件对比：MetaReview vs RevMan vs R vs Stata</a></li>
+      <li><a href="/guides/tumor-meta-analysis">肿瘤 Meta 分析完整指南</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">心血管 Meta 分析完整指南</a></li>
+      <li><a href="/guides/diabetes-meta-analysis">糖尿病 Meta 分析完整指南</a></li>
+      <li><a href="/guides/how-to-meta-analysis">How to Do a Meta-Analysis: Complete Step-by-Step Tutorial</a></li>
+      <li><a href="/guides/free-forest-plot-generator">Free Forest Plot Generator Online</a></li>
+      <li><a href="/guides/covid-meta-analysis">COVID-19 Meta 分析指南</a></li>
+      <li><a href="/guides/free-funnel-plot-maker">Free Funnel Plot Maker</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> — 免费在线 Meta 分析工具</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
