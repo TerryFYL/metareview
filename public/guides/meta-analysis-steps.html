@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meta 分析完整步骤：从研究问题到发表的全流程指南 | MetaReview</title>
+  <meta name="description" content="Meta 分析怎么做？本文详解 Meta 分析 9 个步骤：PICO 定义、检索策略、文献筛选、数据提取、质量评估、统计分析、森林图、亚组分析、结果撰写。附免费在线工具。" />
+  <meta name="keywords" content="meta分析步骤, 如何做meta分析, meta analysis步骤, 系统综述流程, meta分析怎么做, 循证医学, 森林图, PICO, meta-analysis tutorial" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/meta-analysis-steps" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/meta-analysis-steps" />
+  <meta property="og:title" content="Meta 分析完整步骤：从研究问题到发表的全流程指南" />
+  <meta property="og:description" content="Meta 分析怎么做？9 步全流程指南，附免费在线工具 MetaReview。" />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Meta 分析完整步骤：从研究问题到发表",
+    "description": "详解 Meta 分析 9 个步骤的全流程指南，适合医学研究生和临床研究者。",
+    "totalTime": "PT30M",
+    "tool": {
+      "@type": "HowToTool",
+      "name": "MetaReview 免费在线 Meta 分析工具"
+    },
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "PICO 框架定义研究问题", "text": "使用 PICO 框架（Patient/Population, Intervention, Comparison, Outcome）明确定义系统综述的研究问题，确保问题具体、可检索、可回答。"},
+      {"@type": "HowToStep", "position": 2, "name": "制定检索策略", "text": "基于 PICO 元素构建检索式，确定检索数据库（PubMed, Embase, Cochrane Library），使用布尔运算符（AND, OR, NOT）和 MeSH 主题词。"},
+      {"@type": "HowToStep", "position": 3, "name": "文献筛选", "text": "按 PRISMA 2020 流程进行两轮筛选：先根据标题和摘要初筛，再全文阅读复筛。推荐两人独立筛选并计算 Kappa 一致性。"},
+      {"@type": "HowToStep", "position": 4, "name": "数据提取", "text": "设计标准化数据提取表，提取每篇文献的效应量数据（事件数/总数或均值/标准差/样本量）、研究特征、质量评价信息。"},
+      {"@type": "HowToStep", "position": 5, "name": "质量评估", "text": "使用 RoB 2.0（RCT）或 NOS（观察性研究）评估纳入文献的偏倚风险，记录每个维度的评分。"},
+      {"@type": "HowToStep", "position": 6, "name": "统计分析", "text": "选择合适的效应量（OR/RR/MD/SMD）和分析模型（固定/随机效应），计算合并效应量、置信区间和异质性指标（I², Q, tau²）。"},
+      {"@type": "HowToStep", "position": 7, "name": "生成森林图与漏斗图", "text": "森林图展示各研究效应量及合并结果，漏斗图检测发表偏倚，辅以 Egger 检验定量判断。"},
+      {"@type": "HowToStep", "position": 8, "name": "亚组分析与敏感性分析", "text": "按预设变量（年龄、剂量、地区等）进行亚组分析探索异质性来源，逐一剔除法进行敏感性分析验证结果稳健性。"},
+      {"@type": "HowToStep", "position": 9, "name": "撰写结果段落", "text": "按 PRISMA 2020 规范撰写方法和结果部分，报告检索流程、纳入排除、合并效应量、异质性和亚组分析结果。"}
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .toc { background: white; border-radius: 12px; padding: 24px 32px; margin-bottom: 40px; border: 1px solid #e5e7eb; }
+    .toc h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .toc a:hover { text-decoration: underline; }
+    .step { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .step-number { display: inline-block; background: #1e40af; color: white; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-weight: 700; font-size: 14px; margin-right: 12px; }
+    .step h2 { display: inline; font-size: 20px; color: #111827; vertical-align: middle; }
+    .step h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .step p, .step li { font-size: 15px; color: #4b5563; }
+    .step ul, .step ol { padding-left: 20px; margin: 8px 0; }
+    .step li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    .faq { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .faq h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .faq h3 { font-size: 16px; color: #1e40af; margin: 16px 0 8px; }
+    .faq p { font-size: 15px; color: #4b5563; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .step, .toc, .faq, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">打开工具</a>
+      <a href="/guides/forest-plot-generator">森林图指南</a>
+      <a href="/guides/effect-size-selection">效应量选择</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Meta 分析完整步骤：从研究问题到发表的全流程指南</h1>
+  <p>9 个步骤，带你完成一篇完整的 Meta 分析。适合医学研究生和临床研究者。</p>
+</div>
+
+<div class="container">
+
+  <div class="toc">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#step1">PICO 框架定义研究问题</a></li>
+      <li><a href="#step2">制定检索策略与检索数据库</a></li>
+      <li><a href="#step3">文献筛选（标题摘要 + 全文）</a></li>
+      <li><a href="#step4">数据提取</a></li>
+      <li><a href="#step5">质量评估（RoB 2.0 / NOS）</a></li>
+      <li><a href="#step6">统计分析（效应量 + 模型 + 异质性）</a></li>
+      <li><a href="#step7">生成森林图与漏斗图</a></li>
+      <li><a href="#step8">亚组分析与敏感性分析</a></li>
+      <li><a href="#step9">撰写结果段落</a></li>
+      <li><a href="#faq">常见问题</a></li>
+    </ol>
+  </div>
+
+  <div class="step" id="step1">
+    <span class="step-number">1</span>
+    <h2>PICO 框架定义研究问题</h2>
+    <p style="margin-top:16px">做 Meta 分析的第一步是明确你的研究问题。PICO 框架是最广泛使用的结构化方法：</p>
+    <table class="data-table">
+      <tr><th>元素</th><th>含义</th><th>示例</th></tr>
+      <tr><td><strong>P</strong> (Population)</td><td>目标人群</td><td>2 型糖尿病成年患者</td></tr>
+      <tr><td><strong>I</strong> (Intervention)</td><td>干预措施</td><td>GLP-1 受体激动剂</td></tr>
+      <tr><td><strong>C</strong> (Comparison)</td><td>对照措施</td><td>安慰剂或常规治疗</td></tr>
+      <tr><td><strong>O</strong> (Outcome)</td><td>结局指标</td><td>HbA1c 变化、体重、不良事件</td></tr>
+    </table>
+    <div class="tip">好的 PICO 问题应该具体到可以直接转化为检索式。如果你的问题太宽泛（如"某药物有效吗"），筛出来的文献可能有几千篇。</div>
+    <h3>纳入排除标准</h3>
+    <p>基于 PICO 制定明确的纳入排除标准，常见维度包括：研究类型（仅 RCT？还是包括观察性研究？）、发表语言、发表时间、最低样本量、随访时间等。</p>
+  </div>
+
+  <div class="step" id="step2">
+    <span class="step-number">2</span>
+    <h2>制定检索策略与检索数据库</h2>
+    <p style="margin-top:16px">检索策略直接决定你能找到多少相关文献。核心原则是<strong>查全率优先</strong>——宁可多筛，不可漏检。</p>
+    <h3>推荐检索数据库</h3>
+    <ul>
+      <li><strong>PubMed / MEDLINE</strong> — 最大的生物医学文献库，必检</li>
+      <li><strong>Embase</strong> — 药物和毒理学文献更全，与 PubMed 重叠约 60%</li>
+      <li><strong>Cochrane Library</strong> — 系统综述和 RCT 注册库</li>
+      <li><strong>中国知网 / 万方</strong> — 中文文献，视研究主题决定是否检索</li>
+    </ul>
+    <h3>检索式构建</h3>
+    <p>将 PICO 各元素转化为检索词，使用 MeSH 主题词 + 自由词组合，用布尔运算符连接：</p>
+    <div class="tip">
+      示例检索式（PubMed）：<br/>
+      <code>("diabetes mellitus, type 2"[MeSH] OR "type 2 diabetes") AND ("GLP-1 receptor agonists"[MeSH] OR "liraglutide" OR "semaglutide") AND ("randomized controlled trial"[pt])</code>
+    </div>
+    <p>MetaReview 内置 PubMed 检索功能，支持关键词搜索、年份范围、文献类型和语言筛选，可以直接在工具中完成检索。</p>
+  </div>
+
+  <div class="step" id="step3">
+    <span class="step-number">3</span>
+    <h2>文献筛选（标题摘要 + 全文）</h2>
+    <p style="margin-top:16px">按照 PRISMA 2020 流程，文献筛选分为两轮：</p>
+    <ol>
+      <li><strong>第一轮：标题和摘要筛选</strong> — 快速浏览，排除明显不相关的文献</li>
+      <li><strong>第二轮：全文阅读筛选</strong> — 仔细阅读全文，核对纳入排除标准</li>
+    </ol>
+    <h3>筛选原则</h3>
+    <ul>
+      <li>推荐两人<strong>独立筛选</strong>，计算 Cohen's Kappa 一致性系数（>0.8 为优）</li>
+      <li>有争议的文献由第三人裁决</li>
+      <li>记录每篇排除文献的排除原因（PRISMA 2020 要求）</li>
+    </ul>
+    <div class="tip">MetaReview 提供 AI 智能筛选功能：PICO 关键词匹配 + Llama 3.1 深度筛选，可以在几分钟内完成数百篇文献的初筛，并给出纳入/排除建议和置信度评分。</div>
+  </div>
+
+  <div class="step" id="step4">
+    <span class="step-number">4</span>
+    <h2>数据提取</h2>
+    <p style="margin-top:16px">从每篇纳入文献中提取标准化的数据。提取内容取决于你的效应量类型：</p>
+    <table class="data-table">
+      <tr><th>数据类型</th><th>需要提取的数据</th><th>适用场景</th></tr>
+      <tr><td>二分类数据</td><td>事件数（events）、总数（total），干预组和对照组各一组</td><td>死亡率、治愈率、不良事件发生率</td></tr>
+      <tr><td>连续性数据</td><td>均值（mean）、标准差（SD）、样本量（N），干预组和对照组各一组</td><td>血压变化、体重变化、量表评分</td></tr>
+    </table>
+    <h3>数据提取表常见字段</h3>
+    <ul>
+      <li>第一作者、发表年份</li>
+      <li>研究设计、国家/地区</li>
+      <li>样本量（干预组/对照组）</li>
+      <li>干预措施细节（药物、剂量、疗程）</li>
+      <li>结局指标数据</li>
+      <li>亚组信息（年龄、性别、基线严重程度等）</li>
+    </ul>
+    <div class="tip">MetaReview 的 PDF 数据提取功能可以自动从论文 PDF 中提取效应量数据（事件数、均值、SD、样本量），减少手动录入工作量。</div>
+  </div>
+
+  <div class="step" id="step5">
+    <span class="step-number">5</span>
+    <h2>质量评估（RoB 2.0 / NOS）</h2>
+    <p style="margin-top:16px">每篇纳入文献都需要进行偏倚风险评估。工具选择取决于研究类型：</p>
+    <table class="data-table">
+      <tr><th>评估工具</th><th>适用研究类型</th><th>评估维度</th></tr>
+      <tr><td>RoB 2.0</td><td>随机对照试验（RCT）</td><td>随机化过程、偏离预定干预、数据缺失、结局测量、选择性报告</td></tr>
+      <tr><td>NOS</td><td>队列研究、病例对照研究</td><td>选择（4分）、可比性（2分）、暴露/结局（3分），满分 9 分</td></tr>
+      <tr><td>ROBINS-I</td><td>非随机干预性研究</td><td>混杂、选择、干预分类、偏离、缺失、测量、报告</td></tr>
+    </table>
+    <div class="tip">质量评估结果直接影响 Meta 分析的可信度。审稿人最常问的问题之一就是"纳入研究的质量如何"。建议在敏感性分析中排除低质量研究，观察结果是否改变。</div>
+  </div>
+
+  <div class="step" id="step6">
+    <span class="step-number">6</span>
+    <h2>统计分析（效应量 + 模型 + 异质性）</h2>
+    <p style="margin-top:16px">这是 Meta 分析的核心计算环节。需要做三个关键决策：</p>
+    <h3>选择效应量</h3>
+    <ul>
+      <li><strong>OR（比值比）</strong>— 二分类数据，病例对照研究首选</li>
+      <li><strong>RR（风险比）</strong>— 二分类数据，队列研究和 RCT 首选</li>
+      <li><strong>MD（均数差）</strong>— 连续性数据，各研究使用相同量表</li>
+      <li><strong>SMD（标准化均数差）</strong>— 连续性数据，各研究使用不同量表</li>
+    </ul>
+    <p>详细的效应量选择指南请看：<a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？</a></p>
+    <h3>选择分析模型</h3>
+    <ul>
+      <li><strong>固定效应模型</strong> — 假设所有研究估计同一个真实效应值（适用于 I² < 25% 且研究方法高度同质的情况）</li>
+      <li><strong>随机效应模型</strong> — 假设各研究的真实效应值不同（大多数 Meta 分析的默认选择）</li>
+    </ul>
+    <h3>异质性评估</h3>
+    <table class="data-table">
+      <tr><th>指标</th><th>含义</th><th>判断标准</th></tr>
+      <tr><td>I²</td><td>异质性占总变异的百分比</td><td>25% 低、50% 中、75% 高</td></tr>
+      <tr><td>Q 检验</td><td>检验各研究效应量是否一致</td><td>p < 0.10 提示存在异质性</td></tr>
+      <tr><td>tau²</td><td>研究间方差的绝对值</td><td>越大异质性越强</td></tr>
+    </table>
+    <div class="tip">MetaReview 支持全部 4 种效应量和 2 种模型，自动计算 I²、Q 检验和 tau²，无需编写任何代码。</div>
+  </div>
+
+  <div class="step" id="step7">
+    <span class="step-number">7</span>
+    <h2>生成森林图与漏斗图</h2>
+    <p style="margin-top:16px"><strong>森林图（Forest Plot）</strong>是 Meta 分析最核心的可视化。它展示：</p>
+    <ul>
+      <li>每篇研究的效应量和 95% 置信区间（方块 + 横线）</li>
+      <li>方块大小代表研究权重</li>
+      <li>合并效应量（底部菱形）</li>
+      <li>无效线（OR/RR = 1 或 MD/SMD = 0）</li>
+    </ul>
+    <p><strong>漏斗图（Funnel Plot）</strong>用于检测发表偏倚：</p>
+    <ul>
+      <li>对称分布提示无明显发表偏倚</li>
+      <li>不对称分布可能存在发表偏倚</li>
+      <li>辅以 Egger 线性回归检验定量判断（p < 0.10 提示存在发表偏倚）</li>
+    </ul>
+    <p>详细的森林图制作指南请看：<a href="/guides/forest-plot-generator">森林图怎么画？在线生成完全指南</a></p>
+    <div class="tip">MetaReview 可一键生成高质量森林图和漏斗图（SVG 格式），支持亚组森林图展示，可直接用于论文投稿。</div>
+  </div>
+
+  <div class="step" id="step8">
+    <span class="step-number">8</span>
+    <h2>亚组分析与敏感性分析</h2>
+    <p style="margin-top:16px">这两种分析是审稿人最关注的部分之一：</p>
+    <h3>亚组分析（Subgroup Analysis）</h3>
+    <p>按预设的变量将研究分组，分别计算合并效应量，探索异质性来源。常见分组变量：</p>
+    <ul>
+      <li>年龄组（&lt;60 岁 vs &ge;60 岁）</li>
+      <li>药物剂量（低剂量 vs 高剂量）</li>
+      <li>地区（亚洲 vs 欧美）</li>
+      <li>研究质量（高质量 vs 低质量）</li>
+      <li>随访时间（短期 vs 长期）</li>
+    </ul>
+    <p>亚组间差异使用 Q-between 检验（p < 0.05 提示亚组间效应值有显著差异）。</p>
+    <h3>敏感性分析（Sensitivity Analysis）</h3>
+    <p>最常用的方法是<strong>逐一剔除法（Leave-one-out）</strong>：每次去掉一篇研究，重新计算合并效应量。如果去掉某篇研究后结果发生方向性改变（如从有效变为无效），说明该研究对结果有显著影响，需要在讨论部分重点阐述。</p>
+    <div class="tip">MetaReview 内置亚组分析（自动 Q-between 检验）和逐一剔除敏感性分析（自动高亮方向反转的研究）。</div>
+  </div>
+
+  <div class="step" id="step9">
+    <span class="step-number">9</span>
+    <h2>撰写结果段落</h2>
+    <p style="margin-top:16px">按 PRISMA 2020 规范撰写，Results 部分通常包含：</p>
+    <ol>
+      <li><strong>检索结果</strong>：检索到多少篇、去重后多少篇、最终纳入多少篇（配 PRISMA 流程图）</li>
+      <li><strong>纳入研究特征</strong>：表格汇总各研究的设计、样本量、干预细节</li>
+      <li><strong>Meta 分析结果</strong>：合并效应量 (95% CI)、p 值、异质性（I²、Q、tau²）</li>
+      <li><strong>亚组分析</strong>：各亚组结果及组间差异检验</li>
+      <li><strong>敏感性分析</strong>：结果是否稳健</li>
+      <li><strong>发表偏倚</strong>：漏斗图 + Egger 检验结果</li>
+    </ol>
+    <h3>撰写模板</h3>
+    <p>标准表述格式：</p>
+    <div class="tip">
+      "共 <em>k</em> 项研究纳入 Meta 分析（<em>n</em> = 总样本量）。随机效应模型分析显示，干预组 [结局指标] 显著 [优于/劣于] 对照组（OR/RR/MD = X.XX, 95% CI: X.XX–X.XX, <em>p</em> = X.XXX）。研究间存在 [低/中/高] 异质性（I² = XX%, Q = XX.XX, <em>p</em> = X.XXX）。"
+    </div>
+    <p>MetaReview 可自动生成英文结果段落，包含主分析、亚组分析和敏感性分析结论。</p>
+  </div>
+
+  <div class="cta">
+    <h2>立即开始你的 Meta 分析</h2>
+    <p>MetaReview 免费在线工具，从数据输入到森林图只需 5 分钟。无需安装，无需编程。</p>
+    <a href="/">打开 MetaReview</a>
+  </div>
+
+  <div class="faq" id="faq">
+    <h2>常见问题</h2>
+
+    <h3>Meta 分析至少需要多少篇文献？</h3>
+    <p>理论上 2 篇即可进行 Meta 分析，但一般建议至少 5 篇以上才能获得较稳定的合并效应量和有意义的异质性检验。如果少于 5 篇，审稿人可能会质疑合并的必要性。</p>
+
+    <h3>系统综述和 Meta 分析有什么区别？</h3>
+    <p>系统综述（Systematic Review）是按照规范流程全面检索和评价文献的过程；Meta 分析（Meta-Analysis）是在系统综述基础上，对多个研究结果进行定量合并的统计方法。简言之：系统综述 = 定性综合，Meta 分析 = 定量合并。可以做系统综述不做 Meta 分析，但不能只做 Meta 分析不做系统综述。</p>
+
+    <h3>什么时候不适合做 Meta 分析？</h3>
+    <p>当纳入研究的 PICO 差异过大（苹果和橙子放在一起比较）、数据类型不统一、异质性过高（I² > 90%）且无法通过亚组分析解释时，强行合并可能产生误导性结论。此时建议改为叙述性系统综述。</p>
+
+    <h3>不会 R/Stata 也能做 Meta 分析吗？</h3>
+    <p>可以。MetaReview 是完全在线的 Meta 分析工具，所有计算在浏览器内完成，无需安装任何软件或编写代码。支持 OR/RR/MD/SMD 四种效应量、固定和随机效应模型、亚组分析、敏感性分析、森林图和漏斗图生成。</p>
+
+    <h3>如何引用 MetaReview？</h3>
+    <p>目前 MetaReview 尚未发表方法学论文。你可以在方法部分注明"使用在线 Meta 分析工具 MetaReview (https://metareview-8c1.pages.dev/) 进行数据分析和森林图生成"。</p>
+  </div>
+
+  <div class="related">
+    <h2>相关指南</h2>
+    <ul>
+      <li><a href="/guides/forest-plot-generator">森林图怎么画？在线生成森林图完全指南（免费工具）</a></li>
+      <li><a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 流程图：在线制作模板与填写指南</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> — 免费在线 Meta 分析工具</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

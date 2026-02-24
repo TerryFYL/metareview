@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南 | MetaReview</title>
+  <meta name="description" content="Meta 分析效应量选择指南：OR 比值比、RR 风险比、MD 均数差、SMD 标准化均数差的区别、公式、适用场景和常见选择错误。附决策流程图。" />
+  <meta name="keywords" content="OR RR MD SMD区别, meta分析效应量怎么选, 比值比风险比区别, 效应量选择, odds ratio risk ratio, 均数差标准化均数差, meta-analysis effect size" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/effect-size-selection" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/effect-size-selection" />
+  <meta property="og:title" content="OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南" />
+  <meta property="og:description" content="一张决策图搞懂 Meta 分析效应量选择。OR/RR/MD/SMD 的区别、公式和常见陷阱。" />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "OR 和 RR 有什么区别？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "OR（比值比）比较的是两组的事件比值（odds），RR（风险比）比较的是两组的事件概率（risk）。当事件发生率低于 10% 时，OR 近似等于 RR。发生率越高，OR 偏离 RR 越远（OR 总是会夸大效应大小）。RCT 和队列研究优先用 RR，病例对照研究只能用 OR。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "MD 和 SMD 什么时候用？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MD（均数差）适用于所有研究使用相同量表和单位（如血压 mmHg、体重 kg）。SMD（标准化均数差）适用于各研究使用不同量表测量同一概念（如不同抑郁量表：PHQ-9、BDI、HAM-D）。如果量表相同，优先用 MD，因为 MD 有直观的临床解释。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Meta 分析中哪个效应量最常用？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "取决于研究领域：临床干预试验中 RR 最常用（直觉上比 OR 更好理解），病例对照研究用 OR，药物疗效比较中 MD 最常见（如血压降低多少 mmHg），心理学和教育学领域 SMD（Cohen's d）最常见。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "效应量的负值怎么解读？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "对于 MD 和 SMD：负值表示干预组的均值低于对照组。解读取决于结局指标方向——如果结局是血压（越低越好），负值表示干预有效；如果结局是肺功能（越高越好），负值表示干预有害。对于 OR 和 RR：使用对数变换后，ln(OR)<0 或 ln(RR)<0 表示干预组事件风险低于对照组。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "死亡率应该用 OR 还是 RR？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "推荐用 RR。死亡率是一个前瞻性指标（从暴露到结局），RR 的临床解释更直观：RR=0.7 意味着干预组死亡风险降低 30%。OR=0.7 的解释则是干预组的死亡比值是对照组的 0.7 倍，不太直观。只有在病例对照研究中才必须用 OR。"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .decision-tree { background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; overflow-x: auto; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">打开工具</a>
+      <a href="/guides/meta-analysis-steps">Meta 分析步骤</a>
+      <a href="/guides/forest-plot-generator">森林图指南</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</h1>
+  <p>一张决策图搞懂效应量选择。告别选择困难，避开常见陷阱。</p>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <h2>效应量选择决策图</h2>
+    <p>不知道该选哪个效应量？按这个流程走：</p>
+    <div class="decision-tree">
+你的结局数据是什么类型？
+│
+├── 二分类（是/否、死亡/存活、有效/无效）
+│   │
+│   ├── 病例对照研究？
+│   │   └── → 用 <strong>OR（比值比）</strong>
+│   │
+│   └── RCT 或队列研究？
+│       └── → 用 <strong>RR（风险比）</strong>
+│           （如果事件率 < 10%，OR ≈ RR，两者均可）
+│
+└── 连续性（均值、评分、测量值）
+    │
+    ├── 各研究用相同量表/单位？
+    │   └── → 用 <strong>MD（均数差）</strong>
+    │         例：血压 mmHg、体重 kg、HbA1c %
+    │
+    └── 各研究用不同量表？
+        └── → 用 <strong>SMD（标准化均数差）</strong>
+              例：不同抑郁量表（PHQ-9、BDI、HAM-D）
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>OR 比值比（Odds Ratio）</h2>
+    <h3>定义</h3>
+    <p>OR 比较两组的事件比值（odds）。Odds = 事件发生概率 / 事件不发生概率。</p>
+    <div class="formula">
+      OR = (a/b) / (c/d) = (a &times; d) / (b &times; c)
+    </div>
+    <p>其中 a = 干预组事件数，b = 干预组非事件数，c = 对照组事件数，d = 对照组非事件数。</p>
+    <h3>适用场景</h3>
+    <ul>
+      <li><strong>病例对照研究</strong> — 这是唯一可以使用 OR 的设计（因为无法直接计算发病率）</li>
+      <li><strong>Logistic 回归</strong>调整后的效应量通常报告为 OR</li>
+      <li>事件率很低（<10%）时，OR 近似等于 RR</li>
+    </ul>
+    <h3>解读</h3>
+    <table class="data-table">
+      <tr><th>OR 值</th><th>含义</th></tr>
+      <tr><td>OR = 1</td><td>两组无差异</td></tr>
+      <tr><td>OR < 1</td><td>干预组事件比值低于对照组（如果事件是不良结局，说明干预有保护作用）</td></tr>
+      <tr><td>OR > 1</td><td>干预组事件比值高于对照组</td></tr>
+    </table>
+    <div class="warn">常见陷阱：当事件发生率较高（>10%）时，OR 会夸大效应大小。例如真实的 RR = 2.0，但 OR 可能显示为 3.0 甚至更高。此时不应用 OR 代替 RR。</div>
+  </div>
+
+  <div class="section">
+    <h2>RR 风险比（Risk Ratio）</h2>
+    <h3>定义</h3>
+    <p>RR 比较两组的事件概率（risk）。Risk = 事件发生人数 / 总人数。</p>
+    <div class="formula">
+      RR = (a / (a+b)) / (c / (c+d))
+    </div>
+    <h3>适用场景</h3>
+    <ul>
+      <li><strong>RCT（随机对照试验）</strong> — 干预效果评估的首选</li>
+      <li><strong>队列研究</strong> — 暴露与结局的关联</li>
+      <li>临床报告中更直观：RR = 0.7 → "风险降低 30%"</li>
+    </ul>
+    <h3>RR vs OR 的关系</h3>
+    <table class="data-table">
+      <tr><th>对照组事件率</th><th>真实 RR</th><th>对应 OR</th><th>偏差</th></tr>
+      <tr><td>5%</td><td>2.0</td><td>2.1</td><td>微小</td></tr>
+      <tr><td>20%</td><td>2.0</td><td>2.7</td><td>明显</td></tr>
+      <tr><td>40%</td><td>2.0</td><td>4.7</td><td>严重</td></tr>
+    </table>
+    <div class="tip">结论：事件率越高，OR 和 RR 差距越大。如果你的研究是 RCT 或队列设计，优先用 RR。</div>
+  </div>
+
+  <div class="section">
+    <h2>MD 均数差（Mean Difference）</h2>
+    <h3>定义</h3>
+    <p>MD 是两组均值的直接差值，保留原始单位。</p>
+    <div class="formula">
+      MD = Mean(干预组) - Mean(对照组)
+    </div>
+    <h3>适用场景</h3>
+    <ul>
+      <li>各研究使用<strong>相同量表和单位</strong>测量结局</li>
+      <li>例：所有研究都测量收缩压（mmHg）、体重（kg）、HbA1c（%）</li>
+    </ul>
+    <h3>优势</h3>
+    <p>MD 有直接的临床意义。MD = -5.2 mmHg 意味着干预组比对照组血压低 5.2 mmHg，临床医生一看就懂。</p>
+    <div class="tip">如果论文只报告了"均值差及其 95% CI"而没有报告各组的均值和 SD，你可以直接使用报告的 MD 和 CI 参与 Meta 分析（使用 generic inverse-variance 方法）。</div>
+  </div>
+
+  <div class="section">
+    <h2>SMD 标准化均数差（Standardized Mean Difference）</h2>
+    <h3>定义</h3>
+    <p>SMD 将均值差除以合并标准差，消除量表差异。最常用的计算方法是 Hedges' g（校正后的 Cohen's d）。</p>
+    <div class="formula">
+      SMD = (Mean(干预组) - Mean(对照组)) / SD(pooled)
+    </div>
+    <h3>适用场景</h3>
+    <ul>
+      <li>各研究使用<strong>不同量表</strong>测量同一概念</li>
+      <li>例：不同研究用 PHQ-9、BDI-II、HAM-D 测量抑郁程度</li>
+      <li>例：不同研究用 SF-36、EQ-5D、WHOQOL 测量生活质量</li>
+    </ul>
+    <h3>Cohen's d 解读标准</h3>
+    <table class="data-table">
+      <tr><th>SMD 绝对值</th><th>效应大小</th><th>临床含义</th></tr>
+      <tr><td>0.2</td><td>小效应</td><td>效果存在但不太明显</td></tr>
+      <tr><td>0.5</td><td>中等效应</td><td>有临床意义的改善</td></tr>
+      <tr><td>0.8</td><td>大效应</td><td>显著的临床改善</td></tr>
+    </table>
+    <div class="warn">SMD 失去了原始单位，临床解释不如 MD 直观。审稿人可能要求你将 SMD 转换回某个代表性量表的原始单位（乘以该量表的 SD）以便临床解读。</div>
+  </div>
+
+  <div class="section">
+    <h2>四种效应量对比总表</h2>
+    <table class="data-table">
+      <tr><th>特征</th><th>OR</th><th>RR</th><th>MD</th><th>SMD</th></tr>
+      <tr><td>数据类型</td><td>二分类</td><td>二分类</td><td>连续性</td><td>连续性</td></tr>
+      <tr><td>无效值</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+      <tr><td>保留原始单位</td><td>否</td><td>否</td><td>是</td><td>否</td></tr>
+      <tr><td>临床可解释性</td><td>中</td><td>高</td><td>高</td><td>低</td></tr>
+      <tr><td>推荐研究设计</td><td>病例对照</td><td>RCT/队列</td><td>量表统一</td><td>量表不同</td></tr>
+      <tr><td>统计特性</td><td>对称性好</td><td>有方向限制</td><td>正态近似好</td><td>正态近似好</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>常见选择错误与后果</h2>
+    <ol>
+      <li><strong>高事件率时用 OR 代替 RR</strong> — 会夸大效应量，误导临床判断。审稿人经常指出这个问题。</li>
+      <li><strong>量表相同时用 SMD 代替 MD</strong> — 丢失临床意义。"血压降低 0.3 个标准差"远不如"血压降低 5 mmHg"有用。</li>
+      <li><strong>量表不同时强行用 MD</strong> — 合并不同量纲的数据没有统计学意义，得到的合并值无法解读。</li>
+      <li><strong>混合使用 OR 和 RR</strong> — 同一个 Meta 分析中，所有研究必须使用同一种效应量。不能部分研究用 OR、部分用 RR。</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h2>在 MetaReview 中切换效应量</h2>
+    <p>MetaReview 支持一键切换四种效应量：</p>
+    <ol>
+      <li>在"数据提取"页面输入原始数据</li>
+      <li>切换到"分析结果"页面</li>
+      <li>在顶部下拉菜单选择效应量类型（OR / RR / MD / SMD）</li>
+      <li>所有统计量、森林图、漏斗图实时更新</li>
+    </ol>
+    <div class="tip">建议先用最适合你研究设计的效应量做主分析，然后在敏感性分析中换一种效应量验证结果是否一致。例如主分析用 RR，敏感性分析用 OR，如果结论一致则更可靠。</div>
+  </div>
+
+  <div class="cta">
+    <h2>用 MetaReview 计算效应量</h2>
+    <p>支持 OR/RR/MD/SMD 一键切换，自动计算合并效应量和异质性。免费、无需编程。</p>
+    <a href="/">打开 MetaReview</a>
+  </div>
+
+  <div class="related">
+    <h2>相关指南</h2>
+    <ul>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤：从研究问题到发表的全流程指南</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图怎么画？在线生成森林图完全指南（免费工具）</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 流程图：在线制作模板与填写指南</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> — 免费在线 Meta 分析工具</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

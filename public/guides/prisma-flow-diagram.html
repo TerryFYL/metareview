@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRISMA 2020 流程图：在线制作模板与填写指南 | MetaReview</title>
+  <meta name="description" content="PRISMA 2020 流程图在线制作完全指南：各方框逐个填写说明、PRISMA 2020 vs 2009 区别、27 项 Checklist 核心要点、常见错误和投稿被拒原因。附免费在线制作工具。" />
+  <meta name="keywords" content="PRISMA流程图模板, PRISMA 2020 checklist, 系统综述流程图, PRISMA在线制作, 文献筛选流程图, PRISMA flow diagram, PRISMA 2020 template, 系统综述PRISMA" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/prisma-flow-diagram" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/prisma-flow-diagram" />
+  <meta property="og:title" content="PRISMA 2020 流程图：在线制作模板与填写指南" />
+  <meta property="og:description" content="PRISMA 2020 流程图在线制作指南，逐个方框填写说明，附免费工具和 Checklist。" />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "PRISMA 2020 流程图：在线制作模板与填写指南",
+    "description": "PRISMA 2020 流程图完全填写指南，适合系统综述和 Meta 分析投稿。",
+    "author": {"@type": "Organization", "name": "MetaReview"},
+    "publisher": {"@type": "Organization", "name": "MetaReview"},
+    "datePublished": "2026-02-24",
+    "dateModified": "2026-02-24",
+    "mainEntityOfPage": "https://metareview-8c1.pages.dev/guides/prisma-flow-diagram"
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .flow-diagram { background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.5; color: #374151; overflow-x: auto; white-space: pre; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    .checklist-item { padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
+    .checklist-item:last-child { border-bottom: none; }
+    .checklist-num { display: inline-block; width: 28px; font-weight: 700; color: #1e40af; }
+    .checklist-miss { color: #dc2626; font-weight: 600; font-size: 12px; margin-left: 4px; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .related { padding: 20px; } .flow-diagram { font-size: 10px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">打开工具</a>
+      <a href="/guides/meta-analysis-steps">Meta 分析步骤</a>
+      <a href="/guides/effect-size-selection">效应量选择</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>PRISMA 2020 流程图：在线制作模板与填写指南</h1>
+  <p>逐个方框填写说明，避开审稿人最常指出的 6 个错误。附免费在线制作工具。</p>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <h2>PRISMA 2020 vs 2009：有什么变化？</h2>
+    <p>PRISMA 2020（Page et al., BMJ 2021）是对 2009 版的重大更新。如果你的论文投稿在 2021 年之后，<strong>必须使用 2020 版</strong>。</p>
+    <table class="data-table">
+      <tr><th>变化</th><th>2009 版</th><th>2020 版</th></tr>
+      <tr><td>流程图结构</td><td>简单四层</td><td>更详细，新增"先前研究"来源</td></tr>
+      <tr><td>数据库报告</td><td>合并报告</td><td>每个数据库单独报告检索数量</td></tr>
+      <tr><td>排除原因</td><td>可选</td><td><strong>必须报告</strong>全文排除的具体原因和数量</td></tr>
+      <tr><td>自动化工具</td><td>未涉及</td><td>新增"通过自动化工具排除"环节</td></tr>
+      <tr><td>注册信息</td><td>建议</td><td><strong>强烈建议</strong>注册并报告（PROSPERO 等）</td></tr>
+      <tr><td>Checklist 条目</td><td>27 项</td><td>27 项（内容更新）</td></tr>
+    </table>
+    <div class="warn">投稿常见被拒原因：使用 2009 版流程图投稿到要求 2020 版的期刊。2023 年之后几乎所有主流医学期刊都要求 PRISMA 2020。</div>
+  </div>
+
+  <div class="section">
+    <h2>PRISMA 2020 流程图结构</h2>
+    <div class="flow-diagram">
+┌─────────────────────────────────────────────────────────────────┐
+│                       IDENTIFICATION                            │
+│                                                                 │
+│  ┌───────────────────────┐    ┌──────────────────────────────┐  │
+│  │ 数据库检索记录          │    │ 其他来源记录                  │  │
+│  │ (n = _____)            │    │ (n = _____)                  │  │
+│  │                        │    │  - 引用追溯 (n = ___)         │  │
+│  │ PubMed:    n = ____    │    │  - 手工检索 (n = ___)         │  │
+│  │ Embase:    n = ____    │    │  - 专家推荐 (n = ___)         │  │
+│  │ Cochrane:  n = ____    │    │                              │  │
+│  └──────────┬────────────┘    └───────────┬──────────────────┘  │
+│             │                              │                     │
+│             ▼                              ▼                     │
+│  ┌──────────────────────┐    ┌──────────────────────────────┐   │
+│  │ 去重后记录             │    │ 去重后记录                    │   │
+│  │ (n = _____)           │    │ (n = _____)                  │   │
+│  └──────────┬────────────┘    └───────────┬──────────────────┘   │
+└─────────────┼─────────────────────────────┼─────────────────────┘
+              │                             │
+              ▼                             │
+┌─────────────────────────────────────────────────────────────────┐
+│                        SCREENING                                │
+│                                                                 │
+│  ┌───────────────────────┐  ┌────────────────────────────────┐  │
+│  │ 标题摘要筛选            │  │ 排除记录                       │  │
+│  │ (n = _____)            │─→│ (n = _____)                    │  │
+│  └──────────┬────────────┘  │  - 自动化工具排除 (n = ___)     │  │
+│             │                │  - 其他原因 (n = ___)           │  │
+│             ▼                └────────────────────────────────┘  │
+│  ┌───────────────────────┐  ┌────────────────────────────────┐  │
+│  │ 全文评估                │  │ 全文排除及原因                  │  │
+│  │ (n = _____)            │─→│ (n = _____)                    │  │
+│  └──────────┬────────────┘  │  - 非目标人群 (n = ___)         │  │
+│             │                │  - 非目标干预 (n = ___)         │  │
+│             │                │  - 非目标结局 (n = ___)         │  │
+│             │                │  - 非目标设计 (n = ___)         │  │
+│             │                │  - 其他 (n = ___)               │  │
+│             │                └────────────────────────────────┘  │
+└─────────────┼───────────────────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                        INCLUDED                                 │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │ 纳入定性分析（系统综述）的研究 (n = _____)                  │  │
+│  └──────────┬────────────────────────────────────────────────┘  │
+│             │                                                    │
+│             ▼                                                    │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │ 纳入定量分析（Meta 分析）的研究 (n = _____)                 │  │
+│  └───────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘</div>
+  </div>
+
+  <div class="section">
+    <h2>各方框逐个填写指南</h2>
+    <table class="data-table">
+      <tr><th>方框</th><th>如何计数</th><th>常见错误</th></tr>
+      <tr><td>数据库检索记录</td><td>各数据库<strong>分别报告</strong>检索数量（不合并）</td><td>只报告合并总数，不列各库数量</td></tr>
+      <tr><td>其他来源记录</td><td>引用追溯（snowballing）、手工检索、专家推荐等</td><td>遗漏引用追溯来源</td></tr>
+      <tr><td>去重后记录</td><td>总记录 - 重复记录 = 去重后数量</td><td>不报告去重数量</td></tr>
+      <tr><td>标题摘要筛选</td><td>进入初筛的记录数</td><td>把去重和初筛合并报告</td></tr>
+      <tr><td>排除记录</td><td>初筛排除的记录数。PRISMA 2020 新增：需单独列出"自动化工具排除"的数量</td><td>不报告自动化工具排除</td></tr>
+      <tr><td>全文评估</td><td>进入全文筛选的记录数</td><td>—</td></tr>
+      <tr><td>全文排除及原因</td><td><strong>必须</strong>列出每个排除原因和对应数量</td><td>只报告总排除数，不列原因</td></tr>
+      <tr><td>纳入定性分析</td><td>最终纳入系统综述的研究数</td><td>与定量分析数字不区分</td></tr>
+      <tr><td>纳入定量分析</td><td>最终纳入 Meta 分析的研究数（可能少于定性分析）</td><td>遗漏此项</td></tr>
+    </table>
+    <div class="tip">数字核验公式：检索总数 - 去重 = 去重后记录；去重后记录 - 初筛排除 = 全文评估数；全文评估数 - 全文排除 = 纳入数。如果数字不对得上，审稿人会直接要求修改。</div>
+  </div>
+
+  <div class="section">
+    <h2>用 MetaReview 自动生成 PRISMA 流程图</h2>
+    <ol>
+      <li><strong>填写数字</strong> — 在"PRISMA"标签页中，填入各步骤的数量</li>
+      <li><strong>自动填充</strong> — 如果你使用了 MetaReview 的 PubMed 检索和 AI 筛选功能，检索数和筛选数会自动填入</li>
+      <li><strong>预览流程图</strong> — 实时渲染 PRISMA 2020 标准流程图</li>
+      <li><strong>导出</strong> — 支持 SVG 和 PNG 格式导出，可直接用于论文投稿</li>
+    </ol>
+    <div class="tip">MetaReview 生成的 PRISMA 流程图严格遵循 PRISMA 2020 模板（Page et al., BMJ 2021），包含 Identification、Screening、Included 三个阶段和所有必填方框。</div>
+  </div>
+
+  <div class="section">
+    <h2>PRISMA 2020 Checklist 核心要点</h2>
+    <p>PRISMA 2020 Checklist 共 27 项。以下标注了<span class="checklist-miss">常漏</span>的 6 项，投稿前务必检查：</p>
+
+    <div class="checklist-item"><span class="checklist-num">1</span> <strong>标题</strong> — 标题中包含"systematic review"和/或"meta-analysis"</div>
+    <div class="checklist-item"><span class="checklist-num">2</span> <strong>摘要</strong> — 结构化摘要（背景、目的、方法、结果、结论）</div>
+    <div class="checklist-item"><span class="checklist-num">3</span> <strong>基本原理</strong> — 说明为什么做这个综述</div>
+    <div class="checklist-item"><span class="checklist-num">4</span> <strong>目的</strong> — 明确的 PICO 问题陈述</div>
+    <div class="checklist-item"><span class="checklist-num">5</span> <strong>纳入标准</strong> — 详细的纳入排除标准 <span class="checklist-miss">常漏</span></div>
+    <div class="checklist-item"><span class="checklist-num">6</span> <strong>信息来源</strong> — 列出所有检索的数据库、注册平台、网站等</div>
+    <div class="checklist-item"><span class="checklist-num">7</span> <strong>检索策略</strong> — 至少一个数据库的完整检索式 <span class="checklist-miss">常漏</span></div>
+    <div class="checklist-item"><span class="checklist-num">8</span> <strong>筛选过程</strong> — 描述两轮筛选方法（几人？是否独立？）</div>
+    <div class="checklist-item"><span class="checklist-num">9</span> <strong>数据提取</strong> — 数据提取的方法和表格模板</div>
+    <div class="checklist-item"><span class="checklist-num">10</span> <strong>数据条目</strong> — 从每篇研究提取的具体数据项列表</div>
+    <div class="checklist-item"><span class="checklist-num">11</span> <strong>偏倚风险评估</strong> — 使用的评估工具和评估过程</div>
+    <div class="checklist-item"><span class="checklist-num">12</span> <strong>效应量指标</strong> — 使用的效应量类型及选择理由 <span class="checklist-miss">常漏</span></div>
+    <div class="checklist-item"><span class="checklist-num">13</span> <strong>合并方法</strong> — 统计模型、异质性评估方法、亚组分析计划</div>
+    <div class="checklist-item"><span class="checklist-num">14</span> <strong>报告偏倚评估</strong> — 漏斗图和统计检验方法</div>
+    <div class="checklist-item"><span class="checklist-num">15</span> <strong>证据确定性</strong> — GRADE 评价方法（如适用）<span class="checklist-miss">常漏</span></div>
+    <div class="checklist-item"><span class="checklist-num">16</span> <strong>研究筛选</strong> — 报告筛选结果（PRISMA 流程图）</div>
+    <div class="checklist-item"><span class="checklist-num">17</span> <strong>研究特征</strong> — 纳入研究的特征汇总表</div>
+    <div class="checklist-item"><span class="checklist-num">18</span> <strong>偏倚风险结果</strong> — 各研究的偏倚评估结果</div>
+    <div class="checklist-item"><span class="checklist-num">19</span> <strong>单个研究结果</strong> — 每篇研究的效应量数据</div>
+    <div class="checklist-item"><span class="checklist-num">20</span> <strong>合并结果</strong> — 合并效应量、CI、异质性</div>
+    <div class="checklist-item"><span class="checklist-num">21</span> <strong>报告偏倚结果</strong> — 漏斗图和 Egger 检验结果</div>
+    <div class="checklist-item"><span class="checklist-num">22</span> <strong>证据确定性结果</strong> — GRADE 评价结果（如适用）<span class="checklist-miss">常漏</span></div>
+    <div class="checklist-item"><span class="checklist-num">23</span> <strong>讨论</strong> — 结果解读、局限性、与现有证据的对比</div>
+    <div class="checklist-item"><span class="checklist-num">24</span> <strong>注册信息</strong> — PROSPERO 注册号和协议变更 <span class="checklist-miss">常漏</span></div>
+    <div class="checklist-item"><span class="checklist-num">25</span> <strong>数据可获得性</strong> — 数据共享声明</div>
+    <div class="checklist-item"><span class="checklist-num">26</span> <strong>资金来源</strong> — 资助来源</div>
+    <div class="checklist-item"><span class="checklist-num">27</span> <strong>利益冲突</strong> — 利益冲突声明</div>
+  </div>
+
+  <div class="section">
+    <h2>投稿常见被拒原因（PRISMA 相关）</h2>
+    <ol>
+      <li><strong>使用 2009 版流程图</strong> — 大多数期刊已要求 2020 版</li>
+      <li><strong>全文排除不列原因</strong> — PRISMA 2020 明确要求列出每个原因和数量</li>
+      <li><strong>数字不一致</strong> — 流程图中各步骤数字加减不对</li>
+      <li><strong>未报告完整检索式</strong> — 至少需要一个数据库的完整检索策略</li>
+      <li><strong>未提供 PRISMA Checklist</strong> — 多数期刊要求在投稿时附上填写完整的 Checklist</li>
+      <li><strong>未注册 PROSPERO</strong> — 虽然非强制，但越来越多期刊将其作为投稿条件</li>
+    </ol>
+    <div class="tip">投稿前检查清单：(1) 流程图用 2020 版？(2) 数字能对上？(3) 全文排除列了原因？(4) 附了完整检索式？(5) 填了 PRISMA Checklist？(6) 有 PROSPERO 注册号？</div>
+  </div>
+
+  <div class="cta">
+    <h2>在线制作 PRISMA 2020 流程图</h2>
+    <p>MetaReview 一键生成标准 PRISMA 2020 流程图，支持 SVG/PNG 导出，免费使用。</p>
+    <a href="/">立即使用 MetaReview</a>
+  </div>
+
+  <div class="related">
+    <h2>相关指南</h2>
+    <ul>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤：从研究问题到发表的全流程指南</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图怎么画？在线生成森林图完全指南（免费工具）</a></li>
+      <li><a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> — 免费在线 Meta 分析工具</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
