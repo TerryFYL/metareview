@@ -173,6 +173,13 @@ export interface FunnelPoint {
   name: string;
 }
 
+/** PICO-based screening score */
+export interface ScreeningScore {
+  score: number; // 0-100
+  bucket: 'likely' | 'maybe' | 'unlikely';
+  matchedTerms: string[];
+}
+
 /** PICO definition */
 export interface PICO {
   population: string;

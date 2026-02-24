@@ -1,8 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { t } from '../lib/i18n';
 import type { Lang } from '../lib/i18n';
-import type { Study, BinaryData, ContinuousData } from '../lib/types';
+import type { Study, BinaryData, ContinuousData, PICO, ScreeningScore } from '../lib/types';
 import type { EffectMeasure } from '../lib/types';
+import { scorePICORelevance } from '../lib/screening/pico-scorer';
 
 interface PubMedArticle {
   pmid: string;
@@ -17,6 +18,7 @@ interface Props {
   lang: Lang;
   measure: EffectMeasure;
   studies: Study[];
+  pico: PICO;
   onStudiesChange: (studies: Study[]) => void;
   onSwitchToInput: () => void;
   onPRISMAUpdate?: (dbRecords: number) => void;
@@ -48,7 +50,7 @@ function loadHistory(): string[] {
   }
 }
 
-export default function LiteratureSearch({ lang, measure, studies, onStudiesChange, onSwitchToInput, onPRISMAUpdate }: Props) {
+export default function LiteratureSearch({ lang, measure, studies, pico, onStudiesChange, onSwitchToInput, onPRISMAUpdate }: Props) {
   const [query, setQuery] = useState('');
   const [activeQuery, setActiveQuery] = useState('');
   const [results, setResults] = useState<PubMedArticle[]>([]);
@@ -61,6 +63,7 @@ export default function LiteratureSearch({ lang, measure, studies, onStudiesChan
   const [abstracts, setAbstracts] = useState<Record<string, string>>({});
   const [importedCount, setImportedCount] = useState(0);
   const [prismaNotice, setPrismaNotice] = useState(false);
+  const [sortByScore, setSortByScore] = useState(false);
 
   // Search history
   const [history, setHistory] = useState<string[]>(loadHistory);
@@ -71,6 +74,44 @@ export default function LiteratureSearch({ lang, measure, studies, onStudiesChan
   const [dateTo, setDateTo] = useState('');
   const [articleType, setArticleType] = useState('');
   const [langFilter, setLangFilter] = useState('');
+
+  // PICO scoring: compute scores for all results
+  const hasPICO = !!(pico.population.trim() || pico.intervention.trim() || pico.comparison.trim() || pico.outcome.trim());
+
+  const scores = useMemo<Record<string, ScreeningScore>>(() => {
+    if (!hasPICO || results.length === 0) return {};
+    const map: Record<string, ScreeningScore> = {};
+    for (const article of results) {
+      map[article.pmid] = scorePICORelevance(
+        article.title,
+        abstracts[article.pmid] || '',
+        pico
+      );
+    }
+    return map;
+  }, [results, pico, hasPICO, abstracts]);
+
+  const sortedResults = useMemo(() => {
+    if (!sortByScore || !hasPICO) return results;
+    return [...results].sort((a, b) => {
+      const sa = scores[a.pmid]?.score ?? 0;
+      const sb = scores[b.pmid]?.score ?? 0;
+      return sb - sa;
+    });
+  }, [results, sortByScore, scores, hasPICO]);
+
+  const selectAllLikely = useCallback(() => {
+    if (!hasPICO) return;
+    const likelyPmids = results
+      .filter(r => scores[r.pmid]?.bucket === 'likely')
+      .map(r => r.pmid);
+    setSelected(new Set(likelyPmids));
+  }, [results, scores, hasPICO]);
+
+  const likelyCount = useMemo(() => {
+    if (!hasPICO) return 0;
+    return results.filter(r => scores[r.pmid]?.bucket === 'likely').length;
+  }, [results, scores, hasPICO]);
 
   const buildFullQuery = useCallback((baseQuery: string): string => {
     const parts = [baseQuery.trim()];
@@ -423,16 +464,43 @@ export default function LiteratureSearch({ lang, measure, studies, onStudiesChan
         </div>
       )}
 
-      {/* Results count */}
+      {/* PICO screening notice */}
+      {hasResults && !hasPICO && (
+        <div style={{ padding: '8px 14px', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 6, color: '#92400e', fontSize: 12, marginBottom: 12 }}>
+          {t('screening.noPICO', lang)}
+        </div>
+      )}
+
+      {/* Results count + screening controls */}
       {hasResults && (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
-          <span style={{ fontSize: 13, color: '#6b7280' }}>
-            {t('search.found', lang)
-              .replace('{total}', totalCount.toLocaleString())
-              .replace('{from}', String(page * PAGE_SIZE + 1))
-              .replace('{to}', String(Math.min((page + 1) * PAGE_SIZE, totalCount)))}
-          </span>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 13, color: '#6b7280' }}>
+              {t('search.found', lang)
+                .replace('{total}', totalCount.toLocaleString())
+                .replace('{from}', String(page * PAGE_SIZE + 1))
+                .replace('{to}', String(Math.min((page + 1) * PAGE_SIZE, totalCount)))}
+            </span>
+            {hasPICO && (
+              <button
+                onClick={() => setSortByScore(!sortByScore)}
+                style={{
+                  ...screeningToggleStyle,
+                  background: sortByScore ? '#dbeafe' : '#f3f4f6',
+                  color: sortByScore ? '#1d4ed8' : '#6b7280',
+                  borderColor: sortByScore ? '#93c5fd' : '#e5e7eb',
+                }}
+              >
+                {sortByScore ? t('screening.sortByScore', lang) : t('screening.sortDefault', lang)}
+              </button>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+            {hasPICO && likelyCount > 0 && (
+              <button onClick={selectAllLikely} style={screeningSelectStyle}>
+                {t('screening.selectLikely', lang)} ({likelyCount})
+              </button>
+            )}
             <label style={{ fontSize: 12, color: '#6b7280', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
               <input
                 type="checkbox"
@@ -467,67 +535,96 @@ export default function LiteratureSearch({ lang, measure, studies, onStudiesChan
       {/* Results list */}
       {!loading && hasResults && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-          {results.map((article) => (
-            <div
-              key={article.pmid}
-              style={{
-                padding: '12px 14px',
-                background: selected.has(article.pmid) ? '#eff6ff' : '#fff',
-                border: `1px solid ${selected.has(article.pmid) ? '#bfdbfe' : '#e5e7eb'}`,
-                borderRadius: 6,
-                marginBottom: 6,
-              }}
-            >
-              <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                <input
-                  type="checkbox"
-                  checked={selected.has(article.pmid)}
-                  onChange={() => toggleSelect(article.pmid)}
-                  style={{ marginTop: 3, flexShrink: 0 }}
-                />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: 500, color: '#111827', lineHeight: 1.4 }}>
-                    {article.title}
-                  </div>
-                  <div style={{ fontSize: 12, color: '#6b7280', marginTop: 4 }}>
-                    {article.authors.slice(0, 3).join(', ')}
-                    {article.authors.length > 3 && ` et al.`}
-                  </div>
-                  <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                    <span>{article.journal}</span>
-                    <span>{article.pubdate}</span>
-                    <span>PMID: {article.pmid}</span>
-                  </div>
+          {sortedResults.map((article) => {
+            const score = scores[article.pmid];
+            const bucketStyle = score ? BUCKET_STYLES[score.bucket] : null;
 
-                  {/* Abstract toggle */}
-                  <button
-                    onClick={() => fetchAbstract(article.pmid)}
-                    style={{ fontSize: 12, color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginTop: 6 }}
-                  >
-                    {expandedPmid === article.pmid ? t('search.hideAbstract', lang) : t('search.showAbstract', lang)}
-                  </button>
-
-                  {/* Abstract content */}
-                  {expandedPmid === article.pmid && abstracts[article.pmid] && (
-                    <div style={{
-                      marginTop: 8,
-                      padding: '10px 12px',
-                      background: '#f9fafb',
-                      borderRadius: 6,
-                      fontSize: 12,
-                      lineHeight: 1.6,
-                      color: '#374151',
-                      whiteSpace: 'pre-wrap',
-                      maxHeight: 300,
-                      overflowY: 'auto',
-                    }}>
-                      {abstracts[article.pmid]}
+            return (
+              <div
+                key={article.pmid}
+                style={{
+                  padding: '12px 14px',
+                  background: selected.has(article.pmid) ? '#eff6ff' : '#fff',
+                  border: `1px solid ${selected.has(article.pmid) ? '#bfdbfe' : '#e5e7eb'}`,
+                  borderRadius: 6,
+                  marginBottom: 6,
+                  borderLeft: bucketStyle ? `3px solid ${bucketStyle.border}` : undefined,
+                }}
+              >
+                <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                  <input
+                    type="checkbox"
+                    checked={selected.has(article.pmid)}
+                    onChange={() => toggleSelect(article.pmid)}
+                    style={{ marginTop: 3, flexShrink: 0 }}
+                  />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                      <div style={{ fontSize: 14, fontWeight: 500, color: '#111827', lineHeight: 1.4 }}>
+                        {article.title}
+                      </div>
+                      {/* PICO screening badge */}
+                      {score && hasPICO && (
+                        <span style={{
+                          flexShrink: 0,
+                          padding: '2px 8px',
+                          borderRadius: 10,
+                          fontSize: 11,
+                          fontWeight: 600,
+                          background: bucketStyle!.bg,
+                          color: bucketStyle!.text,
+                          whiteSpace: 'nowrap',
+                        }}>
+                          {t(`screening.${score.bucket}`, lang)} {score.score}
+                        </span>
+                      )}
                     </div>
-                  )}
+                    <div style={{ fontSize: 12, color: '#6b7280', marginTop: 4 }}>
+                      {article.authors.slice(0, 3).join(', ')}
+                      {article.authors.length > 3 && ` et al.`}
+                    </div>
+                    <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+                      <span>{article.journal}</span>
+                      <span>{article.pubdate}</span>
+                      <span>PMID: {article.pmid}</span>
+                      {/* Matched PICO terms */}
+                      {score && score.matchedTerms.length > 0 && (
+                        <span style={{ color: '#6366f1', fontSize: 11 }}>
+                          {t('screening.matched', lang)}: {score.matchedTerms.join(', ')}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Abstract toggle */}
+                    <button
+                      onClick={() => fetchAbstract(article.pmid)}
+                      style={{ fontSize: 12, color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginTop: 6 }}
+                    >
+                      {expandedPmid === article.pmid ? t('search.hideAbstract', lang) : t('search.showAbstract', lang)}
+                    </button>
+
+                    {/* Abstract content */}
+                    {expandedPmid === article.pmid && abstracts[article.pmid] && (
+                      <div style={{
+                        marginTop: 8,
+                        padding: '10px 12px',
+                        background: '#f9fafb',
+                        borderRadius: 6,
+                        fontSize: 12,
+                        lineHeight: 1.6,
+                        color: '#374151',
+                        whiteSpace: 'pre-wrap',
+                        maxHeight: 300,
+                        overflowY: 'auto',
+                      }}>
+                        {abstracts[article.pmid]}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -651,3 +748,30 @@ const clearBtnStyle: React.CSSProperties = {
   cursor: 'pointer',
   padding: '2px 4px',
 };
+
+const screeningToggleStyle: React.CSSProperties = {
+  padding: '3px 10px',
+  borderRadius: 12,
+  fontSize: 11,
+  fontWeight: 500,
+  border: '1px solid',
+  cursor: 'pointer',
+  transition: 'all 0.15s',
+};
+
+const screeningSelectStyle: React.CSSProperties = {
+  padding: '4px 10px',
+  background: '#ecfdf5',
+  color: '#059669',
+  border: '1px solid #a7f3d0',
+  borderRadius: 6,
+  fontSize: 11,
+  fontWeight: 600,
+  cursor: 'pointer',
+};
+
+const BUCKET_STYLES = {
+  likely: { bg: '#dcfce7', text: '#15803d', border: '#22c55e' },
+  maybe: { bg: '#fef9c3', text: '#a16207', border: '#eab308' },
+  unlikely: { bg: '#fee2e2', text: '#b91c1c', border: '#ef4444' },
+} as const;

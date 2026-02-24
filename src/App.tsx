@@ -208,6 +208,7 @@ export default function App() {
           lang={lang}
           measure={measure}
           studies={studies}
+          pico={pico}
           onStudiesChange={setStudies}
           onSwitchToInput={() => setActiveTab('input')}
           onPRISMAUpdate={(n) => setPRISMA({ ...prisma, dbRecords: String(n) })}
