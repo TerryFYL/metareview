@@ -35,10 +35,17 @@ tr:hover td{background:#0f172a}
 @keyframes spin{to{transform:rotate(360deg)}}
 .error{text-align:center;padding:40px 20px;color:#f87171}
 .error button{margin-top:12px;background:#1e293b;border:1px solid #f87171;color:#f87171;padding:8px 20px;border-radius:6px;cursor:pointer}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.sub-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:500}
+.sub-badge.hero{background:#164e63;color:#67e8f9}
+.sub-badge.guide{background:#1e3a5f;color:#93c5fd}
+.sub-badge.unknown{background:#334155;color:#94a3b8}
+.empty-state{text-align:center;padding:32px 16px;color:#475569;font-size:.85rem}
 @media(max-width:640px){
   .kpi-grid{grid-template-columns:repeat(2,1fr)}
   .kpi-value{font-size:1.5rem}
   .wrap{padding:16px 12px}
+  .two-col{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -64,8 +71,6 @@ tr:hover td{background:#0f172a}
   const tip = $('#tip');
   let currentDays = 30;
   let chartData = null;
-  let chartRect = null;
-  let canvasEl = null;
 
   // range buttons
   document.querySelectorAll('.rbtn').forEach(b => {
@@ -79,19 +84,21 @@ tr:hover td{background:#0f172a}
 
   function load(days) {
     app.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
-    fetch('/api/analytics/dashboard?days=' + days)
-      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(render)
+    // Fetch analytics + subscribers in parallel
+    Promise.all([
+      fetch('/api/analytics/dashboard?days=' + days).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+      fetch('/api/emails/list').then(r => r.ok ? r.json() : { count: 0, subscribers: [] }).catch(() => ({ count: 0, subscribers: [] })),
+    ]).then(([data, emailData]) => render(data, emailData))
       .catch(err => {
         app.innerHTML = '<div class="error">加载失败: ' + err.message + '<br><button onclick="location.reload()">重试</button></div>';
       });
   }
 
-  function render(data) {
+  function render(data, emailData) {
     const t = data.totals || {};
     const pv = t.page_view || 0;
     const ts = t.tab_switch || 0;
-    const subs = data.emailSubscribers || 0;
+    const subs = emailData.count || data.emailSubscribers || 0;
     const featureKeys = Object.keys(t).filter(k => k !== 'page_view' && k !== 'tab_switch');
     const features = featureKeys.length;
     const range = data.range || {};
@@ -106,16 +113,53 @@ tr:hover td{background:#0f172a}
     html += '<div class="card"><div class="card-title">日趋势 - 页面浏览量 (' + (range.from || '') + ' ~ ' + (range.to || '') + ')</div>';
     html += '<canvas id="chart" height="260"></canvas></div>';
 
-    // event table
+    // Two column: feature pie + event table
+    html += '<div class="two-col">';
+
+    // Feature usage pie chart
+    html += '<div class="card"><div class="card-title">功能使用分布</div>';
+    if (featureKeys.length > 0) {
+      html += '<canvas id="pie" height="260"></canvas>';
+    } else {
+      html += '<div class="empty-state">暂无功能使用数据</div>';
+    }
+    html += '</div>';
+
+    // Event table
     const sorted = Object.entries(t).sort((a, b) => b[1] - a[1]);
     html += '<div class="card"><div class="card-title">事件明细</div><table><thead><tr><th>事件类型</th><th style="text-align:right">总数</th></tr></thead><tbody>';
     sorted.forEach(([k, v]) => {
       html += '<tr><td>' + esc(k) + '</td><td>' + v.toLocaleString() + '</td></tr>';
     });
     html += '</tbody></table></div>';
+    html += '</div>'; // end two-col
+
+    // Email subscribers section
+    html += '<div class="card"><div class="card-title">邮箱订阅列表 (' + subs + ')</div>';
+    const subscribers = emailData.subscribers || [];
+    if (subscribers.length > 0) {
+      html += '<table><thead><tr><th>邮箱</th><th>来源</th><th>语言</th><th style="text-align:right">订阅时间</th></tr></thead><tbody>';
+      subscribers.forEach(s => {
+        const badge = sourceBadge(s.source);
+        const date = s.subscribedAt ? new Date(s.subscribedAt).toLocaleDateString('zh-CN') : '-';
+        html += '<tr><td>' + esc(s.email) + '</td><td>' + badge + '</td><td>' + esc(s.lang || '-') + '</td><td>' + date + '</td></tr>';
+      });
+      html += '</tbody></table>';
+    } else {
+      html += '<div class="empty-state">暂无订阅者</div>';
+    }
+    html += '</div>';
 
     app.innerHTML = html;
     drawChart(data.daily || []);
+    if (featureKeys.length > 0) {
+      drawPie(featureKeys.map(k => ({ name: k, value: t[k] })));
+    }
+  }
+
+  function sourceBadge(source) {
+    const cls = source === 'hero' ? 'hero' : source && source.includes('guide') ? 'guide' : 'unknown';
+    return '<span class="sub-badge ' + cls + '">' + esc(source || 'unknown') + '</span>';
   }
 
   function kpi(label, sub, value) {
@@ -124,10 +168,83 @@ tr:hover td{background:#0f172a}
 
   function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
+  // ---- Pie Chart ----
+  const PIE_COLORS = ['#38bdf8','#818cf8','#34d399','#fbbf24','#f87171','#a78bfa','#fb923c','#2dd4bf','#e879f9','#facc15','#4ade80','#f472b6'];
+
+  function drawPie(items) {
+    const canvas = document.getElementById('pie');
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 260 * dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    const W = rect.width, H = 260;
+    const cx = W * 0.35, cy = H / 2, r = Math.min(cx - 20, cy - 20);
+    const total = items.reduce((s, i) => s + i.value, 0);
+    if (total === 0) return;
+
+    // Sort by value descending
+    items.sort((a, b) => b.value - a.value);
+
+    // Draw slices
+    let angle = -Math.PI / 2;
+    items.forEach((item, idx) => {
+      const slice = (item.value / total) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, angle, angle + slice);
+      ctx.closePath();
+      ctx.fillStyle = PIE_COLORS[idx % PIE_COLORS.length];
+      ctx.fill();
+      angle += slice;
+    });
+
+    // Center hole (donut)
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 0.55, 0, Math.PI * 2);
+    ctx.fillStyle = '#1e293b';
+    ctx.fill();
+
+    // Center text
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(total.toLocaleString(), cx, cy - 8);
+    ctx.font = '11px sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('总使用次数', cx, cy + 12);
+
+    // Legend (right side)
+    const legendX = W * 0.65;
+    const legendY0 = 20;
+    const lineH = 22;
+    const maxLegend = Math.min(items.length, 10);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    for (let i = 0; i < maxLegend; i++) {
+      const y = legendY0 + i * lineH;
+      ctx.fillStyle = PIE_COLORS[i % PIE_COLORS.length];
+      ctx.fillRect(legendX, y, 10, 10);
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '11px sans-serif';
+      const label = items[i].name.length > 16 ? items[i].name.slice(0, 15) + '…' : items[i].name;
+      ctx.fillText(label + ' (' + items[i].value + ')', legendX + 16, y + 5);
+    }
+    if (items.length > maxLegend) {
+      const y = legendY0 + maxLegend * lineH;
+      ctx.fillStyle = '#64748b';
+      ctx.font = '10px sans-serif';
+      ctx.fillText('+ ' + (items.length - maxLegend) + ' more…', legendX, y + 5);
+    }
+  }
+
+  // ---- Line Chart ----
   function drawChart(daily) {
     const canvas = document.getElementById('chart');
     if (!canvas) return;
-    canvasEl = canvas;
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width * dpr;
@@ -143,9 +260,7 @@ tr:hover td{background:#0f172a}
     const max = Math.max(...vals, 1);
     const niceMax = ceilNice(max);
 
-    // store for hover
     chartData = { vals, dates, pad, cw, ch, W, H, niceMax };
-    chartRect = rect;
 
     // bg
     ctx.fillStyle = '#0f172a';
@@ -221,7 +336,6 @@ tr:hover td{background:#0f172a}
       if (!chartData) return;
       const cr = canvas.getBoundingClientRect();
       const mx = e.clientX - cr.left;
-      const my = e.clientY - cr.top;
       const d = chartData;
       const n = d.vals.length;
       if (n < 2) return;
