@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useProjectStore, useUIStore } from './store';
 import PICOForm from './components/PICOForm';
 import DataTable from './components/DataTable';
@@ -11,7 +11,11 @@ import LiteratureSearch from './components/LiteratureSearch';
 import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, isBinaryData, isContinuousData } from './lib/statistics';
 import { generateReportHTML } from './lib/report-export';
 import { t } from './lib/i18n';
+import { trackPageView, trackTabSwitch } from './lib/analytics';
 import type { EffectMeasure, ModelType, Study, BinaryData, ContinuousData, SubgroupAnalysisResult } from './lib/types';
+
+// Lazy-load extraction component (pdfjs-dist is ~700KB)
+const DataExtraction = lazy(() => import('./components/DataExtraction'));
 
 const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'OR', label: 'Odds Ratio', desc: 'Binary outcomes (2\u00D72 table)' },
@@ -20,7 +24,7 @@ const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'SMD', label: "Hedges' g (SMD)", desc: 'Continuous, different scales' },
 ];
 
-const TAB_KEYS = ['search', 'input', 'results', 'forest', 'funnel', 'sensitivity', 'subgroup', 'prisma'] as const;
+const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'sensitivity', 'subgroup', 'prisma'] as const;
 
 export default function App() {
   const {
@@ -34,6 +38,12 @@ export default function App() {
   } = useUIStore();
 
   const [subgroupResult, setSubgroupResult] = useState<SubgroupAnalysisResult | null>(null);
+
+  // Track page view on mount
+  useEffect(() => { trackPageView(); }, []);
+
+  // Track tab switches
+  useEffect(() => { trackTabSwitch(activeTab); }, [activeTab]);
 
   const validateStudies = useCallback((studyList: Study[]): string | null => {
     for (let i = 0; i < studyList.length; i++) {
@@ -169,7 +179,7 @@ export default function App() {
       {/* Tab navigation */}
       <nav style={{ display: 'flex', gap: 0, borderBottom: '2px solid #e5e7eb', marginBottom: 20, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
         {TAB_KEYS.map((tab) => {
-          const isAlwaysEnabled = tab === 'prisma' || tab === 'search' || tab === 'input';
+          const isAlwaysEnabled = tab === 'prisma' || tab === 'search' || tab === 'input' || tab === 'extract';
           const isSubgroup = tab === 'subgroup';
           const isSensitivity = tab === 'sensitivity';
           const disabled = !isAlwaysEnabled && (
@@ -213,6 +223,19 @@ export default function App() {
           onSwitchToInput={() => setActiveTab('input')}
           onPRISMAUpdate={(updates) => setPRISMA({ ...prisma, ...updates })}
         />
+      )}
+
+      {/* PDF Data Extraction Tab */}
+      {activeTab === 'extract' && (
+        <Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6b7280' }}>{t('extract.loading', lang)}</div>}>
+          <DataExtraction
+            lang={lang}
+            measure={measure}
+            studies={studies}
+            onStudiesChange={setStudies}
+            onSwitchToInput={() => setActiveTab('input')}
+          />
+        </Suspense>
       )}
 
       {/* Data Input Tab */}

@@ -16,6 +16,16 @@ export default defineConfig({
         target: 'http://localhost:8788',
         changeOrigin: true,
       },
+      // PDF data extraction
+      '/api/extract': {
+        target: 'http://localhost:8788',
+        changeOrigin: true,
+      },
+      // Analytics
+      '/api/analytics': {
+        target: 'http://localhost:8788',
+        changeOrigin: true,
+      },
     },
   },
 })

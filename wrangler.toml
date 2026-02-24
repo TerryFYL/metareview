@@ -4,3 +4,8 @@ pages_build_output_dir = "dist"
 # Workers AI binding for literature screening
 [ai]
 binding = "AI"
+
+# KV namespace for lightweight analytics
+[[kv_namespaces]]
+binding = "ANALYTICS"
+id = "df6a655d47264d55990dab25bd827a47"
