@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>糖尿病 Meta 分析完整指南：从降糖终点到心血管获益的实战方法 | MetaReview</title>
+  <meta name="description" content="糖尿病 Meta 分析怎么做？本文详解糖尿病荟萃分析全流程：HbA1c 与 MACE 双终点处理、GLP-1 受体激动剂与 SGLT2 抑制剂效应量选择、降糖药异质性分析、亚组策略与发表偏倚评估。附免费在线工具和经典案例。" />
+  <meta name="keywords" content="糖尿病meta分析, 糖尿病荟萃分析, diabetes meta-analysis, 降糖药meta分析, GLP-1受体激动剂meta分析, SGLT2抑制剂meta分析, HbA1c meta分析, MACE 糖尿病, 2型糖尿病meta分析" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/diabetes-meta-analysis" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/diabetes-meta-analysis" />
+  <meta property="og:title" content="糖尿病 Meta 分析完整指南：从降糖终点到心血管获益的实战方法" />
+  <meta property="og:description" content="糖尿病荟萃分析怎么做？HbA1c 与 MACE 双终点、GLP-1 vs SGLT2i 比较、异质性处理、亚组分析策略。附免费在线工具。" />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "糖尿病 Meta 分析完整流程：从研究设计到发表",
+    "description": "详解糖尿病领域 Meta 分析的全流程指南，涵盖 PICO 框架、效应量选择、HbA1c 与 MACE 终点处理、数据提取、异质性分析、亚组分析、发表偏倚评估和工具实战。",
+    "totalTime": "PT45M",
+    "tool": {
+      "@type": "HowToTool",
+      "name": "MetaReview 免费在线 Meta 分析工具"
+    },
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "用 PICO 框架定义糖尿病研究问题", "text": "使用 PICO 框架定义糖尿病 Meta 分析的研究问题。P 为特定糖尿病人群（T2D 合并高心血管风险、T2D 合并 CKD、新诊断 T2D），I 为目标干预（GLP-1 受体激动剂、SGLT2 抑制剂、DPP-4 抑制剂、胰岛素类似物），C 为安慰剂或活性对照（二甲双胍、磺脲类），O 为降糖终点（HbA1c）和心血管终点（MACE-3、MACE-4）及肾脏终点。"},
+      {"@type": "HowToStep", "position": 2, "name": "制定文献检索策略", "text": "在 PubMed、Embase、Cochrane Library 和 ClinicalTrials.gov 中检索。使用 MeSH 主题词（如 Diabetes Mellitus Type 2、Hypoglycemic Agents）结合自由词（GLP-1 receptor agonist、SGLT2 inhibitor），检索 ADA、EASD 会议摘要获取最新数据。"},
+      {"@type": "HowToStep", "position": 3, "name": "选择合适的效应量", "text": "根据结局类型选择效应量：降糖终点（HbA1c 变化）使用 MD（均数差），心血管时间-事件终点（MACE、心血管死亡）使用 HR，低血糖事件使用 OR 或 RR，肾脏复合终点使用 HR。不同效应量不可混合合并。"},
+      {"@type": "HowToStep", "position": 4, "name": "提取糖尿病研究数据", "text": "从纳入文献中提取 HbA1c 变化的均数和标准差（连续终点）、HR 及 95% CI（MACE 等时间-事件终点）、低血糖事件数和总人数。记录基线特征（HbA1c 水平、糖尿病病程、eGFR、心血管病史）、药物剂量和随访时间。"},
+      {"@type": "HowToStep", "position": 5, "name": "分析异质性来源", "text": "糖尿病 Meta 分析常见异质性来源包括：药物类别（GLP-1RA vs SGLT2i vs DPP-4i）、基线 HbA1c 水平、糖尿病病程、心血管风险水平（已确诊 ASCVD vs 仅有危险因素）、肾功能（eGFR 分层）和背景降糖方案。使用 I-squared、Q 检验和 tau-squared 评估异质性。"},
+      {"@type": "HowToStep", "position": 6, "name": "执行亚组分析", "text": "按预设变量进行亚组分析：基线 HbA1c（大于等于 8.5% vs 小于 8.5%）、eGFR（大于等于 60 vs 30-59 vs 小于 30）、是否合并确诊 ASCVD、糖尿病病程（大于 10 年 vs 小于等于 10 年）、年龄和地区。进行亚组间差异检验（interaction test）。"},
+      {"@type": "HowToStep", "position": 7, "name": "评估发表偏倚", "text": "绘制漏斗图并进行 Egger 检验。检索 ClinicalTrials.gov 中已注册但未发表的 CVOT 试验。注意 FDA 2008 年指南要求所有降糖新药必须进行心血管安全性试验（CVOT），这一政策大幅减少了该领域的发表偏倚。"},
+      {"@type": "HowToStep", "position": 8, "name": "按 PRISMA 2020 撰写报告", "text": "结果部分包括 PRISMA 流程图、纳入研究特征表、森林图（HbA1c 和 MACE 分别呈现）、漏斗图和亚组分析。讨论部分需结合 GRADE 框架评估证据质量，对比 ADA/EASD 共识推荐和中国糖尿病防治指南。"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "糖尿病meta分析中HbA1c和心血管结局应该用什么效应量？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "HbA1c 变化属于连续变量，使用均数差（MD）；如果不同试验使用不同量表或单位（% vs mmol/mol），使用标准化均数差（SMD）。MACE、心血管死亡等时间-事件终点使用 HR（Hazard Ratio）。低血糖事件发生率使用 OR 或 RR。肾脏复合终点（肌酐翻倍、进入透析、eGFR 持续下降）使用 HR。这四类终点必须分别进行独立的 Meta 分析，不能混合合并。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "MACE-3和MACE-4复合终点在糖尿病CVOT中有什么区别？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MACE-3（三点 MACE）包括心血管死亡、非致死性心肌梗死和非致死性卒中，是大多数糖尿病 CVOT 的主要终点（如 EMPA-REG OUTCOME、LEADER、SUSTAIN-6）。MACE-4（四点 MACE）在此基础上加入不稳定心绞痛住院或紧急血运重建。Meta 分析时应以 MACE-3 为主要分析，因为绝大多数糖尿病 CVOT 均报告了 MACE-3 数据。如果有试验仅报告 MACE-4，需在敏感性分析中单独处理。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "GLP-1受体激动剂和SGLT2抑制剂的meta分析如何比较？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "GLP-1 受体激动剂（如利拉鲁肽、司美格鲁肽、度拉糖肽）和 SGLT2 抑制剂（如恩格列净、达格列净、卡格列净）均有多项大型 CVOT 证实心血管获益，但获益模式不同。GLP-1RA 主要减少动脉粥样硬化性事件（MI、卒中），而 SGLT2i 主要减少心衰住院和肾脏终点。直接比较两类药物需要使用网络 Meta 分析（NMA），因为缺乏头对头 RCT。在常规 Meta 分析中，建议分别对两类药物进行独立分析，然后在讨论中定性比较获益模式。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "糖尿病meta分析如何处理1型和2型糖尿病的差异？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "1 型糖尿病（T1D）和 2 型糖尿病（T2D）在病理生理机制、治疗策略和心血管风险谱上存在根本差异，不应在同一个 Meta 分析中混合合并。几乎所有降糖药 CVOT 仅纳入 T2D 患者。如果研究问题涉及 T1D（如胰岛素泵 vs 多次注射、CGM 对血糖控制的影响），应单独进行 T1D 的 Meta 分析。在纳排标准中明确限定糖尿病类型是关键的方法学要求。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "低血糖作为安全性终点在meta分析中如何处理？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "低血糖是降糖药 Meta 分析中最重要的安全性终点。处理要点：（1）区分严重低血糖（需要他人帮助或血糖 < 3.0 mmol/L）和非严重低血糖，分别进行 Meta 分析；（2）低血糖通常以事件发生率（有/无）报告，使用 OR 或 RR；（3）不同试验的低血糖定义可能不同（ADA 标准 vs 试验自定义标准），需在方法中统一定义；（4）SGLT2i 和 GLP-1RA 的低血糖风险极低（除非联合磺脲类或胰岛素），而磺脲类和胰岛素的低血糖风险是关键关注点。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "新型降糖药（如双重GIP/GLP-1受体激动剂）的meta分析有什么注意事项？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "替尔泊肽（Tirzepatide）等双重 GIP/GLP-1 受体激动剂是最新一代降糖药，目前面临几个 Meta 分析挑战：（1）RCT 数量有限（SURPASS 系列试验），文献基数不足以支持稳健的 Meta 分析；（2）心血管结局试验（SURPASS-CVOT）尚在进行中，目前只有降糖终点数据；（3）与 GLP-1RA 的头对头比较数据有限（仅 SURPASS-2 vs 司美格鲁肽）；（4）体重降低幅度显著大于现有药物，可能需要将体重作为额外终点纳入分析。建议密切关注 SURPASS-CVOT 结果，届时再纳入 MACE 终点的 Meta 分析。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "MetaReview能做糖尿病相关的meta分析吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "完全可以。MetaReview 支持糖尿病 Meta 分析所需的全部功能：（1）MD 用于 HbA1c 变化、体重变化等连续终点；（2）HR 用于 MACE、心血管死亡、肾脏复合终点等时间-事件终点；（3）OR/RR 用于低血糖发生率等二分类终点；（4）提供固定效应和随机效应模型；（5）自动生成森林图和漏斗图；（6）支持按药物类别（GLP-1RA vs SGLT2i vs DPP-4i）进行亚组分析；（7）逐一剔除敏感性分析验证结论稳健性。所有计算在浏览器内完成，免费使用，无需安装软件或编写代码。"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .toc { background: white; border-radius: 12px; padding: 24px 32px; margin-bottom: 40px; border: 1px solid #e5e7eb; }
+    .toc h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .toc a:hover { text-decoration: underline; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    .faq { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .faq h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .faq h3 { font-size: 16px; color: #1e40af; margin: 16px 0 8px; }
+    .faq p { font-size: 15px; color: #4b5563; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .toc, .faq, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">打开工具</a>
+      <a href="/guides/meta-analysis-steps">Meta 分析步骤</a>
+      <a href="/guides/survival-analysis-meta">HR 生存分析</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>糖尿病 Meta 分析完整指南：从降糖终点到心血管获益的实战方法</h1>
+  <p>糖尿病荟萃分析的效应量选择、HbA1c 与 MACE 双终点处理、GLP-1RA 与 SGLT2i 比较策略、异质性分析与经典 CVOT 案例解读。适合内分泌科研究生和临床研究者。</p>
+</div>
+
+<div class="container">
+
+  <div class="toc">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#intro">为什么糖尿病研究需要 Meta 分析</a></li>
+      <li><a href="#pico">糖尿病 Meta 分析的 PICO 框架</a></li>
+      <li><a href="#effect-size">效应量选择：MD、HR、OR/RR 分别用在哪里</a></li>
+      <li><a href="#data-extraction">数据提取要点</a></li>
+      <li><a href="#heterogeneity">异质性处理</a></li>
+      <li><a href="#subgroup">亚组分析策略</a></li>
+      <li><a href="#publication-bias">发表偏倚与敏感性分析</a></li>
+      <li><a href="#tool-practice">工具实战：用 MetaReview 做糖尿病 Meta 分析</a></li>
+      <li><a href="#classic-cases">经典案例解读</a></li>
+      <li><a href="#faq">常见问题</a></li>
+    </ol>
+  </div>
+
+  <!-- Section 1: Why diabetes research needs meta-analysis -->
+  <div class="section" id="intro">
+    <h2>为什么糖尿病研究需要 Meta 分析</h2>
+    <p>糖尿病是全球增长最快的慢性病之一。根据国际糖尿病联盟（IDF）2021 年数据，全球约 5.37 亿成人患有糖尿病，预计 2045 年将达到 7.83 亿。中国是全球糖尿病患病人数最多的国家，约 1.41 亿成人患有糖尿病，患病率达 12.8%。糖尿病不仅是血糖问题，更是心血管疾病、慢性肾脏病和死亡的重要危险因素。</p>
+    <h3>糖尿病 CVOT 的时代背景</h3>
+    <p>2008 年，FDA 发布里程碑式指南，要求所有新型降糖药在上市前或上市后必须完成心血管结局试验（Cardiovascular Outcome Trial, CVOT），以排除心血管安全性风险。这一政策催生了十余项大型 CVOT，彻底改变了糖尿病治疗格局：</p>
+    <ul>
+      <li><strong>SGLT2 抑制剂</strong> -- EMPA-REG OUTCOME、CANVAS Program、DECLARE-TIMI 58、CREDENCE、DAPA-CKD 等试验相继证实心血管和肾脏获益</li>
+      <li><strong>GLP-1 受体激动剂</strong> -- LEADER、SUSTAIN-6、REWIND、HARMONY Outcomes、PIONEER 6 等试验证实动脉粥样硬化性心血管事件的减少</li>
+      <li><strong>DPP-4 抑制剂</strong> -- SAVOR-TIMI 53、EXAMINE、TECOS、CARMELINA 等试验证实心血管安全性（非劣效），但无额外获益</li>
+    </ul>
+    <h3>为什么需要 Meta 分析</h3>
+    <p>尽管单项 CVOT 已经提供了丰富的证据，Meta 分析在糖尿病领域仍然不可或缺：</p>
+    <ul>
+      <li>判断同一药物类别（如所有 SGLT2i）是否具有<strong>类效应</strong>（class effect），还是存在药物个体差异</li>
+      <li>比较不同药物类别（GLP-1RA vs SGLT2i vs DPP-4i）在不同终点上的获益差异</li>
+      <li>通过合并分析增加统计效力，检测单项试验可能遗漏的亚组差异（如不同 eGFR 水平的肾脏获益）</li>
+      <li>整合降糖终点（HbA1c）和心血管/肾脏终点（MACE、eGFR 下降）的完整证据图谱</li>
+      <li>为 ADA/EASD 共识推荐和中国糖尿病防治指南提供最高等级的循证依据</li>
+    </ul>
+    <div class="tip">McGuire 等人 2021 年在 Lancet Diabetes & Endocrinology 发表的 SGLT2i Meta 分析合并了 EMPA-REG OUTCOME、CANVAS、DECLARE-TIMI 58、CREDENCE 和 DAPA-HF 共 46,969 例患者数据，证实 SGLT2i 作为类效应降低 MACE 11%（HR 0.89, 95% CI: 0.83-0.96）、心衰住院 32%（HR 0.68, 95% CI: 0.61-0.76）、肾脏复合终点 38%（HR 0.62, 95% CI: 0.56-0.70）。</div>
+  </div>
+
+  <!-- Section 2: PICO framework -->
+  <div class="section" id="pico">
+    <h2>糖尿病 Meta 分析的 PICO 框架</h2>
+    <p>糖尿病领域的 PICO 框架需要同时兼顾降糖疗效终点和心血管/肾脏硬终点。与心血管 Meta 分析不同，糖尿病 Meta 分析的核心挑战在于：同一项试验可能既有 HbA1c 数据（连续变量），又有 MACE 数据（时间-事件），需要分别进行独立分析。</p>
+    <h3>Population（人群）</h3>
+    <p>糖尿病 Meta 分析中常见的目标人群：</p>
+    <table class="data-table">
+      <tr><th>人群类别</th><th>典型定义</th><th>代表试验</th></tr>
+      <tr><td>T2D 合并确诊 ASCVD</td><td>既往 MI、卒中或外周动脉病</td><td>EMPA-REG OUTCOME, LEADER, SUSTAIN-6</td></tr>
+      <tr><td>T2D 合并多重 CV 危险因素</td><td>无确诊 ASCVD 但有高血压、血脂异常、吸烟等</td><td>DECLARE-TIMI 58, REWIND</td></tr>
+      <tr><td>T2D 合并 CKD</td><td>eGFR 25-75 mL/min/1.73m&sup2;，伴或不伴白蛋白尿</td><td>CREDENCE, DAPA-CKD</td></tr>
+      <tr><td>T2D 合并心衰</td><td>HFrEF 或 HFpEF，伴或不伴糖尿病</td><td>DAPA-HF, EMPEROR-Reduced, EMPEROR-Preserved</td></tr>
+      <tr><td>新诊断 T2D / 早期 T2D</td><td>病程 &lt; 5 年，HbA1c 轻度升高</td><td>VERIFY, GRADE</td></tr>
+      <tr><td>T2D 合并肥胖</td><td>BMI &ge; 30 kg/m&sup2;</td><td>STEP 系列（司美格鲁肽减重）</td></tr>
+    </table>
+    <div class="warn">T1D 和 T2D 不应混合分析。几乎所有降糖药 CVOT 仅纳入 T2D 患者。T1D 相关的 Meta 分析（如胰岛素泵 vs MDI、CGM 对 HbA1c 的影响）应独立进行。在纳排标准中必须明确限定糖尿病类型。</div>
+    <h3>Intervention 和 Comparison（干预与对照）</h3>
+    <p>糖尿病领域常见的干预类型：</p>
+    <ul>
+      <li><strong>SGLT2 抑制剂</strong>：恩格列净（empagliflozin）、达格列净（dapagliflozin）、卡格列净（canagliflozin）、艾托格列净（ertugliflozin）</li>
+      <li><strong>GLP-1 受体激动剂</strong>：利拉鲁肽（liraglutide）、司美格鲁肽（semaglutide，注射/口服）、度拉糖肽（dulaglutide）、艾塞那肽（exenatide）、利司那肽（lixisenatide）、阿必鲁肽（albiglutide）</li>
+      <li><strong>DPP-4 抑制剂</strong>：西格列汀（sitagliptin）、沙格列汀（saxagliptin）、利格列汀（linagliptin）、阿格列汀（alogliptin）</li>
+      <li><strong>双重激动剂</strong>：替尔泊肽（tirzepatide，GIP/GLP-1）</li>
+      <li><strong>传统药物</strong>：二甲双胍、磺脲类（格列美脲、格列齐特）、噻唑烷二酮类（吡格列酮）、胰岛素（甘精、德谷、门冬）</li>
+    </ul>
+    <p>对照方案的选择直接影响 Meta 分析的可解读性：</p>
+    <ul>
+      <li><strong>安慰剂对照</strong> -- CVOT 的标准设计（EMPA-REG、LEADER 等），适合评估"在标准治疗基础上加用 X 药的额外获益"</li>
+      <li><strong>活性对照</strong> -- 头对头试验（如 GRADE 比较四类降糖药），适合评估药物间的相对优劣</li>
+    </ul>
+    <h3>Outcome（结局指标）</h3>
+    <table class="data-table">
+      <tr><th>终点类型</th><th>具体指标</th><th>数据类型</th><th>效应量</th></tr>
+      <tr><td>降糖疗效</td><td>HbA1c 相对基线变化</td><td>连续变量</td><td>MD</td></tr>
+      <tr><td>体重变化</td><td>体重相对基线变化 (kg)</td><td>连续变量</td><td>MD</td></tr>
+      <tr><td>心血管复合终点</td><td>MACE-3（CV 死亡 + MI + 卒中）</td><td>时间-事件</td><td>HR</td></tr>
+      <tr><td>心血管硬终点</td><td>全因死亡、心血管死亡</td><td>时间-事件</td><td>HR</td></tr>
+      <tr><td>心衰终点</td><td>心衰住院</td><td>时间-事件</td><td>HR</td></tr>
+      <tr><td>肾脏复合终点</td><td>肌酐翻倍 / eGFR 持续下降 &ge;40% / ESKD / 肾脏死亡</td><td>时间-事件</td><td>HR</td></tr>
+      <tr><td>肾功能替代终点</td><td>eGFR 年下降速率 (mL/min/1.73m&sup2;/年)</td><td>连续变量</td><td>MD</td></tr>
+      <tr><td>安全性终点</td><td>严重低血糖、糖尿病酮症酸中毒 (DKA)、生殖泌尿感染</td><td>二分类</td><td>OR/RR</td></tr>
+    </table>
+    <h3>PICO 示例：SGLT2 抑制剂对 T2D 合并 CKD 患者的肾脏保护</h3>
+    <table class="data-table">
+      <tr><th>PICO 元素</th><th>定义</th><th>关键考量</th></tr>
+      <tr><td><strong>P</strong></td><td>T2D 患者，eGFR 25-75 mL/min/1.73m&sup2;，伴白蛋白尿（UACR &gt; 200 mg/g）</td><td>是否纳入非糖尿病 CKD 患者？eGFR 下限如何设定？</td></tr>
+      <tr><td><strong>I</strong></td><td>SGLT2 抑制剂（卡格列净 100mg / 达格列净 10mg / 恩格列净 10mg）</td><td>不同 SGLT2i 是否作为类效应合并？剂量差异如何处理？</td></tr>
+      <tr><td><strong>C</strong></td><td>安慰剂 + 标准肾脏保护治疗（最大耐受剂量 ACEI/ARB）</td><td>标准治疗背景是否一致？ACEI/ARB 使用率是否可比？</td></tr>
+      <tr><td><strong>O</strong></td><td>主要：肾脏复合终点（肌酐翻倍 + ESKD + 肾脏死亡）；次要：eGFR 年下降率、MACE、全因死亡</td><td>不同试验的肾脏终点定义是否一致（eGFR 下降 40% vs 57%）？</td></tr>
+    </table>
+    <div class="tip">在 PROSPERO 注册方案时即明确 PICO 的每个细节。糖尿病 Meta 分析中，人群的心血管风险分层（确诊 ASCVD vs 仅有危险因素）和肾功能分层（eGFR 分级）对结论影响巨大，必须在方案阶段预先规划亚组分析。</div>
+  </div>
+
+  <!-- Section 3: Effect size selection -->
+  <div class="section" id="effect-size">
+    <h2>效应量选择：MD、HR、OR/RR 分别用在哪里</h2>
+    <p>糖尿病 Meta 分析的独特之处在于需要同时处理降糖疗效（连续变量）和心血管/肾脏结局（时间-事件数据）两大类终点。这要求研究者为每类终点选择正确的效应量，并进行独立的 Meta 分析。</p>
+    <h3>MD：降糖疗效和代谢指标</h3>
+    <p>均数差（Mean Difference）是降糖终点的标准效应量：</p>
+    <ul>
+      <li><strong>HbA1c 变化 (%)</strong> -- 从基线到终点的变化值（change from baseline），是所有降糖药试验的核心疗效指标</li>
+      <li><strong>空腹血糖变化 (mmol/L)</strong> -- 辅助降糖指标</li>
+      <li><strong>体重变化 (kg)</strong> -- GLP-1RA 和 SGLT2i 的额外获益，替尔泊肽的体重降低可达 10-15 kg</li>
+      <li><strong>收缩压变化 (mmHg)</strong> -- SGLT2i 的血压降低效应（约 3-5 mmHg）</li>
+      <li><strong>eGFR 年下降速率</strong> -- 肾脏保护的替代终点，单位为 mL/min/1.73m&sup2;/年</li>
+    </ul>
+    <div class="formula">
+      MD = Mean<sub>intervention</sub> - Mean<sub>control</sub><br>
+      例如：HbA1c 变化 MD = -0.8% 意味着干预组比对照组多降低 0.8%
+    </div>
+    <h3>HR：心血管和肾脏时间-事件终点</h3>
+    <p>Hazard Ratio 适用于所有以"至首次事件时间"为终点的分析：</p>
+    <ul>
+      <li><strong>MACE-3</strong> -- 心血管死亡 + 非致死性 MI + 非致死性卒中，糖尿病 CVOT 最通用的主要终点</li>
+      <li><strong>全因死亡、心血管死亡</strong> -- 硬终点</li>
+      <li><strong>心衰住院</strong> -- SGLT2i 的核心获益终点</li>
+      <li><strong>肾脏复合终点</strong> -- 肌酐翻倍/eGFR 持续下降/ESKD/肾脏死亡</li>
+    </ul>
+    <div class="formula">
+      HR &lt; 1 表示干预组事件风险更低（获益）<br>
+      例如：MACE HR = 0.86 意味着 MACE 风险降低 14%
+    </div>
+    <h3>OR/RR：安全性事件和二分类终点</h3>
+    <p>当分析的是固定时间点的事件发生率时，使用 OR 或 RR：</p>
+    <ul>
+      <li><strong>严重低血糖发生率</strong> -- 最重要的降糖药安全性终点</li>
+      <li><strong>糖尿病酮症酸中毒 (DKA)</strong> -- SGLT2i 特有的安全性关注点</li>
+      <li><strong>生殖泌尿系统感染</strong> -- SGLT2i 的常见不良反应</li>
+      <li><strong>胰腺炎</strong> -- GLP-1RA 和 DPP-4i 的安全性关注点</li>
+      <li><strong>截肢事件</strong> -- 卡格列净（CANVAS 试验）的安全性信号</li>
+      <li><strong>HbA1c 达标率（&lt; 7%）</strong> -- 二分类的降糖疗效指标</li>
+    </ul>
+    <h3>效应量选择总结</h3>
+    <table class="data-table">
+      <tr><th>终点</th><th>首选效应量</th><th>备选效应量</th><th>说明</th></tr>
+      <tr><td>HbA1c 变化</td><td>MD</td><td>SMD（不同单位时）</td><td>所有降糖试验以 % 为单位时直接用 MD</td></tr>
+      <tr><td>体重变化</td><td>MD</td><td>--</td><td>均以 kg 报告</td></tr>
+      <tr><td>MACE-3</td><td>HR</td><td>--</td><td>CVOT 主要终点，必须用 HR</td></tr>
+      <tr><td>心血管死亡</td><td>HR</td><td>--</td><td>硬终点</td></tr>
+      <tr><td>心衰住院</td><td>HR</td><td>Rate ratio（复发事件）</td><td>首次事件用 HR</td></tr>
+      <tr><td>肾脏复合终点</td><td>HR</td><td>--</td><td>时间-事件终点</td></tr>
+      <tr><td>eGFR 年下降率</td><td>MD</td><td>--</td><td>连续变量</td></tr>
+      <tr><td>严重低血糖</td><td>OR/RR</td><td>--</td><td>发生率报告，用 OR 或 RR</td></tr>
+      <tr><td>DKA</td><td>OR/RR</td><td>--</td><td>罕见事件，建议用 Peto OR</td></tr>
+    </table>
+    <div class="warn">核心原则：不同效应量绝对不能混合合并。HbA1c 的 MD 和 MACE 的 HR 必须作为独立的 Meta 分析分别报告。一篇完整的糖尿病 Meta 分析论文通常包含 3-5 个独立的森林图（HbA1c、MACE、心衰住院、肾脏终点、低血糖）。</div>
+    <p>详细的效应量选择方法请看：<a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</a></p>
+  </div>
+
+  <!-- Section 4: Data extraction -->
+  <div class="section" id="data-extraction">
+    <h2>数据提取要点</h2>
+    <p>糖尿病 Meta 分析的数据提取有几个独特挑战：同一试验中需要提取降糖和心血管两套数据、肾脏复合终点的定义在不同试验间差异显著、低血糖事件的分级和定义不统一。</p>
+    <h3>HbA1c 数据的提取</h3>
+    <p>HbA1c 是降糖疗效 Meta 分析的核心数据。提取优先级：</p>
+    <ol>
+      <li><strong>最优</strong>：经基线校正的最小二乘均数变化（LS mean change from baseline）及标准误（SE）或 95% CI</li>
+      <li><strong>次选</strong>：各组的 HbA1c 变化均值和标准差（Mean change &plusmn; SD）</li>
+      <li><strong>再次</strong>：各组的终点 HbA1c 均值和标准差（需结合基线值计算变化）</li>
+      <li><strong>最后</strong>：仅有组间差异和 p 值（可反推 SE）</li>
+    </ol>
+    <div class="formula">
+      从 95% CI 计算 SE：SE = (CI<sub>upper</sub> - CI<sub>lower</sub>) / 3.92<br>
+      从 SD 计算 SE：SE = SD / &radic;n
+    </div>
+    <div class="tip">多数降糖试验使用 MMRM（混合效应模型重复测量分析）或 ANCOVA 报告 HbA1c 结果。LS mean 和 SE 是最佳提取对象，因为它们已经考虑了基线 HbA1c 的校正和缺失数据的处理。</div>
+    <h3>MACE 和心血管终点数据的提取</h3>
+    <p>与心血管 Meta 分析相同，优先提取 HR 及 95% CI：</p>
+    <ul>
+      <li>糖尿病 CVOT 通常在主要发表论文的 Figure 或正文中清晰报告 MACE-3 的 HR 和 95% CI</li>
+      <li>MACE 各组分（CV 死亡、MI、卒中）的 HR 通常在 forest plot 或 supplementary table 中</li>
+      <li>心衰住院的 HR 有时作为次要终点报告，在 supplementary appendix 中查找</li>
+    </ul>
+    <div class="formula">
+      从 HR 和 CI 计算标准误：SE[log(HR)] = (log(CI<sub>upper</sub>) - log(CI<sub>lower</sub>)) / 3.92
+    </div>
+    <h3>肾脏终点数据的特殊处理</h3>
+    <p>肾脏复合终点的定义在不同 CVOT 和肾脏试验中差异显著：</p>
+    <table class="data-table">
+      <tr><th>试验</th><th>肾脏复合终点定义</th></tr>
+      <tr><td>EMPA-REG OUTCOME</td><td>肌酐翻倍 + 启动肾脏替代治疗 + 肾脏死亡</td></tr>
+      <tr><td>CANVAS Program</td><td>eGFR 持续下降 &ge;40% + 肾脏替代治疗 + 肾脏死亡</td></tr>
+      <tr><td>CREDENCE</td><td>ESKD（透析/移植/eGFR &lt;15）+ 肌酐翻倍 + 肾脏死亡 + CV 死亡</td></tr>
+      <tr><td>DAPA-CKD</td><td>eGFR 持续下降 &ge;50% + ESKD + 肾脏死亡</td></tr>
+    </table>
+    <p>处理建议：</p>
+    <ul>
+      <li>在方案中预先确定使用哪种肾脏终点定义作为主要分析（建议以"eGFR 持续下降 &ge;40% + ESKD + 肾脏死亡"为主，因为这是最新 KDIGO 推荐的标准终点）</li>
+      <li>对包含 CV 死亡的扩展肾脏终点（如 CREDENCE）和纯肾脏终点分别进行分析</li>
+      <li>eGFR 年下降率（eGFR slope）作为独立的连续变量终点，使用 MD 进行 Meta 分析</li>
+    </ul>
+    <h3>低血糖数据的提取</h3>
+    <p>低血糖分级和定义是数据提取中最容易出错的环节：</p>
+    <ul>
+      <li><strong>严重低血糖</strong> -- 需要他人帮助恢复的低血糖事件。定义最统一，优先用于 Meta 分析</li>
+      <li><strong>确认的低血糖</strong> -- 血糖 &lt; 3.9 mmol/L（70 mg/dL）或 &lt; 3.0 mmol/L（54 mg/dL），有症状或无症状</li>
+      <li><strong>症状性低血糖</strong> -- 有低血糖症状但可能未经血糖确认</li>
+    </ul>
+    <div class="warn">不同试验使用不同的低血糖定义和阈值。ADA 2017 年将血糖 &lt; 3.0 mmol/L 定义为临床显著低血糖（clinically significant hypoglycemia）。在方法部分明确你采用的低血糖定义，并在敏感性分析中检验不同阈值的影响。</div>
+    <h3>数据提取的特殊注意事项</h3>
+    <ul>
+      <li><strong>多臂试验</strong> -- SUSTAIN-6 有司美格鲁肽 0.5mg 和 1.0mg 两个剂量组，需决定是分开分析还是合并为一个干预组（合并时需避免对照组重复计数）</li>
+      <li><strong>CANVAS Program</strong> -- 实际上是 CANVAS 和 CANVAS-R 两个试验的整合分析，提取时注意使用整合数据而非单个试验数据</li>
+      <li><strong>随访时间差异</strong> -- SUSTAIN-6 随访 2.1 年，LEADER 随访 3.8 年，REWIND 随访 5.4 年，使用 HR 可以部分解决随访差异问题</li>
+    </ul>
+  </div>
+
+  <!-- Section 5: Heterogeneity -->
+  <div class="section" id="heterogeneity">
+    <h2>异质性处理</h2>
+    <p>糖尿病 Meta 分析的异质性来源多样且相互交织。降糖药种类繁多、患者基线特征差异大、试验设计目的不同（降糖疗效试验 vs CVOT），这些都会导致 I&sup2; 偏高。</p>
+    <h3>糖尿病 Meta 分析的特殊异质性来源</h3>
+    <table class="data-table">
+      <tr><th>异质性来源</th><th>具体表现</th><th>对效应量的影响</th></tr>
+      <tr><td>药物类别差异</td><td>GLP-1RA、SGLT2i、DPP-4i 的作用机制完全不同</td><td>不同类别对 MACE 的效应方向可能不同（GLP-1RA 减少 ASCVD 事件，SGLT2i 减少心衰和肾脏事件）</td></tr>
+      <tr><td>基线 HbA1c 差异</td><td>HbA1c 7.5% vs 9.5% 的患者</td><td>基线 HbA1c 越高，降糖幅度（MD）越大；但 MACE HR 通常不受基线 HbA1c 影响</td></tr>
+      <tr><td>糖尿病病程</td><td>新诊断（&lt;1 年）vs 长病程（&gt;15 年）</td><td>病程长的患者心血管风险更高，绝对获益更大</td></tr>
+      <tr><td>心血管风险水平</td><td>确诊 ASCVD（EMPA-REG 99%）vs 仅有危险因素（DECLARE 59%）</td><td>高 CV 风险人群的 MACE 事件率更高，NNT 更小</td></tr>
+      <tr><td>肾功能（eGFR）</td><td>eGFR &gt; 90 vs 60-89 vs 30-59 vs &lt; 30</td><td>eGFR 越低，SGLT2i 的降糖效果越弱但肾脏保护效果可能越强</td></tr>
+      <tr><td>背景降糖方案</td><td>二甲双胍单药基础 vs 三联以上方案 + 胰岛素</td><td>背景治疗越强，新增药物的降糖增量越小</td></tr>
+      <tr><td>试验设计目的</td><td>降糖疗效试验（12-52 周）vs CVOT（2-6 年）</td><td>短期疗效试验和长期结局试验不应在 MACE 终点上合并</td></tr>
+    </table>
+    <h3>I&sup2; 的糖尿病语境解读</h3>
+    <p>在糖尿病 Meta 分析中，I&sup2; 的解读需要区分终点类型：</p>
+    <ul>
+      <li><strong>HbA1c 终点</strong> -- I&sup2; 通常较高（50-80%），因为基线 HbA1c、药物剂量、联合用药方案差异很大。这是预期中的异质性，需通过亚组分析和 Meta-regression 解释</li>
+      <li><strong>MACE 终点（同类药物）</strong> -- I&sup2; 通常较低（0-30%），因为 CVOT 的设计相对标准化。例如 SGLT2i 的 MACE Meta 分析 I&sup2; 通常 &lt; 20%</li>
+      <li><strong>MACE 终点（跨药物类别）</strong> -- I&sup2; 可能较高（40-70%），反映的是不同药物类别的真实效应差异</li>
+      <li><strong>低血糖终点</strong> -- I&sup2; 可能非常高（&gt; 80%），因为定义不统一和背景胰岛素/磺脲类使用率差异</li>
+    </ul>
+    <h3>处理策略</h3>
+    <ol>
+      <li><strong>按药物类别分层分析</strong> -- 首先在药物类别内（如所有 SGLT2i）合并，然后在类别间比较。这是糖尿病 Meta 分析最基本的分层策略</li>
+      <li><strong>默认使用随机效应模型</strong> -- DerSimonian-Laird 或 REML 方法，除非仅有 2-3 项 CVOT 且异质性极低</li>
+      <li><strong>Meta-regression</strong> -- 以基线 HbA1c、糖尿病病程、eGFR、确诊 ASCVD 比例为协变量，检验其对效应量的影响</li>
+      <li><strong>排除非 CVOT 试验</strong> -- 对 MACE 终点，仅纳入以 CVOT 为设计目的的大型 RCT，排除短期降糖试验中偶然收集的 CV 事件数据</li>
+      <li><strong>预测区间</strong> -- 报告 prediction interval，尤其在合并效应量的 CI 接近 1 时，prediction interval 能更真实地反映不确定性</li>
+    </ol>
+    <div class="tip">Zelniker 等人 2019 年在 Lancet 发表的 SGLT2i Meta 分析在处理异质性方面堪称范例：按有/无确诊 ASCVD 分层后，MACE 获益主要集中在确诊 ASCVD 人群（HR 0.86, p &lt; 0.001），而仅有危险因素的人群无显著获益（HR 0.94, p = 0.33）；但心衰住院获益在两个亚组中一致（p<sub>interaction</sub> = 0.41）。</div>
+  </div>
+
+  <!-- Section 6: Subgroup analysis -->
+  <div class="section" id="subgroup">
+    <h2>亚组分析策略</h2>
+    <p>亚组分析在糖尿病 Meta 分析中具有极高的临床转化价值。它直接回答"哪些患者应该优先使用 GLP-1RA？哪些应该优先使用 SGLT2i？"这些问题是 ADA/EASD 共识推荐和中国指南更新的核心依据。</p>
+    <h3>糖尿病 Meta 分析的核心亚组变量</h3>
+    <table class="data-table">
+      <tr><th>亚组变量</th><th>分组方式</th><th>临床意义</th><th>代表性发现</th></tr>
+      <tr><td>确诊 ASCVD 状态</td><td>确诊 ASCVD vs 仅有 CV 危险因素</td><td>决定是否推荐 GLP-1RA/SGLT2i 作为首选联合用药</td><td>GLP-1RA 的 MACE 获益主要在确诊 ASCVD 人群；SGLT2i 的心衰获益不依赖 ASCVD 状态</td></tr>
+      <tr><td>基线 HbA1c</td><td>&ge;8.5% vs &lt;8.5%</td><td>降糖幅度与基线 HbA1c 正相关，但 CV 获益通常不受影响</td><td>SGLT2i 的 MACE 获益与基线 HbA1c 无关（p<sub>interaction</sub> 不显著）</td></tr>
+      <tr><td>eGFR 分层</td><td>&ge;60 vs 30-59 vs &lt;30 mL/min/1.73m&sup2;</td><td>肾功能影响降糖效果和肾脏保护获益</td><td>SGLT2i 的肾脏保护在 eGFR 25-45 仍显著（DAPA-CKD）</td></tr>
+      <tr><td>心衰病史</td><td>有 vs 无</td><td>决定是否优先使用 SGLT2i</td><td>SGLT2i 在有心衰病史患者中获益更显著</td></tr>
+      <tr><td>糖尿病病程</td><td>&gt;10 年 vs &le;10 年</td><td>长病程患者微血管和大血管并发症风险更高</td><td>GLP-1RA 在长病程患者中的 MACE 获益一致</td></tr>
+      <tr><td>年龄</td><td>&ge;65 岁 vs &lt;65 岁</td><td>老年患者低血糖风险更高，获益-风险平衡不同</td><td>SGLT2i 和 GLP-1RA 在老年亚组中获益一致</td></tr>
+      <tr><td>BMI</td><td>&ge;30 vs &lt;30 kg/m&sup2;</td><td>肥胖影响胰岛素抵抗和药物选择</td><td>GLP-1RA 在高 BMI 亚组中体重降低更多</td></tr>
+      <tr><td>白蛋白尿</td><td>正常 vs 微量白蛋白尿 vs 大量白蛋白尿</td><td>白蛋白尿是肾脏进展和 CV 事件的独立风险因子</td><td>SGLT2i 的肾脏获益在大量白蛋白尿人群中最显著</td></tr>
+      <tr><td>地区</td><td>亚洲 vs 欧美</td><td>亚洲 T2D 患者 BMI 更低、beta 细胞功能更差</td><td>SGLT2i 在亚洲人群中的疗效一致但安全性数据需关注</td></tr>
+    </table>
+    <h3>Pre-specified vs Post-hoc 亚组分析</h3>
+    <p>糖尿病 Meta 分析中，以下亚组应在方案中预先设定：</p>
+    <ul>
+      <li><strong>必须预设</strong>：确诊 ASCVD 状态、eGFR 分层、心衰病史 -- 这三个是 ADA/EASD 推荐的治疗决策关键变量</li>
+      <li><strong>建议预设</strong>：基线 HbA1c、糖尿病病程、年龄 -- 常见的临床异质性来源</li>
+      <li><strong>可选预设</strong>：BMI、白蛋白尿、地区、性别 -- 取决于研究问题</li>
+    </ul>
+    <div class="warn">亚组分析的核心原则：不能仅因为"某亚组 p &lt; 0.05 而另一亚组 p &gt; 0.05"就声称两亚组间存在差异。必须进行交互检验（p<sub>interaction</sub>），只有 p<sub>interaction</sub> &lt; 0.05 才能认为亚组间差异具有统计学意义。</div>
+    <h3>临床决策树中的亚组应用</h3>
+    <p>糖尿病 Meta 分析的亚组结果直接转化为治疗流程：</p>
+    <ol>
+      <li>T2D 合并确诊 ASCVD → 优先 GLP-1RA（MACE 获益证据更强）或 SGLT2i</li>
+      <li>T2D 合并心衰 → 优先 SGLT2i（心衰住院 HR 0.68 的类效应）</li>
+      <li>T2D 合并 CKD → 优先 SGLT2i（肾脏复合终点 HR 0.62 的类效应）</li>
+      <li>T2D 需要强效降糖 + 减重 → 优先 GLP-1RA（HbA1c 降低 1.0-1.8% + 体重降低 3-6 kg）</li>
+    </ol>
+    <div class="tip">MetaReview 支持自定义亚组分析，自动计算每个亚组的合并效应量和 p<sub>interaction</sub>，并在森林图中按亚组分层展示结果。你可以按药物类别、ASCVD 状态或 eGFR 分层快速生成分层森林图。</div>
+  </div>
+
+  <!-- Section 7: Publication bias and sensitivity analysis -->
+  <div class="section" id="publication-bias">
+    <h2>发表偏倚与敏感性分析</h2>
+    <p>糖尿病领域的发表偏倚问题有其独特优势。2008 年 FDA 要求所有新型降糖药必须完成 CVOT，这一政策使得大型心血管结局试验几乎全部注册、完成并发表，大幅降低了该领域的发表偏倚风险。</p>
+    <h3>糖尿病领域发表偏倚的特殊考量</h3>
+    <ul>
+      <li><strong>CVOT 的政策保障</strong> -- FDA 2008 年指南要求降糖新药证明 CV 安全性（MACE HR 上限 &lt; 1.3），确保了几乎所有大型 CVOT 都会发表，无论结果阳性或阴性（如 TECOS、CARMELINA 的中性结果均完整发表）</li>
+      <li><strong>ClinicalTrials.gov 注册</strong> -- 所有 CVOT 在启动前即在 ClinicalTrials.gov 注册，可以交叉验证是否有已完成但未发表的试验</li>
+      <li><strong>短期降糖试验的偏倚风险</strong> -- 与 CVOT 不同，12-52 周的降糖疗效试验（III 期注册试验）可能存在发表偏倚，尤其是药企资助的小型试验</li>
+      <li><strong>亚组分析的选择性报告</strong> -- 某些试验可能仅报告"显著"的亚组结果，而省略不显著的亚组。检查各试验的 supplementary appendix 和统计分析计划（SAP）</li>
+    </ul>
+    <h3>评估方法</h3>
+    <table class="data-table">
+      <tr><th>方法</th><th>适用条件</th><th>糖尿病语境的注意事项</th></tr>
+      <tr><td>漏斗图（Funnel Plot）</td><td>纳入 &ge;10 篇研究</td><td>CVOT Meta 分析通常仅有 3-7 项试验，漏斗图的检验效力有限</td></tr>
+      <tr><td>Egger 检验</td><td>连续型效应量（HR、MD）</td><td>样本量少时（&lt;10 篇）不推荐使用</td></tr>
+      <tr><td>Trim-and-fill 法</td><td>漏斗图不对称时</td><td>估计"缺失"研究数量，但在 CVOT 场景中通常无缺失</td></tr>
+      <tr><td>ClinicalTrials.gov 交叉检索</td><td>任何 Meta 分析</td><td>检索所有注册的糖尿病 CVOT，确认是否有已完成但未发表的试验</td></tr>
+    </table>
+    <h3>敏感性分析策略</h3>
+    <p>糖尿病 Meta 分析常用的敏感性分析：</p>
+    <ol>
+      <li><strong>逐一剔除法</strong> -- 每次排除一项 CVOT，观察合并 HR 的变化。例如排除 EMPA-REG OUTCOME（CV 获益最显著的 SGLT2i 试验）后 MACE 结论是否仍然成立</li>
+      <li><strong>排除 CV 安全性试验</strong> -- 某些 DPP-4i CVOT 的设计目的是证明非劣效而非优效，排除这些试验后检验结论变化</li>
+      <li><strong>统一肾脏终点定义</strong> -- 仅纳入使用"eGFR 下降 &ge;40% + ESKD + 肾脏死亡"定义的研究</li>
+      <li><strong>仅纳入确诊 ASCVD 患者占比 &gt;50% 的试验</strong> -- 评估 CV 高危人群中的效应一致性</li>
+      <li><strong>固定效应 vs 随机效应模型对比</strong> -- 两种模型结果差异大提示异质性影响显著</li>
+      <li><strong>排除提前终止的试验</strong> -- 如 EMPA-REG OUTCOME 和 CREDENCE 因疗效显著而提前终止，可能存在效应量高估偏倚</li>
+      <li><strong>排除多臂试验的特定剂量组</strong> -- 如仅保留 SUSTAIN-6 的高剂量组（1.0mg）或仅保留低剂量组（0.5mg）</li>
+    </ol>
+    <div class="tip">MetaReview 自动生成漏斗图和逐一剔除敏感性分析。虽然糖尿病 CVOT 的数量有限（通常 3-7 项），但逐一剔除分析对验证"去掉任何一项试验后结论是否稳健"至关重要。</div>
+  </div>
+
+  <!-- Section 8: Tool practice -->
+  <div class="section" id="tool-practice">
+    <h2>工具实战：用 MetaReview 做糖尿病 Meta 分析</h2>
+    <p>以"SGLT2 抑制剂降低 T2D 患者 MACE-3 风险"为例，演示在 MetaReview 中完成一次完整的糖尿病 Meta 分析的全过程。</p>
+    <h3>第 1 步：准备数据</h3>
+    <p>从文献中提取以下 4 项 SGLT2 抑制剂 CVOT 的 MACE-3 数据：</p>
+    <table class="data-table">
+      <tr><th>研究</th><th>药物</th><th>样本量</th><th>HR (MACE-3)</th><th>95% CI</th><th>中位随访</th></tr>
+      <tr><td>EMPA-REG OUTCOME (2015)</td><td>恩格列净 10/25mg</td><td>7020</td><td>0.86</td><td>0.74 - 0.99</td><td>3.1 年</td></tr>
+      <tr><td>CANVAS Program (2017)</td><td>卡格列净 100/300mg</td><td>10142</td><td>0.86</td><td>0.75 - 0.97</td><td>2.4 年</td></tr>
+      <tr><td>DECLARE-TIMI 58 (2019)</td><td>达格列净 10mg</td><td>17160</td><td>0.93</td><td>0.84 - 1.03</td><td>4.2 年</td></tr>
+      <tr><td>VERTIS CV (2020)</td><td>艾托格列净 5/15mg</td><td>8246</td><td>0.97</td><td>0.85 - 1.11</td><td>3.5 年</td></tr>
+    </table>
+    <h3>第 2 步：打开 MetaReview 并输入数据</h3>
+    <ol>
+      <li>访问 MetaReview 主页，效应量类型选择 <strong>Hazard Ratio</strong></li>
+      <li>逐行输入：Study（研究名称+年份）、HR、CI Lower、CI Upper</li>
+      <li>MetaReview 自动完成 log(HR) 变换和标准误计算</li>
+    </ol>
+    <h3>第 3 步：选择模型并运行分析</h3>
+    <ol>
+      <li>选择<strong>随机效应模型</strong>（不同 SGLT2i 药物、不同剂量、不同 ASCVD 比例）</li>
+      <li>点击 <strong>Run Meta-Analysis</strong></li>
+      <li>查看合并 HR、95% CI、p 值和异质性统计量（I&sup2;、Q、&tau;&sup2;）</li>
+    </ol>
+    <p>预期结果：合并 HR 约 0.90 (95% CI: 0.85-0.95)，表明 SGLT2i 作为类效应将 T2D 患者 MACE-3 风险降低约 10%。I&sup2; 可能 &lt; 20%（因为四项 CVOT 的 HR 方向一致）。</p>
+    <h3>第 4 步：生成森林图和漏斗图</h3>
+    <ol>
+      <li>MetaReview 自动生成<strong>森林图</strong>，展示每项 CVOT 的 HR 和 95% CI 以及合并效应菱形</li>
+      <li>切换到<strong>漏斗图</strong>视图 -- 注意仅有 4 项研究时漏斗图的检验效力有限，但仍可直观展示</li>
+      <li>查看<strong>逐一剔除</strong>敏感性分析：排除 EMPA-REG OUTCOME 后合并 HR 是否仍显著？排除 VERTIS CV（唯一未达统计学显著的试验）后 HR 变化多大？</li>
+    </ol>
+    <h3>第 5 步：扩展分析 -- 心衰住院终点</h3>
+    <p>可以在 MetaReview 中新建一个分析，输入同样 4 项试验的心衰住院 HR 数据：</p>
+    <table class="data-table">
+      <tr><th>研究</th><th>HR (心衰住院)</th><th>95% CI</th></tr>
+      <tr><td>EMPA-REG OUTCOME</td><td>0.65</td><td>0.50 - 0.85</td></tr>
+      <tr><td>CANVAS Program</td><td>0.67</td><td>0.52 - 0.87</td></tr>
+      <tr><td>DECLARE-TIMI 58</td><td>0.73</td><td>0.61 - 0.88</td></tr>
+      <tr><td>VERTIS CV</td><td>0.70</td><td>0.54 - 0.90</td></tr>
+    </table>
+    <p>预期结果：合并 HR 约 0.69 (95% CI: 0.61-0.77)，I&sup2; 接近 0% -- 说明 SGLT2i 降低心衰住院约 31% 是高度一致的类效应。</p>
+    <div class="tip">整个流程从数据输入到两张森林图（MACE + 心衰住院）生成只需 10-15 分钟。MetaReview 的所有计算在浏览器本地完成，数据不会上传至服务器，保护你的未发表数据安全。</div>
+  </div>
+
+  <!-- Section 9: Classic cases -->
+  <div class="section" id="classic-cases">
+    <h2>经典案例解读</h2>
+    <p>以下是糖尿病领域具有里程碑意义的 CVOT 和肾脏试验。它们构成了糖尿病 Meta 分析的核心数据来源，理解每项试验的设计特点和关键结果是做好 Meta 分析的基础。</p>
+
+    <h3>案例 1：EMPA-REG OUTCOME -- 恩格列净的心血管获益</h3>
+    <p><strong>试验背景</strong>：EMPA-REG OUTCOME (2015) 是首个证明降糖药可降低心血管死亡的 CVOT，震动了整个糖尿病领域。纳入 7,020 例 T2D 合并确诊心血管疾病的患者。</p>
+    <ul>
+      <li><strong>主要终点</strong>：MACE-3（CV 死亡 + 非致死性 MI + 非致死性卒中）</li>
+      <li><strong>核心结果</strong>：MACE-3 HR = 0.86 (95% CI: 0.74-0.99, p = 0.04)</li>
+      <li><strong>心血管死亡</strong>：HR = 0.62 (95% CI: 0.49-0.77, p &lt; 0.001) -- 降低 38%</li>
+      <li><strong>心衰住院</strong>：HR = 0.65 (95% CI: 0.50-0.85, p = 0.002)</li>
+      <li><strong>全因死亡</strong>：HR = 0.68 (95% CI: 0.57-0.82, p &lt; 0.001)</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：EMPA-REG OUTCOME 的 CV 死亡获益（HR 0.62）远超其他 SGLT2i 试验。在 Meta 分析中，如果排除此试验后合并 HR 不再显著（DECLARE 和 VERTIS CV 均未达 MACE 显著），则需讨论"CV 死亡获益是否为恩格列净的独特效应还是入选人群差异所致"。这正是逐一剔除敏感性分析的核心价值。</p>
+
+    <h3>案例 2：LEADER -- 利拉鲁肽的心血管获益</h3>
+    <p><strong>试验背景</strong>：LEADER (2016) 证实了 GLP-1 受体激动剂利拉鲁肽在 T2D 高 CV 风险患者中的心血管获益。纳入 9,340 例患者。</p>
+    <ul>
+      <li><strong>主要终点</strong>：MACE-3</li>
+      <li><strong>核心结果</strong>：HR = 0.87 (95% CI: 0.78-0.97, p = 0.01)</li>
+      <li><strong>心血管死亡</strong>：HR = 0.78 (95% CI: 0.66-0.93, p = 0.007)</li>
+      <li><strong>全因死亡</strong>：HR = 0.85 (95% CI: 0.74-0.97, p = 0.02)</li>
+      <li><strong>肾脏复合终点</strong>：HR = 0.78 (95% CI: 0.67-0.92, p = 0.003)</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：LEADER 是 GLP-1RA 类 CVOT 中随访最长（3.8 年）、样本量最大的试验之一。与 SUSTAIN-6（司美格鲁肽 HR 0.74）、HARMONY Outcomes（阿必鲁肽 HR 0.78）、REWIND（度拉糖肽 HR 0.88）合并分析，可以评估 GLP-1RA 的 MACE 类效应。注意 ELIXA（利司那肽 HR 1.02）和 EXSCEL（艾塞那肽 HR 0.91, p = 0.06）为中性结果，合并时会使总效应趋于保守。</p>
+
+    <h3>案例 3：CANVAS Program -- 卡格列净与截肢信号</h3>
+    <p><strong>试验背景</strong>：CANVAS Program (2017) 是 CANVAS 和 CANVAS-R 两个试验的整合分析，纳入 10,142 例 T2D 患者。</p>
+    <ul>
+      <li><strong>主要终点</strong>：MACE-3 HR = 0.86 (95% CI: 0.75-0.97)</li>
+      <li><strong>心衰住院</strong>：HR = 0.67 (95% CI: 0.52-0.87)</li>
+      <li><strong>肾脏复合终点</strong>：HR = 0.60 (95% CI: 0.47-0.77)</li>
+      <li><strong>截肢事件</strong>：HR = 1.97 (95% CI: 1.41-2.75) -- 显著增加</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：CANVAS 的截肢信号引发了对 SGLT2i 类效应安全性的关注。在合并所有 SGLT2i 试验进行截肢风险 Meta 分析时，DECLARE-TIMI 58 和 CREDENCE 未发现类似信号。Meta 分析结论表明截肢风险增加可能是卡格列净的特异性问题而非类效应，但仍需在安全性讨论中重点报告。</p>
+
+    <h3>案例 4：DECLARE-TIMI 58 -- 最广泛人群的 SGLT2i CVOT</h3>
+    <p><strong>试验背景</strong>：DECLARE-TIMI 58 (2019) 是 SGLT2i 中纳入人群最广泛的 CVOT，17,160 例 T2D 患者中仅 40.6% 有确诊 ASCVD，其余为多重危险因素。</p>
+    <ul>
+      <li><strong>共同主要终点 1</strong>：MACE-3 HR = 0.93 (95% CI: 0.84-1.03, p = 0.17) -- 未达统计学显著</li>
+      <li><strong>共同主要终点 2</strong>：CV 死亡或心衰住院 HR = 0.83 (95% CI: 0.73-0.95, p = 0.005)</li>
+      <li><strong>心衰住院</strong>：HR = 0.73 (95% CI: 0.61-0.88)</li>
+      <li><strong>肾脏复合终点</strong>：HR = 0.76 (95% CI: 0.67-0.87)</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：DECLARE 的 MACE-3 未达显著是因为纳入了大量低 CV 风险人群（ASCVD 比例仅 40%）。在 Meta 分析中按 ASCVD 状态分层后，确诊 ASCVD 亚组的 MACE HR 为 0.90（与其他 CVOT 一致），而无 ASCVD 亚组 HR 接近 1.0。这进一步支持了"SGLT2i 的 MACE 获益依赖于 ASCVD 状态"的结论。</p>
+
+    <h3>案例 5：CREDENCE -- SGLT2i 肾脏保护的里程碑</h3>
+    <p><strong>试验背景</strong>：CREDENCE (2019) 是首个以肾脏终点为主要终点的 SGLT2i 试验，纳入 4,401 例 T2D 合并慢性肾脏病（eGFR 30-90，UACR &gt;300-5000 mg/g）患者。</p>
+    <ul>
+      <li><strong>主要终点</strong>：ESKD + 肌酐翻倍 + 肾脏/CV 死亡 HR = 0.70 (95% CI: 0.59-0.82, p = 0.00001)</li>
+      <li><strong>纯肾脏终点</strong>：ESKD + 肌酐翻倍 + 肾脏死亡 HR = 0.66 (95% CI: 0.53-0.81)</li>
+      <li><strong>MACE-3</strong>：HR = 0.80 (95% CI: 0.67-0.95)</li>
+      <li><strong>心衰住院</strong>：HR = 0.61 (95% CI: 0.47-0.80)</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：CREDENCE 因疗效显著而提前终止（计划中期分析显示跨越显著性边界），可能存在效应量高估偏倚。在与 DAPA-CKD（达格列净，肾脏复合终点 HR 0.61）合并分析时，两者结果高度一致，相互验证了 SGLT2i 肾脏保护的类效应。注意 CREDENCE 的主要终点包含 CV 死亡，在 Meta 分析中需用纯肾脏终点进行敏感性分析。</p>
+
+    <h3>案例 6：SUSTAIN-6 -- 司美格鲁肽的心血管获益</h3>
+    <p><strong>试验背景</strong>：SUSTAIN-6 (2016) 探索了皮下注射司美格鲁肽在 T2D 高 CV 风险患者中的心血管安全性和有效性，纳入 3,297 例患者。</p>
+    <ul>
+      <li><strong>主要终点</strong>：MACE-3 HR = 0.74 (95% CI: 0.58-0.95, p = 0.02)</li>
+      <li><strong>非致死性卒中</strong>：HR = 0.61 (95% CI: 0.38-0.99, p = 0.04)</li>
+      <li><strong>视网膜并发症</strong>：HR = 1.76 (95% CI: 1.11-2.78, p = 0.02) -- 增加</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：SUSTAIN-6 是 GLP-1RA 中 MACE HR 最低的试验（0.74），但样本量较小（3,297 例）。视网膜并发症的增加信号在后续 PIONEER 6 和 SOUL 试验中未复现，Meta 分析有助于判断这是真实信号还是统计波动。合并 LEADER 和 SUSTAIN-6（均为诺和诺德的 GLP-1RA）与 REWIND（礼来的度拉糖肽）可检验不同 GLP-1RA 的效应一致性。</p>
+
+    <h3>案例 7：DAPA-CKD -- SGLT2i 在非糖尿病 CKD 中的突破</h3>
+    <p><strong>试验背景</strong>：DAPA-CKD (2020) 将 SGLT2i 的适应症从糖尿病扩展到所有 CKD 患者，纳入 4,304 例 CKD 患者（其中 67.5% 合并 T2D）。</p>
+    <ul>
+      <li><strong>主要终点</strong>：eGFR 持续下降 &ge;50% + ESKD + 肾脏/CV 死亡 HR = 0.61 (95% CI: 0.51-0.72, p &lt; 0.001)</li>
+      <li><strong>T2D 亚组</strong>：HR = 0.64 (95% CI: 0.52-0.79)</li>
+      <li><strong>非 T2D 亚组</strong>：HR = 0.50 (95% CI: 0.35-0.72)</li>
+      <li><strong>全因死亡</strong>：HR = 0.69 (95% CI: 0.53-0.88)</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：DAPA-CKD 证实 SGLT2i 的肾脏保护不依赖于降糖作用（非 T2D 患者同样获益）。在糖尿病 Meta 分析中，需决定是否纳入 DAPA-CKD 的非 T2D 亚组数据。如果研究问题是"SGLT2i 对 T2D 患者的肾脏保护"，应仅使用 T2D 亚组数据；如果问题是"SGLT2i 对 CKD 患者（不论糖尿病状态）的肾脏保护"，则纳入全部数据。</p>
+
+    <div class="warn">引用这些经典试验时注意：（1）部分试验因疗效显著而提前终止（EMPA-REG OUTCOME、CREDENCE、DAPA-CKD），可能存在效应量高估偏倚；（2）CANVAS Program 是两个试验的整合分析，应作为一个条目纳入而非两个；（3）多臂试验（如 SUSTAIN-6 有 0.5mg 和 1.0mg 组）需在方法中说明剂量合并策略。</div>
+  </div>
+
+  <div class="cta">
+    <h2>开始你的糖尿病 Meta 分析</h2>
+    <p>MetaReview 支持 HR、OR、RR、MD 等全部效应量，从数据输入到森林图只需 5 分钟。免费、无需安装、无需编程。</p>
+    <a href="/">打开 MetaReview</a>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:18px;color:#1e40af;margin:0 0 8px">获取更新通知</h3>
+    <p style="font-size:14px;color:#64748b;margin:0 0 16px">留下邮箱，第一时间获取新功能通知和 Meta 分析技巧。</p>
+    <form id="email-form" style="display:flex;gap:8px;max-width:400px;margin:0 auto">
+      <input id="email-input" type="email" placeholder="输入邮箱地址" required style="flex:1;padding:10px 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;outline:none;">
+      <button type="submit" style="background:#1e40af;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;white-space:nowrap;">订阅</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:8px 12px;border-radius:6px;font-size:14px;"></div>
+    <p style="font-size:12px;color:#94a3b8;margin:8px 0 0">我们不会发送垃圾邮件，随时可退订。</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='提交中...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-diabetes',lang:'zh'})})
+    .then(r=>r.json()).then(d=>{msg.style.display='block';if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'你已经订阅过了！':'订阅成功！我们会在有新功能时通知你。';document.getElementById('email-form').style.display='none';}else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='请输入有效的邮箱地址。';btn.textContent='订阅';btn.disabled=false;}}).catch(()=>{msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='提交失败，请稍后重试。';btn.textContent='订阅';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="faq" id="faq">
+    <h2>常见问题</h2>
+
+    <h3>糖尿病 Meta 分析中 HbA1c 和心血管结局应该用什么效应量？</h3>
+    <p>HbA1c 变化属于连续变量，使用均数差（MD）；如果不同试验使用不同量表或单位（% vs mmol/mol），使用标准化均数差（SMD）。MACE、心血管死亡等时间-事件终点使用 HR。低血糖事件发生率使用 OR 或 RR。肾脏复合终点（肌酐翻倍、进入透析、eGFR 持续下降）使用 HR。这四类终点必须分别进行独立的 Meta 分析，不能混合合并。</p>
+
+    <h3>MACE-3 和 MACE-4 复合终点在糖尿病 CVOT 中有什么区别？</h3>
+    <p>MACE-3 包括心血管死亡、非致死性心肌梗死和非致死性卒中，是大多数糖尿病 CVOT 的主要终点。MACE-4 在此基础上加入不稳定心绞痛住院或紧急血运重建。Meta 分析时应以 MACE-3 为主要分析（因为绝大多数 CVOT 均报告了 MACE-3），不同定义的试验在敏感性分析中分别处理。同时建议对 MACE 各组分分别进行独立 Meta 分析。</p>
+
+    <h3>GLP-1 受体激动剂和 SGLT2 抑制剂的 Meta 分析如何比较？</h3>
+    <p>GLP-1RA 主要减少动脉粥样硬化性事件（MI、卒中），SGLT2i 主要减少心衰住院和肾脏终点。由于缺乏头对头 RCT，直接比较需要使用网络 Meta 分析（NMA）。在常规 Meta 分析中，建议分别对两类药物进行独立分析（每类 3-7 项 CVOT），然后在讨论中定性比较获益模式和适用人群。</p>
+
+    <h3>糖尿病 Meta 分析如何处理 1 型和 2 型糖尿病的差异？</h3>
+    <p>T1D 和 T2D 在病理机制和治疗策略上存在根本差异，不应在同一个 Meta 分析中混合。几乎所有降糖药 CVOT 仅纳入 T2D 患者。T1D 相关 Meta 分析（如闭环胰岛素泵、CGM 对 HbA1c 影响）应独立进行。在纳排标准中必须明确限定糖尿病类型。</p>
+
+    <h3>低血糖作为安全性终点在 Meta 分析中如何处理？</h3>
+    <p>低血糖是降糖药 Meta 分析最重要的安全性终点。处理要点：区分严重低血糖和非严重低血糖分别分析；使用 OR 或 RR（事件发生率）；统一定义（建议采用 ADA 标准：血糖 &lt; 3.0 mmol/L 为临床显著低血糖）；注意背景使用磺脲类或胰岛素会显著增加低血糖发生率，应作为异质性来源在亚组分析中处理。</p>
+
+    <h3>新型降糖药（如双重 GIP/GLP-1 受体激动剂）的 Meta 分析有什么注意事项？</h3>
+    <p>替尔泊肽等双重激动剂目前 RCT 数量有限（SURPASS 系列），心血管结局试验尚在进行中，目前只有降糖和体重数据。建议目前仅对 HbA1c 和体重终点进行 Meta 分析，待 SURPASS-CVOT 结果发布后再纳入 MACE 终点。与现有 GLP-1RA 的头对头数据有限，可考虑网络 Meta 分析。</p>
+
+    <h3>MetaReview 能做糖尿病相关的 Meta 分析吗？</h3>
+    <p>完全可以。MetaReview 支持糖尿病 Meta 分析所需的全部功能：MD（HbA1c、体重变化等连续终点）、HR（MACE、心衰住院、肾脏复合终点等时间-事件终点）、OR/RR（低血糖发生率等二分类终点）。提供固定效应和随机效应模型，自动生成森林图和漏斗图，支持按药物类别进行亚组分析。免费使用，无需安装，无需编程。</p>
+  </div>
+
+  <div class="related">
+    <h2>相关指南</h2>
+    <ul>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤：从研究问题到发表的全流程指南</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图怎么画？在线生成森林图完全指南（免费工具）</a></li>
+      <li><a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 流程图：在线制作模板与填写指南</a></li>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析：HR 的提取、计算与解读指南</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta 分析软件对比：MetaReview vs RevMan vs R vs Stata</a></li>
+      <li><a href="/guides/tumor-meta-analysis">肿瘤 Meta 分析完整指南</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">心血管 Meta 分析完整指南</a></li>
+      <li><a href="/guides/how-to-meta-analysis">如何做 Meta 分析？新手入门完全指南</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> — 免费在线 Meta 分析工具</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

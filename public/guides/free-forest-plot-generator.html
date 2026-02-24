@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Forest Plot Generator Online - Create Publication-Ready Forest Plots | MetaReview</title>
+  <meta name="description" content="Generate publication-ready forest plots online for free. No coding, no installation. Enter your meta-analysis data, customize colors and labels, and export high-resolution SVG or PNG forest plots in minutes. Complete guide with visual anatomy, interpretation tips, and tool comparison." />
+  <meta name="keywords" content="free forest plot generator, forest plot maker online, forest plot tool free, create forest plot online, meta-analysis forest plot, forest plot generator no coding, forest plot creator, free forest plot software, online forest plot maker, forest plot without R" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/free-forest-plot-generator" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/free-forest-plot-generator" />
+  <meta property="og:title" content="Free Forest Plot Generator Online - Create Publication-Ready Forest Plots" />
+  <meta property="og:description" content="Create professional forest plots for your meta-analysis in minutes. Free online tool with no coding required. Complete guide to forest plot anatomy, interpretation, and customization." />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Create a Forest Plot with MetaReview Free Online Tool",
+    "description": "A step-by-step guide to generating a publication-ready forest plot using MetaReview's free online forest plot generator. No coding or software installation required.",
+    "totalTime": "PT10M",
+    "tool": {
+      "@type": "HowToTool",
+      "name": "MetaReview Free Online Forest Plot Generator"
+    },
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "Prepare Your Study Data", "text": "Gather effect size data from each included study. For binary outcomes, you need event counts and total participants for both intervention and control groups. For continuous outcomes, you need means, standard deviations, and sample sizes for both groups. Organize data in a spreadsheet with one row per study."},
+      {"@type": "HowToStep", "position": 2, "name": "Choose the Appropriate Effect Size Measure", "text": "Select the effect size that matches your data type: Odds Ratio (OR) or Risk Ratio (RR) for binary/dichotomous outcomes, Mean Difference (MD) for continuous outcomes measured on the same scale, or Standardized Mean Difference (SMD/Hedges' g) for continuous outcomes measured on different scales across studies."},
+      {"@type": "HowToStep", "position": 3, "name": "Enter Data into MetaReview", "text": "Open MetaReview in your browser and navigate to the data entry page. Enter each study's name and corresponding data (events/totals or means/SDs/sample sizes). Alternatively, import data from a CSV file for faster entry. MetaReview validates your data in real-time and flags any errors."},
+      {"@type": "HowToStep", "position": 4, "name": "Run the Meta-Analysis", "text": "Select your analysis model: fixed-effect (assumes all studies share one true effect) or random-effects (allows the true effect to vary across studies). MetaReview automatically computes pooled effect sizes, 95% confidence intervals, study weights, and heterogeneity statistics (I-squared, Q, tau-squared)."},
+      {"@type": "HowToStep", "position": 5, "name": "Customize Your Forest Plot", "text": "Navigate to the forest plot view. Customize the appearance: adjust colors, choose whether to display study weights, sort studies by effect size or year, toggle subgroup display, and modify axis labels. MetaReview renders a clean, publication-ready forest plot by default."},
+      {"@type": "HowToStep", "position": 6, "name": "Interpret the Results", "text": "Read the forest plot from top to bottom. Check if individual study confidence intervals overlap the line of no effect. Examine the diamond (pooled estimate) position and width. Review heterogeneity statistics (I-squared) to assess consistency across studies. Check the prediction interval for the range of plausible effects in future studies."},
+      {"@type": "HowToStep", "position": 7, "name": "Export Your Forest Plot", "text": "Download the forest plot in SVG format for vector-quality output suitable for journal submission, or export as high-resolution PNG for presentations and reports. SVG files can be further edited in Adobe Illustrator or Inkscape if needed. Most journals accept both SVG and high-resolution PNG (300 DPI minimum)."}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is a forest plot?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A forest plot is a graphical display used in meta-analysis to visualize the results of multiple studies examining the same question. Each study is represented as a row with a square (point estimate) and horizontal line (95% confidence interval). The size of the square reflects the study's statistical weight. A diamond at the bottom shows the pooled (combined) effect estimate. A vertical reference line indicates the null effect (1.0 for ratio measures like OR/RR, or 0 for difference measures like MD/SMD). Forest plots allow researchers to see at a glance whether studies agree, how precise each estimate is, and whether the overall effect is statistically significant."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do you read a forest plot?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "To read a forest plot: (1) Each row represents one study. The square is the effect estimate and the horizontal line is the 95% confidence interval. (2) Larger squares indicate studies with more weight (typically larger sample sizes or more precise estimates). (3) If a study's confidence interval crosses the vertical line of no effect (OR/RR = 1 or MD = 0), that individual study did not find a statistically significant result. (4) The diamond at the bottom is the pooled estimate across all studies — its center is the point estimate and its width represents the confidence interval. (5) If the diamond does not touch the null line, the pooled result is statistically significant. (6) Check heterogeneity statistics (I-squared, Q p-value) reported below the plot to assess consistency across studies."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does the diamond mean in a forest plot?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The diamond at the bottom of a forest plot represents the pooled (combined) effect estimate from the meta-analysis. The center of the diamond indicates the pooled point estimate (e.g., the overall odds ratio or mean difference). The left and right tips of the diamond represent the lower and upper bounds of the 95% confidence interval. A narrow diamond indicates a precise pooled estimate, while a wide diamond suggests less certainty. If the entire diamond falls to one side of the line of no effect without touching it, the pooled result is statistically significant at the 0.05 level. In subgroup analyses, you may see multiple diamonds representing the pooled estimate within each subgroup."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between a forest plot and a funnel plot?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A forest plot and a funnel plot serve different purposes in meta-analysis. A forest plot displays individual study results and the pooled estimate, allowing you to compare effect sizes, confidence intervals, and study weights visually. A funnel plot is used to detect publication bias: it plots each study's effect size (x-axis) against a measure of precision such as standard error (y-axis). In the absence of bias, the funnel plot should look like a symmetric, inverted funnel centered on the pooled estimate. Asymmetry in the funnel plot may indicate publication bias (small studies with non-significant results are missing), though asymmetry can also result from true heterogeneity, methodological differences, or chance."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How can I make a forest plot without R or coding?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MetaReview is a free online forest plot generator that requires absolutely no coding. Simply open MetaReview in your web browser, enter your study data (event counts and sample sizes for binary data, or means, standard deviations, and sample sizes for continuous data), select your effect size type and analysis model, and the tool automatically generates a publication-ready forest plot. You can customize colors, labels, and sorting, then export as SVG or PNG. The entire process takes under 10 minutes. Unlike R (which requires installing packages like metafor or meta and writing code) or Stata (which requires a paid license and command-line syntax), MetaReview is point-and-click with zero setup."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I customize the colors and appearance of my forest plot?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. MetaReview provides several customization options for your forest plot. You can adjust the color scheme, choose how studies are sorted (by effect size, weight, year, or original order), toggle the display of study weights and confidence interval values, enable or disable subgroup headers, and modify axis labels. The default styling follows academic journal conventions for clean, professional output. If you need further customization beyond what the tool offers, you can export the forest plot as an SVG file and edit it in vector graphics software like Adobe Illustrator, Inkscape (free), or Affinity Designer."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I export a high-resolution forest plot for journal submission?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MetaReview exports forest plots in SVG (Scalable Vector Graphics) format, which is resolution-independent and can be scaled to any size without quality loss — ideal for journal submission. Most journals accept SVG directly or request PDF/EPS, which can be easily converted from SVG using free tools like Inkscape. For presentations or web use, MetaReview also exports PNG format. For journal requirements that specify minimum 300 DPI, SVG is always the safest choice because vector graphics have infinite resolution. If a journal specifically requires TIFF, you can convert the SVG to TIFF at 300-600 DPI using Inkscape or online converters."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the best free forest plot tool for meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MetaReview is the best free forest plot tool for researchers who want publication-ready results without coding. It runs entirely in the browser, supports all major effect sizes (OR, RR, MD, SMD), offers both fixed-effect and random-effects models, generates forest plots with automatic weight calculation and heterogeneity statistics, and exports in SVG format. For R users, the metafor package by Wolfgang Viechtbauer offers the most customization but requires programming knowledge. RevMan (Review Manager) from Cochrane is free for Cochrane authors but requires desktop installation. The choice depends on your technical skill level and specific needs: MetaReview for no-code simplicity, R/metafor for maximum flexibility, or RevMan for Cochrane-affiliated reviews."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .toc { background: white; border-radius: 12px; padding: 24px 32px; margin-bottom: 40px; border: 1px solid #e5e7eb; }
+    .toc h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .toc a:hover { text-decoration: underline; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .step { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .step-number { display: inline-block; background: #1e40af; color: white; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-weight: 700; font-size: 14px; margin-right: 12px; }
+    .step h2 { display: inline; font-size: 20px; color: #111827; vertical-align: middle; }
+    .step h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .step p, .step li { font-size: 15px; color: #4b5563; }
+    .step ul, .step ol { padding-left: 20px; margin: 8px 0; }
+    .step li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .anatomy { background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; overflow-x: auto; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    .faq { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .faq h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .faq h3 { font-size: 16px; color: #1e40af; margin: 16px 0 8px; }
+    .faq p { font-size: 15px; color: #4b5563; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .step, .toc, .faq, .related, .section { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">Open Tool</a>
+      <a href="/guides/how-to-meta-analysis">Guides</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Free Forest Plot Generator Online: Create Publication-Ready Forest Plots</h1>
+  <p>Generate professional forest plots for your meta-analysis in minutes. No coding, no installation, no cost. Enter data, customize, and export.</p>
+</div>
+
+<div class="container">
+
+  <!-- Section 1: What is a Forest Plot -->
+  <div class="section" id="what-is-forest-plot">
+    <h2>What Is a Forest Plot?</h2>
+    <p>A <strong>forest plot</strong> (sometimes called a blobbogram) is the standard graphical display used in meta-analysis to present the results of multiple independent studies side by side. First introduced by Lewis and Clarke in 1991, the forest plot has become an indispensable tool in evidence-based medicine, appearing in virtually every published systematic review and meta-analysis.</p>
+    <p style="margin-top:12px">The forest plot earns its name from the visual impression it creates: a "forest" of horizontal lines (confidence intervals) with squares (point estimates) scattered across the display. Each line represents one study, and taken together, they provide an immediate visual summary of whether studies agree, how precise each estimate is, and what the overall combined effect looks like.</p>
+
+    <h3>Visual Anatomy of a Forest Plot</h3>
+    <p>Every forest plot contains the same core components. Understanding these elements is essential for both creating and interpreting forest plots correctly.</p>
+
+    <div class="anatomy">
+Study                 Effect [95% CI]     Weight
+
+Smith 2019      |----[&block;]---------|        12.3%
+                |                   |
+Jones 2020      |   [&block;&block;]---|              22.1%
+                |                   |
+Lee 2021        |---------[&block;]---|         8.7%
+                |                   |
+Chen 2022       |      [&block;&block;&block;]-|           31.4%
+                |                   |
+Brown 2023      |---[&block;]-----------|       10.2%
+                |                   |
+Patel 2024      |     [&block;&block;]--|            15.3%
+                |         |         |
+Overall         |     [&lt;&gt;]         |       100%
+                |         |         |
+             Favours      |     Favours
+             Treatment    1.0   Control
+                    (Line of No Effect)
+    </div>
+
+    <p>Let us break down each element:</p>
+
+    <table class="data-table">
+      <tr><th>Element</th><th>Visual</th><th>Meaning</th></tr>
+      <tr><td><strong>Point Estimate (Square)</strong></td><td>Black square on each row</td><td>The effect size calculated from that individual study (e.g., odds ratio, risk ratio, mean difference). The center of the square marks the exact value.</td></tr>
+      <tr><td><strong>Confidence Interval (Horizontal Line)</strong></td><td>Line extending from the square</td><td>The 95% confidence interval around the point estimate. A wider line means less precision (more uncertainty). If the line crosses the null line, the result is not statistically significant for that individual study.</td></tr>
+      <tr><td><strong>Weight (Square Size)</strong></td><td>Larger or smaller squares</td><td>Reflects the relative contribution of each study to the pooled estimate. Studies with larger sample sizes and smaller standard errors receive more weight. The percentage is typically shown in the rightmost column.</td></tr>
+      <tr><td><strong>Pooled Estimate (Diamond)</strong></td><td>Diamond at the bottom</td><td>The combined effect across all studies. The center of the diamond is the pooled point estimate. The width of the diamond represents its 95% confidence interval. This is the main result of the meta-analysis.</td></tr>
+      <tr><td><strong>Line of No Effect</strong></td><td>Vertical line at OR/RR = 1.0 or MD = 0</td><td>The reference line where there is no difference between intervention and control. Studies or the pooled estimate crossing this line are not statistically significant.</td></tr>
+      <tr><td><strong>Heterogeneity Statistics</strong></td><td>Text below the plot</td><td>I&sup2;, Q statistic, tau&sup2;, and associated p-values that quantify how much the studies disagree with each other beyond what is expected by chance.</td></tr>
+    </table>
+
+    <div class="tip"><strong>Quick reading rule:</strong> If all the squares cluster on the same side of the null line and the diamond does not touch the null line, there is strong, consistent evidence for an effect. If the squares are scattered on both sides and the diamond overlaps the null line, the evidence is inconclusive.</div>
+  </div>
+
+  <!-- Table of Contents -->
+  <div class="toc">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#what-is-forest-plot">What Is a Forest Plot?</a></li>
+      <li><a href="#why-forest-plots-matter">Why Forest Plots Matter in Meta-Analysis</a></li>
+      <li><a href="#how-to-read">How to Read a Forest Plot: Step-by-Step</a></li>
+      <li><a href="#tools-comparison">Forest Plot Generator Tools Comparison</a></li>
+      <li><a href="#tutorial">Step-by-Step: Create Your Forest Plot with MetaReview</a></li>
+      <li><a href="#customization">Customization Options for Your Forest Plot</a></li>
+      <li><a href="#interpretation">Interpreting Your Forest Plot</a></li>
+      <li><a href="#common-mistakes">Common Mistakes to Avoid</a></li>
+      <li><a href="#export">Export and Publication</a></li>
+      <li><a href="#faq">Frequently Asked Questions</a></li>
+    </ol>
+  </div>
+
+  <!-- Section 2: Why Forest Plots Matter -->
+  <div class="section" id="why-forest-plots-matter">
+    <h2>Why Forest Plots Matter in Meta-Analysis</h2>
+    <p>A forest plot is far more than a decorative figure in a paper. It is the primary communication vehicle for meta-analytic results, and there are several reasons why it remains irreplaceable nearly four decades after its introduction.</p>
+
+    <h3>1. Visual Communication of Complex Data</h3>
+    <p>A single forest plot conveys information that would otherwise require paragraphs of text and multiple tables. In one image, a reader can see the effect size, precision, weight, and statistical significance of every included study plus the overall result. For busy clinicians, policymakers, and journal reviewers who may not read every line of your results section, the forest plot is often the first and most thoroughly examined element of a meta-analysis.</p>
+
+    <h3>2. Side-by-Side Effect Size Comparison</h3>
+    <p>Forest plots place every study on the same scale with the same axis, making direct comparison straightforward. A reader can instantly identify which studies found the largest effects, which found the smallest, and which found effects in the opposite direction. This visual alignment eliminates the cognitive load of comparing numbers scattered across a table.</p>
+
+    <h3>3. Heterogeneity at a Glance</h3>
+    <p>Before even looking at the I&sup2; statistic, you can gauge heterogeneity visually from a forest plot. If the confidence intervals of all studies overlap substantially and the squares cluster tightly, heterogeneity is likely low. If the lines are spread across the plot with minimal overlap, heterogeneity is likely high. This visual impression is often more intuitive than a numerical I&sup2; value, especially for readers who are not biostatisticians.</p>
+
+    <h3>4. Identifying Outliers and Influential Studies</h3>
+    <p>A forest plot makes it immediately obvious when one study stands apart from the rest. An outlier will have its square and confidence interval far from the cluster of other studies. This visual identification is critical because a single outlying study can substantially shift the pooled estimate, and readers and reviewers will want to know whether such influential studies were investigated through sensitivity analysis.</p>
+
+    <h3>5. Precision and Study Contribution</h3>
+    <p>The varying sizes of the squares provide an immediate sense of which studies contributed the most to the pooled result. A very large square indicates a study with substantial weight (typically a large trial with narrow confidence intervals), while a tiny square indicates a study with little influence on the pooled estimate. This weight information helps readers assess whether the overall result is driven by one dominant study or represents a balanced combination.</p>
+
+    <h3>6. Subgroup Visualization</h3>
+    <p>When studies are grouped by a categorical variable (e.g., study region, dose level, patient age group, risk of bias rating), forest plots can display separate pooled diamonds for each subgroup. This subgroup forest plot allows readers to visually compare effects across subgroups and identify potential effect modification -- a critical part of exploring heterogeneity.</p>
+
+    <div class="tip"><strong>Publication requirement:</strong> The PRISMA 2020 reporting guidelines and the Cochrane Handbook both require forest plots for meta-analyses of primary outcomes. Most journals will reject a meta-analysis manuscript that does not include a forest plot. A well-crafted forest plot is not optional -- it is essential.</div>
+  </div>
+
+  <!-- Section 3: How to Read a Forest Plot -->
+  <div class="section" id="how-to-read">
+    <h2>How to Read a Forest Plot: Step-by-Step Guide</h2>
+    <p>Reading a forest plot can seem intimidating the first time, but the process becomes straightforward once you understand the components. Follow these steps systematically.</p>
+
+    <h3>Step 1: Identify the Effect Size Measure</h3>
+    <p>Look at the x-axis label to determine what effect measure is being used. Common options include:</p>
+    <ul>
+      <li><strong>Odds Ratio (OR)</strong> and <strong>Risk Ratio (RR)</strong> -- used for binary (yes/no) outcomes. The line of no effect is at 1.0. Values less than 1 favor the intervention; values greater than 1 favor the control (or vice versa, depending on how the comparison is structured).</li>
+      <li><strong>Mean Difference (MD)</strong> -- used for continuous outcomes measured on the same scale. The line of no effect is at 0. Negative values may favor the intervention if a lower value is better (e.g., blood pressure reduction).</li>
+      <li><strong>Standardized Mean Difference (SMD)</strong> -- used for continuous outcomes measured on different scales across studies. The line of no effect is at 0. Cohen's d benchmarks: 0.2 = small, 0.5 = medium, 0.8 = large effect.</li>
+    </ul>
+
+    <h3>Step 2: Examine the Vertical Null Line</h3>
+    <p>The vertical line represents the value of "no effect." For OR and RR, this is 1.0. For MD and SMD, this is 0. Any study or pooled estimate whose confidence interval crosses this line has not found a statistically significant result at the conventional p &lt; 0.05 level.</p>
+
+    <h3>Step 3: Read Individual Study Results</h3>
+    <p>Go through each row from top to bottom. For each study, note:</p>
+    <ul>
+      <li>The <strong>point estimate</strong> (the center of the square): is the effect large or small?</li>
+      <li>The <strong>confidence interval width</strong> (the horizontal line): how precise is this estimate? Narrow intervals indicate more certainty.</li>
+      <li>The <strong>position relative to the null line</strong>: does this study find a significant effect on its own?</li>
+      <li>The <strong>square size</strong>: how much weight does this study carry in the pooled analysis?</li>
+    </ul>
+
+    <h3>Step 4: Check the Direction and Axis Labels</h3>
+    <p>Forest plots typically label the left and right sides of the plot (e.g., "Favours Treatment" on the left and "Favours Control" on the right, or vice versa). Always confirm which direction favors the intervention being studied. This labeling convention varies between reviews and software tools, so never assume.</p>
+
+    <h3>Step 5: Interpret the Pooled Diamond</h3>
+    <p>The diamond at the bottom is the headline result of the meta-analysis. Examine three things:</p>
+    <ol>
+      <li><strong>Position:</strong> Which side of the null line does the diamond center fall on? This tells you the direction of the overall effect.</li>
+      <li><strong>Width:</strong> How wide is the diamond? A narrow diamond indicates a precise pooled estimate. A wide diamond suggests substantial uncertainty even after combining all studies.</li>
+      <li><strong>Overlap with null line:</strong> Does any part of the diamond touch or cross the null line? If no, the pooled result is statistically significant. If yes, the pooled result is not statistically significant.</li>
+    </ol>
+
+    <h3>Step 6: Evaluate Heterogeneity</h3>
+    <p>Below the forest plot, look for heterogeneity statistics:</p>
+    <ul>
+      <li><strong>I&sup2;</strong> -- The percentage of total variation due to real differences between studies (not chance). 0-40% is low, 50-75% is substantial, above 75% is considerable.</li>
+      <li><strong>Cochran's Q test p-value</strong> -- If p &lt; 0.10 (a lenient threshold is used because Q has low power), there is evidence of significant heterogeneity.</li>
+      <li><strong>Tau&sup2; (tau-squared)</strong> -- The estimated between-study variance in the random-effects model. Larger values indicate more between-study variability.</li>
+    </ul>
+
+    <h3>Step 7: Look for Patterns</h3>
+    <p>Step back and look at the overall pattern of the forest plot:</p>
+    <ul>
+      <li>Do all studies point in the same direction? (Consistent evidence)</li>
+      <li>Are some studies dramatically different from others? (Possible outliers requiring sensitivity analysis)</li>
+      <li>Do larger studies (bigger squares) tend to show different effects than smaller studies? (Possible small-study effects or publication bias)</li>
+      <li>Is there a visible pattern by subgroup if subgroups are displayed?</li>
+    </ul>
+
+    <div class="warn"><strong>Common misinterpretation:</strong> A study whose confidence interval crosses the null line is NOT "showing no effect." It simply means that study alone had insufficient power to detect a significant effect. The study may still contribute to a significant pooled estimate when combined with other studies. Do not dismiss individual non-significant studies -- they all contribute information.</div>
+  </div>
+
+  <!-- Section 4: Tools Comparison -->
+  <div class="section" id="tools-comparison">
+    <h2>Forest Plot Generator Tools Comparison</h2>
+    <p>Researchers have several options for generating forest plots. The best choice depends on your technical skill level, budget, and specific needs. Below is a detailed comparison of the most widely used tools.</p>
+
+    <table class="data-table">
+      <tr>
+        <th>Feature</th>
+        <th>MetaReview</th>
+        <th>R / metafor</th>
+        <th>RevMan 5</th>
+        <th>Stata (metan)</th>
+        <th>Excel</th>
+      </tr>
+      <tr>
+        <td><strong>Cost</strong></td>
+        <td>Free</td>
+        <td>Free (open source)</td>
+        <td>Free (Cochrane authors)</td>
+        <td>$295-$895/year</td>
+        <td>Microsoft 365 subscription</td>
+      </tr>
+      <tr>
+        <td><strong>Coding Required</strong></td>
+        <td>No</td>
+        <td>Yes (R programming)</td>
+        <td>No</td>
+        <td>Yes (Stata syntax)</td>
+        <td>No (but manual)</td>
+      </tr>
+      <tr>
+        <td><strong>Installation</strong></td>
+        <td>None (browser-based)</td>
+        <td>R + packages</td>
+        <td>Desktop software</td>
+        <td>Desktop software</td>
+        <td>Desktop/web</td>
+      </tr>
+      <tr>
+        <td><strong>Effect Sizes</strong></td>
+        <td>OR, RR, MD, SMD</td>
+        <td>All (highly flexible)</td>
+        <td>OR, RR, RD, MD, SMD</td>
+        <td>All (flexible)</td>
+        <td>Manual calculation</td>
+      </tr>
+      <tr>
+        <td><strong>Forest Plot Quality</strong></td>
+        <td>Publication-ready</td>
+        <td>Highly customizable</td>
+        <td>Publication-ready</td>
+        <td>Publication-ready</td>
+        <td>Not publication-ready</td>
+      </tr>
+      <tr>
+        <td><strong>Subgroup Analysis</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Funnel Plot</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Manual only</td>
+      </tr>
+      <tr>
+        <td><strong>Sensitivity Analysis</strong></td>
+        <td>Yes (leave-one-out)</td>
+        <td>Yes (all types)</td>
+        <td>Limited</td>
+        <td>Yes</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Export Format</strong></td>
+        <td>SVG, PNG</td>
+        <td>PDF, SVG, PNG, TIFF</td>
+        <td>Image, PDF</td>
+        <td>PDF, PNG, EPS</td>
+        <td>Image only</td>
+      </tr>
+      <tr>
+        <td><strong>Learning Curve</strong></td>
+        <td>5 minutes</td>
+        <td>Days to weeks</td>
+        <td>1-2 hours</td>
+        <td>Days to weeks</td>
+        <td>Hours (tedious)</td>
+      </tr>
+      <tr>
+        <td><strong>Best For</strong></td>
+        <td>Beginners, fast results</td>
+        <td>Power users, custom analysis</td>
+        <td>Cochrane reviews</td>
+        <td>Academic statisticians</td>
+        <td>Not recommended</td>
+      </tr>
+    </table>
+
+    <h3>MetaReview: The Fastest Path to a Forest Plot</h3>
+    <p><strong>MetaReview</strong> is a free, browser-based meta-analysis tool designed for researchers who need publication-quality results without the steep learning curve of R or Stata. You enter your data, choose your effect size and model, and the tool generates a forest plot automatically. The entire process takes under 10 minutes. MetaReview is ideal for medical researchers, graduate students, and anyone conducting their first meta-analysis.</p>
+
+    <h3>R / metafor: Maximum Flexibility for Power Users</h3>
+    <p>The R statistical language, combined with the <strong>metafor</strong> package by Wolfgang Viechtbauer, is the gold standard for advanced meta-analysis. It supports every effect size measure, every model specification, meta-regression, multivariate meta-analysis, and nearly infinite plot customization. However, it requires R programming knowledge, which represents a significant barrier for researchers without a statistics or programming background. If you are comfortable with code, metafor is extraordinarily powerful.</p>
+
+    <h3>RevMan (Review Manager): The Cochrane Standard</h3>
+    <p><strong>RevMan 5</strong> (and the newer RevMan Web) is developed by the Cochrane Collaboration and is the default tool for Cochrane systematic reviews. It has a clean interface, supports common effect sizes, and generates forest plots that meet Cochrane formatting standards. However, it requires a free Cochrane account, desktop installation, and is less flexible than R for non-standard analyses. RevMan Web is gradually replacing RevMan 5 with a browser-based experience, but it is still less feature-rich than MetaReview for non-Cochrane users.</p>
+
+    <h3>Stata: For Established Statisticians</h3>
+    <p><strong>Stata</strong> with the community-contributed <strong>metan</strong> (or <strong>meta</strong> in Stata 16+) commands is widely used in epidemiology and health economics. It produces high-quality forest plots and supports advanced methods. The main drawback is cost: a Stata license ranges from $295 to $895 per year depending on the edition. Like R, it requires familiarity with its command-line syntax.</p>
+
+    <h3>Excel: Not Recommended</h3>
+    <p>While it is technically possible to create something resembling a forest plot in Microsoft Excel, it requires manually calculating effect sizes, constructing error bars, formatting the chart, and the result is almost never publication-ready. Journal reviewers and editors will immediately recognize an Excel-generated forest plot, and it will not meet the presentation standards expected in peer-reviewed publications. We strongly recommend against using Excel for forest plots when purpose-built tools exist for free.</p>
+
+    <div class="tip"><strong>Bottom line:</strong> If you want a forest plot quickly and for free, use MetaReview. If you need maximum customization and are comfortable coding, use R with metafor. If you are doing a Cochrane review, use RevMan. Avoid Excel.</div>
+  </div>
+
+  <!-- Section 5: Step-by-Step Tutorial -->
+  <div class="section" id="tutorial">
+    <h2>Step-by-Step: Create Your Forest Plot with MetaReview</h2>
+    <p>This section walks you through the complete process of generating a publication-ready forest plot using MetaReview's free online tool. The entire workflow takes approximately 5 to 10 minutes.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">1</span>
+    <h2>Prepare Your Study Data</h2>
+    <p style="margin-top:16px">Before opening the tool, organize your extracted data. You need one row per study with the following information:</p>
+    <h3>For Binary (Dichotomous) Outcomes</h3>
+    <table class="data-table">
+      <tr><th>Column</th><th>Description</th><th>Example</th></tr>
+      <tr><td>Study Name</td><td>First author and year</td><td>Smith 2019</td></tr>
+      <tr><td>Events (Intervention)</td><td>Number of events in treatment group</td><td>23</td></tr>
+      <tr><td>Total (Intervention)</td><td>Total participants in treatment group</td><td>150</td></tr>
+      <tr><td>Events (Control)</td><td>Number of events in control group</td><td>45</td></tr>
+      <tr><td>Total (Control)</td><td>Total participants in control group</td><td>148</td></tr>
+    </table>
+    <h3>For Continuous Outcomes</h3>
+    <table class="data-table">
+      <tr><th>Column</th><th>Description</th><th>Example</th></tr>
+      <tr><td>Study Name</td><td>First author and year</td><td>Jones 2020</td></tr>
+      <tr><td>Mean (Intervention)</td><td>Mean value in treatment group</td><td>-2.4</td></tr>
+      <tr><td>SD (Intervention)</td><td>Standard deviation in treatment group</td><td>1.8</td></tr>
+      <tr><td>N (Intervention)</td><td>Sample size of treatment group</td><td>85</td></tr>
+      <tr><td>Mean (Control)</td><td>Mean value in control group</td><td>-0.6</td></tr>
+      <tr><td>SD (Control)</td><td>Standard deviation in control group</td><td>2.1</td></tr>
+      <tr><td>N (Control)</td><td>Sample size of control group</td><td>82</td></tr>
+    </table>
+    <div class="tip"><strong>Pro tip:</strong> Prepare your data in a spreadsheet (Excel, Google Sheets, or CSV) first. MetaReview supports CSV import, so you can upload your entire dataset at once instead of entering it manually row by row.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <h2>Choose the Appropriate Effect Size</h2>
+    <p style="margin-top:16px">The choice of effect size determines how your forest plot presents results. This decision should be made during your protocol development, not after data extraction.</p>
+    <ul>
+      <li><strong>Odds Ratio (OR)</strong> -- Best for case-control studies and when the outcome is rare. Symmetric on the log scale. Most commonly used in meta-analyses of observational studies.</li>
+      <li><strong>Risk Ratio (RR)</strong> -- More intuitive for clinicians ("the risk is 1.5 times higher"). Preferred for RCTs with binary outcomes. Not symmetric on the log scale, which can matter for heterogeneity estimation.</li>
+      <li><strong>Mean Difference (MD)</strong> -- Used when all studies measure the outcome on the same scale (e.g., all studies report blood pressure in mmHg). Directly interpretable in the original measurement units.</li>
+      <li><strong>Standardized Mean Difference (SMD / Hedges' g)</strong> -- Used when studies measure the same construct on different scales (e.g., pain measured with different questionnaires). Expressed in standard deviation units; less intuitive but necessary for cross-scale comparison.</li>
+    </ul>
+    <div class="warn"><strong>Important:</strong> Do not mix effect size types within a single forest plot. If your included studies report different outcome types (some binary, some continuous), you must either convert them to a common metric or analyze them separately. Mixing scales will produce a meaningless pooled estimate.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <h2>Enter Data into MetaReview</h2>
+    <p style="margin-top:16px">Open <a href="/" style="color:#1e40af">MetaReview</a> in your web browser. No account registration is needed. Navigate to the data entry section and choose your data type (binary or continuous).</p>
+    <p>For each included study, enter the study name and its corresponding data values. MetaReview validates your inputs in real time -- it will flag impossible values (e.g., events exceeding the total sample, negative standard deviations, or missing required fields) so you can correct errors immediately.</p>
+    <p style="margin-top:8px">Alternatively, click the CSV import button to upload a prepared spreadsheet. MetaReview accepts standard CSV format with headers matching the expected column names. This is the fastest method when you have more than 5-6 studies.</p>
+    <div class="tip"><strong>Data check:</strong> After entering all studies, review the data table within MetaReview. Check that study names are correct, all values are entered in the right columns, and no studies are accidentally duplicated. Catching data entry errors at this stage prevents incorrect forest plots later.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span>
+    <h2>Run the Meta-Analysis</h2>
+    <p style="margin-top:16px">Navigate to the results page. MetaReview automatically computes the pooled effect size, 95% confidence interval, and heterogeneity statistics based on your selected model.</p>
+    <h3>Choosing Your Model</h3>
+    <ul>
+      <li><strong>Fixed-effect model</strong> -- Assumes all studies estimate the same true underlying effect. Differences in observed effects are due only to sampling error. Appropriate when studies are clinically and methodologically homogeneous (same population, intervention, outcome measure). Uses inverse variance weighting.</li>
+      <li><strong>Random-effects model</strong> -- Assumes the true effect varies across studies (each study estimates a slightly different underlying effect). Accounts for both within-study and between-study variability. More conservative (wider confidence intervals). Appropriate in most real-world meta-analyses where studies differ in populations, settings, or intervention details. Uses DerSimonian-Laird or REML estimation for tau&sup2;.</li>
+    </ul>
+    <div class="tip"><strong>Which model to use?</strong> In practice, the random-effects model is the safer default because clinical heterogeneity is almost always present to some degree. If I&sup2; = 0%, fixed-effect and random-effects models produce identical results, so there is no penalty for choosing random-effects. Many journals and reviewers expect the random-effects model unless you provide explicit justification for using a fixed-effect model.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">5</span>
+    <h2>View and Customize Your Forest Plot</h2>
+    <p style="margin-top:16px">Switch to the forest plot view. MetaReview renders a clean, publication-ready forest plot showing each study's effect estimate, confidence interval, weight, and the pooled diamond. The heterogeneity statistics (I&sup2;, Q, p-value) are displayed below the plot.</p>
+    <p>Review the plot carefully. Make sure the axis labels are correct, the direction labels (e.g., "Favours Treatment" and "Favours Control") match your comparison, and the study order makes sense. Customize the appearance if needed (see the Customization section below).</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">6</span>
+    <h2>Interpret the Results</h2>
+    <p style="margin-top:16px">Before exporting, interpret what the forest plot tells you:</p>
+    <ul>
+      <li>What is the pooled effect size and its confidence interval?</li>
+      <li>Is the pooled result statistically significant (diamond not crossing the null line)?</li>
+      <li>How heterogeneous are the results (I&sup2; value)?</li>
+      <li>Are there obvious outlier studies that might need sensitivity analysis?</li>
+      <li>Do all or most individual studies point in the same direction?</li>
+    </ul>
+    <p style="margin-top:8px">MetaReview also generates an auto-written results paragraph that you can use as a starting point for your manuscript's results section. This paragraph includes the pooled estimate, confidence interval, p-value, heterogeneity statistics, and model used.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">7</span>
+    <h2>Export Your Forest Plot</h2>
+    <p style="margin-top:16px">Click the download button to export your forest plot. MetaReview supports SVG format (vector graphics, resolution-independent, ideal for journal submission) and PNG format (raster graphics, suitable for presentations and web use). For journal submission, always choose SVG unless the journal specifically requires a different format.</p>
+    <p style="margin-top:8px">If your journal requires a specific format (EPS, TIFF, PDF), export as SVG first and then convert using free tools like Inkscape. SVG preserves full quality at any conversion target resolution.</p>
+    <div class="tip"><strong>Done!</strong> You now have a publication-ready forest plot. The entire process -- from opening MetaReview to downloading the final plot -- typically takes 5 to 10 minutes for a standard meta-analysis with 5 to 20 studies.</div>
+  </div>
+
+  <!-- Section 6: Customization -->
+  <div class="section" id="customization">
+    <h2>Customization Options for Your Forest Plot</h2>
+    <p>While MetaReview generates a clean, publication-ready forest plot by default, several customization options are available to match your preferences or specific journal requirements.</p>
+
+    <h3>Study Sorting</h3>
+    <p>Control the order in which studies appear in the forest plot:</p>
+    <ul>
+      <li><strong>Original order</strong> -- Studies appear in the order you entered them. Useful when you have organized studies chronologically or alphabetically during data entry.</li>
+      <li><strong>By effect size</strong> -- Studies are sorted from smallest to largest effect (or vice versa). This arrangement can make visual patterns more apparent and is common in published meta-analyses.</li>
+      <li><strong>By weight</strong> -- Studies are sorted by their contribution to the pooled estimate. Placing the most influential studies at the top draws attention to the data that matters most.</li>
+      <li><strong>By year</strong> -- Chronological ordering allows readers to see if the effect has changed over time, which can be relevant for interpreting temporal trends.</li>
+    </ul>
+
+    <h3>Subgroup Display</h3>
+    <p>If you have defined a subgroup variable (e.g., study region, intervention dose, risk of bias level), MetaReview can generate a subgroup forest plot. This displays studies grouped by the subgroup variable, with a separate pooled diamond for each subgroup and an overall pooled diamond at the bottom. Subgroup forest plots are essential for exploring heterogeneity and are frequently requested by journal reviewers.</p>
+
+    <h3>Color and Styling</h3>
+    <p>MetaReview provides options to adjust the visual appearance of your forest plot:</p>
+    <ul>
+      <li><strong>Color scheme</strong> -- Choose between standard black/gray (most journals), blue-themed, or custom colors for different subgroups.</li>
+      <li><strong>Weight display</strong> -- Toggle whether study weight percentages are shown in the rightmost column.</li>
+      <li><strong>CI values</strong> -- Toggle display of numerical effect sizes and confidence intervals alongside the graphical representation.</li>
+      <li><strong>Axis labels</strong> -- Customize the text for "Favours [Intervention]" and "Favours [Control]" to match your specific comparison.</li>
+    </ul>
+
+    <h3>Advanced Editing with SVG Export</h3>
+    <p>For customization beyond what MetaReview offers natively, export your forest plot as SVG and open it in a vector graphics editor:</p>
+    <ul>
+      <li><strong>Inkscape</strong> (free, open source) -- Full-featured SVG editor. Change any font, color, position, or annotation.</li>
+      <li><strong>Adobe Illustrator</strong> (paid) -- Industry-standard vector editor. Preferred by professional designers and some journal production teams.</li>
+      <li><strong>Affinity Designer</strong> (one-time purchase) -- A cost-effective alternative to Illustrator with excellent SVG support.</li>
+    </ul>
+    <p>This two-step workflow (generate in MetaReview, fine-tune in a vector editor) gives you both the statistical accuracy of a dedicated meta-analysis tool and the visual polish of a professional design application.</p>
+
+    <div class="tip"><strong>Journal-specific formatting:</strong> Check your target journal's figure guidelines before finalizing. Common requirements include minimum font size (usually 8-10 pt), figure width (single column ~85mm or double column ~170mm), and specific file formats. MetaReview's SVG output can be scaled to any size without quality loss.</div>
+  </div>
+
+  <!-- Section 7: Interpretation -->
+  <div class="section" id="interpretation">
+    <h2>Interpreting Your Forest Plot: A Detailed Guide</h2>
+    <p>Creating a forest plot is only half the task. Correctly interpreting and reporting what the forest plot shows is equally important. This section covers the key elements you need to address in your manuscript.</p>
+
+    <h3>Statistical Significance of the Pooled Estimate</h3>
+    <p>The pooled diamond is the primary result. Report the pooled effect size, its 95% confidence interval, and the p-value. For example:</p>
+    <ul>
+      <li>"The pooled odds ratio was 0.62 (95% CI: 0.48-0.80, p = 0.0003), indicating a statistically significant reduction in the odds of the outcome with the intervention."</li>
+      <li>"The pooled mean difference was -1.8 mmHg (95% CI: -3.2 to -0.4, p = 0.012), suggesting a modest but significant blood pressure reduction."</li>
+    </ul>
+    <p>Remember that statistical significance does not equal clinical significance. A pooled OR of 0.98 (95% CI: 0.97-0.99) is statistically significant but may have negligible clinical impact. Always discuss the magnitude of the effect in relation to clinical relevance thresholds established in your field.</p>
+
+    <h3>Heterogeneity Assessment</h3>
+    <p>Report heterogeneity statistics alongside the pooled estimate. The key metrics are:</p>
+
+    <table class="data-table">
+      <tr><th>Metric</th><th>What It Measures</th><th>Interpretation</th></tr>
+      <tr><td><strong>I&sup2;</strong></td><td>Percentage of variation due to true heterogeneity</td><td>0-40% low, 30-60% moderate, 50-90% substantial, 75-100% considerable (Cochrane guidelines). Note the overlapping ranges reflect that interpretation depends on context.</td></tr>
+      <tr><td><strong>Cochran's Q</strong></td><td>Whether observed differences exceed sampling error</td><td>A significant Q (p &lt; 0.10) indicates heterogeneity. Q has low statistical power with few studies, so use a lenient alpha of 0.10 rather than 0.05.</td></tr>
+      <tr><td><strong>Tau&sup2; (tau-squared)</strong></td><td>Estimated between-study variance</td><td>Expressed in the same squared units as the effect size. Tau (the square root) is more interpretable as the standard deviation of the distribution of true effects.</td></tr>
+      <tr><td><strong>Prediction Interval</strong></td><td>Range of effects expected in future studies</td><td>Wider than the confidence interval. If the prediction interval crosses the null, the effect may not be present in all settings, even if the pooled estimate is significant.</td></tr>
+    </table>
+
+    <h3>The Prediction Interval: Often Overlooked but Critical</h3>
+    <p>While the confidence interval tells you the uncertainty around the average pooled effect, the <strong>prediction interval</strong> tells you the range within which the true effect of a future study is expected to fall. In a random-effects meta-analysis, the prediction interval is always wider than the confidence interval because it incorporates both the uncertainty of the mean estimate and the between-study variability (tau&sup2;).</p>
+    <p style="margin-top:8px">For example, a pooled RR of 0.70 (95% CI: 0.55-0.90) looks impressive, but if the 95% prediction interval is 0.30-1.65, it means the effect in a future study could plausibly favor either the intervention or the control. This additional information helps clinicians and policymakers understand how generalizable the finding is.</p>
+    <div class="tip"><strong>Reporting recommendation:</strong> The IntHout et al. (2016) guidelines and the GRADE framework both recommend reporting prediction intervals alongside confidence intervals in random-effects meta-analyses. MetaReview can calculate and display prediction intervals automatically.</div>
+
+    <h3>Subgroup Differences</h3>
+    <p>If your forest plot includes subgroups, compare the pooled diamonds across subgroups. Key questions to address:</p>
+    <ul>
+      <li>Do the subgroup pooled estimates differ in magnitude or direction?</li>
+      <li>Is the test for subgroup differences (interaction test) statistically significant?</li>
+      <li>Does the heterogeneity (I&sup2;) decrease when looking within subgroups compared to the overall analysis? If so, the subgroup variable may explain some of the heterogeneity.</li>
+    </ul>
+    <div class="warn"><strong>Caution about subgroup analysis:</strong> Subgroup analyses are observational in nature, even within a meta-analysis of RCTs. They are prone to false positives (especially with many subgroups) and ecological fallacy (study-level subgroups do not necessarily apply to individuals). Always prespecify subgroup analyses in your protocol, limit the number of subgroups tested, and interpret results with appropriate caution. Significant subgroup differences should be treated as hypothesis-generating, not hypothesis-confirming.</div>
+  </div>
+
+  <!-- Section 8: Common Mistakes -->
+  <div class="section" id="common-mistakes">
+    <h2>Common Mistakes to Avoid When Creating Forest Plots</h2>
+    <p>Even experienced researchers make errors when creating and presenting forest plots. Avoiding these common mistakes will improve the credibility and accuracy of your meta-analysis.</p>
+
+    <h3>1. Using the Wrong Effect Size</h3>
+    <p>Selecting an inappropriate effect size measure is one of the most consequential errors. Using an odds ratio when a risk ratio is more clinically meaningful, or using a mean difference when studies measured outcomes on different scales (requiring SMD), will produce misleading results. The effect size choice should be justified in your protocol and should match both your data type and the clinical question.</p>
+
+    <h3>2. Mixing Scales or Outcome Definitions</h3>
+    <p>Combining studies that measure fundamentally different outcomes into a single forest plot produces a meaningless pooled estimate. For example, pooling a study that measures "complete remission" with one that measures "partial response" using the same binary framework treats these as equivalent endpoints when they are not. Similarly, mixing adjusted and unadjusted effect sizes without accounting for the difference introduces bias. Ensure outcome definitions are sufficiently comparable before pooling.</p>
+
+    <h3>3. Ignoring High Heterogeneity</h3>
+    <p>Reporting a clean pooled estimate while ignoring an I&sup2; of 85% is a red flag for any reviewer. When heterogeneity is substantial (I&sup2; &gt; 50%), you must explore its sources through subgroup analysis, meta-regression, or sensitivity analysis. Simply reporting the random-effects model pooled estimate and moving on suggests you either do not understand the heterogeneity or are choosing to ignore it. If the heterogeneity cannot be explained, acknowledge it transparently and discuss its implications for the certainty of your findings.</p>
+
+    <h3>4. Overlooking Publication Bias</h3>
+    <p>A beautiful, significant forest plot can be completely misleading if it is based on a biased set of studies. Small studies with null or negative results are less likely to be published, leading to an overestimation of the true effect. Always generate a funnel plot alongside your forest plot and perform quantitative tests (Egger's test, Begg's test) when you have 10 or more studies. If publication bias is suspected, apply the trim-and-fill method or conduct a sensitivity analysis excluding studies with high risk of bias.</p>
+
+    <h3>5. Incorrect Model Selection</h3>
+    <p>Using a fixed-effect model when studies clearly come from different populations with different true effects will underestimate the uncertainty of the pooled estimate (confidence intervals will be too narrow). Conversely, using a random-effects model with very few studies (k &lt; 5) can produce unreliable tau&sup2; estimates. The model choice should be justified based on clinical and methodological judgment, not based on which model produces a more favorable result.</p>
+
+    <h3>6. Data Entry Errors</h3>
+    <p>A single transposed digit can dramatically alter a study's effect size and, by extension, the pooled estimate. Common errors include swapping intervention and control columns, entering events instead of non-events, mixing up mean and standard deviation values, and using the wrong decimal point. Always double-check your data against the original source publications. MetaReview flags impossible values (events exceeding totals, negative SDs), but plausible but incorrect values will not be caught automatically.</p>
+
+    <h3>7. Presenting Forest Plots Without Context</h3>
+    <p>A forest plot in a manuscript should always be accompanied by adequate text explaining what is shown, what effect measure is used, what model was used, and what the heterogeneity statistics indicate. Dropping a forest plot into a paper without interpretation forces readers to draw their own conclusions, which may be incorrect. Every forest plot deserves a dedicated paragraph in your results section.</p>
+
+    <h3>8. Cherry-Picking the Model or Analysis</h3>
+    <p>Running both fixed-effect and random-effects models and reporting whichever produces the more favorable result is a form of outcome reporting bias. The analysis plan, including model choice, should be prespecified in your protocol. If you report both models for transparency (which is acceptable), clearly designate one as the primary analysis and the other as a sensitivity check.</p>
+
+    <div class="warn"><strong>Reviewer red flags:</strong> Journal reviewers are trained to check for these issues. A forest plot with high heterogeneity and no subgroup exploration, a meta-analysis with 15+ studies and no funnel plot, or switching between fixed-effect and random-effects models without justification are among the most common reasons for revision requests or rejection in systematic review manuscripts.</div>
+  </div>
+
+  <!-- Section 9: Export and Publication -->
+  <div class="section" id="export">
+    <h2>Export and Publication: Getting Your Forest Plot Journal-Ready</h2>
+    <p>The final step is exporting your forest plot in a format that meets journal submission requirements. Here is what you need to know about file formats, resolution, and common journal expectations.</p>
+
+    <h3>SVG vs PNG: Which Format to Choose</h3>
+    <table class="data-table">
+      <tr><th>Feature</th><th>SVG (Vector)</th><th>PNG (Raster)</th></tr>
+      <tr><td><strong>Resolution</strong></td><td>Infinite (scales to any size)</td><td>Fixed (depends on export size)</td></tr>
+      <tr><td><strong>File Size</strong></td><td>Small (text-based XML)</td><td>Larger (pixel-based)</td></tr>
+      <tr><td><strong>Editable</strong></td><td>Yes (in Illustrator, Inkscape)</td><td>Limited (pixel editing only)</td></tr>
+      <tr><td><strong>Best For</strong></td><td>Journal submission, archival</td><td>Presentations, web, email</td></tr>
+      <tr><td><strong>Print Quality</strong></td><td>Always perfect</td><td>Depends on DPI (need 300+)</td></tr>
+      <tr><td><strong>Conversion</strong></td><td>Easily converts to PDF, EPS, TIFF</td><td>Cannot upscale without quality loss</td></tr>
+    </table>
+
+    <h3>Resolution Requirements by Context</h3>
+    <ul>
+      <li><strong>Journal submission:</strong> 300 DPI minimum for halftone figures, 600 DPI for line art. SVG meets both by default since it is vector.</li>
+      <li><strong>Conference posters:</strong> 150-300 DPI depending on viewing distance. SVG is still preferred.</li>
+      <li><strong>Presentations (PowerPoint, Keynote):</strong> 150 DPI is usually sufficient. PNG works well here.</li>
+      <li><strong>Web/email:</strong> 72-150 DPI. PNG is the standard for web display.</li>
+    </ul>
+
+    <h3>Common Journal Figure Requirements</h3>
+    <p>While specific requirements vary by journal, most biomedical journals follow similar guidelines:</p>
+    <ul>
+      <li><strong>Accepted formats:</strong> TIFF, EPS, PDF, or SVG (increasingly accepted). Some journals still require TIFF.</li>
+      <li><strong>Minimum resolution:</strong> 300 DPI for photographic images, 600 DPI for line art. Forest plots are line art.</li>
+      <li><strong>Color mode:</strong> RGB for online, CMYK for print (most journals handle conversion automatically).</li>
+      <li><strong>Figure width:</strong> Single column = 80-90mm, double column = 160-180mm. Check your target journal.</li>
+      <li><strong>Font size:</strong> Minimum 8 pt in the final printed size. Ensure text remains readable when the figure is scaled to the column width.</li>
+      <li><strong>Labeling:</strong> Include a figure number and descriptive caption. The caption should state the effect measure, model used, and number of studies included.</li>
+    </ul>
+
+    <h3>Recommended Workflow for Journal Submission</h3>
+    <ol>
+      <li><strong>Export from MetaReview as SVG</strong> -- This preserves all elements as editable vectors.</li>
+      <li><strong>Review in a vector editor</strong> (optional) -- Open in Inkscape or Illustrator. Check font sizes, adjust spacing if needed, and ensure the figure fits the journal's column width.</li>
+      <li><strong>Convert to required format</strong> -- If the journal requires TIFF, export from the vector editor at 600 DPI. If PDF or EPS is accepted, save directly. Many journals now accept SVG, which requires no conversion.</li>
+      <li><strong>Verify the final output</strong> -- Open the exported file at 100% zoom and confirm all text is readable, all elements are correctly positioned, and the file size meets the journal's upload limit.</li>
+    </ol>
+
+    <h3>Writing the Figure Caption</h3>
+    <p>A well-written figure caption is part of the publication process. Include these elements:</p>
+    <ul>
+      <li>Figure number (e.g., "Figure 2.")</li>
+      <li>Brief title describing the content (e.g., "Forest plot of the effect of GLP-1 receptor agonists on HbA1c reduction.")</li>
+      <li>The effect measure used (e.g., "Effect sizes are presented as mean differences (MD) with 95% confidence intervals.")</li>
+      <li>The model used (e.g., "A random-effects model (DerSimonian-Laird) was used for pooling.")</li>
+      <li>Explanation of visual elements if non-standard (e.g., "Square sizes are proportional to study weight. The diamond represents the pooled estimate.")</li>
+      <li>Heterogeneity statistic (e.g., "Heterogeneity: I&sup2; = 42%, Q = 12.1, p = 0.06.")</li>
+    </ul>
+
+    <div class="tip"><strong>Final check:</strong> Before submitting, have a colleague who was not involved in the analysis look at your forest plot for 30 seconds and tell you what they think it shows. If their interpretation matches yours, the figure communicates effectively. If not, consider adjusting labels, axis direction, or adding annotations for clarity.</div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <h2>Create Your Forest Plot Now</h2>
+    <p>MetaReview is a free online forest plot generator. Go from raw data to a publication-quality forest plot in under 10 minutes. No installation, no coding, no cost.</p>
+    <a href="/">Open MetaReview - It's Free</a>
+  </div>
+
+  <!-- Email Subscription -->
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">Stay Updated</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">Get notified about new features, forest plot tips, and meta-analysis guides.</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="Enter your email" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Subscribe</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">No spam. Unsubscribe anytime.</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='Submitting...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-forest-plot-en',lang:'en'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?"You're already subscribed!":'Subscribed! We\'ll notify you about new features.';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Please enter a valid email address.';btn.textContent='Subscribe';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Submission failed. Please try again later.';btn.textContent='Subscribe';btn.disabled=false;});
+  });
+  </script>
+
+  <!-- FAQ Section -->
+  <div class="faq" id="faq">
+    <h2>Frequently Asked Questions</h2>
+
+    <h3>What is a forest plot?</h3>
+    <p>A forest plot is the standard graphical display used in meta-analysis to visualize the results of multiple studies investigating the same question. Each study is represented as a horizontal row containing a square (the point estimate or effect size) and a line extending from it (the 95% confidence interval). The size of each square is proportional to the study's statistical weight in the pooled analysis -- larger squares represent studies that contribute more to the overall result. At the bottom of the plot, a diamond shape represents the pooled (combined) effect estimate across all studies. A vertical line marks the "null effect" (1.0 for ratio measures like odds ratio and risk ratio, or 0 for difference measures like mean difference). Forest plots allow researchers, clinicians, and reviewers to see at a glance whether the included studies agree with each other, how precise each estimate is, and whether the overall combined effect is statistically significant.</p>
+
+    <h3>How do you read a forest plot?</h3>
+    <p>Reading a forest plot follows a systematic process. First, identify the effect measure on the x-axis (OR, RR, MD, or SMD) and locate the vertical line of no effect. Each row represents one study: the square is the point estimate and the horizontal line is the 95% confidence interval. Larger squares indicate studies with more weight. If a study's line crosses the null line, that study alone did not find a statistically significant result. Next, look at the diamond at the bottom, which shows the pooled estimate. The diamond's center is the pooled effect size and its width is the pooled confidence interval. If the diamond does not touch or cross the null line, the overall result is statistically significant. Finally, check the heterogeneity statistics below the plot (I-squared and Q p-value) to assess how consistent the studies are. An I-squared above 50% suggests substantial heterogeneity, meaning the studies may not be measuring exactly the same thing, and further investigation through subgroup analysis is warranted.</p>
+
+    <h3>What does the diamond mean in a forest plot?</h3>
+    <p>The diamond at the bottom of a forest plot represents the pooled (combined) effect estimate from the meta-analysis. It is the summary result that synthesizes all included studies. The center of the diamond indicates the pooled point estimate -- for example, an overall odds ratio of 0.65 or an overall mean difference of -2.3. The left and right tips of the diamond represent the lower and upper bounds of the 95% confidence interval around the pooled estimate. A narrow diamond means the pooled estimate is precise (there is little uncertainty about the overall effect), while a wide diamond means there is substantial uncertainty even after combining multiple studies. The critical question is whether the diamond overlaps the vertical line of no effect. If the diamond falls entirely to one side of the null line without touching it, the pooled result is statistically significant at the p &lt; 0.05 level. In subgroup analyses, you may see multiple diamonds, one for each subgroup, with a final overall diamond at the very bottom.</p>
+
+    <h3>What is the difference between a forest plot and a funnel plot?</h3>
+    <p>Forest plots and funnel plots are both standard figures in meta-analysis, but they serve entirely different purposes. A forest plot displays the results: it shows each study's effect size, confidence interval, and weight, plus the pooled estimate. It answers the question "what is the overall effect and how do individual studies compare?" A funnel plot, in contrast, is a diagnostic tool for detecting publication bias. It plots each study's effect size on the x-axis against a measure of precision (usually standard error) on the y-axis. In the absence of publication bias, the points should form a symmetric, inverted funnel shape centered on the pooled estimate. Asymmetry in the funnel plot may indicate that small studies with non-significant or unfavorable results were not published, leading to a biased set of included studies. However, funnel plot asymmetry can also result from genuine heterogeneity, methodological differences between small and large studies, or statistical artifact. Formal tests like Egger's regression test or Begg's rank correlation test complement the visual inspection of funnel plots.</p>
+
+    <h3>How can I make a forest plot without R or coding?</h3>
+    <p>MetaReview is a free, browser-based forest plot generator that requires absolutely no coding, programming, or software installation. You simply open the MetaReview website in any modern web browser (Chrome, Firefox, Safari, Edge), enter your study data through a point-and-click interface, select your effect size type (OR, RR, MD, or SMD) and analysis model (fixed-effect or random-effects), and the tool automatically generates a publication-ready forest plot. You can customize the appearance, add subgroups, and export the result as SVG or PNG. The entire process takes 5 to 10 minutes. Unlike R (which requires installing R, RStudio, and packages like metafor or meta, then writing code), or Stata (which requires a paid license and knowledge of command syntax), MetaReview eliminates all technical barriers. It is designed specifically for medical researchers, graduate students, and anyone conducting a meta-analysis who prefers a visual, no-code workflow.</p>
+
+    <h3>Can I customize the colors and appearance of my forest plot?</h3>
+    <p>Yes. MetaReview offers several customization options to tailor your forest plot's appearance. You can adjust the color scheme to match your preferences or differentiate subgroups, choose how studies are sorted (by effect size, weight, year, or entry order), toggle the display of study weight percentages and numerical confidence interval values, and modify axis labels to accurately describe your comparison (e.g., "Favours Drug A" vs. "Favours Placebo"). The default styling follows established academic conventions for clean, professional output that journals expect. For additional customization beyond what the tool offers natively -- such as adding annotations, changing specific fonts, or adjusting element positions -- you can export the forest plot as an SVG file and edit it in free vector graphics software like Inkscape, or in professional tools like Adobe Illustrator or Affinity Designer. This gives you full control over every visual element while maintaining the statistical accuracy of the original plot.</p>
+
+    <h3>How do I export a high-resolution forest plot for journal submission?</h3>
+    <p>MetaReview exports forest plots in SVG (Scalable Vector Graphics) format, which is the ideal format for journal submission because SVG is resolution-independent -- it scales to any size without any quality loss. Most biomedical journals accept SVG directly, or accept PDF and EPS, which can be easily generated from SVG using free tools like Inkscape (File &gt; Save As &gt; PDF or EPS). For journals that specifically require TIFF format at 300-600 DPI, open the SVG in Inkscape, set the document size to match the journal's column width (typically 85mm for single column or 170mm for double column), and export as TIFF at 600 DPI (File &gt; Export PNG Image, set DPI to 600, then convert PNG to TIFF). MetaReview also offers direct PNG export for presentations and web use. The key principle is: always start with SVG and convert down to raster formats as needed, never the other way around. This ensures maximum quality at every step.</p>
+
+    <h3>What is the best free forest plot tool for meta-analysis?</h3>
+    <p>The best free forest plot tool depends on your technical background and specific needs. For researchers who want publication-ready results without any coding, MetaReview is the top choice: it runs entirely in the browser, supports all major effect sizes (OR, RR, MD, SMD), provides both fixed-effect and random-effects models, generates forest plots with automatic weight calculation and heterogeneity statistics, offers subgroup analysis, sensitivity analysis (leave-one-out), funnel plots, and exports in SVG format. For researchers comfortable with programming, R with the metafor package (by Wolfgang Viechtbauer) offers the most powerful and flexible meta-analysis capabilities, including meta-regression, multivariate meta-analysis, and virtually unlimited plot customization. RevMan (Review Manager) from the Cochrane Collaboration is free for Cochrane-affiliated authors and is the standard for Cochrane systematic reviews, though it requires desktop installation and is less flexible for non-Cochrane analyses. For the vast majority of researchers conducting standard meta-analyses, MetaReview provides the best balance of capability, ease of use, and zero cost.</p>
+  </div>
+
+  <!-- Related Guides -->
+  <div class="related">
+    <h2>Related Guides</h2>
+    <ul>
+      <li><a href="/guides/how-to-meta-analysis">How to Do a Meta-Analysis: Complete Step-by-Step Tutorial</a></li>
+      <li><a href="/guides/meta-analysis-steps">Complete Meta-Analysis Step-by-Step Guide (Chinese)</a></li>
+      <li><a href="/guides/forest-plot-generator">Forest Plot Guide (Chinese)</a></li>
+      <li><a href="/guides/effect-size-selection">Choosing Effect Sizes: OR, RR, MD, SMD Guide</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 Flow Diagram Guide</a></li>
+      <li><a href="/guides/survival-analysis-meta">Survival Data Meta-Analysis: HR Guide</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta-Analysis Software Comparison</a></li>
+      <li><a href="/guides/tumor-meta-analysis">Oncology Meta-Analysis Guide</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">Cardiovascular Meta-Analysis Guide</a></li>
+      <li><a href="/guides/diabetes-meta-analysis">Diabetes Meta-Analysis Guide</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> — Free Online Meta-Analysis Tool</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
