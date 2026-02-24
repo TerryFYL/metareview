@@ -1,5 +1,5 @@
 // Report export — generates a printable HTML report
-import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO } from './types';
+import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult } from './types';
 import type { PRISMAData } from '../components/PRISMAFlow';
 import type { TrimAndFillResult } from './statistics/publication-bias';
 
@@ -15,6 +15,7 @@ export interface ReportSections {
   galbraith: boolean;
   subgroup: boolean;
   sensitivity: boolean;
+  metaReg: boolean;
   methods: boolean;
   narrative: boolean;
 }
@@ -31,6 +32,7 @@ export const defaultReportSections: ReportSections = {
   galbraith: true,
   subgroup: true,
   sensitivity: true,
+  metaReg: true,
   methods: true,
   narrative: true,
 };
@@ -47,6 +49,8 @@ interface ReportData {
   funnelSvg: string | null;
   galbraithSvg?: string | null;
   trimFillResult?: TrimAndFillResult | null;
+  metaRegression?: MetaRegressionResult | null;
+  metaRegSvg?: string | null;
   prisma?: PRISMAData;
   sections?: ReportSections;
 }
@@ -199,6 +203,24 @@ function beggsSection(beggs: BeggsTest): string {
     <p class="note">${beggs.pValue < 0.05 ? 'Significant rank correlation detected &mdash; potential publication bias.' : 'No significant rank correlation detected (no evidence of publication bias).'}</p>`;
 }
 
+function metaRegressionSection(mr: MetaRegressionResult): string {
+  return `
+    <h2>Meta-Regression Analysis</h2>
+    <table class="data-table">
+      <tbody>
+        <tr><td class="label">Covariate</td><td>${esc(mr.covariate)} (k = ${mr.k})</td></tr>
+        <tr><td class="label">Coefficient</td><td>${mr.coefficient.toFixed(4)} (SE = ${mr.se.toFixed(4)})</td></tr>
+        <tr><td class="label">Z</td><td>${mr.z.toFixed(4)}</td></tr>
+        <tr><td class="label">P-value</td><td class="${mr.pValue < 0.05 ? 'sig' : ''}">${formatP(mr.pValue)}</td></tr>
+        <tr><td class="label">Intercept</td><td>${mr.intercept.toFixed(4)}</td></tr>
+        <tr><td class="label">Q<sub>model</sub></td><td>${mr.QModel.toFixed(2)} (p = ${formatP(mr.QModelP)})</td></tr>
+        <tr><td class="label">Q<sub>residual</sub></td><td>${mr.QResidual.toFixed(2)} (df = ${mr.QResidualDf}, p = ${formatP(mr.QResidualP)})</td></tr>
+        <tr><td class="label">R&sup2;</td><td>${(mr.R2 * 100).toFixed(1)}%</td></tr>
+      </tbody>
+    </table>
+    <p class="note">${mr.pValue < 0.05 ? 'The covariate significantly moderates the effect size (P &lt; 0.05).' : 'The covariate does not significantly moderate the effect size (P &ge; 0.05).'}</p>`;
+}
+
 function subgroupSection(sg: SubgroupAnalysisResult, measure: string): string {
   return `
     <h2>Subgroup Analysis</h2>
@@ -277,7 +299,7 @@ function methodsSection(r: MetaAnalysisResult, pico: PICO, eggers: EggersTest | 
   parts.push("Statistical heterogeneity was assessed using Cochran's Q test and quantified with the I&sup2; statistic, where I&sup2; values of 25%, 50%, and 75% were interpreted as low, moderate, and high heterogeneity, respectively (Higgins et al., 2003).");
 
   if (eggers) {
-    parts.push("Publication bias was evaluated by visual inspection of funnel plot asymmetry and formally tested using Egger's linear regression test.");
+    parts.push("Publication bias was evaluated by visual inspection of funnel plot asymmetry and formally tested using Egger's linear regression test and Begg's rank correlation test.");
   }
   if (sensitivity.length > 0) {
     parts.push('Sensitivity analysis was performed using the leave-one-out method, whereby each study was sequentially removed to assess its influence on the pooled estimate.');
@@ -293,13 +315,16 @@ function methodsSection(r: MetaAnalysisResult, pico: PICO, eggers: EggersTest | 
     <div class="narrative">${parts.join(' ')}</div>`;
 }
 
-function narrativeSection(r: MetaAnalysisResult, eggers: EggersTest | null, sg: SubgroupAnalysisResult | null, sensitivity: SensitivityResult[]): string {
+function narrativeSection(r: MetaAnalysisResult, eggers: EggersTest | null, sg: SubgroupAnalysisResult | null, sensitivity: SensitivityResult[], beggs?: BeggsTest | null, metaReg?: MetaRegressionResult | null): string {
   const het = r.heterogeneity;
   const k = r.studies.length;
   let text = `A ${r.model === 'random' ? 'random-effects' : 'fixed-effect'} meta-analysis of ${k} studies was performed using the ${r.model === 'random' ? 'DerSimonian-Laird' : 'inverse variance'} method. The pooled ${r.measure} was ${r.effect.toFixed(2)} (95% CI: ${r.ciLower.toFixed(2)}&ndash;${r.ciUpper.toFixed(2)}; Z = ${r.z.toFixed(2)}, P ${r.pValue < 0.001 ? '&lt; 0.001' : `= ${r.pValue.toFixed(3)}`}), ${r.pValue < 0.05 ? 'indicating a statistically significant effect' : 'showing no statistically significant effect'}. `;
   text += `Heterogeneity was ${het.I2 < 25 ? 'low' : het.I2 < 50 ? 'moderate' : het.I2 < 75 ? 'substantial' : 'considerable'} (I&sup2; = ${het.I2.toFixed(1)}%, Q = ${het.Q.toFixed(2)}, df = ${het.df}, P ${het.pValue < 0.001 ? '&lt; 0.001' : `= ${het.pValue.toFixed(3)}`}; &tau;&sup2; = ${het.tau2.toFixed(4)}).`;
   if (eggers) {
     text += ` Egger's regression test ${eggers.pValue < 0.05 ? 'indicated significant' : 'did not indicate'} funnel plot asymmetry (intercept = ${eggers.intercept.toFixed(2)}, P = ${formatP(eggers.pValue)}).`;
+  }
+  if (beggs) {
+    text += ` Begg's rank correlation test ${beggs.pValue < 0.05 ? 'revealed significant' : 'showed no significant'} evidence of publication bias (Kendall's &tau; = ${beggs.tau.toFixed(3)}, P = ${formatP(beggs.pValue)}).`;
   }
   if (sensitivity.length > 0) {
     const isRatio = r.measure === 'OR' || r.measure === 'RR' || r.measure === 'HR';
@@ -321,6 +346,9 @@ function narrativeSection(r: MetaAnalysisResult, eggers: EggersTest | null, sg: 
     );
     const testSig = sg.test.pValue < 0.05;
     text += ` Subgroup analysis by ${sg.subgroups.map(s => s.name || 'Ungrouped').join(' vs ')} revealed ${sgEffects.join('; ')}. The test for subgroup differences ${testSig ? 'was statistically significant' : 'was not statistically significant'} (Q = ${sg.test.Q.toFixed(2)}, df = ${sg.test.df}, P ${sg.test.pValue < 0.001 ? '&lt; 0.001' : `= ${sg.test.pValue.toFixed(3)}`})${testSig ? ', suggesting effect modification across subgroups' : ', indicating no significant effect modification'}.`;
+  }
+  if (metaReg) {
+    text += ` Meta-regression analysis using ${esc(metaReg.covariate)} as the covariate (k = ${metaReg.k}) ${metaReg.pValue < 0.05 ? 'identified a significant moderating effect' : 'did not identify a significant moderating effect'} (coefficient = ${metaReg.coefficient.toFixed(4)}, P = ${formatP(metaReg.pValue)}; R&sup2; = ${(metaReg.R2 * 100).toFixed(1)}%).`;
   }
   return `
     <h2>Narrative Summary (for manuscript)</h2>
@@ -369,7 +397,7 @@ function trimFillSection(tf: TrimAndFillResult, measure: string): string {
 }
 
 export function generateReportHTML(data: ReportData): string {
-  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, forestSvg, funnelSvg, galbraithSvg, trimFillResult, prisma } = data;
+  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, forestSvg, funnelSvg, galbraithSvg, trimFillResult, metaRegression, metaRegSvg, prisma } = data;
   const s = data.sections || defaultReportSections;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -430,10 +458,12 @@ export function generateReportHTML(data: ReportData): string {
   ${s.plots && funnelSvg ? `<div class="figure">${funnelSvg}<p class="figure-caption">Figure 2. Funnel plot</p></div>` : ''}
   ${s.eggers && trimFillResult ? trimFillSection(trimFillResult, result.measure) : ''}
   ${s.galbraith && galbraithSvg ? `<div class="figure">${galbraithSvg}<p class="figure-caption">Figure 3. Galbraith plot (radial plot)</p></div>` : ''}
+  ${s.metaReg && metaRegression ? metaRegressionSection(metaRegression) : ''}
+  ${s.metaReg && metaRegSvg ? `<div class="figure">${metaRegSvg}<p class="figure-caption">Figure ${[forestSvg, funnelSvg, galbraithSvg].filter(Boolean).length + 1}. Meta-regression scatter plot</p></div>` : ''}
   ${s.subgroup && subgroupResult ? subgroupSection(subgroupResult, result.measure) : ''}
   ${s.sensitivity ? sensitivitySection(sensitivityResults, result) : ''}
   ${s.methods ? methodsSection(result, pico, eggers, subgroupResult, sensitivityResults) : ''}
-  ${s.narrative ? narrativeSection(result, eggers, subgroupResult, sensitivityResults) : ''}
+  ${s.narrative ? narrativeSection(result, eggers, subgroupResult, sensitivityResults, beggs, metaRegression) : ''}
   <div class="footer">
     Generated by MetaReview (metareview-8c1.pages.dev) &mdash; Open-source meta-analysis platform
   </div>

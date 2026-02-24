@@ -13,7 +13,9 @@ import LiteratureSearch from './components/LiteratureSearch';
 import OnboardingTour from './components/OnboardingTour';
 import CumulativeMeta from './components/CumulativeMeta';
 import GalbraithPlot from './components/GalbraithPlot';
-import { metaAnalysis, eggersTest, beggsTest, metaRegression, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, isBinaryData, isContinuousData, isHRData, trimAndFill, isLogScale } from './lib/statistics';
+import LabbePlot from './components/LabbePlot';
+import MetaRegressionPlot from './components/MetaRegressionPlot';
+import { metaAnalysis, eggersTest, beggsTest, metaRegression as runMetaRegression, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, isBinaryData, isContinuousData, isHRData, trimAndFill, isLogScale } from './lib/statistics';
 import type { TrimAndFillResult } from './lib/statistics';
 import { generateReportHTML, type ReportSections } from './lib/report-export';
 import { generateReportDOCX } from './lib/report-docx';
@@ -32,7 +34,7 @@ const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'SMD', label: "Hedges' g (SMD)", desc: 'Continuous, different scales' },
 ];
 
-const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'galbraith', 'cumulative', 'sensitivity', 'subgroup', 'prisma'] as const;
+const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'galbraith', 'labbe', 'cumulative', 'sensitivity', 'subgroup', 'metareg', 'prisma'] as const;
 
 function ForestPlotControls({ lang, onDownloadSVG, onDownloadPNG }: { lang: Lang; onDownloadSVG: () => void; onDownloadPNG: () => void }) {
   const { plotSettings, setPlotSettings } = useUIStore();
@@ -247,13 +249,14 @@ export default function App() {
   } = useProjectStore();
 
   const {
-    lang, heroSeen, tourSeen, result, eggers, beggs, error, activeTab,
+    lang, heroSeen, tourSeen, result, eggers, beggs, metaRegression, error, activeTab,
     setLang, setHeroSeen, setTourSeen, setResult, setEggers, setBeggs, setMetaRegression, setError, setActiveTab,
   } = useUIStore();
 
   const [subgroupResult, setSubgroupResult] = useState<SubgroupAnalysisResult | null>(null);
   const [trimFillResult, setTrimFillResult] = useState<TrimAndFillResult | null>(null);
   const [showTrimFill, setShowTrimFill] = useState(false);
+  const [showContours, setShowContours] = useState(false);
 
   const { undo, redo, canUndo, canRedo } = useProjectStore();
 
@@ -343,7 +346,7 @@ export default function App() {
       setEggers(eggersTest(res.studies));
       setBeggs(beggsTest(res.studies));
       // Meta-regression
-      setMetaRegression(metaRegression(studies, measure, model));
+      setMetaRegression(runMetaRegression(studies, measure, model));
       // Trim-and-Fill: publication bias correction
       setTrimFillResult(trimAndFill(res.studies, res.summary, isLogScale(res.measure)));
       // Subgroup analysis: only if at least one study has a subgroup defined
@@ -432,9 +435,11 @@ export default function App() {
     const forestEl = document.querySelector('.forest-plot-container svg');
     const funnelEl = document.querySelector('.funnel-plot-container svg');
     const galbraithEl = document.querySelector('.galbraith-plot-container svg');
+    const metaRegEl = document.querySelector('.metareg-plot-container svg');
     const forestSvg = forestEl ? serializer.serializeToString(forestEl) : null;
     const funnelSvg = funnelEl ? serializer.serializeToString(funnelEl) : null;
     const galbraithSvg = galbraithEl ? serializer.serializeToString(galbraithEl) : null;
+    const metaRegSvg = metaRegEl ? serializer.serializeToString(metaRegEl) : null;
     const html = generateReportHTML({
       title,
       pico,
@@ -447,6 +452,8 @@ export default function App() {
       funnelSvg,
       galbraithSvg,
       trimFillResult,
+      metaRegression,
+      metaRegSvg,
       prisma,
       sections,
     });
@@ -454,7 +461,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
     setTimeout(() => URL.revokeObjectURL(url), 10000);
-  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult]);
+  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression]);
 
   const exportDOCX = useCallback(async (sections?: ReportSections) => {
     if (!result) return;
@@ -467,6 +474,7 @@ export default function App() {
       subgroupResult,
       sensitivityResults,
       trimFillResult,
+      metaRegression,
       prisma,
       sections,
     });
@@ -476,7 +484,7 @@ export default function App() {
     a.download = `${title || 'metareview-report'}.docx`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 10000);
-  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult]);
+  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression]);
 
   // Show hero for new visitors
   if (!heroSeen) {
@@ -546,6 +554,8 @@ export default function App() {
               if (tab === 'sensitivity' && studies.length < 3) return false;
               if (tab === 'subgroup' && !subgroupResult) return false;
               if (tab === 'cumulative' && studies.length < 2) return false;
+              if (tab === 'metareg' && !metaRegression) return false;
+              if (tab === 'labbe' && measure !== 'OR' && measure !== 'RR') return false;
               return true;
             });
             const idx = enabledTabs.indexOf(activeTab as typeof enabledTabs[number]);
@@ -564,11 +574,16 @@ export default function App() {
           const isSubgroup = tab === 'subgroup';
           const isSensitivity = tab === 'sensitivity';
           const isCumulative = tab === 'cumulative';
+          const isMetaReg = tab === 'metareg';
+          const isLabbe = tab === 'labbe';
+          const isBinaryMeasure = measure === 'OR' || measure === 'RR';
           const disabled = !isAlwaysEnabled && (
             !result
             || (isSensitivity && studies.length < 3)
             || (isSubgroup && !subgroupResult)
             || (isCumulative && studies.length < 2)
+            || (isMetaReg && !metaRegression)
+            || (isLabbe && !isBinaryMeasure)
           );
           return (
             <button
@@ -720,15 +735,19 @@ export default function App() {
       {activeTab === 'funnel' && result && (
         <div>
           <FunnelPlotControls lang={lang} />
-          {/* Trim-and-Fill toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+          {/* Trim-and-Fill & Contour toggles */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 12, flexWrap: 'wrap' }}>
             <label style={{ fontSize: 12, color: '#374151', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
               <input type="checkbox" checked={showTrimFill} onChange={(e) => setShowTrimFill(e.target.checked)} />
               {t('trimFill.show', lang)}
             </label>
+            <label style={{ fontSize: 12, color: '#374151', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <input type="checkbox" checked={showContours} onChange={(e) => setShowContours(e.target.checked)} />
+              {t('funnel.showContours', lang)}
+            </label>
           </div>
           <div className="funnel-plot-container" style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
-            <FunnelPlot result={result} lang={lang} trimFillResult={showTrimFill ? trimFillResult : undefined} />
+            <FunnelPlot result={result} lang={lang} trimFillResult={showTrimFill ? trimFillResult : undefined} showContours={showContours} />
           </div>
           {/* Trim-and-Fill results */}
           {showTrimFill && trimFillResult && (
@@ -774,6 +793,11 @@ export default function App() {
         <div className="galbraith-plot-container">
           <GalbraithPlot result={result} lang={lang} />
         </div>
+      )}
+
+      {/* L'Abbé Plot Tab */}
+      {activeTab === 'labbe' && result && (
+        <LabbePlot studies={studies} lang={lang} />
       )}
 
       {/* Cumulative Meta-Analysis Tab */}
@@ -850,6 +874,13 @@ export default function App() {
                 : t('subgroup.notSignificant', lang)}
             </p>
           </div>
+        </div>
+      )}
+
+      {/* Meta-Regression Tab */}
+      {activeTab === 'metareg' && result && metaRegression && (
+        <div className="metareg-plot-container">
+          <MetaRegressionPlot metaRegression={metaRegression} lang={lang} />
         </div>
       )}
 

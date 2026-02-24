@@ -1,7 +1,49 @@
-// Publication bias assessment: Funnel plot data, Galbraith plot data, Egger's regression test, and Trim-and-Fill
+// Publication bias assessment: Funnel plot data, Galbraith plot data, L'Abbé plot data, Egger's regression test, and Trim-and-Fill
 
 import type { StudyEffect, EggersTest, BeggsTest, FunnelPoint } from '../types';
 import { tToP, normalQuantile, zToP } from './distributions';
+
+/** L'Abbé plot data point (binary outcomes only) */
+export interface LabbePoint {
+  name: string;
+  /** Event rate in experimental/treatment group */
+  eventRateExp: number;
+  /** Event rate in control group */
+  eventRateCtrl: number;
+  /** Total sample size (treatment + control) for bubble sizing */
+  sampleSize: number;
+}
+
+/** L'Abbé plot data */
+export interface LabbeData {
+  points: LabbePoint[];
+  /** Number of studies favoring treatment (below diagonal) */
+  favoursTreatment: number;
+  /** Number of studies favoring control (above diagonal) */
+  favoursControl: number;
+}
+
+/** Generate L'Abbé plot data from binary study data
+ *  Requires access to original BinaryData (events/totals).
+ *  Falls back to null if data is not binary.
+ */
+export function labbeePlotData(
+  studies: { name: string; events1: number; total1: number; events2: number; total2: number }[]
+): LabbeData | null {
+  if (studies.length === 0) return null;
+
+  const points: LabbePoint[] = studies.map((s) => ({
+    name: s.name,
+    eventRateExp: s.events1 / s.total1,
+    eventRateCtrl: s.events2 / s.total2,
+    sampleSize: s.total1 + s.total2,
+  }));
+
+  const favoursTreatment = points.filter((p) => p.eventRateExp < p.eventRateCtrl).length;
+  const favoursControl = points.filter((p) => p.eventRateExp > p.eventRateCtrl).length;
+
+  return { points, favoursTreatment, favoursControl };
+}
 
 export interface GalbraithPoint {
   name: string;

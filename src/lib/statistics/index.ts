@@ -15,8 +15,8 @@ export {
   isGenericData,
   logHazardRatio,
 } from './effect-size';
-export { funnelPlotData, eggersTest, beggsTest, galbraithPlotData, trimAndFill } from './publication-bias';
-export type { GalbraithPoint, GalbraithData, TrimAndFillResult } from './publication-bias';
+export { funnelPlotData, eggersTest, beggsTest, galbraithPlotData, labbeePlotData, trimAndFill } from './publication-bias';
+export type { GalbraithPoint, GalbraithData, LabbePoint, LabbeData, TrimAndFillResult } from './publication-bias';
 export {
   normalCdf,
   normalQuantile,

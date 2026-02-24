@@ -12,14 +12,15 @@ interface FunnelPlotProps {
   width?: number;
   height?: number;
   trimFillResult?: TrimAndFillResult | null;
+  showContours?: boolean;
 }
 
 const MARGIN = { top: 30, right: 30, bottom: 50, left: 60 };
 
-const FUNNEL_COLORS: Record<ColorScheme, { point: string; summary: string; funnel: string; funnelStroke: string; imputed: string }> = {
-  default: { point: '#2563eb', summary: '#dc2626', funnel: '#f3f4f6', funnelStroke: '#d1d5db', imputed: '#f97316' },
-  bw: { point: '#333333', summary: '#000000', funnel: '#f5f5f5', funnelStroke: '#999999', imputed: '#888888' },
-  colorblind: { point: '#0072B2', summary: '#D55E00', funnel: '#f0f4f8', funnelStroke: '#a0aec0', imputed: '#CC79A7' },
+const FUNNEL_COLORS: Record<ColorScheme, { point: string; summary: string; funnel: string; funnelStroke: string; imputed: string; contour01: string; contour05: string; contour10: string }> = {
+  default: { point: '#2563eb', summary: '#dc2626', funnel: '#f3f4f6', funnelStroke: '#d1d5db', imputed: '#f97316', contour01: '#dbeafe', contour05: '#e0f2fe', contour10: '#f0f9ff' },
+  bw: { point: '#333333', summary: '#000000', funnel: '#f5f5f5', funnelStroke: '#999999', imputed: '#888888', contour01: '#d4d4d4', contour05: '#e5e5e5', contour10: '#f0f0f0' },
+  colorblind: { point: '#0072B2', summary: '#D55E00', funnel: '#f0f4f8', funnelStroke: '#a0aec0', imputed: '#CC79A7', contour01: '#c7d2fe', contour05: '#ddd6fe', contour10: '#ede9fe' },
 };
 
 export default function FunnelPlot({
@@ -28,6 +29,7 @@ export default function FunnelPlot({
   width = 500,
   height = 400,
   trimFillResult,
+  showContours = false,
 }: FunnelPlotProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const plotSettings = useUIStore((s) => s.plotSettings);
@@ -64,6 +66,49 @@ export default function FunnelPlot({
     const g = svg
       .append('g')
       .attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
+
+    // Significance contour regions (centered on null effect = 0)
+    // Shows where individual study p-values fall: p<0.01, p<0.05, p<0.10
+    if (showContours) {
+      const contourLevels = [
+        { z: 2.576, fill: colors.contour01, label: 'p < 0.01' },
+        { z: 1.96, fill: colors.contour05, label: 'p < 0.05' },
+        { z: 1.645, fill: colors.contour10, label: 'p < 0.10' },
+      ];
+      const seSteps = d3.range(0, maxSE * 1.1, maxSE / 80).concat([maxSE * 1.1]);
+
+      // Draw from widest (least significant) to narrowest (most significant)
+      // so narrower regions paint on top
+      for (let i = contourLevels.length - 1; i >= 0; i--) {
+        const { z: zCrit, fill } = contourLevels[i];
+        const leftEdge = seSteps.map((se) => ({ x: -zCrit * se, y: se }));
+        const rightEdge = seSteps.map((se) => ({ x: zCrit * se, y: se }));
+
+        const contourArea = [
+          ...leftEdge.map((p) => `${xScale(p.x)},${yScale(p.y)}`),
+          ...rightEdge.reverse().map((p) => `${xScale(p.x)},${yScale(p.y)}`),
+        ].join(' ');
+
+        g.append('polygon')
+          .attr('points', contourArea)
+          .attr('fill', fill)
+          .attr('opacity', 0.7);
+      }
+
+      // Contour boundary lines
+      contourLevels.forEach(({ z: zCrit }) => {
+        // Left boundary
+        g.append('line')
+          .attr('x1', xScale(0)).attr('y1', yScale(0))
+          .attr('x2', xScale(-zCrit * maxSE * 1.1)).attr('y2', yScale(maxSE * 1.1))
+          .attr('stroke', '#94a3b8').attr('stroke-width', 0.5).attr('stroke-dasharray', '2,2');
+        // Right boundary
+        g.append('line')
+          .attr('x1', xScale(0)).attr('y1', yScale(0))
+          .attr('x2', xScale(zCrit * maxSE * 1.1)).attr('y2', yScale(maxSE * 1.1))
+          .attr('stroke', '#94a3b8').attr('stroke-width', 0.5).attr('stroke-dasharray', '2,2');
+      });
+    }
 
     // Pseudo 95% CI funnel
     const funnelSEValues = d3.range(0, maxSE * 1.1, maxSE / 50);
@@ -182,7 +227,7 @@ export default function FunnelPlot({
       .attr('font-weight', 'bold')
       .attr('fill', '#333')
       .text(plotSettings.customTitle || 'Funnel Plot');
-  }, [result, width, height, plotSettings, trimFillResult]);
+  }, [result, width, height, plotSettings, trimFillResult, showContours]);
 
   return (
     <svg

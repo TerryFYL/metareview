@@ -14,7 +14,7 @@ import {
   ShadingType,
   convertInchesToTwip,
 } from 'docx';
-import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO } from './types';
+import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult } from './types';
 import type { PRISMAData } from '../components/PRISMAFlow';
 import type { ReportSections } from './report-export';
 import { defaultReportSections } from './report-export';
@@ -29,6 +29,7 @@ interface ReportData {
   subgroupResult: SubgroupAnalysisResult | null;
   sensitivityResults: SensitivityResult[];
   trimFillResult?: TrimAndFillResult | null;
+  metaRegression?: MetaRegressionResult | null;
   prisma?: PRISMAData;
   sections?: ReportSections;
 }
@@ -207,6 +208,22 @@ function beggsTable(beggs: BeggsTest): Table {
   });
 }
 
+function metaRegressionTable(mr: MetaRegressionResult): Table {
+  return new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: makeLabelValueRows([
+      ['Covariate', `${mr.covariate} (k = ${mr.k})`],
+      ['Coefficient', `${mr.coefficient.toFixed(4)} (SE = ${mr.se.toFixed(4)})`],
+      ['Z', mr.z.toFixed(4)],
+      ['P-value', formatP(mr.pValue), mr.pValue < 0.05],
+      ['Intercept', mr.intercept.toFixed(4)],
+      ['Q_model', `${mr.QModel.toFixed(2)} (p = ${formatP(mr.QModelP)})`, mr.QModelP < 0.05],
+      ['Q_residual', `${mr.QResidual.toFixed(2)} (df = ${mr.QResidualDf}, p = ${formatP(mr.QResidualP)})`],
+      ['R\u00B2', `${(mr.R2 * 100).toFixed(1)}%`],
+    ]),
+  });
+}
+
 function subgroupTable(sg: SubgroupAnalysisResult, measure: string): Table {
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -272,13 +289,16 @@ function sensitivityTable(results: SensitivityResult[], full: MetaAnalysisResult
   });
 }
 
-function narrativeText(r: MetaAnalysisResult, eggers: EggersTest | null, sg: SubgroupAnalysisResult | null, sensitivity: SensitivityResult[]): string {
+function narrativeText(r: MetaAnalysisResult, eggers: EggersTest | null, sg: SubgroupAnalysisResult | null, sensitivity: SensitivityResult[], beggs?: BeggsTest | null, metaReg?: MetaRegressionResult | null): string {
   const het = r.heterogeneity;
   const k = r.studies.length;
   let text = `A ${r.model === 'random' ? 'random-effects' : 'fixed-effect'} meta-analysis of ${k} studies was performed using the ${r.model === 'random' ? 'DerSimonian-Laird' : 'inverse variance'} method. The pooled ${r.measure} was ${r.effect.toFixed(2)} (95% CI: ${r.ciLower.toFixed(2)}\u2013${r.ciUpper.toFixed(2)}; Z = ${r.z.toFixed(2)}, P ${r.pValue < 0.001 ? '< 0.001' : `= ${r.pValue.toFixed(3)}`}), ${r.pValue < 0.05 ? 'indicating a statistically significant effect' : 'showing no statistically significant effect'}. `;
   text += `Heterogeneity was ${het.I2 < 25 ? 'low' : het.I2 < 50 ? 'moderate' : het.I2 < 75 ? 'substantial' : 'considerable'} (I\u00B2 = ${het.I2.toFixed(1)}%, Q = ${het.Q.toFixed(2)}, df = ${het.df}, P ${het.pValue < 0.001 ? '< 0.001' : `= ${het.pValue.toFixed(3)}`}; \u03C4\u00B2 = ${het.tau2.toFixed(4)}).`;
   if (eggers) {
     text += ` Egger's regression test ${eggers.pValue < 0.05 ? 'indicated significant' : 'did not indicate'} funnel plot asymmetry (intercept = ${eggers.intercept.toFixed(2)}, P = ${formatP(eggers.pValue)}).`;
+  }
+  if (beggs) {
+    text += ` Begg's rank correlation test ${beggs.pValue < 0.05 ? 'revealed significant' : 'showed no significant'} evidence of publication bias (Kendall's \u03C4 = ${beggs.tau.toFixed(3)}, P = ${formatP(beggs.pValue)}).`;
   }
   if (sensitivity.length > 0) {
     const isRatio = r.measure === 'OR' || r.measure === 'RR' || r.measure === 'HR';
@@ -298,6 +318,9 @@ function narrativeText(r: MetaAnalysisResult, eggers: EggersTest | null, sg: Sub
     );
     const testSig = sg.test.pValue < 0.05;
     text += ` Subgroup analysis by ${sg.subgroups.map(s => s.name || 'Ungrouped').join(' vs ')} revealed ${sgEffects.join('; ')}. The test for subgroup differences ${testSig ? 'was statistically significant' : 'was not statistically significant'} (Q = ${sg.test.Q.toFixed(2)}, df = ${sg.test.df}, P ${sg.test.pValue < 0.001 ? '< 0.001' : `= ${sg.test.pValue.toFixed(3)}`})${testSig ? ', suggesting effect modification across subgroups' : ', indicating no significant effect modification'}.`;
+  }
+  if (metaReg) {
+    text += ` Meta-regression analysis using ${metaReg.covariate} as the covariate (k = ${metaReg.k}) ${metaReg.pValue < 0.05 ? 'identified a significant moderating effect' : 'did not identify a significant moderating effect'} (coefficient = ${metaReg.coefficient.toFixed(4)}, P = ${formatP(metaReg.pValue)}; R\u00B2 = ${(metaReg.R2 * 100).toFixed(1)}%).`;
   }
   return text;
 }
@@ -325,7 +348,7 @@ function prismaSummaryTable(prisma: PRISMAData): Table | null {
 }
 
 export async function generateReportDOCX(data: ReportData): Promise<Blob> {
-  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, prisma } = data;
+  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, prisma } = data;
   const s = data.sections || defaultReportSections;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -481,6 +504,26 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
     );
   }
 
+  // Meta-Regression
+  if (s.metaReg && metaRegression) {
+    children.push(
+      new Paragraph({ text: 'Meta-Regression Analysis', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      metaRegressionTable(metaRegression),
+      new Paragraph({
+        children: [new TextRun({
+          text: metaRegression.pValue < 0.05
+            ? 'The covariate significantly moderates the effect size (P < 0.05).'
+            : 'The covariate does not significantly moderate the effect size (P \u2265 0.05).',
+          italics: true,
+          size: 20,
+          color: metaRegression.pValue < 0.05 ? 'CC0000' : '228B22',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 100 },
+      }),
+    );
+  }
+
   // Subgroup Analysis
   if (s.subgroup && subgroupResult && subgroupResult.subgroups.length > 1) {
     children.push(
@@ -512,7 +555,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
       new Paragraph({ text: 'Narrative Summary', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
       new Paragraph({
         children: [new TextRun({
-          text: narrativeText(result, eggers, subgroupResult, sensitivityResults),
+          text: narrativeText(result, eggers, subgroupResult, sensitivityResults, beggs, metaRegression),
           size: 22,
           font: 'Times New Roman',
         })],
