@@ -102,7 +102,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
           {eggers ? ` Egger's regression test ${eggers.pValue < 0.05 ? 'indicated significant' : 'did not indicate'} funnel plot asymmetry (intercept = ${eggers.intercept.toFixed(2)}, P = ${formatP(eggers.pValue)}).` : ''}
           {sensitivityResults.length > 0 && (() => {
             const influential = sensitivityResults.filter(r => {
-              const isRatio = measure === 'OR' || measure === 'RR';
+              const isRatio = measure === 'OR' || measure === 'RR' || measure === 'HR';
               const dirChanged = isRatio ? (r.effect > 1) !== (result.effect > 1) : (r.effect > 0) !== (result.effect > 0);
               const origSig = isRatio ? (result.ciLower > 1 || result.ciUpper < 1) : (result.ciLower > 0 || result.ciUpper < 0);
               const newSig = isRatio ? (r.ciLower > 1 || r.ciUpper < 1) : (r.ciLower > 0 || r.ciUpper < 0);
@@ -149,7 +149,7 @@ function MethodsParagraph({ result, eggers, subgroupResult, sensitivityResults, 
   if (pico.population || pico.intervention || pico.comparison || pico.outcome) {
     const picoDesc = [
       pico.intervention && pico.comparison
-        ? `the ${measure === 'OR' || measure === 'RR' ? 'association between' : 'effect of'} ${pico.intervention} ${measure === 'OR' || measure === 'RR' ? 'and' : 'compared with'} ${pico.comparison}`
+        ? `the ${measure === 'OR' || measure === 'RR' || measure === 'HR' ? 'association between' : 'effect of'} ${pico.intervention} ${measure === 'OR' || measure === 'RR' || measure === 'HR' ? 'and' : 'compared with'} ${pico.comparison}`
         : null,
       pico.outcome ? `on ${pico.outcome}` : null,
       pico.population ? `in ${pico.population}` : null,
@@ -165,6 +165,7 @@ function MethodsParagraph({ result, eggers, subgroupResult, sensitivityResults, 
   const measureFull: Record<string, string> = {
     OR: 'odds ratios (ORs)',
     RR: 'risk ratios (RRs)',
+    HR: 'hazard ratios (HRs)',
     MD: 'mean differences (MDs)',
     SMD: 'standardized mean differences (SMDs)',
   };

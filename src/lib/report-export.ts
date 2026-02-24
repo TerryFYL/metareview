@@ -133,7 +133,7 @@ function sensitivitySection(results: SensitivityResult[], full: MetaAnalysisResu
       </thead>
       <tbody>
         ${results.map(r => {
-          const dirChanged = (r.effect > 1) !== (full.effect > 1) && (full.measure === 'OR' || full.measure === 'RR');
+          const dirChanged = (r.effect > 1) !== (full.effect > 1) && (full.measure === 'OR' || full.measure === 'RR' || full.measure === 'HR');
           const sigChanged = (r.ciLower > 1 || r.ciUpper < 1) !== (full.ciLower > 1 || full.ciUpper < 1);
           const highlight = dirChanged || sigChanged;
           return `<tr${highlight ? ' class="highlight"' : ''}>
@@ -161,7 +161,7 @@ function methodsSection(r: MetaAnalysisResult, pico: PICO, eggers: EggersTest | 
   if (pico.population || pico.intervention || pico.comparison || pico.outcome) {
     const picoDesc = [
       pico.intervention && pico.comparison
-        ? `the ${r.measure === 'OR' || r.measure === 'RR' ? 'association between' : 'effect of'} ${esc(pico.intervention)} ${r.measure === 'OR' || r.measure === 'RR' ? 'and' : 'compared with'} ${esc(pico.comparison)}`
+        ? `the ${r.measure === 'OR' || r.measure === 'RR' || r.measure === 'HR' ? 'association between' : 'effect of'} ${esc(pico.intervention)} ${r.measure === 'OR' || r.measure === 'RR' || r.measure === 'HR' ? 'and' : 'compared with'} ${esc(pico.comparison)}`
         : null,
       pico.outcome ? `on ${esc(pico.outcome)}` : null,
       pico.population ? `in ${esc(pico.population)}` : null,
@@ -171,7 +171,7 @@ function methodsSection(r: MetaAnalysisResult, pico: PICO, eggers: EggersTest | 
 
   const modelName = r.model === 'random' ? 'random-effects' : 'fixed-effect';
   const estimator = r.model === 'random' ? 'DerSimonian-Laird' : 'inverse variance';
-  const measureFull: Record<string, string> = { OR: 'odds ratios (ORs)', RR: 'risk ratios (RRs)', MD: 'mean differences (MDs)', SMD: 'standardized mean differences (SMDs)' };
+  const measureFull: Record<string, string> = { OR: 'odds ratios (ORs)', RR: 'risk ratios (RRs)', HR: 'hazard ratios (HRs)', MD: 'mean differences (MDs)', SMD: 'standardized mean differences (SMDs)' };
   parts.push(`A ${modelName} model with the ${estimator} estimator was used to pool effect sizes across ${k} studies. Results were expressed as ${measureFull[r.measure] || r.measure} with 95% confidence intervals (CIs).`);
 
   parts.push("Statistical heterogeneity was assessed using Cochran's Q test and quantified with the I&sup2; statistic, where I&sup2; values of 25%, 50%, and 75% were interpreted as low, moderate, and high heterogeneity, respectively (Higgins et al., 2003).");
@@ -202,7 +202,7 @@ function narrativeSection(r: MetaAnalysisResult, eggers: EggersTest | null, sg: 
     text += ` Egger's regression test ${eggers.pValue < 0.05 ? 'indicated significant' : 'did not indicate'} funnel plot asymmetry (intercept = ${eggers.intercept.toFixed(2)}, P = ${formatP(eggers.pValue)}).`;
   }
   if (sensitivity.length > 0) {
-    const isRatio = r.measure === 'OR' || r.measure === 'RR';
+    const isRatio = r.measure === 'OR' || r.measure === 'RR' || r.measure === 'HR';
     const influential = sensitivity.filter(s => {
       const dirChanged = isRatio ? (s.effect > 1) !== (r.effect > 1) : (s.effect > 0) !== (r.effect > 0);
       const origSig = isRatio ? (r.ciLower > 1 || r.ciUpper < 1) : (r.ciLower > 0 || r.ciUpper < 0);

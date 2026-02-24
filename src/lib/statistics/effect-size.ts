@@ -1,5 +1,5 @@
 // Effect size calculations for meta-analysis
-import type { BinaryData, ContinuousData, GenericData, EffectMeasure } from '../types';
+import type { BinaryData, ContinuousData, GenericData, HRData, EffectMeasure } from '../types';
 
 /** Computed effect size with SE on log/raw scale */
 export interface EffectSizeResult {
@@ -61,6 +61,14 @@ export function meanDifference(d: ContinuousData): EffectSizeResult {
   return { yi, sei };
 }
 
+/** Log Hazard Ratio and SE (derived from HR and 95% CI) */
+export function logHazardRatio(d: HRData): EffectSizeResult {
+  const yi = Math.log(d.hr);
+  // SE derived from CI: log(upper) - log(lower) = 2 * 1.96 * SE
+  const sei = (Math.log(d.ciUpper) - Math.log(d.ciLower)) / (2 * 1.96);
+  return { yi, sei };
+}
+
 /** Standardized Mean Difference (Hedges' g) and SE */
 export function hedgesG(d: ContinuousData): EffectSizeResult {
   const n1 = d.n1;
@@ -113,6 +121,16 @@ export function isContinuousData(data: unknown): data is ContinuousData {
   );
 }
 
+/** Check if data is HR (hazard ratio with CI) */
+export function isHRData(data: unknown): data is HRData {
+  const d = data as HRData;
+  return (
+    typeof d.hr === 'number' &&
+    typeof d.ciLower === 'number' &&
+    typeof d.ciUpper === 'number'
+  );
+}
+
 /** Check if data is generic (pre-calculated) */
 export function isGenericData(data: unknown): data is GenericData {
   const d = data as GenericData;
@@ -121,11 +139,15 @@ export function isGenericData(data: unknown): data is GenericData {
 
 /** Calculate effect size for a study based on measure type */
 export function calculateEffectSize(
-  data: BinaryData | ContinuousData | GenericData,
+  data: BinaryData | ContinuousData | GenericData | HRData,
   measure: EffectMeasure
 ): EffectSizeResult {
   if (isGenericData(data)) {
     return { yi: data.yi, sei: data.sei };
+  }
+
+  if (isHRData(data) && measure === 'HR') {
+    return logHazardRatio(data);
   }
 
   if (isBinaryData(data)) {
@@ -153,14 +175,14 @@ export function calculateEffectSize(
   throw new Error('Invalid study data format');
 }
 
-/** Convert log-scale effect to original scale (for OR/RR) */
+/** Convert log-scale effect to original scale (for OR/RR/HR) */
 export function toOriginalScale(yi: number, measure: EffectMeasure): number {
-  return measure === 'OR' || measure === 'RR' ? Math.exp(yi) : yi;
+  return measure === 'OR' || measure === 'RR' || measure === 'HR' ? Math.exp(yi) : yi;
 }
 
 /** Is this measure on log scale? */
 export function isLogScale(measure: EffectMeasure): boolean {
-  return measure === 'OR' || measure === 'RR';
+  return measure === 'OR' || measure === 'RR' || measure === 'HR';
 }
 
 /** Calculate CI on original scale */

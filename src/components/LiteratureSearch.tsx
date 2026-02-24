@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useRef } from 'react';
 import { t } from '../lib/i18n';
 import type { Lang } from '../lib/i18n';
-import type { Study, BinaryData, ContinuousData, PICO, ScreeningScore } from '../lib/types';
+import type { Study, PICO, ScreeningScore } from '../lib/types';
 import type { EffectMeasure } from '../lib/types';
 import type { PRISMAData } from './PRISMAFlow';
 import { scorePICORelevance } from '../lib/screening/pico-scorer';
@@ -394,6 +394,7 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
     if (selectedArticles.length === 0) return;
 
     const isBinary = measure === 'OR' || measure === 'RR';
+    const isHRMeasure = measure === 'HR';
 
     const newStudies: Study[] = selectedArticles.map((article) => {
       const firstAuthor = article.authors[0]?.split(' ')[0] || 'Unknown';
@@ -406,7 +407,9 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
       );
       if (exists) return null;
 
-      const data: BinaryData | ContinuousData = isBinary
+      const data = isHRMeasure
+        ? { hr: 0, ciLower: 0, ciUpper: 0 }
+        : isBinary
         ? { events1: 0, total1: 0, events2: 0, total2: 0 }
         : { mean1: 0, sd1: 0, n1: 0, mean2: 0, sd2: 0, n2: 0 };
 

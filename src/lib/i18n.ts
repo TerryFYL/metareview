@@ -451,8 +451,8 @@ const translations = {
   'hero.title.en': 'Meta-Analysis in 5 Minutes',
   'hero.subtitle.zh': '从文献检索到森林图，一站式完成系统综述的核心统计工作。',
   'hero.subtitle.en': 'From literature search to forest plot \u2014 complete the core statistics of your systematic review in one place.',
-  'hero.desc.zh': 'AI 智能文献筛选 \u00b7 PDF 数据提取 \u00b7 OR/RR/MD/SMD 效应量计算 \u00b7 森林图与漏斗图 \u00b7 亚组分析 \u00b7 PRISMA 流程图 \u00b7 一键导出报告。不需要 R、Stata 或 RevMan。',
-  'hero.desc.en': 'AI literature screening \u00b7 PDF data extraction \u00b7 OR/RR/MD/SMD \u00b7 forest & funnel plots \u00b7 subgroup analysis \u00b7 PRISMA flow \u00b7 one-click report export. No R, Stata, or RevMan needed.',
+  'hero.desc.zh': 'AI 智能文献筛选 \u00b7 PDF 数据提取 \u00b7 OR/RR/HR/MD/SMD 效应量计算 \u00b7 森林图与漏斗图 \u00b7 亚组分析 \u00b7 PRISMA 流程图 \u00b7 一键导出报告。不需要 R、Stata 或 RevMan。',
+  'hero.desc.en': 'AI literature screening \u00b7 PDF data extraction \u00b7 OR/RR/HR/MD/SMD \u00b7 forest & funnel plots \u00b7 subgroup analysis \u00b7 PRISMA flow \u00b7 one-click report export. No R, Stata, or RevMan needed.',
   'hero.cta.zh': '立即开始',
   'hero.cta.en': 'Get Started',
   'hero.demo.zh': '查看示例数据',
@@ -467,8 +467,8 @@ const translations = {
   'hero.feat2.desc.en': 'Upload a paper PDF. AI extracts effect sizes, sample sizes, and CIs automatically.',
   'hero.feat3.title.zh': '一键统计分析',
   'hero.feat3.title.en': 'One-Click Analysis',
-  'hero.feat3.desc.zh': '支持 OR/RR/MD/SMD，固定与随机效应模型，亚组分析，敏感性分析，Egger 检验。',
-  'hero.feat3.desc.en': 'OR/RR/MD/SMD, fixed & random effects, subgroup analysis, sensitivity analysis, Egger\'s test.',
+  'hero.feat3.desc.zh': '支持 OR/RR/HR/MD/SMD，固定与随机效应模型，亚组分析，敏感性分析，Egger 检验。',
+  'hero.feat3.desc.en': 'OR/RR/HR/MD/SMD, fixed & random effects, subgroup analysis, sensitivity analysis, Egger\'s test.',
   'hero.feat4.title.zh': '专业可视化',
   'hero.feat4.title.en': 'Professional Charts',
   'hero.feat4.desc.zh': '森林图、漏斗图、PRISMA 流程图，SVG/PNG 导出，结果段落自动生成，一键导出完整报告。',
@@ -485,6 +485,38 @@ const translations = {
   'hero.trust5.en': 'Data Stays in Browser',
   'hero.compare.zh': 'RevMan \u00b7 Covidence \u00b7 R/Stata \u00b7 SPSS 的免费替代方案',
   'hero.compare.en': 'A free alternative to RevMan \u00b7 Covidence \u00b7 R/Stata \u00b7 SPSS',
+
+  // HR Data Table
+  'table.hr.zh': 'HR',
+  'table.hr.en': 'HR',
+  'table.ciLower.zh': 'CI\u4e0b\u9650',
+  'table.ciLower.en': 'CI Lower',
+  'table.ciUpper.zh': 'CI\u4e0a\u9650',
+  'table.ciUpper.en': 'CI Upper',
+
+  // Data validation hints
+  'table.hint.totalGt0.zh': '\u603b\u6570\u5fc5\u987b\u5927\u4e8e 0',
+  'table.hint.totalGt0.en': 'Total must be > 0',
+  'table.hint.eventsLteTotal.zh': '\u4e8b\u4ef6\u6570\u4e0d\u80fd\u8d85\u8fc7\u603b\u6570',
+  'table.hint.eventsLteTotal.en': 'Events cannot exceed total',
+  'table.hint.sdGt0.zh': '\u6807\u51c6\u5dee\u5fc5\u987b\u5927\u4e8e 0',
+  'table.hint.sdGt0.en': 'SD must be > 0',
+  'table.hint.nGt0.zh': '\u6837\u672c\u91cf\u5fc5\u987b\u5927\u4e8e 0',
+  'table.hint.nGt0.en': 'N must be > 0',
+  'table.hint.hrGt0.zh': 'HR \u5fc5\u987b\u5927\u4e8e 0',
+  'table.hint.hrGt0.en': 'HR must be > 0',
+  'table.hint.ciValid.zh': 'CI \u5fc5\u987b\u5927\u4e8e 0 \u4e14\u4e0a\u9650 > \u4e0b\u9650',
+  'table.hint.ciValid.en': 'CI must be > 0 and upper > lower',
+
+  // Navigation hint
+  'table.navHint.zh': 'Tab \u5207\u6362\u5355\u5143\u683c \u00b7 Enter \u4e0b\u4e00\u884c \u00b7 Alt+\u2191\u2193 \u4e0a\u4e0b\u79fb\u52a8',
+  'table.navHint.en': 'Tab: next cell \u00b7 Enter: next row \u00b7 Alt+\u2191\u2193: move up/down',
+
+  // HR validation messages
+  'input.invalidHR.zh': '\u7814\u7a76 "{name}"\uff1aHR \u5fc5\u987b\u5927\u4e8e 0\u3002',
+  'input.invalidHR.en': 'Study "{name}": HR must be greater than 0.',
+  'input.invalidHRCI.zh': '\u7814\u7a76 "{name}"\uff1a\u7f6e\u4fe1\u533a\u95f4\u5fc5\u987b\u5927\u4e8e 0 \u4e14\u4e0a\u9650\u5927\u4e8e\u4e0b\u9650\u3002',
+  'input.invalidHRCI.en': 'Study "{name}": CI must be > 0 and upper > lower.',
 
   // Email Collection
   'email.title.zh': '获取更新通知',

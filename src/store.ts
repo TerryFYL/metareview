@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Study, EffectMeasure, ModelType, PICO, MetaAnalysisResult, EggersTest } from './lib/types';
-import { isBinaryData, isContinuousData, isGenericData } from './lib/statistics/effect-size';
+import { isBinaryData, isContinuousData, isGenericData, isHRData } from './lib/statistics/effect-size';
 import type { Lang } from './lib/i18n';
 import type { PRISMAData } from './components/PRISMAFlow';
 import { emptyPRISMA } from './components/PRISMAFlow';
@@ -14,6 +14,7 @@ function studiesCompatible(studies: Study[], newMeasure: EffectMeasure): boolean
   if (studies.length === 0) return true;
   const first = studies[0].data;
   if (isGenericData(first)) return true;
+  if (isHRData(first)) return newMeasure === 'HR';
   if (isBinaryData(first)) return BINARY_MEASURES.includes(newMeasure);
   if (isContinuousData(first)) return CONTINUOUS_MEASURES.includes(newMeasure);
   return false;

@@ -11,7 +11,9 @@ export {
   hedgesG,
   isBinaryData,
   isContinuousData,
+  isHRData,
   isGenericData,
+  logHazardRatio,
 } from './effect-size';
 export { funnelPlotData, eggersTest } from './publication-bias';
 export {

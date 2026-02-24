@@ -1,7 +1,7 @@
 // MetaReview Core Types
 
 /** Effect size measure types */
-export type EffectMeasure = 'OR' | 'RR' | 'MD' | 'SMD';
+export type EffectMeasure = 'OR' | 'RR' | 'MD' | 'SMD' | 'HR';
 
 /** Meta-analysis model types */
 export type ModelType = 'fixed' | 'random';
@@ -42,13 +42,23 @@ export interface GenericData {
   sei: number;
 }
 
+/** Hazard Ratio data (from Cox regression, reported in papers) */
+export interface HRData {
+  /** Hazard Ratio (original scale) */
+  hr: number;
+  /** Lower 95% CI */
+  ciLower: number;
+  /** Upper 95% CI */
+  ciUpper: number;
+}
+
 /** A single study in the meta-analysis */
 export interface Study {
   id: string;
   name: string;
   year?: number;
   subgroup?: string;
-  data: BinaryData | ContinuousData | GenericData;
+  data: BinaryData | ContinuousData | GenericData | HRData;
 }
 
 /** Computed effect for a single study */

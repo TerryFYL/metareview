@@ -1,15 +1,19 @@
 // CSV Import/Export for MetaReview
-// Handles both binary (OR/RR) and continuous (MD/SMD) data formats.
+// Handles binary (OR/RR), continuous (MD/SMD), and HR data formats.
 
-import type { Study, EffectMeasure, BinaryData, ContinuousData } from './types';
+import type { Study, EffectMeasure, BinaryData, ContinuousData, HRData } from './types';
 
 const isBinary = (m: EffectMeasure) => m === 'OR' || m === 'RR';
+const isHRMeasure = (m: EffectMeasure) => m === 'HR';
 
 /** Generate a CSV string from studies */
 export function exportCSV(studies: Study[], measure: EffectMeasure): string {
   const binary = isBinary(measure);
+  const hr = isHRMeasure(measure);
 
-  const header = binary
+  const header = hr
+    ? 'Study,Year,Subgroup,HR,CI_Lower,CI_Upper'
+    : binary
     ? 'Study,Year,Subgroup,Events_T,Total_T,Events_C,Total_C'
     : 'Study,Year,Subgroup,Mean_T,SD_T,N_T,Mean_C,SD_C,N_C';
 
@@ -18,7 +22,10 @@ export function exportCSV(studies: Study[], measure: EffectMeasure): string {
     const year = s.year ?? '';
     const subgroup = s.subgroup ? (s.subgroup.includes(',') ? `"${s.subgroup}"` : s.subgroup) : '';
 
-    if (binary) {
+    if (hr) {
+      const d = s.data as HRData;
+      return `${name},${year},${subgroup},${d.hr},${d.ciLower},${d.ciUpper}`;
+    } else if (binary) {
       const d = s.data as BinaryData;
       return `${name},${year},${subgroup},${d.events1},${d.total1},${d.events2},${d.total2}`;
     } else {
@@ -63,6 +70,7 @@ function splitCSVLine(line: string): string[] {
 /** Parse a CSV string into Study[] */
 export function importCSV(csvString: string, measure: EffectMeasure): Study[] {
   const binary = isBinary(measure);
+  const hr = isHRMeasure(measure);
   const lines = csvString.split(/\r?\n/).filter((line) => line.trim() !== '');
 
   if (lines.length < 2) return [];
@@ -77,7 +85,14 @@ export function importCSV(csvString: string, measure: EffectMeasure): Study[] {
     const subgroup = fields[2]?.trim() || undefined;
     const id = Math.random().toString(36).slice(2, 9);
 
-    if (binary) {
+    if (hr) {
+      const data: HRData = {
+        hr: parseFloat(fields[3]) || 0,
+        ciLower: parseFloat(fields[4]) || 0,
+        ciUpper: parseFloat(fields[5]) || 0,
+      };
+      return { id, name, year, subgroup, data };
+    } else if (binary) {
       const data: BinaryData = {
         events1: parseFloat(fields[3]) || 0,
         total1: parseFloat(fields[4]) || 0,

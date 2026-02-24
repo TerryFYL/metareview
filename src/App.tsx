@@ -9,11 +9,11 @@ import ResultsSummary from './components/ResultsSummary';
 import SensitivityTable from './components/SensitivityTable';
 import PRISMAFlow from './components/PRISMAFlow';
 import LiteratureSearch from './components/LiteratureSearch';
-import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, isBinaryData, isContinuousData } from './lib/statistics';
+import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, isBinaryData, isContinuousData, isHRData } from './lib/statistics';
 import { generateReportHTML } from './lib/report-export';
 import { t } from './lib/i18n';
 import { trackPageView, trackTabSwitch } from './lib/analytics';
-import type { EffectMeasure, ModelType, Study, BinaryData, ContinuousData, SubgroupAnalysisResult } from './lib/types';
+import type { EffectMeasure, ModelType, Study, BinaryData, ContinuousData, HRData, SubgroupAnalysisResult } from './lib/types';
 
 // Lazy-load extraction component (pdfjs-dist is ~700KB)
 const DataExtraction = lazy(() => import('./components/DataExtraction'));
@@ -21,6 +21,7 @@ const DataExtraction = lazy(() => import('./components/DataExtraction'));
 const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'OR', label: 'Odds Ratio', desc: 'Binary outcomes (2\u00D72 table)' },
   { value: 'RR', label: 'Risk Ratio', desc: 'Binary outcomes (2\u00D72 table)' },
+  { value: 'HR', label: 'Hazard Ratio', desc: 'Time-to-event / survival data' },
   { value: 'MD', label: 'Mean Difference', desc: 'Continuous outcomes (mean, SD, n)' },
   { value: 'SMD', label: "Hedges' g (SMD)", desc: 'Continuous, different scales' },
 ];
@@ -68,6 +69,14 @@ export default function App() {
         }
         if (d.sd1 <= 0 || d.sd2 <= 0) {
           return t('input.invalidContinuousSD', lang).replace('{name}', name);
+        }
+      } else if (isHRData(s.data)) {
+        const d = s.data as HRData;
+        if (d.hr <= 0) {
+          return t('input.invalidHR', lang).replace('{name}', name);
+        }
+        if (d.ciLower <= 0 || d.ciUpper <= 0 || d.ciLower >= d.ciUpper) {
+          return t('input.invalidHRCI', lang).replace('{name}', name);
         }
       }
     }
