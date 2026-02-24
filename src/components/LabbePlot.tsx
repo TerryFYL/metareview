@@ -220,7 +220,7 @@ export default function LabbePlot({ studies, lang, width = 500, height = 500 }: 
         </button>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto', position: 'relative' }}>
+      <div className="labbe-plot-container" style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto', position: 'relative' }}>
         <svg
           ref={svgRef}
           width={width}

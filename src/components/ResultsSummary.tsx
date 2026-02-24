@@ -34,7 +34,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     const newVal = !allOn;
     setSections({
       pico: newVal, prisma: newVal, overall: newVal, interpretation: newVal, studyTable: newVal,
-      eggers: newVal, beggs: newVal, plots: newVal, galbraith: newVal, subgroup: newVal, sensitivity: newVal,
+      eggers: newVal, beggs: newVal, plots: newVal, galbraith: newVal, labbe: newVal, contourFunnel: newVal, subgroup: newVal, sensitivity: newVal,
       metaReg: newVal, baujat: newVal, influence: newVal, loo: newVal, network: newVal, grade: newVal, cumulative: newVal, doseResponse: newVal, methods: newVal, narrative: newVal,
     });
   };
@@ -59,20 +59,26 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     { key: 'overall', labelKey: 'report.section.overall' },
     { key: 'interpretation', labelKey: 'report.section.interpretation' },
     { key: 'studyTable', labelKey: 'report.section.studyTable' },
+    { key: 'plots', labelKey: 'report.section.plots' },
+    // Publication bias group
+    { key: 'contourFunnel', labelKey: 'report.section.contourFunnel' },
     { key: 'eggers', labelKey: 'report.section.eggers' },
     { key: 'beggs', labelKey: 'report.section.beggs' },
-    { key: 'plots', labelKey: 'report.section.plots' },
+    // Heterogeneity diagnostics group
     { key: 'galbraith', labelKey: 'report.section.galbraith' },
-    { key: 'subgroup', labelKey: 'report.section.subgroup' },
-    { key: 'sensitivity', labelKey: 'report.section.sensitivity' },
-    { key: 'metaReg', labelKey: 'report.section.metaRegression' },
     { key: 'baujat', labelKey: 'report.section.baujat' },
     { key: 'influence', labelKey: 'report.section.influence' },
     { key: 'loo', labelKey: 'report.section.loo' },
+    // Additional analyses group
+    { key: 'subgroup', labelKey: 'report.section.subgroup' },
+    { key: 'metaReg', labelKey: 'report.section.metaRegression' },
+    { key: 'labbe', labelKey: 'report.section.labbe' },
     { key: 'network', labelKey: 'report.section.network' },
-    { key: 'grade', labelKey: 'report.section.grade' },
-    { key: 'cumulative', labelKey: 'report.section.cumulative' },
     { key: 'doseResponse', labelKey: 'report.section.doseResponse' },
+    { key: 'cumulative', labelKey: 'report.section.cumulative' },
+    // Evidence & summary
+    { key: 'grade', labelKey: 'report.section.grade' },
+    { key: 'sensitivity', labelKey: 'report.section.sensitivity' },
     { key: 'methods', labelKey: 'report.section.methods' },
     { key: 'narrative', labelKey: 'report.section.narrative' },
   ];

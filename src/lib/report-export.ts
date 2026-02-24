@@ -13,6 +13,7 @@ export interface ReportSections {
   beggs: boolean;
   plots: boolean;
   galbraith: boolean;
+  labbe: boolean;
   subgroup: boolean;
   sensitivity: boolean;
   metaReg: boolean;
@@ -21,6 +22,7 @@ export interface ReportSections {
   loo: boolean;
   network: boolean;
   grade: boolean;
+  contourFunnel: boolean;
   cumulative: boolean;
   doseResponse: boolean;
   methods: boolean;
@@ -37,6 +39,7 @@ export const defaultReportSections: ReportSections = {
   beggs: true,
   plots: true,
   galbraith: true,
+  labbe: true,
   subgroup: true,
   sensitivity: true,
   metaReg: true,
@@ -45,6 +48,7 @@ export const defaultReportSections: ReportSections = {
   loo: true,
   network: true,
   grade: true,
+  contourFunnel: true,
   cumulative: true,
   doseResponse: true,
   methods: true,
@@ -65,6 +69,7 @@ interface ReportData {
   trimFillResult?: TrimAndFillResult | null;
   metaRegression?: MetaRegressionResult | null;
   metaRegSvg?: string | null;
+  labbeSvg?: string | null;
   baujatSvg?: string | null;
   looSvg?: string | null;
   networkSvg?: string | null;
@@ -73,6 +78,7 @@ interface ReportData {
   doseResponseResult?: DoseResponseResult | null;
   doseResponseSvg?: string | null;
   cumulativeResults?: CumulativeResult[];
+  contourFunnelSvg?: string | null;
   cumulativeSvg?: string | null;
   prisma?: PRISMAData;
   sections?: ReportSections;
@@ -595,7 +601,7 @@ function cumulativeSection(results: CumulativeResult[], measure: string): string
 }
 
 export function generateReportHTML(data: ReportData): string {
-  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, forestSvg, funnelSvg, galbraithSvg, baujatSvg, looSvg, networkSvg, trimFillResult, metaRegression, metaRegSvg, influenceDiagnostics: influenceData, gradeAssessment: gradeData, doseResponseResult: drData, doseResponseSvg: drSvg, cumulativeResults: cumResults, cumulativeSvg: cumSvg, prisma } = data;
+  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, forestSvg, funnelSvg, galbraithSvg, labbeSvg, baujatSvg, looSvg, networkSvg, trimFillResult, metaRegression, metaRegSvg, influenceDiagnostics: influenceData, gradeAssessment: gradeData, doseResponseResult: drData, doseResponseSvg: drSvg, contourFunnelSvg: contourSvg, cumulativeResults: cumResults, cumulativeSvg: cumSvg, prisma } = data;
   const s = data.sections || defaultReportSections;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -618,6 +624,7 @@ export function generateReportHTML(data: ReportData): string {
   .data-table .label { color: #555; width: 180px; font-weight: 500; }
   .full-table th { padding: 6px 8px; text-align: left; border-bottom: 2px solid #ccc; font-size: 10pt; color: #444; }
   .full-table td { padding: 5px 8px; border-bottom: 1px solid #eee; }
+  .full-table tr:nth-child(even) { background: #fafafa; }
   .full-table .highlight { background: #fff8e6; }
   .full-table .overall-row { background: #f0f7ff; }
   .sig { color: #c00; font-weight: 600; }
@@ -634,6 +641,8 @@ export function generateReportHTML(data: ReportData): string {
     body { padding: 20px; }
     .no-print { display: none; }
     .figure { page-break-inside: avoid; }
+    table { page-break-inside: avoid; }
+    h2 { page-break-after: avoid; }
   }
 </style>
 </head>
@@ -650,24 +659,36 @@ export function generateReportHTML(data: ReportData): string {
   ${s.overall ? overallSection(result) : ''}
   ${s.interpretation ? interpretationSection(result) : ''}
   ${s.studyTable ? studyTable(result) : ''}
-  ${s.eggers && eggers ? eggersSection(eggers) : ''}
-  ${s.beggs && beggs ? beggsSection(beggs) : ''}
-  ${s.plots && forestSvg ? `<div class="figure">${forestSvg}<p class="figure-caption">Figure 1. Forest plot</p></div>` : ''}
-  ${s.plots && funnelSvg ? `<div class="figure">${funnelSvg}<p class="figure-caption">Figure 2. Funnel plot</p></div>` : ''}
-  ${s.eggers && trimFillResult ? trimFillSection(trimFillResult, result.measure) : ''}
-  ${s.galbraith && galbraithSvg ? `<div class="figure">${galbraithSvg}<p class="figure-caption">Figure 3. Galbraith plot (radial plot)</p></div>` : ''}
-  ${s.metaReg && metaRegression ? metaRegressionSection(metaRegression) : ''}
-  ${s.metaReg && metaRegSvg ? `<div class="figure">${metaRegSvg}<p class="figure-caption">Figure ${[forestSvg, funnelSvg, galbraithSvg].filter(Boolean).length + 1}. Meta-regression scatter plot</p></div>` : ''}
-  ${s.baujat && baujatSvg ? `<div class="figure">${baujatSvg}<p class="figure-caption">Figure ${[forestSvg, funnelSvg, galbraithSvg, metaRegSvg].filter(Boolean).length + 1}. Baujat plot (contribution–influence)</p></div>` : ''}
-  ${s.influence && influenceData && influenceData.length > 0 ? influenceSection(influenceData, result.measure) : ''}
-  ${s.grade && gradeData ? gradeSection(gradeData) : ''}
-  ${s.subgroup && subgroupResult ? subgroupSection(subgroupResult, result.measure) : ''}
-  ${s.loo && looSvg ? `<div class="figure">${looSvg}<p class="figure-caption">Figure ${[forestSvg, funnelSvg, galbraithSvg, metaRegSvg, baujatSvg].filter(Boolean).length + 1}. Leave-one-out cross-validation forest plot</p></div>` : ''}
-  ${s.network && networkSvg ? `<div class="figure">${networkSvg}<p class="figure-caption">Figure ${[forestSvg, funnelSvg, galbraithSvg, metaRegSvg, baujatSvg, looSvg].filter(Boolean).length + 1}. Network meta-analysis graph</p></div>` : ''}
-  ${s.doseResponse && drData ? doseResponseSection(drData) : ''}
-  ${s.doseResponse && drSvg ? `<div class="figure">${drSvg}<p class="figure-caption">Figure ${[forestSvg, funnelSvg, galbraithSvg, metaRegSvg, baujatSvg, looSvg, networkSvg].filter(Boolean).length + 1}. Dose-response plot</p></div>` : ''}
-  ${s.cumulative && cumResults && cumResults.length > 0 ? cumulativeSection(cumResults, result.measure) : ''}
-  ${s.cumulative && cumSvg ? `<div class="figure">${cumSvg}<p class="figure-caption">Figure ${[forestSvg, funnelSvg, galbraithSvg, metaRegSvg, baujatSvg, looSvg, networkSvg, drSvg].filter(Boolean).length + 1}. Cumulative meta-analysis forest plot</p></div>` : ''}
+  ${(() => {
+    let figNum = 0;
+    const figs: string[] = [];
+    // Core result visualization
+    if (s.plots && forestSvg) figs.push(`<div class="figure">${forestSvg}<p class="figure-caption">Figure ${++figNum}. Forest plot</p></div>`);
+    // Publication bias group
+    if (s.plots && funnelSvg) figs.push(`<div class="figure">${funnelSvg}<p class="figure-caption">Figure ${++figNum}. Funnel plot</p></div>`);
+    if (s.contourFunnel && contourSvg) figs.push(`<div class="figure">${contourSvg}<p class="figure-caption">Figure ${++figNum}. Contour-enhanced funnel plot (significance regions: p &lt; 0.01, p &lt; 0.05, p &lt; 0.10)</p></div>`);
+    if (s.eggers && eggers) figs.push(eggersSection(eggers));
+    if (s.beggs && beggs) figs.push(beggsSection(beggs));
+    if (s.eggers && trimFillResult) figs.push(trimFillSection(trimFillResult, result.measure));
+    // Heterogeneity diagnostics group
+    if (s.galbraith && galbraithSvg) figs.push(`<div class="figure">${galbraithSvg}<p class="figure-caption">Figure ${++figNum}. Galbraith plot (radial plot)</p></div>`);
+    if (s.baujat && baujatSvg) figs.push(`<div class="figure">${baujatSvg}<p class="figure-caption">Figure ${++figNum}. Baujat plot (contribution&ndash;influence)</p></div>`);
+    if (s.influence && influenceData && influenceData.length > 0) figs.push(influenceSection(influenceData, result.measure));
+    if (s.loo && looSvg) figs.push(`<div class="figure">${looSvg}<p class="figure-caption">Figure ${++figNum}. Leave-one-out cross-validation forest plot</p></div>`);
+    // Additional analyses group
+    if (s.subgroup && subgroupResult) figs.push(subgroupSection(subgroupResult, result.measure));
+    if (s.metaReg && metaRegression) figs.push(metaRegressionSection(metaRegression));
+    if (s.metaReg && metaRegSvg) figs.push(`<div class="figure">${metaRegSvg}<p class="figure-caption">Figure ${++figNum}. Meta-regression scatter plot</p></div>`);
+    if (s.labbe && labbeSvg) figs.push(`<div class="figure">${labbeSvg}<p class="figure-caption">Figure ${++figNum}. L'Abb&eacute; plot (experimental vs. control event rates)</p></div>`);
+    if (s.network && networkSvg) figs.push(`<div class="figure">${networkSvg}<p class="figure-caption">Figure ${++figNum}. Network meta-analysis graph</p></div>`);
+    if (s.doseResponse && drData) figs.push(doseResponseSection(drData));
+    if (s.doseResponse && drSvg) figs.push(`<div class="figure">${drSvg}<p class="figure-caption">Figure ${++figNum}. Dose-response plot</p></div>`);
+    if (s.cumulative && cumResults && cumResults.length > 0) figs.push(cumulativeSection(cumResults, result.measure));
+    if (s.cumulative && cumSvg) figs.push(`<div class="figure">${cumSvg}<p class="figure-caption">Figure ${++figNum}. Cumulative meta-analysis forest plot</p></div>`);
+    // Evidence quality assessment
+    if (s.grade && gradeData) figs.push(gradeSection(gradeData));
+    return figs.join('\n  ');
+  })()}
   ${s.sensitivity ? sensitivitySection(sensitivityResults, result) : ''}
   ${s.methods ? methodsSection(result, pico, eggers, subgroupResult, sensitivityResults) : ''}
   ${s.narrative ? narrativeSection(result, eggers, subgroupResult, sensitivityResults, beggs, metaRegression, gradeData, drData, trimFillResult, influenceData) : ''}

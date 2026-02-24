@@ -443,15 +443,19 @@ export default function App() {
     const forestEl = document.querySelector('.forest-plot-container svg');
     const funnelEl = document.querySelector('.funnel-plot-container svg');
     const galbraithEl = document.querySelector('.galbraith-plot-container svg');
+    const labbeEl = document.querySelector('.labbe-plot-container svg');
     const baujatEl = document.querySelector('.baujat-plot-container svg');
     const metaRegEl = document.querySelector('.metareg-plot-container svg');
     const looEl = document.querySelector('.loo-plot-container svg');
     const networkEl = document.querySelector('.network-graph-container svg');
     const doseResponseEl = document.querySelector('.dose-response-container svg');
+    const contourFunnelEl = document.querySelector('.contour-funnel-plot-container svg');
     const cumulativeEl = document.querySelector('.cumulative-plot-container svg');
     const forestSvg = forestEl ? serializer.serializeToString(forestEl) : null;
     const funnelSvg = funnelEl ? serializer.serializeToString(funnelEl) : null;
+    const contourFunnelSvg = contourFunnelEl ? serializer.serializeToString(contourFunnelEl) : null;
     const galbraithSvg = galbraithEl ? serializer.serializeToString(galbraithEl) : null;
+    const labbeSvg = labbeEl ? serializer.serializeToString(labbeEl) : null;
     const baujatSvg = baujatEl ? serializer.serializeToString(baujatEl) : null;
     const metaRegSvg = metaRegEl ? serializer.serializeToString(metaRegEl) : null;
     const looSvg = looEl ? serializer.serializeToString(looEl) : null;
@@ -472,6 +476,7 @@ export default function App() {
       forestSvg,
       funnelSvg,
       galbraithSvg,
+      labbeSvg,
       baujatSvg,
       looSvg,
       networkSvg,
@@ -482,6 +487,7 @@ export default function App() {
       gradeAssessment: gradeData,
       doseResponseResult: drData,
       doseResponseSvg,
+      contourFunnelSvg,
       cumulativeResults,
       cumulativeSvg,
       prisma,
@@ -512,6 +518,7 @@ export default function App() {
       gradeAssessment: gradeData,
       doseResponseResult: drData,
       cumulativeResults,
+      studies,
       prisma,
       sections,
     });
@@ -828,6 +835,10 @@ export default function App() {
           </div>
           <div className="funnel-plot-container" style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
             <FunnelPlot result={result} lang={lang} trimFillResult={showTrimFill ? trimFillResult : undefined} showContours={showContours} eggers={showEggersLine ? eggers : undefined} showEggersLine={showEggersLine} />
+          </div>
+          {/* Hidden contour funnel plot for report export (always renders with contours enabled) */}
+          <div className="contour-funnel-plot-container" style={{ position: 'absolute', left: -9999, top: -9999, overflow: 'hidden' }}>
+            <FunnelPlot result={result} lang={lang} showContours={true} />
           </div>
           {/* Trim-and-Fill results */}
           {showTrimFill && trimFillResult && (

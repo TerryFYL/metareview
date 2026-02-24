@@ -339,15 +339,19 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
 
   const doseCol = { key: 'dose', label: t('table.dose', lang), type: 'number' as const, width: '75px' };
 
+  // Column widths optimized per effect measure type:
+  // HR (7 cols) — wider name/CI since fewer data columns
+  // Binary (8 cols) — balanced data columns
+  // Continuous (10 cols) — compact N columns to give space to mean/SD
   const columns = isHR(measure)
     ? [
-        { key: 'name', label: t('table.study', lang), type: 'text' as const, width: '140px' },
+        { key: 'name', label: t('table.study', lang), type: 'text' as const, width: '160px' },
         { key: 'year', label: t('table.year', lang), type: 'number' as const, width: '65px' },
         { key: 'subgroup', label: t('table.subgroup', lang), type: 'text' as const, width: '100px' },
         doseCol,
-        { key: 'hr', label: t('table.hr', lang), type: 'number' as const, width: '85px' },
-        { key: 'ciLower', label: t('table.ciLower', lang), type: 'number' as const, width: '85px' },
-        { key: 'ciUpper', label: t('table.ciUpper', lang), type: 'number' as const, width: '85px' },
+        { key: 'hr', label: t('table.hr', lang), type: 'number' as const, width: '90px' },
+        { key: 'ciLower', label: t('table.ciLower', lang), type: 'number' as const, width: '90px' },
+        { key: 'ciUpper', label: t('table.ciUpper', lang), type: 'number' as const, width: '90px' },
       ]
     : isBinary(measure)
     ? [
@@ -361,16 +365,16 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
         { key: 'total2', label: t('table.totalC', lang), type: 'number' as const, width: '80px' },
       ]
     : [
-        { key: 'name', label: t('table.study', lang), type: 'text' as const, width: '140px' },
-        { key: 'year', label: t('table.year', lang), type: 'number' as const, width: '65px' },
-        { key: 'subgroup', label: t('table.subgroup', lang), type: 'text' as const, width: '100px' },
+        { key: 'name', label: t('table.study', lang), type: 'text' as const, width: '130px' },
+        { key: 'year', label: t('table.year', lang), type: 'number' as const, width: '60px' },
+        { key: 'subgroup', label: t('table.subgroup', lang), type: 'text' as const, width: '90px' },
         doseCol,
-        { key: 'mean1', label: t('table.meanT', lang), type: 'number' as const, width: '80px' },
-        { key: 'sd1', label: t('table.sdT', lang), type: 'number' as const, width: '75px' },
-        { key: 'n1', label: t('table.nT', lang), type: 'number' as const, width: '65px' },
-        { key: 'mean2', label: t('table.meanC', lang), type: 'number' as const, width: '80px' },
-        { key: 'sd2', label: t('table.sdC', lang), type: 'number' as const, width: '75px' },
-        { key: 'n2', label: t('table.nC', lang), type: 'number' as const, width: '65px' },
+        { key: 'mean1', label: t('table.meanT', lang), type: 'number' as const, width: '82px' },
+        { key: 'sd1', label: t('table.sdT', lang), type: 'number' as const, width: '78px' },
+        { key: 'n1', label: t('table.nT', lang), type: 'number' as const, width: '58px' },
+        { key: 'mean2', label: t('table.meanC', lang), type: 'number' as const, width: '82px' },
+        { key: 'sd2', label: t('table.sdC', lang), type: 'number' as const, width: '78px' },
+        { key: 'n2', label: t('table.nC', lang), type: 'number' as const, width: '58px' },
       ];
 
   const getValue = (study: Study, key: string): string => {

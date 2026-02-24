@@ -1215,6 +1215,10 @@ const translations = {
   'report.section.doseResponse.en': 'Dose-Response Analysis',
   'report.section.cumulative.zh': '累积 Meta 分析',
   'report.section.cumulative.en': 'Cumulative Meta-Analysis',
+  'report.section.labbe.zh': "L'Abbé 图",
+  'report.section.labbe.en': "L'Abbé Plot",
+  'report.section.contourFunnel.zh': 'Contour-Enhanced 漏斗图',
+  'report.section.contourFunnel.en': 'Contour-Enhanced Funnel Plot',
 
   // Prediction Interval
   'results.predictionInterval.zh': '预测区间',

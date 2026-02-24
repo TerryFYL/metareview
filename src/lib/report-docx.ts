@@ -14,7 +14,7 @@ import {
   ShadingType,
   convertInchesToTwip,
 } from 'docx';
-import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult, CumulativeResult } from './types';
+import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult, CumulativeResult, Study } from './types';
 import type { PRISMAData } from '../components/PRISMAFlow';
 import type { ReportSections } from './report-export';
 import { defaultReportSections } from './report-export';
@@ -34,6 +34,7 @@ interface ReportData {
   gradeAssessment?: GradeAssessment | null;
   doseResponseResult?: DoseResponseResult | null;
   cumulativeResults?: CumulativeResult[];
+  studies?: Study[];
   prisma?: PRISMAData;
   sections?: ReportSections;
 }
@@ -487,7 +488,7 @@ function doseResponseResultTable(dr: DoseResponseResult): Table {
 }
 
 export async function generateReportDOCX(data: ReportData): Promise<Blob> {
-  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, influenceDiagnostics: influenceData, gradeAssessment: gradeData, doseResponseResult: drData, cumulativeResults: cumResults, prisma } = data;
+  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, influenceDiagnostics: influenceData, gradeAssessment: gradeData, doseResponseResult: drData, cumulativeResults: cumResults, studies: rawStudies, prisma } = data;
   const s = data.sections || defaultReportSections;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -567,6 +568,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
     );
   }
 
+  // === Publication Bias Group ===
   // Egger's Test
   if (s.eggers && eggers) {
     children.push(
@@ -626,6 +628,55 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
     );
   }
 
+  // Contour-Enhanced Funnel Plot (text summary)
+  if (s.contourFunnel && result.studies.length >= 3) {
+    // Classify studies by significance regions based on their z-scores
+    const studiesWithZ = result.studies.map(s => ({
+      name: s.name,
+      z: Math.abs(s.yi / s.sei),
+    }));
+    const sigP001 = studiesWithZ.filter(s => s.z >= 2.576).length;
+    const sigP005 = studiesWithZ.filter(s => s.z >= 1.96 && s.z < 2.576).length;
+    const sigP010 = studiesWithZ.filter(s => s.z >= 1.645 && s.z < 1.96).length;
+    const nonSig = studiesWithZ.filter(s => s.z < 1.645).length;
+    const total = studiesWithZ.length;
+    const sigTotal = sigP001 + sigP005 + sigP010;
+    children.push(
+      new Paragraph({ text: 'Contour-Enhanced Funnel Plot', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      new Paragraph({
+        children: [new TextRun({
+          text: `Of ${total} studies: ${sigP001} in p < 0.01 region, ${sigP005} in p < 0.05 region, ${sigP010} in p < 0.10 region, and ${nonSig} in non-significant region (p \u2265 0.10).`,
+          size: 20,
+          font: 'Times New Roman',
+        })],
+      }),
+      new Paragraph({
+        children: [new TextRun({
+          text: sigTotal > total * 0.7
+            ? 'The majority of studies fall in statistically significant regions, which could indicate publication bias favouring significant results (Peters et al., 2008).'
+            : nonSig > total * 0.5
+            ? 'Most studies fall in non-significant regions, suggesting limited evidence of publication bias related to significance-seeking.'
+            : 'Studies are distributed across significance regions, showing a mixed pattern without strong evidence of significance-driven publication bias.',
+          size: 20,
+          color: sigTotal > total * 0.7 ? 'CC6600' : '228B22',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 50 },
+      }),
+      new Paragraph({
+        children: [new TextRun({
+          text: 'The contour-enhanced funnel plot overlays significance contour regions (p < 0.01, p < 0.05, p < 0.10) on the standard funnel plot. If asymmetry arises primarily in areas of statistical significance, this suggests publication bias rather than other causes of funnel plot asymmetry such as between-study heterogeneity.',
+          italics: true,
+          size: 18,
+          color: '666666',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 100 },
+      }),
+    );
+  }
+
+  // === Heterogeneity Diagnostics Group ===
   // Galbraith Plot (text summary since DOCX can't embed SVG)
   if (s.galbraith) {
     const { galbraithPlotData } = await import('./statistics/publication-bias');
@@ -648,26 +699,6 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
           italics: true,
           size: 18,
           color: '666666',
-          font: 'Times New Roman',
-        })],
-        spacing: { before: 100 },
-      }),
-    );
-  }
-
-  // Meta-Regression
-  if (s.metaReg && metaRegression) {
-    children.push(
-      new Paragraph({ text: 'Meta-Regression Analysis', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
-      metaRegressionTable(metaRegression),
-      new Paragraph({
-        children: [new TextRun({
-          text: metaRegression.pValue < 0.05
-            ? 'The covariate significantly moderates the effect size (P < 0.05).'
-            : 'The covariate does not significantly moderate the effect size (P \u2265 0.05).',
-          italics: true,
-          size: 20,
-          color: metaRegression.pValue < 0.05 ? 'CC0000' : '228B22',
           font: 'Times New Roman',
         })],
         spacing: { before: 100 },
@@ -760,32 +791,148 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
     }
   }
 
-  // GRADE Evidence Quality Assessment
-  if (s.grade && gradeData) {
-    const levelLabels: Record<string, string> = { high: 'HIGH', moderate: 'MODERATE', low: 'LOW', very_low: 'VERY LOW' };
+  // Leave-One-Out Forest Plot (text summary)
+  if (s.loo && sensitivityResults.length > 0) {
+    const isRatio = result.measure === 'OR' || result.measure === 'RR' || result.measure === 'HR';
+    const effects = sensitivityResults.map(r => r.effect);
+    const minEffect = Math.min(...effects);
+    const maxEffect = Math.max(...effects);
+    const fmt = (v: number) => isRatio ? v.toFixed(2) : v.toFixed(3);
+    const influential = sensitivityResults.filter(s => {
+      const dirChanged = isRatio ? (s.effect > 1) !== (result.effect > 1) : (s.effect > 0) !== (result.effect > 0);
+      const origSig = isRatio ? (result.ciLower > 1 || result.ciUpper < 1) : (result.ciLower > 0 || result.ciUpper < 0);
+      const newSig = isRatio ? (s.ciLower > 1 || s.ciUpper < 1) : (s.ciLower > 0 || s.ciUpper < 0);
+      return dirChanged || origSig !== newSig;
+    });
     children.push(
-      new Paragraph({ text: 'GRADE Evidence Quality Assessment', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      new Paragraph({ text: 'Leave-One-Out Cross-Validation', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
       new Paragraph({
         children: [new TextRun({
-          text: `Overall Quality: ${levelLabels[gradeData.overall]} (Score: ${gradeData.score}/4)`,
-          bold: true,
-          size: 24,
+          text: `The leave-one-out analysis shows the pooled ${result.measure} ranged from ${fmt(minEffect)} to ${fmt(maxEffect)} across ${sensitivityResults.length} iterations (full model: ${fmt(result.effect)}).${influential.length > 0 ? ` Removing ${influential.map(s => s.omittedStudy).join(', ')} altered the direction or significance of the pooled estimate.` : ' No single study substantially altered the overall result.'}`,
+          size: 20,
           font: 'Times New Roman',
         })],
-        spacing: { after: 200 },
       }),
-      gradeAssessmentTable(gradeData),
+    );
+  }
+
+  // === Additional Analyses Group ===
+  // Subgroup Analysis
+  if (s.subgroup && subgroupResult && subgroupResult.subgroups.length > 1) {
+    children.push(
+      new Paragraph({ text: 'Subgroup Analysis', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      subgroupTable(subgroupResult, result.measure),
       new Paragraph({
         children: [new TextRun({
-          text: 'Note: Risk of bias and indirectness require manual assessment. Auto-assessed factors can be overridden in the GRADE tab.',
-          italics: true,
-          size: 18,
-          color: '666666',
+          text: `Test for Subgroup Differences: Q = ${subgroupResult.test.Q.toFixed(2)}, df = ${subgroupResult.test.df}, p = ${formatP(subgroupResult.test.pValue)}. ${subgroupResult.test.pValue < 0.05 ? 'Significant difference between subgroups.' : 'No significant difference between subgroups.'}`,
+          bold: subgroupResult.test.pValue < 0.05,
+          size: 20,
           font: 'Times New Roman',
         })],
         spacing: { before: 100 },
       }),
     );
+  }
+
+  // Meta-Regression
+  if (s.metaReg && metaRegression) {
+    children.push(
+      new Paragraph({ text: 'Meta-Regression Analysis', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      metaRegressionTable(metaRegression),
+      new Paragraph({
+        children: [new TextRun({
+          text: metaRegression.pValue < 0.05
+            ? 'The covariate significantly moderates the effect size (P < 0.05).'
+            : 'The covariate does not significantly moderate the effect size (P \u2265 0.05).',
+          italics: true,
+          size: 20,
+          color: metaRegression.pValue < 0.05 ? 'CC0000' : '228B22',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 100 },
+      }),
+    );
+  }
+
+  // L'Abbé Plot (text summary)
+  if (s.labbe && rawStudies && rawStudies.length > 0) {
+    const { labbeePlotData } = await import('./statistics/publication-bias');
+    const { isBinaryData } = await import('./statistics/effect-size');
+    const binaryEntries = rawStudies
+      .filter(st => isBinaryData(st.data))
+      .map(st => {
+        const d = st.data as { events1: number; total1: number; events2: number; total2: number };
+        return { name: st.name, events1: d.events1, total1: d.total1, events2: d.events2, total2: d.total2 };
+      });
+    if (binaryEntries.length > 0) {
+      const lData = labbeePlotData(binaryEntries);
+      if (lData && lData.points.length > 0) {
+        const total = lData.points.length;
+        const aboveDiag = lData.favoursControl;
+        const belowDiag = lData.favoursTreatment;
+        const onDiag = total - aboveDiag - belowDiag;
+        children.push(
+          new Paragraph({ text: "L'Abb\u00e9 Plot", heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+          new Paragraph({
+            children: [new TextRun({
+              text: `Of ${total} studies, ${belowDiag} ${belowDiag === 1 ? 'favours' : 'favour'} the experimental group (below diagonal), ${aboveDiag} ${aboveDiag === 1 ? 'favours' : 'favour'} the control group (above diagonal)${onDiag > 0 ? `, and ${onDiag} ${onDiag === 1 ? 'lies' : 'lie'} on the line of no effect` : ''}.`,
+              size: 20,
+              color: belowDiag > aboveDiag ? '228B22' : aboveDiag > belowDiag ? 'CC6600' : '333333',
+              font: 'Times New Roman',
+            })],
+          }),
+          new Paragraph({
+            children: [new TextRun({
+              text: "The L'Abb\u00e9 plot displays experimental group event rates (y-axis) against control group event rates (x-axis), with bubble sizes proportional to sample size. Studies below the diagonal line of equality indicate lower event rates in the experimental group (i.e., treatment benefit for harmful outcomes). The pattern of scatter around the diagonal provides a visual assessment of treatment effect consistency across studies.",
+              italics: true,
+              size: 18,
+              color: '666666',
+              font: 'Times New Roman',
+            })],
+            spacing: { before: 100 },
+          }),
+        );
+      }
+    }
+  }
+
+  // Network Graph (text summary)
+  if (s.network && result.studies.length >= 3) {
+    const subgroups = new Set<string>();
+    const comparisons = new Map<string, number>();
+    for (const study of result.studies) {
+      // Try to extract subgroup as intervention name
+      const parts = study.name.split(/\s+vs\.?\s+/i);
+      if (parts.length === 2) {
+        subgroups.add(parts[0].trim());
+        subgroups.add(parts[1].trim());
+        const key = [parts[0].trim(), parts[1].trim()].sort().join(' vs ');
+        comparisons.set(key, (comparisons.get(key) || 0) + 1);
+      }
+    }
+    if (subgroups.size > 0) {
+      children.push(
+        new Paragraph({ text: 'Network Meta-Analysis Graph', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+        new Paragraph({
+          children: [new TextRun({
+            text: `The network graph includes ${subgroups.size} interventions and ${comparisons.size} direct comparisons from ${result.studies.length} studies. Interventions: ${[...subgroups].join(', ')}.`,
+            size: 20,
+            font: 'Times New Roman',
+          })],
+        }),
+      );
+    } else {
+      children.push(
+        new Paragraph({ text: 'Network Meta-Analysis Graph', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+        new Paragraph({
+          children: [new TextRun({
+            text: `The network graph visualizes the relationships among ${result.studies.length} studies included in the meta-analysis. For the graphical network representation, see the HTML report.`,
+            size: 20,
+            font: 'Times New Roman',
+          })],
+        }),
+      );
+    }
   }
 
   // Dose-Response Analysis
@@ -879,80 +1026,28 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
     );
   }
 
-  // Leave-One-Out Forest Plot (text summary)
-  if (s.loo && sensitivityResults.length > 0) {
-    const isRatio = result.measure === 'OR' || result.measure === 'RR' || result.measure === 'HR';
-    const effects = sensitivityResults.map(r => r.effect);
-    const minEffect = Math.min(...effects);
-    const maxEffect = Math.max(...effects);
-    const fmt = (v: number) => isRatio ? v.toFixed(2) : v.toFixed(3);
-    const influential = sensitivityResults.filter(s => {
-      const dirChanged = isRatio ? (s.effect > 1) !== (result.effect > 1) : (s.effect > 0) !== (result.effect > 0);
-      const origSig = isRatio ? (result.ciLower > 1 || result.ciUpper < 1) : (result.ciLower > 0 || result.ciUpper < 0);
-      const newSig = isRatio ? (s.ciLower > 1 || s.ciUpper < 1) : (s.ciLower > 0 || s.ciUpper < 0);
-      return dirChanged || origSig !== newSig;
-    });
+  // === Evidence Quality Assessment ===
+  // GRADE Evidence Quality Assessment
+  if (s.grade && gradeData) {
+    const levelLabels: Record<string, string> = { high: 'HIGH', moderate: 'MODERATE', low: 'LOW', very_low: 'VERY LOW' };
     children.push(
-      new Paragraph({ text: 'Leave-One-Out Cross-Validation', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      new Paragraph({ text: 'GRADE Evidence Quality Assessment', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
       new Paragraph({
         children: [new TextRun({
-          text: `The leave-one-out analysis shows the pooled ${result.measure} ranged from ${fmt(minEffect)} to ${fmt(maxEffect)} across ${sensitivityResults.length} iterations (full model: ${fmt(result.effect)}).${influential.length > 0 ? ` Removing ${influential.map(s => s.omittedStudy).join(', ')} altered the direction or significance of the pooled estimate.` : ' No single study substantially altered the overall result.'}`,
-          size: 20,
+          text: `Overall Quality: ${levelLabels[gradeData.overall]} (Score: ${gradeData.score}/4)`,
+          bold: true,
+          size: 24,
           font: 'Times New Roman',
         })],
+        spacing: { after: 200 },
       }),
-    );
-  }
-
-  // Network Graph (text summary)
-  if (s.network && result.studies.length >= 3) {
-    const subgroups = new Set<string>();
-    const comparisons = new Map<string, number>();
-    for (const study of result.studies) {
-      // Try to extract subgroup as intervention name
-      const parts = study.name.split(/\s+vs\.?\s+/i);
-      if (parts.length === 2) {
-        subgroups.add(parts[0].trim());
-        subgroups.add(parts[1].trim());
-        const key = [parts[0].trim(), parts[1].trim()].sort().join(' vs ');
-        comparisons.set(key, (comparisons.get(key) || 0) + 1);
-      }
-    }
-    if (subgroups.size > 0) {
-      children.push(
-        new Paragraph({ text: 'Network Meta-Analysis Graph', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
-        new Paragraph({
-          children: [new TextRun({
-            text: `The network graph includes ${subgroups.size} interventions and ${comparisons.size} direct comparisons from ${result.studies.length} studies. Interventions: ${[...subgroups].join(', ')}.`,
-            size: 20,
-            font: 'Times New Roman',
-          })],
-        }),
-      );
-    } else {
-      children.push(
-        new Paragraph({ text: 'Network Meta-Analysis Graph', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
-        new Paragraph({
-          children: [new TextRun({
-            text: `The network graph visualizes the relationships among ${result.studies.length} studies included in the meta-analysis. For the graphical network representation, see the HTML report.`,
-            size: 20,
-            font: 'Times New Roman',
-          })],
-        }),
-      );
-    }
-  }
-
-  // Subgroup Analysis
-  if (s.subgroup && subgroupResult && subgroupResult.subgroups.length > 1) {
-    children.push(
-      new Paragraph({ text: 'Subgroup Analysis', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
-      subgroupTable(subgroupResult, result.measure),
+      gradeAssessmentTable(gradeData),
       new Paragraph({
         children: [new TextRun({
-          text: `Test for Subgroup Differences: Q = ${subgroupResult.test.Q.toFixed(2)}, df = ${subgroupResult.test.df}, p = ${formatP(subgroupResult.test.pValue)}. ${subgroupResult.test.pValue < 0.05 ? 'Significant difference between subgroups.' : 'No significant difference between subgroups.'}`,
-          bold: subgroupResult.test.pValue < 0.05,
-          size: 20,
+          text: 'Note: Risk of bias and indirectness require manual assessment. Auto-assessed factors can be overridden in the GRADE tab.',
+          italics: true,
+          size: 18,
+          color: '666666',
           font: 'Times New Roman',
         })],
         spacing: { before: 100 },
