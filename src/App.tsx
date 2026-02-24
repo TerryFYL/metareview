@@ -6,9 +6,10 @@ import ForestPlot from './components/ForestPlot';
 import FunnelPlot from './components/FunnelPlot';
 import ResultsSummary from './components/ResultsSummary';
 import SensitivityTable from './components/SensitivityTable';
-import { metaAnalysis, eggersTest, sensitivityAnalysis } from './lib/statistics';
+import PRISMAFlow from './components/PRISMAFlow';
+import { metaAnalysis, eggersTest, sensitivityAnalysis, isBinaryData, isContinuousData } from './lib/statistics';
 import { t } from './lib/i18n';
-import type { EffectMeasure, ModelType } from './lib/types';
+import type { EffectMeasure, ModelType, Study, BinaryData, ContinuousData } from './lib/types';
 
 const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'OR', label: 'Odds Ratio', desc: 'Binary outcomes (2\u00D72 table)' },
@@ -17,12 +18,12 @@ const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'SMD', label: "Hedges' g (SMD)", desc: 'Continuous, different scales' },
 ];
 
-const TAB_KEYS = ['input', 'results', 'forest', 'funnel', 'sensitivity'] as const;
+const TAB_KEYS = ['input', 'results', 'forest', 'funnel', 'sensitivity', 'prisma'] as const;
 
 export default function App() {
   const {
-    title, pico, measure, model, studies,
-    setTitle, setPICO, setMeasure, setModel, setStudies, reset, loadDemo,
+    title, pico, measure, model, studies, prisma,
+    setTitle, setPICO, setMeasure, setModel, setStudies, setPRISMA, reset, loadDemo,
   } = useProjectStore();
 
   const {
@@ -30,11 +31,44 @@ export default function App() {
     setLang, setResult, setEggers, setError, setActiveTab,
   } = useUIStore();
 
+  const validateStudies = useCallback((studyList: Study[]): string | null => {
+    for (let i = 0; i < studyList.length; i++) {
+      const s = studyList[i];
+      const name = s.name || `#${i + 1}`;
+      if (!s.name.trim()) {
+        return t('input.studyNameMissing', lang).replace('{index}', String(i + 1));
+      }
+      if (isBinaryData(s.data)) {
+        const d = s.data as BinaryData;
+        if (d.total1 <= 0 || d.total2 <= 0) {
+          return t('input.invalidBinaryTotal', lang).replace('{name}', name);
+        }
+        if (d.events1 < 0 || d.events2 < 0 || d.events1 > d.total1 || d.events2 > d.total2) {
+          return t('input.invalidBinaryEvents', lang).replace('{name}', name);
+        }
+      } else if (isContinuousData(s.data)) {
+        const d = s.data as ContinuousData;
+        if (d.n1 <= 0 || d.n2 <= 0) {
+          return t('input.invalidContinuousN', lang).replace('{name}', name);
+        }
+        if (d.sd1 <= 0 || d.sd2 <= 0) {
+          return t('input.invalidContinuousSD', lang).replace('{name}', name);
+        }
+      }
+    }
+    return null;
+  }, [lang]);
+
   const runAnalysis = useCallback(() => {
     setError(null);
     try {
       if (studies.length < 2) {
         setError(t('input.minStudies', lang));
+        return;
+      }
+      const validationError = validateStudies(studies);
+      if (validationError) {
+        setError(validationError);
         return;
       }
       const res = metaAnalysis(studies, measure, model);
@@ -46,7 +80,7 @@ export default function App() {
       setResult(null);
       setEggers(null);
     }
-  }, [studies, measure, model, lang, setResult, setEggers, setError, setActiveTab]);
+  }, [studies, measure, model, lang, validateStudies, setResult, setEggers, setError, setActiveTab]);
 
   const sensitivityResults = useMemo(() => {
     if (!result || studies.length < 3) return [];
@@ -100,7 +134,8 @@ export default function App() {
       <nav style={{ display: 'flex', gap: 0, borderBottom: '2px solid #e5e7eb', marginBottom: 20, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
         {TAB_KEYS.map((tab) => {
           const isSensitivity = tab === 'sensitivity';
-          const disabled = tab !== 'input' && !result || (isSensitivity && studies.length < 3);
+          const isPrisma = tab === 'prisma';
+          const disabled = !isPrisma && (tab !== 'input' && !result || (isSensitivity && studies.length < 3));
           return (
             <button
               key={tab}
@@ -228,6 +263,11 @@ export default function App() {
       {/* Sensitivity Analysis Tab */}
       {activeTab === 'sensitivity' && result && sensitivityResults.length > 0 && (
         <SensitivityTable results={sensitivityResults} fullResult={result} lang={lang} />
+      )}
+
+      {/* PRISMA Flow Tab */}
+      {activeTab === 'prisma' && (
+        <PRISMAFlow data={prisma} onChange={setPRISMA} lang={lang} />
       )}
 
       {/* Footer */}

@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Study, EffectMeasure, ModelType, PICO, MetaAnalysisResult, EggersTest } from './lib/types';
 import type { Lang } from './lib/i18n';
+import type { PRISMAData } from './components/PRISMAFlow';
+import { emptyPRISMA } from './components/PRISMAFlow';
 
 interface ProjectStore {
   // Project data (persisted)
@@ -10,6 +12,7 @@ interface ProjectStore {
   measure: EffectMeasure;
   model: ModelType;
   studies: Study[];
+  prisma: PRISMAData;
 
   // Actions
   setTitle: (title: string) => void;
@@ -17,6 +20,7 @@ interface ProjectStore {
   setMeasure: (measure: EffectMeasure) => void;
   setModel: (model: ModelType) => void;
   setStudies: (studies: Study[]) => void;
+  setPRISMA: (prisma: PRISMAData) => void;
   reset: () => void;
   loadDemo: () => void;
 }
@@ -36,12 +40,14 @@ export const useProjectStore = create<ProjectStore>()(
       measure: 'OR' as EffectMeasure,
       model: 'random' as ModelType,
       studies: [],
+      prisma: emptyPRISMA,
 
       setTitle: (title) => set({ title }),
       setPICO: (pico) => set({ pico }),
       setMeasure: (measure) => set({ measure, studies: [] }),
       setModel: (model) => set({ model }),
       setStudies: (studies) => set({ studies }),
+      setPRISMA: (prisma) => set({ prisma }),
       reset: () =>
         set({
           title: '',
@@ -49,6 +55,7 @@ export const useProjectStore = create<ProjectStore>()(
           measure: 'OR',
           model: 'random',
           studies: [],
+          prisma: emptyPRISMA,
         }),
       loadDemo: () =>
         set({
@@ -117,7 +124,7 @@ interface UIStore {
   result: MetaAnalysisResult | null;
   eggers: EggersTest | null;
   error: string | null;
-  activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'sensitivity';
+  activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'sensitivity' | 'prisma';
   setLang: (lang: Lang) => void;
   setResult: (result: MetaAnalysisResult | null) => void;
   setEggers: (eggers: EggersTest | null) => void;
