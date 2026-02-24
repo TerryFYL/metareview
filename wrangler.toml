@@ -9,3 +9,8 @@ binding = "AI"
 [[kv_namespaces]]
 binding = "ANALYTICS"
 id = "df6a655d47264d55990dab25bd827a47"
+
+# KV namespace for email collection
+[[kv_namespaces]]
+binding = "EMAILS"
+id = "e62004326fdd4f3dad927a487d9a3d57"

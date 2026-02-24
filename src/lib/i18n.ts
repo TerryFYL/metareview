@@ -482,6 +482,28 @@ const translations = {
   'hero.compare.zh': 'RevMan \u00b7 Covidence \u00b7 R/Stata \u00b7 SPSS 的免费替代方案',
   'hero.compare.en': 'A free alternative to RevMan \u00b7 Covidence \u00b7 R/Stata \u00b7 SPSS',
 
+  // Email Collection
+  'email.title.zh': '获取更新通知',
+  'email.title.en': 'Get Updates',
+  'email.desc.zh': '留下邮箱，第一时间获取新功能通知和 Meta 分析技巧。',
+  'email.desc.en': 'Leave your email to get notified about new features and meta-analysis tips.',
+  'email.placeholder.zh': '输入邮箱地址',
+  'email.placeholder.en': 'Enter your email',
+  'email.submit.zh': '订阅',
+  'email.submit.en': 'Subscribe',
+  'email.submitting.zh': '提交中...',
+  'email.submitting.en': 'Submitting...',
+  'email.success.zh': '订阅成功！我们会在有新功能时通知你。',
+  'email.success.en': 'Subscribed! We\'ll notify you when new features launch.',
+  'email.already.zh': '你已经订阅过了，无需重复提交。',
+  'email.already.en': 'You\'re already subscribed!',
+  'email.invalid.zh': '请输入有效的邮箱地址。',
+  'email.invalid.en': 'Please enter a valid email address.',
+  'email.error.zh': '提交失败，请稍后重试。',
+  'email.error.en': 'Submission failed. Please try again later.',
+  'email.privacy.zh': '我们不会发送垃圾邮件，随时可退订。',
+  'email.privacy.en': 'No spam, unsubscribe anytime.',
+
   // Footer
   'footer.text.zh': 'MetaReview — 开源免费的医学研究 Meta 分析平台',
   'footer.text.en': 'MetaReview — Open-source meta-analysis platform for medical research',

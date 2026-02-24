@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { t } from '../lib/i18n';
 import type { Lang } from '../lib/i18n';
 import { trackEvent } from '../lib/analytics';
@@ -9,7 +10,12 @@ interface HeroSectionProps {
   onSwitchLang: () => void;
 }
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function HeroSection({ lang, onGetStarted, onLoadDemo, onSwitchLang }: HeroSectionProps) {
+  const [email, setEmail] = useState('');
+  const [emailState, setEmailState] = useState<'idle' | 'submitting' | 'success' | 'already' | 'error' | 'invalid'>('idle');
+
   const handleStart = () => {
     trackEvent('hero_cta_start');
     onGetStarted();
@@ -17,6 +23,31 @@ export default function HeroSection({ lang, onGetStarted, onLoadDemo, onSwitchLa
   const handleDemo = () => {
     trackEvent('hero_cta_demo');
     onLoadDemo();
+  };
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!EMAIL_REGEX.test(email)) {
+      setEmailState('invalid');
+      return;
+    }
+    setEmailState('submitting');
+    try {
+      const res = await fetch('/api/emails/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'hero', lang }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setEmailState(data.already ? 'already' : 'success');
+        trackEvent('email_subscribe', { source: 'hero' });
+      } else {
+        setEmailState(data.error === 'invalid_email' ? 'invalid' : 'error');
+      }
+    } catch {
+      setEmailState('error');
+    }
   };
 
   return (
@@ -92,6 +123,45 @@ export default function HeroSection({ lang, onGetStarted, onLoadDemo, onSwitchLa
         </button>
       </section>
 
+      {/* Email Collection */}
+      <section style={{ maxWidth: 560, margin: '0 auto', padding: '0 16px 64px', textAlign: 'center' }}>
+        <div style={{ background: '#f0f9ff', borderRadius: 16, padding: '32px 24px', border: '1px solid #bfdbfe' }}>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111827', margin: '0 0 8px' }}>
+            {t('email.title', lang)}
+          </h3>
+          <p style={{ fontSize: 14, color: '#4b5563', margin: '0 0 20px', lineHeight: 1.5 }}>
+            {t('email.desc', lang)}
+          </p>
+          {emailState === 'success' || emailState === 'already' ? (
+            <div style={{ padding: '12px 16px', background: '#ecfdf5', borderRadius: 8, color: '#065f46', fontSize: 14, fontWeight: 500 }}>
+              {t(emailState === 'already' ? 'email.already' : 'email.success', lang)}
+            </div>
+          ) : (
+            <form onSubmit={handleEmailSubmit} style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); if (emailState === 'invalid' || emailState === 'error') setEmailState('idle'); }}
+                placeholder={t('email.placeholder', lang)}
+                style={emailInputStyle}
+              />
+              <button type="submit" disabled={emailState === 'submitting'} style={{ ...primaryBtnStyle, padding: '10px 24px', opacity: emailState === 'submitting' ? 0.7 : 1 }}>
+                {t(emailState === 'submitting' ? 'email.submitting' : 'email.submit', lang)}
+              </button>
+            </form>
+          )}
+          {emailState === 'invalid' && (
+            <p style={{ fontSize: 13, color: '#dc2626', margin: '8px 0 0' }}>{t('email.invalid', lang)}</p>
+          )}
+          {emailState === 'error' && (
+            <p style={{ fontSize: 13, color: '#dc2626', margin: '8px 0 0' }}>{t('email.error', lang)}</p>
+          )}
+          <p style={{ fontSize: 12, color: '#9ca3af', margin: '12px 0 0' }}>
+            {t('email.privacy', lang)}
+          </p>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer style={{ padding: '16px 0', borderTop: '1px solid #f3f4f6', textAlign: 'center' }}>
         <a href="https://github.com/TerryFYL/metareview" target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: '#9ca3af', textDecoration: 'none' }}>
@@ -149,6 +219,16 @@ const langBtnStyle: React.CSSProperties = {
   fontSize: 12,
   fontWeight: 600,
   cursor: 'pointer',
+};
+
+const emailInputStyle: React.CSSProperties = {
+  padding: '10px 14px',
+  border: '1px solid #d1d5db',
+  borderRadius: 8,
+  fontSize: 14,
+  width: 260,
+  maxWidth: '100%',
+  outline: 'none',
 };
 
 const featureCardStyle: React.CSSProperties = {
