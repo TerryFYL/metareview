@@ -38,36 +38,65 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#1e40af" />
 
-    <!-- Structured Data: SoftwareApplication -->
+    <!-- Structured Data: WebApplication -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
+      "@type": "WebApplication",
       "name": "MetaReview",
+      "alternateName": "MetaReview Meta分析工具",
       "applicationCategory": "HealthApplication",
-      "operatingSystem": "Web Browser",
+      "applicationSubCategory": "Meta-Analysis Tool",
+      "operatingSystem": "Any (Web Browser)",
+      "browserRequirements": "Requires JavaScript. Works in Chrome, Firefox, Safari, Edge.",
       "offers": {
         "@type": "Offer",
         "price": "0",
-        "priceCurrency": "USD"
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
       },
-      "description": "Free online meta-analysis tool with AI-powered literature screening. Generate forest plots, funnel plots, search PubMed, and compute pooled effect sizes in your browser.",
+      "description": "Free online meta-analysis tool with AI-powered literature screening. Generate forest plots, funnel plots, search PubMed, and compute pooled effect sizes in your browser. Supports OR, RR, HR, MD, SMD. Chinese-English bilingual.",
       "url": "https://metareview-8c1.pages.dev",
+      "inLanguage": ["zh-CN", "en"],
+      "isAccessibleForFree": true,
+      "creator": {
+        "@type": "Organization",
+        "name": "MetaReview",
+        "url": "https://github.com/TerryFYL/metareview"
+      },
+      "softwareVersion": "1.0",
+      "screenshot": "https://metareview-8c1.pages.dev/og-image.png",
       "featureList": [
         "AI-powered literature screening (PICO keyword + LLM deep screening)",
         "PubMed literature search with advanced filters",
-        "Forest plot generation (SVG export)",
-        "Funnel plot with Egger's test",
-        "Fixed and random effects models",
-        "Odds ratio, risk ratio, mean difference, standardized mean difference",
-        "Heterogeneity assessment (I-squared, Q, tau-squared)",
-        "Subgroup analysis with test for differences",
-        "Sensitivity analysis (leave-one-out)",
+        "AI PDF data extraction (automatic effect size extraction)",
+        "Forest plot generation (SVG/PNG export, 3 color schemes, sorting)",
+        "Funnel plot with Egger's test and contour-enhanced mode",
+        "Galbraith plot, L'Abbé plot, Baujat plot",
+        "Fixed and random effects models (DerSimonian-Laird)",
+        "5 effect measures: OR, RR, HR, MD, SMD (Hedges' g)",
+        "Subgroup analysis with Q-between difference test",
+        "Sensitivity analysis (leave-one-out with direction-reversal highlighting)",
+        "Cumulative meta-analysis (year-by-year evidence accumulation)",
+        "Meta-regression (weighted least squares with scatter plot)",
+        "Dose-response analysis (linear/quadratic models)",
+        "Trim-and-Fill publication bias correction",
+        "Begg's rank correlation test",
+        "GRADE evidence quality assessment",
+        "Influence diagnostics (Cook's D, DFFITS, Hat values)",
+        "Prediction interval (Riley et al., 2011)",
+        "Network meta-analysis graph (D3.js force-directed)",
         "PRISMA 2020 flow diagram (SVG/PNG export)",
-        "Auto-generated results narrative",
-        "Full analysis report export",
-        "Chinese-English bilingual interface",
-        "CSV import/export"
+        "HTML and DOCX report export (10+ customizable sections)",
+        "Auto-generated Methods and Results narrative paragraphs",
+        "CSV, RIS, EndNote, Excel paste import",
+        "JSON structured data export",
+        "Chinese-English bilingual interface (1220+ translations)",
+        "Onboarding tour for first-time users",
+        "Undo/redo (50-step history)",
+        "WCAG accessible (ARIA roles, keyboard navigation)",
+        "Mobile responsive design",
+        "All data stays in browser (privacy-first)"
       ]
     }
     </script>
@@ -351,6 +380,10 @@
             <a href="/guides/meta-analysis-software-comparison" style="display:block;padding:16px 20px;background:#f9fafb;border-radius:10px;border:1px solid #e5e7eb;text-decoration:none">
               <h3 style="font-size:14px;font-weight:600;color:#1e40af;margin:0 0 4px">Meta 分析软件对比</h3>
               <p style="font-size:12px;color:#6b7280;margin:0;line-height:1.4">MetaReview vs RevMan vs R vs Stata</p>
+            </a>
+            <a href="/guides/tumor-meta-analysis" style="display:block;padding:16px 20px;background:#f9fafb;border-radius:10px;border:1px solid #e5e7eb;text-decoration:none">
+              <h3 style="font-size:14px;font-weight:600;color:#1e40af;margin:0 0 4px">肿瘤 Meta 分析指南</h3>
+              <p style="font-size:12px;color:#6b7280;margin:0;line-height:1.4">HR/OR 选择、亚组策略、发表偏倚</p>
             </a>
           </div>
         </section>

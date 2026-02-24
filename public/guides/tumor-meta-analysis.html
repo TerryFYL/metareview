@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>肿瘤 Meta 分析完整指南：从效应量选择到亚组分析的实战方法 | MetaReview</title>
+  <meta name="description" content="肿瘤 Meta 分析怎么做？本文详解肿瘤荟萃分析全流程：生存数据 HR 提取、客观缓解率 OR/RR 计算、异质性处理、亚组分析策略、发表偏倚评估。附免费在线工具和实战案例。" />
+  <meta name="keywords" content="肿瘤meta分析, 肿瘤荟萃分析, 癌症meta分析, 临床试验meta分析, oncology meta-analysis, 肿瘤系统综述, 生存分析HR, 免疫治疗meta分析, 靶向治疗meta分析" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/tumor-meta-analysis" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/tumor-meta-analysis" />
+  <meta property="og:title" content="肿瘤 Meta 分析完整指南：从效应量选择到亚组分析的实战方法" />
+  <meta property="og:description" content="肿瘤荟萃分析怎么做？HR、OR、RR 效应量选择，异质性处理，亚组分析策略。附免费在线工具。" />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "肿瘤 Meta 分析完整流程：从研究设计到发表",
+    "description": "详解肿瘤领域 Meta 分析的全流程指南，涵盖效应量选择、数据提取、异质性处理、亚组分析和发表偏倚评估。",
+    "totalTime": "PT40M",
+    "tool": {
+      "@type": "HowToTool",
+      "name": "MetaReview 免费在线 Meta 分析工具"
+    },
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "确定肿瘤研究问题与 PICO 框架", "text": "使用 PICO 框架定义肿瘤 Meta 分析的研究问题。P 为特定癌种患者，I 为目标治疗方案（如免疫治疗、靶向治疗），C 为标准方案或安慰剂，O 为生存终点（OS、PFS）或疗效终点（ORR、DCR）。"},
+      {"@type": "HowToStep", "position": 2, "name": "制定肿瘤文献检索策略", "text": "在 PubMed、Embase、Cochrane Library 和 ClinicalTrials.gov 中检索。使用 MeSH 主题词（如 Neoplasms、Antineoplastic Agents）结合自由词，并检索 ASCO、ESMO 会议摘要以获取最新数据。"},
+      {"@type": "HowToStep", "position": 3, "name": "选择合适的效应量", "text": "根据结局类型选择效应量：生存终点（OS、PFS）使用 HR，二分类疗效终点（ORR、DCR）使用 OR 或 RR，连续变量（生活质量评分）使用 MD 或 SMD。不同效应量不可混合合并。"},
+      {"@type": "HowToStep", "position": 4, "name": "提取肿瘤研究数据", "text": "从纳入文献中提取 HR 及 95% CI（生存终点）或事件数与总数（二分类终点）。记录癌种、分期、治疗线数、样本量、中位随访时间、生物标志物状态等关键信息。"},
+      {"@type": "HowToStep", "position": 5, "name": "评估异质性并选择合并模型", "text": "使用 I²、Q 检验和 tau² 评估研究间异质性。肿瘤 Meta 分析异质性来源复杂（癌种、分期、治疗方案差异），通常推荐随机效应模型。I² > 50% 时需重点探讨异质性来源。"},
+      {"@type": "HowToStep", "position": 6, "name": "执行亚组分析与敏感性分析", "text": "按预设变量（癌种、治疗线数、PD-L1 表达、EGFR/ALK 突变状态、地区等）进行亚组分析。逐一剔除法验证结果稳健性。按研究质量分层进行敏感性分析。"},
+      {"@type": "HowToStep", "position": 7, "name": "评估发表偏倚", "text": "绘制漏斗图并进行 Egger 检验。检索 ClinicalTrials.gov 中已完成但未发表的试验。使用 Trim-and-fill 法估计缺失研究对合并效应的影响。"},
+      {"@type": "HowToStep", "position": 8, "name": "撰写结果与讨论", "text": "按 PRISMA 2020 规范报告。结果部分包括 PRISMA 流程图、纳入研究特征表、森林图、漏斗图和亚组分析。讨论部分需结合 GRADE 框架评估证据质量。"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "肿瘤 Meta 分析用什么效应量？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "取决于结局指标类型。生存终点（OS、PFS、DFS）必须使用 Hazard Ratio (HR)，因为 HR 考虑了时间维度和删失数据。二分类疗效终点（客观缓解率 ORR、疾病控制率 DCR）使用 OR 或 RR。不良反应发生率使用 OR 或 RR。连续变量（生活质量评分变化）使用 MD 或 SMD。不同类型的效应量不能在同一个 Meta 分析中混合合并。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "肿瘤 Meta 分析中 HR 和 OR 可以放在一起分析吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "绝对不可以。HR 来自 Cox 比例风险回归，衡量的是整个随访期间的瞬时事件发生率之比；OR 来自 Logistic 回归或四格表，衡量的是固定时间点的事件发生几率之比。两者的数学基础和统计含义完全不同。如果部分研究报告 HR、部分报告 OR，应该分别进行独立的 Meta 分析，或者在纳入排除标准中统一要求同一种效应量。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "肿瘤 Meta 分析的异质性通常高吗？怎么处理？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "肿瘤 Meta 分析的异质性通常偏高（I² > 50% 很常见），原因包括：不同癌种或亚型、不同分期、不同治疗线数、不同药物剂量和方案、不同生物标志物状态、不同种族人群等。处理方法包括：（1）使用随机效应模型；（2）按预设变量进行亚组分析探索来源；（3）Meta-regression 分析连续变量（如中位年龄、随访时间）的影响；（4）排除临床异质性过大的研究后重新分析。如果 I² > 85% 且无法解释，建议改为叙述性综述。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "免疫治疗（PD-1/PD-L1）Meta 分析有什么特殊注意事项？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "免疫治疗 Meta 分析有几个特殊点：（1）PD-L1 表达水平是关键分层因素，需按 TPS 或 CPS 不同阈值（如 ≥1%、≥50%）进行亚组分析；（2）免疫治疗的 KM 曲线常出现'拖尾效应'（late separation），早期两组曲线重叠、后期逐渐分离，可能违反比例风险假设；（3）部分试验允许交叉治疗（crossover），对照组患者进展后使用免疫治疗，这会稀释 OS 的差异；（4）联合治疗方案（免疫+化疗、双免疫）增加了临床异质性，亚组分析时需仔细区分。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "肿瘤 Meta 分析需要检索哪些数据库？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "必检数据库包括 PubMed/MEDLINE、Embase 和 Cochrane Library。此外强烈推荐检索 ClinicalTrials.gov（注册试验）和 WHO ICTRP（国际临床试验注册平台），以发现未发表的试验数据。还应检索 ASCO（美国临床肿瘤学会）和 ESMO（欧洲肿瘤内科学会）的会议摘要数据库，因为很多重要肿瘤试验会先在年会上报告。如果涉及中国人群，还应检索中国知网（CNKI）和万方数据库。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "做肿瘤 Meta 分析需要会编程吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "不需要。MetaReview 是完全免费的在线 Meta 分析工具，支持 HR、OR、RR、MD、SMD 等所有常用效应量，提供固定效应和随机效应模型，自动生成森林图、漏斗图和敏感性分析，支持亚组分析。所有计算在浏览器内完成，无需安装软件或编写 R/Stata 代码。当然，如果你熟悉 R 语言，也可以使用 meta、metafor 等包进行更高级的定制分析。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "肿瘤 Meta 分析中如何处理会议摘要的数据？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "会议摘要（如 ASCO、ESMO 口头报告或壁报）是肿瘤 Meta 分析的重要数据来源，但需要注意：（1）摘要报告的数据可能是初步结果，与最终发表版本不同；（2）如果同一试验既有会议摘要又有正式发表论文，以正式论文为准；（3）仅有会议摘要的研究质量评估较困难（信息不完整）；（4）建议在敏感性分析中排除仅有会议摘要的研究，观察结果是否改变。在方法部分需明确说明是否纳入会议摘要及其处理方式。"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .toc { background: white; border-radius: 12px; padding: 24px 32px; margin-bottom: 40px; border: 1px solid #e5e7eb; }
+    .toc h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .toc a:hover { text-decoration: underline; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    .faq { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .faq h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .faq h3 { font-size: 16px; color: #1e40af; margin: 16px 0 8px; }
+    .faq p { font-size: 15px; color: #4b5563; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .toc, .faq, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">打开工具</a>
+      <a href="/guides/meta-analysis-steps">Meta 分析步骤</a>
+      <a href="/guides/survival-analysis-meta">HR 生存分析</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>肿瘤 Meta 分析完整指南：从效应量选择到亚组分析的实战方法</h1>
+  <p>肿瘤荟萃分析的效应量选择、异质性处理、亚组分析策略与发表偏倚评估。适合肿瘤学研究生和临床研究者。</p>
+</div>
+
+<div class="container">
+
+  <div class="toc">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#intro">肿瘤研究为什么需要 Meta 分析</a></li>
+      <li><a href="#pico">肿瘤 Meta 分析的 PICO 框架与检索策略</a></li>
+      <li><a href="#effect-size">效应量选择：HR、OR、RR 分别用在哪里</a></li>
+      <li><a href="#hr-detail">生存终点的 HR Meta 分析实战</a></li>
+      <li><a href="#or-detail">疗效终点的 OR/RR Meta 分析实战</a></li>
+      <li><a href="#heterogeneity">肿瘤 Meta 分析的异质性处理</a></li>
+      <li><a href="#subgroup">亚组分析策略：肿瘤领域的关键变量</a></li>
+      <li><a href="#publication-bias">发表偏倚评估与应对</a></li>
+      <li><a href="#reporting">结果报告与 GRADE 证据评价</a></li>
+      <li><a href="#faq">常见问题</a></li>
+    </ol>
+  </div>
+
+  <!-- Section 1: Why oncology needs meta-analysis -->
+  <div class="section" id="intro">
+    <h2>肿瘤研究为什么需要 Meta 分析</h2>
+    <p>肿瘤学（oncology）是 Meta 分析应用最广泛的医学领域之一。根据 PubMed 数据，每年发表的肿瘤 Meta 分析超过 5000 篇，涵盖从化疗、靶向治疗到免疫治疗的各个方向。为什么肿瘤领域特别依赖 Meta 分析？</p>
+    <h3>单项试验的局限性</h3>
+    <p>肿瘤临床试验面临几个固有挑战：</p>
+    <ul>
+      <li><strong>样本量有限</strong> -- 罕见肿瘤（如胆管癌、间皮瘤）的单项试验往往只有几十到几百例患者，统计效力不足以检测中等大小的治疗效应</li>
+      <li><strong>结果不一致</strong> -- 同一药物在不同试验中可能显示不同的疗效，例如免疫治疗在不同瘤种、不同 PD-L1 表达水平的人群中效果差异显著</li>
+      <li><strong>终点多样</strong> -- 不同试验可能使用 OS（总生存期）、PFS（无进展生存期）、ORR（客观缓解率）等不同终点，需要分别合并分析</li>
+      <li><strong>亚组效应</strong> -- 治疗效果可能因生物标志物状态（EGFR 突变、PD-L1 表达、MSI 状态）而异，单项试验的亚组分析往往样本量不足</li>
+    </ul>
+    <h3>Meta 分析能解决什么</h3>
+    <p>通过合并多项研究的数据，Meta 分析可以：</p>
+    <ul>
+      <li>提高统计效力，检测单项试验无法发现的治疗效应</li>
+      <li>提供更精确的效应量估计（更窄的置信区间）</li>
+      <li>通过亚组分析识别获益人群（如 PD-L1 高表达 vs 低表达）</li>
+      <li>系统评估不同治疗方案的安全性和有效性</li>
+      <li>为临床指南和治疗决策提供最高级别的循证医学证据</li>
+    </ul>
+    <div class="tip">肿瘤领域的 Meta 分析结论直接影响 NCCN、ESMO 等权威指南的推荐等级。一篇高质量的肿瘤 Meta 分析可以改变临床实践。</div>
+  </div>
+
+  <!-- Section 2: PICO and search strategy -->
+  <div class="section" id="pico">
+    <h2>肿瘤 Meta 分析的 PICO 框架与检索策略</h2>
+    <p>肿瘤领域的 PICO 框架需要比一般医学 Meta 分析更精确的定义，因为肿瘤类型、分期和治疗线数对结果影响巨大。</p>
+    <h3>PICO 定义示例</h3>
+    <p>以"免疫检查点抑制剂联合化疗治疗晚期非小细胞肺癌"为例：</p>
+    <table class="data-table">
+      <tr><th>PICO 元素</th><th>定义</th><th>关键考量</th></tr>
+      <tr><td><strong>P</strong> (Population)</td><td>IIIB/IV 期非小细胞肺癌（NSCLC）初治患者</td><td>需明确分期、治疗线数、是否排除驱动基因阳性（EGFR/ALK+）</td></tr>
+      <tr><td><strong>I</strong> (Intervention)</td><td>PD-1/PD-L1 抑制剂 + 含铂双药化疗</td><td>需明确免疫药物种类、化疗方案是否限定</td></tr>
+      <tr><td><strong>C</strong> (Comparison)</td><td>含铂双药化疗 &plusmn; 安慰剂</td><td>安慰剂对照 vs 开放标签需区分</td></tr>
+      <tr><td><strong>O</strong> (Outcome)</td><td>主要终点：OS、PFS；次要终点：ORR、&ge;3 级不良事件</td><td>每个终点需独立分析，使用不同效应量</td></tr>
+    </table>
+    <h3>检索策略要点</h3>
+    <p>肿瘤 Meta 分析的检索需要覆盖以下数据库：</p>
+    <ul>
+      <li><strong>PubMed / MEDLINE</strong> -- 使用 MeSH 主题词（如 "Carcinoma, Non-Small-Cell Lung"[MeSH]）结合自由词</li>
+      <li><strong>Embase</strong> -- 与 PubMed 重叠约 60%，药物相关文献更全</li>
+      <li><strong>Cochrane Library</strong> -- 系统综述和 RCT 注册库</li>
+      <li><strong>ClinicalTrials.gov</strong> -- 检索已注册试验，发现未发表数据</li>
+      <li><strong>ASCO / ESMO 会议摘要</strong> -- 肿瘤领域特色，许多重磅试验结果先在会议上报告</li>
+    </ul>
+    <div class="tip">
+      PubMed 检索式示例：<br/>
+      <code>("carcinoma, non-small-cell lung"[MeSH] OR "NSCLC") AND ("immune checkpoint inhibitors"[MeSH] OR "pembrolizumab" OR "nivolumab" OR "atezolizumab") AND ("randomized controlled trial"[pt] OR "clinical trial, phase III"[pt])</code>
+    </div>
+    <p>MetaReview 内置 PubMed 检索功能，支持关键词搜索和文献类型筛选，可以直接在工具中完成文献检索和 AI 辅助筛选。</p>
+  </div>
+
+  <!-- Section 3: Effect size selection -->
+  <div class="section" id="effect-size">
+    <h2>效应量选择：HR、OR、RR 分别用在哪里</h2>
+    <p>肿瘤 Meta 分析最大的特殊性在于<strong>结局指标的多样性</strong>。不同类型的结局需要使用不同的效应量，这是肿瘤 Meta 分析方法学的核心。</p>
+    <table class="data-table">
+      <tr><th>结局类型</th><th>常见指标</th><th>推荐效应量</th><th>说明</th></tr>
+      <tr><td>生存终点（时间-事件数据）</td><td>OS、PFS、DFS、RFS、EFS</td><td><strong>HR</strong> (Hazard Ratio)</td><td>考虑了时间维度和删失，是生存数据的标准效应量</td></tr>
+      <tr><td>二分类疗效终点</td><td>ORR、DCR、pCR</td><td><strong>OR</strong> (Odds Ratio) 或 <strong>RR</strong> (Risk Ratio)</td><td>从事件数/总数计算，RR 更直观，OR 统计性质更好</td></tr>
+      <tr><td>二分类安全性终点</td><td>&ge;3 级不良事件、治疗相关死亡</td><td><strong>OR</strong> 或 <strong>RR</strong></td><td>与疗效终点相同，但需注意稀有事件的处理</td></tr>
+      <tr><td>连续变量</td><td>QoL 评分、肿瘤标志物水平</td><td><strong>MD</strong> 或 <strong>SMD</strong></td><td>相同量表用 MD，不同量表用 SMD</td></tr>
+    </table>
+    <div class="warn">核心原则：不同效应量绝对不能混合合并。一篇肿瘤 Meta 分析通常需要对 OS（用 HR）、PFS（用 HR）、ORR（用 OR/RR）分别进行独立的 Meta 分析。</div>
+    <h3>效应量选择决策树</h3>
+    <ul>
+      <li>结局是"时间到事件"？ -- 用 <strong>HR</strong></li>
+      <li>结局是"发生/未发生"？ -- 用 <strong>OR 或 RR</strong></li>
+      <li>结局是连续数值？ -- 同一量表用 <strong>MD</strong>，不同量表用 <strong>SMD</strong></li>
+    </ul>
+    <p>关于 OR 和 RR 的选择：在肿瘤 RCT 中，两者的差别通常不大。RR 的临床解读更直观（"干预组的缓解率是对照组的 X 倍"），OR 在统计上更稳健（尤其是事件率极高或极低时）。审稿人对两者都接受，但需要在方法中说明选择理由。</p>
+    <p>详细的效应量选择指南请看：<a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</a></p>
+  </div>
+
+  <!-- Section 4: HR survival analysis in practice -->
+  <div class="section" id="hr-detail">
+    <h2>生存终点的 HR Meta 分析实战</h2>
+    <p>生存终点（OS、PFS）是肿瘤 Meta 分析最重要的结局指标。以下通过具体案例演示完整流程。</p>
+    <h3>案例：免疫治疗联合化疗 vs 化疗的 OS 分析</h3>
+    <p>假设你要合并 5 项 RCT 的总生存期（OS）数据：</p>
+    <table class="data-table">
+      <tr><th>研究</th><th>方案</th><th>HR</th><th>95% CI</th><th>事件数</th></tr>
+      <tr><td>KEYNOTE-189 (2018)</td><td>Pembrolizumab + 化疗</td><td>0.49</td><td>0.38 - 0.64</td><td>213</td></tr>
+      <tr><td>IMpower150 (2018)</td><td>Atezolizumab + 化疗 + 贝伐珠单抗</td><td>0.78</td><td>0.64 - 0.96</td><td>319</td></tr>
+      <tr><td>CameL (2019)</td><td>Camrelizumab + 化疗</td><td>0.73</td><td>0.55 - 0.96</td><td>125</td></tr>
+      <tr><td>ORIENT-11 (2020)</td><td>Sintilimab + 化疗</td><td>0.60</td><td>0.45 - 0.79</td><td>148</td></tr>
+      <tr><td>RATIONALE-304 (2021)</td><td>Tislelizumab + 化疗</td><td>0.69</td><td>0.52 - 0.92</td><td>136</td></tr>
+    </table>
+    <h3>在 MetaReview 中操作</h3>
+    <ol>
+      <li>打开 MetaReview，选择效应量类型为 <strong>Hazard Ratio</strong></li>
+      <li>逐行输入研究名称、年份、HR、CI Lower、CI Upper</li>
+      <li>工具自动完成 log(HR) 变换和标准误计算</li>
+      <li>选择<strong>随机效应模型</strong>（因为不同免疫药物存在异质性）</li>
+      <li>点击 Run Meta-Analysis 查看结果</li>
+    </ol>
+    <h3>HR 数据提取注意事项</h3>
+    <ul>
+      <li><strong>优先提取调整后的 HR</strong>（adjusted HR），而非未调整的 HR</li>
+      <li>如果论文只报告 HR 和 p 值没有 CI，通过 p 值反推标准误：SE = |log(HR)| / z</li>
+      <li>如果论文只有 Kaplan-Meier 曲线，使用 Tierney (2007) 方法从曲线间接估算</li>
+      <li>同一试验更新了数据时（如 KEYNOTE-189 有多次随访更新），使用最新的成熟数据</li>
+    </ul>
+    <div class="formula">
+      标准误计算：SE[log(HR)] = (log(CI<sub>upper</sub>) - log(CI<sub>lower</sub>)) / 3.92
+    </div>
+    <p>完整的 HR 提取和计算方法请看：<a href="/guides/survival-analysis-meta">生存数据 Meta 分析：HR 的提取、计算与解读指南</a></p>
+    <div class="tip">MetaReview 输入 HR 和 95% CI 后自动完成所有后台计算（log 变换、标准误、逆方差加权），你不需要手动做任何数学运算。</div>
+  </div>
+
+  <!-- Section 5: OR/RR for response rate -->
+  <div class="section" id="or-detail">
+    <h2>疗效终点的 OR/RR Meta 分析实战</h2>
+    <p>除了生存终点，肿瘤 Meta 分析经常需要分析<strong>客观缓解率（ORR）</strong>、<strong>疾病控制率（DCR）</strong>等二分类终点。这些指标反映的是治疗的短期疗效。</p>
+    <h3>案例：免疫联合化疗 vs 化疗的 ORR 分析</h3>
+    <p>ORR 是二分类数据（缓解/未缓解），需要从每项研究中提取：</p>
+    <table class="data-table">
+      <tr><th>研究</th><th>干预组缓解/总数</th><th>对照组缓解/总数</th></tr>
+      <tr><td>KEYNOTE-189</td><td>138/206 (67.0%)</td><td>57/206 (27.7%)</td></tr>
+      <tr><td>IMpower150</td><td>171/336 (50.9%)</td><td>100/317 (31.5%)</td></tr>
+      <tr><td>CameL</td><td>85/205 (41.5%)</td><td>43/207 (20.8%)</td></tr>
+      <tr><td>ORIENT-11</td><td>127/200 (63.5%)</td><td>61/197 (31.0%)</td></tr>
+      <tr><td>RATIONALE-304</td><td>131/223 (58.7%)</td><td>44/111 (39.6%)</td></tr>
+    </table>
+    <h3>在 MetaReview 中操作</h3>
+    <ol>
+      <li>选择效应量类型为 <strong>OR (Odds Ratio)</strong> 或 <strong>RR (Risk Ratio)</strong></li>
+      <li>输入每项研究的干预组事件数/总数和对照组事件数/总数</li>
+      <li>MetaReview 自动计算每项研究的 OR（或 RR）及 95% CI</li>
+      <li>生成森林图展示各研究和合并结果</li>
+    </ol>
+    <h3>OR 和 RR 的区别</h3>
+    <p>以 KEYNOTE-189 为例：</p>
+    <div class="formula">
+      OR = (138/68) / (57/149) = 2.028 / 0.383 = 5.30<br><br>
+      RR = (138/206) / (57/206) = 0.670 / 0.277 = 2.42
+    </div>
+    <p>OR = 5.30 表示干预组缓解的几率是对照组的 5.30 倍；RR = 2.42 表示干预组缓解的概率是对照组的 2.42 倍。当事件率较高时（如 ORR > 30%），OR 和 RR 的数值差距会比较大。RR 更符合临床直觉，但 OR 的统计性质（如在 Logistic 回归中的良好数学特性）使其在学术论文中同样常用。</p>
+    <h3>稀有事件的特殊处理</h3>
+    <p>分析不良事件（如治疗相关死亡、5 级不良事件）时经常遇到稀有事件问题：</p>
+    <ul>
+      <li>某些研究的事件数为 0（即该组没有发生不良事件）</li>
+      <li>零事件会导致 OR/RR 无法计算（分母为零）</li>
+      <li>常用处理方法：加连续性校正（+0.5），但这会引入偏倚</li>
+      <li>推荐方法：使用 Peto OR 或 Mantel-Haenszel 法，它们在稀有事件时表现更稳健</li>
+    </ul>
+    <div class="warn">当事件率 < 1% 且多项研究出现零事件时，传统 Meta 分析方法可能不可靠。此时建议在讨论部分明确说明这一局限性。</div>
+  </div>
+
+  <!-- Section 6: Heterogeneity -->
+  <div class="section" id="heterogeneity">
+    <h2>肿瘤 Meta 分析的异质性处理</h2>
+    <p>异质性（heterogeneity）是肿瘤 Meta 分析中最常见也最棘手的问题。由于肿瘤研究涉及不同癌种、分期、治疗方案和人群特征，I&sup2; 超过 50% 的情况非常普遍。</p>
+    <h3>肿瘤研究异质性的常见来源</h3>
+    <table class="data-table">
+      <tr><th>异质性来源</th><th>具体表现</th><th>对结果的影响</th></tr>
+      <tr><td>临床异质性</td><td>不同癌种（鳞状 vs 非鳞状）、不同分期（III 期 vs IV 期）、不同治疗线数（一线 vs 二线）</td><td>直接影响治疗效应大小</td></tr>
+      <tr><td>治疗方案差异</td><td>不同免疫药物、不同化疗方案、不同联合策略</td><td>药物机制不同导致疗效差异</td></tr>
+      <tr><td>生物标志物差异</td><td>PD-L1 表达水平、EGFR/ALK 突变状态、TMB、MSI 状态</td><td>生物标志物是疗效预测因子</td></tr>
+      <tr><td>人群差异</td><td>亚洲人群 vs 欧美人群、年龄分布、ECOG 评分</td><td>种族和体质可能影响药物代谢和疗效</td></tr>
+      <tr><td>方法学差异</td><td>开放标签 vs 双盲、是否允许交叉治疗、随访时间长短</td><td>影响效应量的估计精度</td></tr>
+    </table>
+    <h3>异质性评估指标</h3>
+    <table class="data-table">
+      <tr><th>指标</th><th>含义</th><th>判断标准</th></tr>
+      <tr><td>I&sup2;</td><td>异质性占总变异的百分比</td><td>25% 低、50% 中、75% 高</td></tr>
+      <tr><td>Q 检验</td><td>各研究效应量是否一致</td><td>p < 0.10 提示存在异质性</td></tr>
+      <tr><td>&tau;&sup2;</td><td>研究间方差绝对值</td><td>越大异质性越强</td></tr>
+      <tr><td>预测区间</td><td>新研究效应量的预期范围</td><td>若跨越无效线，说明效应不稳定</td></tr>
+    </table>
+    <h3>处理策略</h3>
+    <ol>
+      <li><strong>使用随机效应模型</strong> -- 肿瘤 Meta 分析的默认选择，因为临床异质性几乎不可避免</li>
+      <li><strong>亚组分析</strong> -- 按预设变量分组，探索异质性来源（详见下一节）</li>
+      <li><strong>Meta-regression</strong> -- 当亚组变量是连续型（如中位年龄、PD-L1 评分阈值）时使用</li>
+      <li><strong>敏感性分析</strong> -- 逐一剔除法、排除低质量研究、排除会议摘要等</li>
+      <li><strong>放弃合并</strong> -- 如果 I&sup2; > 85% 且亚组分析无法解释，改为叙述性综述</li>
+    </ol>
+    <div class="tip">MetaReview 自动计算 I&sup2;、Q 检验和 &tau;&sup2;，并支持亚组分析和逐一剔除敏感性分析，帮助你系统地探索和处理异质性。</div>
+  </div>
+
+  <!-- Section 7: Subgroup analysis -->
+  <div class="section" id="subgroup">
+    <h2>亚组分析策略：肿瘤领域的关键变量</h2>
+    <p>亚组分析（subgroup analysis）是肿瘤 Meta 分析中最有临床价值的部分。它回答的是："哪些患者从治疗中获益最大？"审稿人和临床医生最关注的往往就是亚组结果。</p>
+    <h3>必须预设的亚组变量</h3>
+    <p>亚组分析必须在 PROSPERO 注册方案中预先指定，不能事后根据数据"挑"亚组。肿瘤 Meta 分析中最常见的预设亚组变量：</p>
+    <table class="data-table">
+      <tr><th>分组变量</th><th>分组方式</th><th>临床意义</th></tr>
+      <tr><td>PD-L1 表达</td><td>TPS &ge;50% vs 1-49% vs <1%；CPS &ge;10 vs <10</td><td>免疫治疗疗效的核心预测因子</td></tr>
+      <tr><td>组织学类型</td><td>鳞状 vs 非鳞状（肺癌）；HER2 阳性 vs 阴性（乳腺癌）</td><td>不同亚型对治疗反应不同</td></tr>
+      <tr><td>治疗线数</td><td>一线 vs 二线及以上</td><td>后线治疗效应通常较弱</td></tr>
+      <tr><td>地区</td><td>亚洲 vs 非亚洲</td><td>种族差异、EGFR 突变频率不同</td></tr>
+      <tr><td>ECOG 评分</td><td>0 vs 1 vs &ge;2</td><td>体力状态影响治疗耐受性</td></tr>
+      <tr><td>年龄</td><td>&lt;65 岁 vs &ge;65 岁</td><td>老年患者的获益-风险平衡</td></tr>
+      <tr><td>脑转移状态</td><td>有 vs 无</td><td>脑转移患者预后差，药物透过血脑屏障能力不同</td></tr>
+      <tr><td>肝转移状态</td><td>有 vs 无</td><td>肝转移与免疫治疗疗效负相关</td></tr>
+      <tr><td>吸烟状态</td><td>吸烟者 vs 从不吸烟者（肺癌）</td><td>吸烟者 TMB 更高，免疫治疗获益更大</td></tr>
+    </table>
+    <h3>亚组分析的统计方法</h3>
+    <p>在每个亚组内分别计算合并效应量后，需要进行<strong>亚组间差异检验（test for subgroup differences）</strong>：</p>
+    <ul>
+      <li><strong>Q-between 检验</strong>：比较各亚组合并效应量之间的差异是否有统计学意义（p < 0.05）</li>
+      <li><strong>交互作用 p 值</strong>：如果原始试验报告了交互作用检验结果，可以直接引用</li>
+    </ul>
+    <div class="warn">常见错误：仅因为某个亚组的合并效应量没有统计学意义（CI 跨过 1），就判断该亚组"没有获益"。正确的做法是看亚组间差异检验的 p 值。可能只是该亚组样本量太小，效力不足。</div>
+    <h3>亚组分析结果的解读</h3>
+    <ul>
+      <li>亚组间差异检验 p < 0.05 且各亚组效应方向一致 -- 效应大小可能因亚组而异，但方向一致</li>
+      <li>亚组间差异检验 p < 0.05 且方向不一致 -- 可能存在真实的交互作用，需要深入讨论</li>
+      <li>亚组间差异检验 p > 0.05 -- 没有证据表明亚组间有差异（但不等于没有差异）</li>
+    </ul>
+    <div class="tip">MetaReview 支持自定义亚组分析，自动计算每个亚组的合并效应量和 Q-between 检验，并在森林图中按亚组分层展示结果。</div>
+  </div>
+
+  <!-- Section 8: Publication bias -->
+  <div class="section" id="publication-bias">
+    <h2>发表偏倚评估与应对</h2>
+    <p>发表偏倚（publication bias）指阳性结果的研究更容易被发表，而阴性或无意义的结果可能留在"文件柜"里。在肿瘤领域，这个问题有其独特性。</p>
+    <h3>肿瘤领域发表偏倚的特点</h3>
+    <ul>
+      <li><strong>注册试验比例高</strong> -- 近年来的 III 期肿瘤 RCT 几乎都在 ClinicalTrials.gov 注册，降低了选择性报告的可能</li>
+      <li><strong>会议摘要是灰色文献</strong> -- ASCO/ESMO 接收率高，阴性结果也有机会报告，但完整数据可能延迟发表或不发表</li>
+      <li><strong>小型研究偏倚</strong> -- 小样本的 II 期试验更容易因阳性结果而发表，大型 III 期试验无论结果如何都会发表</li>
+      <li><strong>药企资助的试验</strong> -- 药企资助的试验数据发表更完整（有注册和报告义务），但可能存在报告偏倚（如选择性报告对药物有利的终点）</li>
+    </ul>
+    <h3>评估方法</h3>
+    <table class="data-table">
+      <tr><th>方法</th><th>适用条件</th><th>解读</th></tr>
+      <tr><td>漏斗图（Funnel Plot）</td><td>纳入研究 &ge;10 篇</td><td>对称 = 无明显偏倚；不对称 = 可能存在偏倚</td></tr>
+      <tr><td>Egger 检验</td><td>连续型效应量（HR、MD）</td><td>p < 0.10 提示存在小样本效应</td></tr>
+      <tr><td>Begg 检验</td><td>通用</td><td>秩相关检验，统计效力较低</td></tr>
+      <tr><td>Trim-and-fill 法</td><td>漏斗图不对称时</td><td>估计"缺失"研究的数量和对合并效应的影响</td></tr>
+    </table>
+    <h3>应对策略</h3>
+    <ol>
+      <li><strong>全面检索</strong> -- 除了正式发表论文，检索 ClinicalTrials.gov、WHO ICTRP、会议摘要和灰色文献</li>
+      <li><strong>联系研究者</strong> -- 对有注册但未发表的试验，尝试联系 PI 获取数据</li>
+      <li><strong>敏感性分析</strong> -- 用 Trim-and-fill 法估计发表偏倚对合并效应的影响</li>
+      <li><strong>透明报告</strong> -- 在讨论部分坦诚说明发表偏倚的可能性及其对结论的影响</li>
+    </ol>
+    <div class="tip">MetaReview 自动生成漏斗图，帮助你直观判断是否存在发表偏倚。结合 Egger 检验的定量结果，让你的结论更有说服力。</div>
+  </div>
+
+  <!-- Section 9: Reporting and GRADE -->
+  <div class="section" id="reporting">
+    <h2>结果报告与 GRADE 证据评价</h2>
+    <p>高质量的肿瘤 Meta 分析论文需要按照 PRISMA 2020 规范报告，并使用 GRADE 框架评估证据质量。</p>
+    <h3>PRISMA 2020 报告要点</h3>
+    <ol>
+      <li><strong>PRISMA 流程图</strong> -- 展示检索、筛选和纳入的全过程及各阶段文献数量</li>
+      <li><strong>纳入研究特征表</strong> -- 包括作者、年份、癌种、分期、样本量、干预/对照方案、主要终点、随访时间</li>
+      <li><strong>质量评估结果</strong> -- RoB 2.0（RCT）或 NOS（观察性研究）的评分汇总表</li>
+      <li><strong>森林图</strong> -- 分别展示每个终点（OS、PFS、ORR 等）的 Meta 分析结果</li>
+      <li><strong>漏斗图</strong> -- 至少对主要终点进行发表偏倚评估</li>
+      <li><strong>亚组分析森林图</strong> -- 按预设变量的分层结果</li>
+    </ol>
+    <h3>标准结果表述模板</h3>
+    <p>生存终点（HR）：</p>
+    <div class="formula" style="text-align:left;font-family:inherit;font-size:14px;">
+      "共 k 项 RCT（n = 总样本量）纳入 OS 的 Meta 分析。随机效应模型显示，免疫联合化疗组 OS 显著优于化疗组（HR = 0.66, 95% CI: 0.58-0.76, p < 0.001）。研究间存在低度异质性（I&sup2; = 18%, Q = 4.88, p = 0.30）。"
+    </div>
+    <p>疗效终点（OR）：</p>
+    <div class="formula" style="text-align:left;font-family:inherit;font-size:14px;">
+      "ORR 的 Meta 分析纳入 k 项研究。免疫联合化疗组的客观缓解率显著高于化疗组（OR = 3.12, 95% CI: 2.15-4.53, p < 0.001）。研究间异质性中等（I&sup2; = 52%, Q = 8.33, p = 0.08）。"
+    </div>
+    <h3>GRADE 证据质量评价</h3>
+    <p>GRADE 框架将证据质量分为四级：高、中、低、极低。RCT 的 Meta 分析起始为"高质量"，以下因素会降级：</p>
+    <table class="data-table">
+      <tr><th>降级因素</th><th>肿瘤 Meta 分析中的常见情形</th></tr>
+      <tr><td>偏倚风险</td><td>开放标签试验（无法盲法）、高比例的交叉治疗</td></tr>
+      <tr><td>不一致性</td><td>不同癌种或不同药物间效应量差异大（I&sup2; > 50%）</td></tr>
+      <tr><td>间接性</td><td>研究人群与目标人群不完全匹配（如排除了老年患者）</td></tr>
+      <tr><td>不精确性</td><td>合并效应量的 CI 宽，样本量不足，OIS 未达到</td></tr>
+      <tr><td>发表偏倚</td><td>漏斗图不对称，Egger 检验 p < 0.10</td></tr>
+    </table>
+    <p>详细的报告规范请看：<a href="/guides/prisma-flow-diagram">PRISMA 2020 流程图：在线制作模板与填写指南</a></p>
+    <div class="tip">MetaReview 可自动生成英文结果段落，包含合并效应量、置信区间、p 值和异质性统计量，可直接粘贴到论文的 Results 部分。</div>
+  </div>
+
+  <div class="cta">
+    <h2>开始你的肿瘤 Meta 分析</h2>
+    <p>MetaReview 支持 HR、OR、RR 等全部效应量，从数据输入到森林图只需 5 分钟。免费、无需安装、无需编程。</p>
+    <a href="/">打开 MetaReview</a>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">获取更新通知</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">留下邮箱，第一时间获取新功能通知和 Meta 分析技巧。</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="输入邮箱地址" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">订阅</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">我们不会发送垃圾邮件，随时可退订。</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='提交中...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-tumor',lang:'zh'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'你已经订阅过了！':'订阅成功！我们会在有新功能时通知你。';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='请输入有效的邮箱地址。';btn.textContent='订阅';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='提交失败，请稍后重试。';btn.textContent='订阅';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="faq" id="faq">
+    <h2>常见问题</h2>
+
+    <h3>肿瘤 Meta 分析用什么效应量？</h3>
+    <p>取决于结局指标类型。生存终点（OS、PFS、DFS）必须使用 Hazard Ratio (HR)，因为 HR 考虑了时间维度和删失数据。二分类疗效终点（ORR、DCR）使用 OR 或 RR。连续变量（生活质量评分）使用 MD 或 SMD。不同类型的效应量不能在同一个 Meta 分析中混合合并。</p>
+
+    <h3>肿瘤 Meta 分析中 HR 和 OR 可以放在一起分析吗？</h3>
+    <p>绝对不可以。HR 来自 Cox 比例风险回归，衡量的是整个随访期间的瞬时事件发生率之比；OR 来自 Logistic 回归或四格表，衡量的是固定时间点的事件发生几率之比。两者的数学基础完全不同。如果部分研究报告 HR、部分报告 OR，应该分别进行独立的 Meta 分析。</p>
+
+    <h3>肿瘤 Meta 分析的异质性通常高吗？怎么处理？</h3>
+    <p>通常偏高（I&sup2; > 50% 很常见），原因包括：不同癌种或亚型、不同分期、不同治疗线数、不同药物方案、不同生物标志物状态等。处理方法：使用随机效应模型、按预设变量亚组分析、Meta-regression、排除临床异质性过大的研究。如果 I&sup2; > 85% 且无法解释，建议改为叙述性综述。</p>
+
+    <h3>免疫治疗 Meta 分析有什么特殊注意事项？</h3>
+    <p>几个特殊点：（1）PD-L1 表达是关键分层因素，需按不同阈值进行亚组分析；（2）免疫治疗的 KM 曲线常出现"拖尾效应"，可能违反比例风险假设；（3）部分试验允许交叉治疗（crossover），会稀释 OS 差异；（4）联合方案（免疫+化疗、双免疫）增加临床异质性。</p>
+
+    <h3>肿瘤 Meta 分析需要检索哪些数据库？</h3>
+    <p>必检：PubMed/MEDLINE、Embase、Cochrane Library。强烈推荐：ClinicalTrials.gov、WHO ICTRP、ASCO 和 ESMO 会议摘要。涉及中国人群时还应检索中国知网（CNKI）和万方数据库。</p>
+
+    <h3>做肿瘤 Meta 分析需要会编程吗？</h3>
+    <p>不需要。MetaReview 是完全免费的在线 Meta 分析工具，支持 HR、OR、RR、MD、SMD 等所有常用效应量，自动生成森林图、漏斗图和敏感性分析。所有计算在浏览器内完成，无需安装软件或编写 R/Stata 代码。</p>
+
+    <h3>如何处理会议摘要的数据？</h3>
+    <p>会议摘要是肿瘤 Meta 分析的重要数据来源，但需注意：摘要数据可能是初步结果；同一试验有正式论文时以论文为准；仅有会议摘要的研究质量评估困难；建议在敏感性分析中排除仅有会议摘要的研究。方法部分需说明是否纳入会议摘要。</p>
+  </div>
+
+  <div class="related">
+    <h2>相关指南</h2>
+    <ul>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析：HR 的提取、计算与解读指南</a></li>
+      <li><a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</a></li>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤：从研究问题到发表的全流程指南</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图怎么画？在线生成森林图完全指南（免费工具）</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 流程图：在线制作模板与填写指南</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta 分析软件对比：MetaReview vs RevMan vs R vs Stata</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> — 免费在线 Meta 分析工具</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
