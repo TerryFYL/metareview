@@ -1,0 +1,1184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Meta-Analysis Calculator Online: Compute Effect Sizes & Heterogeneity | MetaReview</title>
+  <meta name="description" content="Free online meta-analysis calculator. Compute pooled effect sizes (OR, RR, HR, MD, SMD), heterogeneity statistics (I-squared, Q, tau-squared), and generate forest plots. No coding, no installation. Complete guide with formulas, interpretation, and step-by-step tutorial." />
+  <meta name="keywords" content="meta-analysis calculator online, meta-analysis calculator free, online meta-analysis tool, effect size calculator meta-analysis, heterogeneity calculator, I-squared calculator, random effects calculator, meta-analysis software free online, meta-analysis computation, pooled effect size calculator" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/meta-analysis-calculator" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/meta-analysis-calculator" />
+  <meta property="og:title" content="Free Meta-Analysis Calculator Online: Compute Effect Sizes & Heterogeneity" />
+  <meta property="og:description" content="Calculate pooled effect sizes, heterogeneity, and generate forest plots with a free online meta-analysis calculator. No coding required. Comprehensive guide with formulas and real examples." />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Run a Meta-Analysis with MetaReview Free Online Calculator",
+    "description": "A step-by-step guide to computing pooled effect sizes, heterogeneity statistics, and generating forest plots using MetaReview's free online meta-analysis calculator. No coding or software installation required.",
+    "totalTime": "PT15M",
+    "tool": {
+      "@type": "HowToTool",
+      "name": "MetaReview Free Online Meta-Analysis Calculator"
+    },
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "Open MetaReview and Select Effect Measure", "text": "Open MetaReview in your web browser. No installation or account required. Select the appropriate effect size measure for your data: Odds Ratio (OR) for binary outcomes in case-control studies, Risk Ratio (RR) for binary outcomes in cohort studies or RCTs, Mean Difference (MD) for continuous outcomes on the same scale, or Standardized Mean Difference (SMD/Hedges' g) for continuous outcomes on different scales."},
+      {"@type": "HowToStep", "position": 2, "name": "Enter Study Data", "text": "Enter data for each included study. For binary outcomes, input the number of events and total participants for both intervention and control groups. For continuous outcomes, input means, standard deviations, and sample sizes for both groups. MetaReview validates data in real time and flags errors such as events exceeding totals or negative standard deviations."},
+      {"@type": "HowToStep", "position": 3, "name": "Import from CSV or Excel (Optional)", "text": "For faster data entry with many studies, prepare your data in a CSV or Excel file with one row per study and columns matching MetaReview's expected format. Click the import button to upload the file. MetaReview automatically maps columns and previews the imported data for verification before proceeding."},
+      {"@type": "HowToStep", "position": 4, "name": "Choose the Analysis Model", "text": "Select either a fixed-effect model (assumes all studies share one true effect size, appropriate when studies are clinically homogeneous) or a random-effects model (assumes the true effect varies across studies, appropriate for most real-world meta-analyses). The random-effects model uses the DerSimonian-Laird estimator for between-study variance. Most reviewers expect random-effects unless you justify otherwise."},
+      {"@type": "HowToStep", "position": 5, "name": "Review Pooled Results and Heterogeneity", "text": "MetaReview automatically computes the pooled effect size with 95% confidence interval, p-value, and heterogeneity statistics including I-squared (percentage of variation due to true differences), Cochran's Q test (statistical test for heterogeneity), tau-squared (between-study variance), and the prediction interval. Review these results to assess both the overall effect and consistency across studies."},
+      {"@type": "HowToStep", "position": 6, "name": "Generate Forest Plot", "text": "Navigate to the forest plot view. MetaReview renders a publication-ready forest plot showing individual study estimates, confidence intervals, weights, and the pooled diamond. Customize colors, sorting order, axis labels, and subgroup display. The forest plot updates in real time as you adjust settings."},
+      {"@type": "HowToStep", "position": 7, "name": "Check Publication Bias with Funnel Plot and Tests", "text": "Generate a funnel plot to visually assess publication bias. MetaReview plots each study's effect size against its standard error. Examine the funnel for asymmetry, which may suggest missing studies. For quantitative assessment, run Egger's regression test (available when 10 or more studies are included). Apply the trim-and-fill method if asymmetry is detected to estimate the adjusted pooled effect."},
+      {"@type": "HowToStep", "position": 8, "name": "Export Report", "text": "Export your complete results. Download the forest plot as SVG (vector, ideal for journal submission) or PNG (raster, suitable for presentations). Export the full analysis report including pooled estimates, heterogeneity statistics, individual study data, and sensitivity analysis results. MetaReview also generates a ready-to-use results paragraph for your manuscript's methods and results sections."}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is MetaReview free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, MetaReview is completely free to use. It runs entirely in your web browser with no installation, no account registration, and no usage limits. You can compute pooled effect sizes, generate forest plots and funnel plots, run sensitivity analyses, and export publication-ready figures at no cost. There are no hidden paywalls, trial periods, or feature restrictions. MetaReview is designed to make meta-analysis accessible to all researchers regardless of budget, which is especially important for graduate students, early-career researchers, and institutions in low-resource settings."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I calculate odds ratio in meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "To calculate a pooled odds ratio in meta-analysis, you need the number of events and total participants in both the intervention and control groups for each study. The odds ratio for each study is calculated as (a/c) / (b/d), where a = events in intervention, b = non-events in intervention, c = events in control, d = non-events in control. In MetaReview, simply select 'Odds Ratio' as your effect measure, enter the event counts and totals for each study, and the tool automatically computes individual study ORs, their standard errors on the log scale, study weights, and the pooled OR with 95% confidence interval using your chosen model (fixed-effect or random-effects). The calculations are performed on the natural log scale for statistical properties, then back-transformed for display."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does I-squared mean in meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "I-squared (I2) is a statistic that quantifies the percentage of total variation across studies that is due to true heterogeneity rather than sampling error (chance). It ranges from 0% to 100%. An I-squared of 0% means all observed variation is consistent with sampling error alone — the studies are statistically homogeneous. An I-squared of 25% suggests low heterogeneity, 50% suggests moderate heterogeneity, 75% suggests substantial heterogeneity, and values above 75% indicate considerable heterogeneity. When I-squared is high, the pooled effect size should be interpreted cautiously because the true effect likely varies across different study settings, populations, or interventions. High heterogeneity warrants investigation through subgroup analysis or meta-regression to identify the sources of variation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I do meta-analysis without R or Stata?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. MetaReview is a free online meta-analysis calculator that requires no programming knowledge, no statistical software installation, and no paid licenses. It performs the same core computations as R (metafor package) or Stata (meta command): pooled effect sizes using inverse variance weighting, fixed-effect and random-effects models, heterogeneity statistics (I-squared, Q, tau-squared), forest plots, funnel plots, and sensitivity analyses. You enter data through a visual interface, and the tool handles all calculations automatically. While R and Stata offer more advanced capabilities like meta-regression and multivariate meta-analysis, MetaReview covers the standard analyses needed for the vast majority of published systematic reviews. Many researchers use MetaReview for their primary analysis and only turn to R for specialized analyses."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many studies do I need for a meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Technically, you can compute a pooled estimate with as few as two studies. However, the statistical properties of meta-analysis improve with more studies. With fewer than 5 studies, the random-effects model's estimate of between-study variance (tau-squared) is imprecise, I-squared has wide confidence intervals, and tests for publication bias (which require at least 10 studies) cannot be performed. The Cochrane Handbook notes that meta-analyses with very few studies should be interpreted cautiously. A practical minimum is 3-5 studies for a basic meta-analysis, 5-10 for reasonably stable heterogeneity estimates, and 10 or more for publication bias assessment. That said, even a meta-analysis of 2-3 studies can be informative if the studies are high quality and clinically similar — it is always better to formally synthesize the available evidence than to narratively summarize it."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between fixed and random effects in meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A fixed-effect model assumes that all studies in the meta-analysis estimate the same true underlying effect size, and that observed differences between studies are due solely to sampling error. It uses inverse variance weighting, giving more weight to larger, more precise studies. A random-effects model assumes that each study estimates a slightly different true effect size, drawn from a distribution of true effects. It accounts for both within-study sampling error and between-study variance (tau-squared), producing wider confidence intervals that reflect this additional uncertainty. In practice, the random-effects model is the safer default because clinical and methodological heterogeneity is almost always present. When I-squared is 0%, both models give identical results. The fixed-effect model is appropriate only when you are confident that all studies share identical populations, interventions, and outcomes — which is rare in practice."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I handle missing data in meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Missing data in meta-analysis can occur at the study level (entire studies not reporting usable data) or at the data level (studies reporting incomplete statistics). For incomplete statistics, you can often calculate the needed values: derive standard deviations from confidence intervals, standard errors, or p-values using standard conversion formulas; estimate event counts from percentages and sample sizes; or contact original study authors for unpublished data. If data cannot be recovered, document which studies were excluded due to missing data and assess whether their exclusion might bias your results. For studies with partial data, sensitivity analyses using best-case and worst-case imputation can bracket the possible impact. The Cochrane Handbook recommends against imputing missing participant data (e.g., assuming all dropouts had the event) without sensitivity analysis, as this introduces strong assumptions."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can MetaReview generate a forest plot?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. MetaReview generates publication-ready forest plots automatically as part of the meta-analysis calculation. After you enter your study data and select your effect size and model, the tool computes all results and renders a forest plot showing individual study effect estimates (squares), 95% confidence intervals (horizontal lines), study weights (square sizes and percentages), and the pooled estimate (diamond). You can customize the forest plot's appearance including color scheme, study sorting order, axis labels, and subgroup display. The forest plot can be exported as SVG (vector format, ideal for journal submission at any resolution) or PNG (raster format, suitable for presentations). MetaReview also generates funnel plots for publication bias assessment, and sensitivity analysis plots showing how the pooled estimate changes when each study is removed one at a time."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .toc { background: white; border-radius: 12px; padding: 24px 32px; margin-bottom: 40px; border: 1px solid #e5e7eb; }
+    .toc h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .toc a:hover { text-decoration: underline; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .step { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .step-number { display: inline-block; background: #1e40af; color: white; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-weight: 700; font-size: 14px; margin-right: 12px; }
+    .step h2 { display: inline; font-size: 20px; color: #111827; vertical-align: middle; }
+    .step h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .step p, .step li { font-size: 15px; color: #4b5563; }
+    .step ul, .step ol { padding-left: 20px; margin: 8px 0; }
+    .step li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .anatomy { background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; overflow-x: auto; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 16px 20px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.8; color: #374151; overflow-x: auto; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    .faq { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .faq h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .faq h3 { font-size: 16px; color: #1e40af; margin: 16px 0 8px; }
+    .faq p { font-size: 15px; color: #4b5563; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .step, .toc, .faq, .related, .section { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">Open Tool</a>
+      <a href="/guides/how-to-meta-analysis">Guides</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Free Meta-Analysis Calculator Online: Compute Effect Sizes &amp; Heterogeneity</h1>
+  <p>Calculate pooled effect sizes, heterogeneity statistics, and generate forest plots in minutes. No coding, no installation, no cost. A complete guide with formulas, real examples, and step-by-step instructions.</p>
+</div>
+
+<div class="container">
+
+  <!-- Table of Contents -->
+  <div class="toc">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#what-is-calculator">What Is a Meta-Analysis Calculator?</a></li>
+      <li><a href="#effect-sizes">Types of Effect Sizes You Can Calculate</a></li>
+      <li><a href="#heterogeneity">Understanding Heterogeneity Statistics</a></li>
+      <li><a href="#models">Fixed-Effect vs Random-Effects Models</a></li>
+      <li><a href="#tutorial">Step-by-Step: Run a Meta-Analysis with MetaReview</a></li>
+      <li><a href="#comparison">Meta-Analysis Calculator Comparison Table</a></li>
+      <li><a href="#pitfalls">Common Calculation Pitfalls</a></li>
+      <li><a href="#reporting">Reporting Meta-Analysis Results</a></li>
+      <li><a href="#faq">Frequently Asked Questions</a></li>
+    </ol>
+  </div>
+
+  <!-- Section 1: What Is a Meta-Analysis Calculator? -->
+  <div class="section" id="what-is-calculator">
+    <h2>What Is a Meta-Analysis Calculator?</h2>
+    <p>A <strong>meta-analysis calculator</strong> is a computational tool that takes individual study data -- effect sizes, sample sizes, variances, or raw outcome counts -- and produces a pooled (combined) estimate of the overall effect across all included studies. It automates the statistical machinery that underpins meta-analysis: weighting studies by their precision, choosing between fixed-effect and random-effects models, computing heterogeneity statistics, and generating confidence intervals for the pooled result.</p>
+
+    <p style="margin-top:12px">Meta-analysis is the quantitative heart of a systematic review. While the systematic review process involves formulating a question, searching databases, screening studies, extracting data, and assessing risk of bias, the meta-analysis step is where the actual numbers are crunched. A meta-analysis calculator handles this computational work, freeing researchers to focus on the decisions that require human judgment: which studies to include, which effect measure to use, how to handle clinical heterogeneity, and how to interpret the results in context.</p>
+
+    <h3>Why Researchers Need Automated Computation</h3>
+    <p>The mathematics of meta-analysis, while conceptually straightforward, involves dozens of intermediate calculations that are tedious and error-prone when done by hand. For a single meta-analysis of 10 studies using a random-effects model, you need to: (1) calculate the effect size and its variance for each study, (2) compute inverse variance weights, (3) calculate the weighted mean, (4) compute Cochran's Q statistic, (5) estimate tau-squared using an iterative method like DerSimonian-Laird or REML, (6) re-calculate weights incorporating tau-squared, (7) compute the new pooled estimate and its standard error, (8) derive the confidence interval and p-value, and (9) calculate I-squared and prediction intervals. Each step feeds into the next, meaning a single arithmetic error propagates through the entire analysis.</p>
+
+    <p style="margin-top:12px">Automated calculators eliminate these errors. They also enforce consistency: every study is weighted using the same formula, every confidence interval uses the same method, and every heterogeneity statistic is calculated correctly. This reproducibility is essential for scientific credibility. When you report that you used MetaReview or R's metafor package, readers and reviewers know exactly what computations were performed, which is far more transparent than saying "we calculated pooled estimates in Excel."</p>
+
+    <h3>Manual vs Automated Calculation: A Practical Comparison</h3>
+    <p>To illustrate why automated tools matter, consider a simple example. Suppose you are pooling five randomized controlled trials that each report the number of patients who experienced a cardiovascular event in the aspirin group versus the placebo group. To compute the pooled odds ratio manually, you would need to:</p>
+
+    <ol style="margin-top:8px">
+      <li>For each study, construct a 2x2 table and calculate the log odds ratio: ln(OR) = ln(a*d / b*c), where a = events in treatment, b = non-events in treatment, c = events in control, d = non-events in control.</li>
+      <li>Calculate the variance of each log(OR) using the formula: Var(ln(OR)) = 1/a + 1/b + 1/c + 1/d.</li>
+      <li>Compute the inverse variance weight for each study: w_i = 1 / Var(ln(OR_i)).</li>
+      <li>Calculate the fixed-effect pooled log(OR): sum(w_i * ln(OR_i)) / sum(w_i).</li>
+      <li>Calculate Q = sum(w_i * (ln(OR_i) - pooled_ln(OR))^2).</li>
+      <li>Derive I-squared = max(0, (Q - df) / Q * 100%), where df = k - 1.</li>
+      <li>If using random-effects, estimate tau-squared using DerSimonian-Laird: tau^2 = (Q - df) / (sum(w_i) - sum(w_i^2)/sum(w_i)), truncated to 0 if negative.</li>
+      <li>Re-weight with random-effects weights: w_i* = 1 / (Var(ln(OR_i)) + tau^2).</li>
+      <li>Compute the random-effects pooled log(OR) and its standard error.</li>
+      <li>Back-transform by exponentiating to get the pooled OR and its confidence interval.</li>
+    </ol>
+
+    <p style="margin-top:12px">That is 10 multi-step calculations for just five studies using one effect measure. Now imagine doing this for 25 studies, with subgroup analyses, sensitivity analyses (leave-one-out), and a different effect measure. The manual approach becomes impractical. A meta-analysis calculator performs all of these steps in under a second, with zero chance of arithmetic error.</p>
+
+    <h3>What a Good Meta-Analysis Calculator Should Provide</h3>
+    <p>Not all meta-analysis tools are created equal. A high-quality calculator should provide:</p>
+    <ul>
+      <li><strong>Multiple effect size measures</strong> -- At minimum: OR, RR, MD, and SMD. Ideally also HR for time-to-event data.</li>
+      <li><strong>Both fixed-effect and random-effects models</strong> -- With transparent documentation of the estimation method (DerSimonian-Laird, REML, etc.).</li>
+      <li><strong>Complete heterogeneity statistics</strong> -- I-squared, Cochran's Q with p-value, tau-squared, and prediction intervals.</li>
+      <li><strong>Forest plot generation</strong> -- A publication-ready forest plot is the standard deliverable of any meta-analysis.</li>
+      <li><strong>Funnel plot and bias tests</strong> -- Egger's test, Begg's test, and the trim-and-fill method for publication bias assessment.</li>
+      <li><strong>Sensitivity analysis</strong> -- Leave-one-out analysis showing how the pooled result changes when each study is removed.</li>
+      <li><strong>Data validation</strong> -- Real-time checks for impossible values (negative variances, events exceeding totals).</li>
+      <li><strong>Export capability</strong> -- SVG or high-resolution PNG for figures, and structured data export for the numerical results.</li>
+    </ul>
+
+    <p style="margin-top:12px">MetaReview provides all of these features in a free, browser-based interface that requires no installation, no coding, and no account registration. It is designed to be the fastest path from extracted data to publication-ready meta-analysis results.</p>
+
+    <div class="tip"><strong>Key takeaway:</strong> A meta-analysis calculator automates the precise, multi-step statistical computations required to pool study results. Manual calculation is error-prone and impractical for modern systematic reviews. Free online tools like MetaReview make rigorous meta-analysis accessible to every researcher, regardless of programming skill or software budget.</div>
+  </div>
+
+  <!-- Section 2: Types of Effect Sizes -->
+  <div class="section" id="effect-sizes">
+    <h2>Types of Effect Sizes You Can Calculate</h2>
+    <p>The choice of effect size measure is one of the most consequential decisions in a meta-analysis. It determines how individual study results are expressed, how they are combined, and how the pooled result is interpreted. The effect size must match your data type (binary vs continuous), your study design (RCT vs cohort vs case-control), and your clinical question. Below, we cover the five most commonly used effect sizes in health research meta-analyses, with formulas, interpretation guidance, and real-world examples.</p>
+
+    <h3>1. Odds Ratio (OR)</h3>
+    <p>The odds ratio compares the odds of an event in the intervention group to the odds of the event in the control group. It is the most commonly used effect measure for binary (dichotomous) outcomes in meta-analysis, particularly for case-control studies and situations where the baseline risk varies substantially across studies.</p>
+
+    <div class="formula">
+OR = (a / b) / (c / d) = (a * d) / (b * c)
+
+Where:
+  a = events in intervention group
+  b = non-events in intervention group
+  c = events in control group
+  d = non-events in control group
+
+Standard error of ln(OR) = sqrt(1/a + 1/b + 1/c + 1/d)
+    </div>
+
+    <p style="margin-top:12px"><strong>Interpretation:</strong> An OR of 1.0 means no difference between groups. An OR less than 1.0 means lower odds in the intervention group (the intervention is protective). An OR greater than 1.0 means higher odds in the intervention group (the intervention increases risk). For example, an OR of 0.70 means the odds of the event are 30% lower in the intervention group.</p>
+
+    <p style="margin-top:8px"><strong>Clinical example -- Aspirin for cardiovascular prevention:</strong> Consider a meta-analysis of randomized trials evaluating low-dose aspirin for preventing myocardial infarction. In the Physicians' Health Study, 139 of 11,037 physicians in the aspirin group had a myocardial infarction compared to 239 of 11,034 in the placebo group. The odds ratio for this single study would be (139 * 10,795) / (10,898 * 239) = 0.576, suggesting aspirin reduced the odds of MI by approximately 42%. When pooled across multiple trials, the meta-analysis calculator weights each study by the inverse of its variance and produces an overall OR with a combined confidence interval.</p>
+
+    <p style="margin-top:8px"><strong>When to use OR:</strong> Case-control studies (where RR cannot be directly calculated), rare events (where OR approximates RR), situations where baseline risk differs substantially across studies, and logistic regression outputs. The OR is also mathematically convenient because it is symmetric on the log scale, making it well-suited for meta-analytic pooling.</p>
+
+    <div class="warn"><strong>Caution:</strong> When the outcome is common (event rate above 10-20%), the OR will overestimate the relative risk. An OR of 2.0 does not mean "twice the risk" -- it means "twice the odds." For common outcomes, the RR is more intuitive and clinically interpretable. Misinterpreting OR as RR is one of the most frequent errors in medical literature.</div>
+
+    <h3>2. Risk Ratio (RR)</h3>
+    <p>The risk ratio (also called relative risk) compares the probability of an event in the intervention group to the probability in the control group. It is generally preferred over the OR for cohort studies and RCTs because it is more intuitive for clinicians and patients: "the risk is 1.5 times higher" is easier to communicate than "the odds are 1.5 times higher."</p>
+
+    <div class="formula">
+RR = (a / n1) / (c / n2)
+
+Where:
+  a = events in intervention group
+  n1 = total participants in intervention group
+  c = events in control group
+  n2 = total participants in control group
+
+Standard error of ln(RR) = sqrt(1/a - 1/n1 + 1/c - 1/n2)
+    </div>
+
+    <p style="margin-top:12px"><strong>Interpretation:</strong> An RR of 1.0 indicates no difference. An RR of 0.80 means a 20% reduction in risk with the intervention. An RR of 1.50 means a 50% increase in risk. The number needed to treat (NNT) can be derived from the RR and the baseline risk: NNT = 1 / (baseline_risk * (1 - RR)).</p>
+
+    <p style="margin-top:8px"><strong>Clinical example -- Antihypertensive treatment for stroke prevention:</strong> In a meta-analysis of antihypertensive drug trials, each study reports the number of stroke events in the treatment versus placebo group. If one trial reports 25 strokes among 2,000 treated patients and 40 strokes among 2,000 control patients, the RR = (25/2000) / (40/2000) = 0.625, indicating a 37.5% reduction in stroke risk. The meta-analysis calculator pools these RRs across all trials using inverse variance weighting on the log scale.</p>
+
+    <p style="margin-top:8px"><strong>When to use RR:</strong> RCTs and prospective cohort studies with binary outcomes, situations where you want to communicate effect in terms of "risk" (more intuitive for clinical audiences), and when baseline event rates are moderate to high.</p>
+
+    <h3>3. Hazard Ratio (HR)</h3>
+    <p>The hazard ratio is the standard effect measure for time-to-event (survival) data. It compares the instantaneous rate of the event in the intervention group to the rate in the control group at any given time point, accounting for censoring (patients who drop out or are lost to follow-up before experiencing the event).</p>
+
+    <div class="formula">
+HR is estimated from survival analysis models (Cox proportional hazards).
+
+For meta-analysis, you need: ln(HR) and its standard error (SE).
+
+If not directly reported, ln(HR) can be estimated from:
+  - Kaplan-Meier curves (using methods by Parmar, Tierney, or Guyot)
+  - O-E statistics and variance: ln(HR) = (O - E) / V
+  - Reported p-values and event counts (using Tierney's methods)
+
+SE(ln(HR)) = (ln(upper CI) - ln(lower CI)) / (2 * 1.96)
+    </div>
+
+    <p style="margin-top:12px"><strong>Interpretation:</strong> An HR of 1.0 indicates no difference. An HR of 0.75 means a 25% lower hazard (instantaneous risk) of the event at any time point. Unlike OR and RR, the HR incorporates the time dimension, making it the appropriate measure when the timing of events matters (overall survival, progression-free survival, time to relapse).</p>
+
+    <p style="margin-top:8px"><strong>Clinical example -- Adjuvant chemotherapy for colon cancer:</strong> A meta-analysis of trials evaluating fluorouracil-based chemotherapy after surgical resection for stage III colon cancer pools hazard ratios for overall survival. Each trial reports an HR from a Cox model comparing chemotherapy to observation. An individual trial might report HR = 0.68 (95% CI: 0.50-0.92), meaning chemotherapy reduced the hazard of death by 32%. The meta-analysis calculator combines these on the log(HR) scale.</p>
+
+    <p style="margin-top:8px"><strong>When to use HR:</strong> Oncology trials (overall survival, progression-free survival), cardiovascular trials with time-to-event endpoints, any study reporting survival analysis. The HR is the only appropriate measure when censoring is present and event timing is clinically relevant.</p>
+
+    <h3>4. Mean Difference (MD)</h3>
+    <p>The mean difference (also called weighted mean difference or WMD) is used for continuous outcomes when all studies measure the outcome on the same scale. It is the simplest continuous effect measure: the difference in mean values between the intervention and control groups.</p>
+
+    <div class="formula">
+MD = Mean_intervention - Mean_control
+
+Variance(MD) = SD1^2/n1 + SD2^2/n2
+
+Standard error of MD = sqrt(SD1^2/n1 + SD2^2/n2)
+
+Where:
+  SD1, SD2 = standard deviations in intervention and control groups
+  n1, n2 = sample sizes in intervention and control groups
+    </div>
+
+    <p style="margin-top:12px"><strong>Interpretation:</strong> The MD is directly interpretable in the original measurement units. An MD of -5.2 mmHg for systolic blood pressure means the intervention group had, on average, 5.2 mmHg lower blood pressure than the control group. This direct interpretability is the main advantage of MD over SMD.</p>
+
+    <p style="margin-top:8px"><strong>Clinical example -- Antihypertensive drugs for blood pressure reduction:</strong> A meta-analysis of ACE inhibitor trials for hypertension pools mean differences in systolic blood pressure reduction. Study A reports a mean reduction of 12.3 mmHg (SD 8.2, n=120) in the treatment group versus 4.1 mmHg (SD 7.9, n=115) in placebo, yielding MD = -8.2 mmHg. Study B reports treatment mean 10.8 mmHg (SD 9.1, n=85) versus placebo mean 3.5 mmHg (SD 8.6, n=82), yielding MD = -7.3 mmHg. The calculator pools these MDs, weighting each by the inverse of its variance, to produce an overall pooled MD with confidence interval.</p>
+
+    <p style="margin-top:8px"><strong>When to use MD:</strong> All studies use the same measurement instrument and scale (e.g., all report HbA1c in %, blood pressure in mmHg, or Beck Depression Inventory scores). MD should be the default for continuous outcomes when scales are identical, because it preserves clinical interpretability.</p>
+
+    <h3>5. Standardized Mean Difference (SMD / Hedges' g)</h3>
+    <p>The standardized mean difference is used when studies measure the same underlying construct but use different measurement scales. It expresses the difference between groups in standard deviation units, allowing studies with different instruments to be combined.</p>
+
+    <div class="formula">
+Cohen's d = (Mean_intervention - Mean_control) / SD_pooled
+
+SD_pooled = sqrt(((n1-1)*SD1^2 + (n2-1)*SD2^2) / (n1 + n2 - 2))
+
+Hedges' g = d * (1 - 3/(4*(n1+n2) - 9))
+    (Small-sample correction factor, also called J)
+
+Variance(g) = (n1+n2)/(n1*n2) + g^2/(2*(n1+n2))
+    </div>
+
+    <p style="margin-top:12px"><strong>Interpretation:</strong> The SMD is measured in standard deviation units. Cohen's benchmarks are commonly used: 0.2 = small effect, 0.5 = medium effect, 0.8 = large effect. Hedges' g corrects for the small upward bias in Cohen's d that occurs with small sample sizes. In meta-analysis, Hedges' g is preferred over Cohen's d because of this correction. An SMD of -0.45 means the intervention group scored about half a standard deviation lower than the control group.</p>
+
+    <p style="margin-top:8px"><strong>Clinical example -- Cognitive behavioral therapy for depression:</strong> A meta-analysis evaluates the effect of CBT on depression symptoms. However, different trials use different depression scales: some use the Hamilton Depression Rating Scale (HDRS, range 0-52), others use the Beck Depression Inventory (BDI, range 0-63), and others use the Patient Health Questionnaire (PHQ-9, range 0-27). Because these scales have different ranges and standard deviations, mean differences cannot be pooled directly. The SMD standardizes each study's result into a common unit (standard deviations), enabling valid pooling. If the pooled SMD is -0.62, it indicates a moderate-to-large effect of CBT on depression, equivalent to about 0.62 standard deviations improvement regardless of which scale was used.</p>
+
+    <p style="margin-top:8px"><strong>When to use SMD:</strong> Studies measure the same construct on different scales (e.g., pain measured with VAS in some studies and NRS in others), psychological outcomes measured with different validated instruments, or quality of life measured with different questionnaires. Do NOT use SMD when all studies use the same scale -- use MD instead, because MD preserves clinical interpretability.</p>
+
+    <h3>Quick Reference: Choosing Your Effect Size</h3>
+    <table class="data-table">
+      <tr><th>Outcome Type</th><th>Same Scale?</th><th>Study Design</th><th>Recommended Measure</th></tr>
+      <tr><td>Binary (yes/no)</td><td>N/A</td><td>Case-control</td><td>Odds Ratio (OR)</td></tr>
+      <tr><td>Binary (yes/no)</td><td>N/A</td><td>RCT / Cohort</td><td>Risk Ratio (RR)</td></tr>
+      <tr><td>Time-to-event</td><td>N/A</td><td>Survival analysis</td><td>Hazard Ratio (HR)</td></tr>
+      <tr><td>Continuous</td><td>Yes</td><td>Any</td><td>Mean Difference (MD)</td></tr>
+      <tr><td>Continuous</td><td>No</td><td>Any</td><td>Standardized Mean Difference (SMD)</td></tr>
+    </table>
+
+    <div class="tip"><strong>MetaReview supports all of these:</strong> Select your effect measure when setting up the analysis. MetaReview handles all the underlying calculations -- log transformations, variance estimation, pooling, and back-transformation -- automatically. You just enter the raw data.</div>
+  </div>
+
+  <!-- Section 3: Understanding Heterogeneity Statistics -->
+  <div class="section" id="heterogeneity">
+    <h2>Understanding Heterogeneity Statistics</h2>
+    <p>Heterogeneity is the degree to which the true effect sizes vary across the studies included in a meta-analysis. It is arguably the most important concept in meta-analysis after the pooled effect itself, because high heterogeneity means the pooled estimate may not adequately represent any individual study's true effect. A meta-analysis calculator must compute and report heterogeneity statistics so that researchers and readers can assess how consistent the evidence is.</p>
+
+    <p style="margin-top:12px">There are two types of heterogeneity. <strong>Clinical heterogeneity</strong> refers to differences in patient populations, interventions, comparators, outcomes, and settings across studies -- this is assessed qualitatively by the review authors. <strong>Statistical heterogeneity</strong> refers to variability in effect sizes beyond what is expected from sampling error -- this is what the calculator quantifies. Statistical heterogeneity may arise from clinical heterogeneity, methodological differences, or both.</p>
+
+    <h3>I-Squared (I&sup2;): The Percentage of True Variation</h3>
+    <p>I-squared is the most widely reported heterogeneity statistic. It describes the percentage of total variability in effect estimates that is due to true differences between studies rather than sampling error (chance). Introduced by Higgins and Thompson in 2002, it has become the standard metric because it is easy to interpret and does not depend on the number of studies or the effect size scale.</p>
+
+    <div class="formula">
+I&sup2; = max(0, (Q - df) / Q) * 100%
+
+Where:
+  Q = Cochran's Q statistic (see below)
+  df = k - 1 (degrees of freedom, k = number of studies)
+    </div>
+
+    <p style="margin-top:12px"><strong>Interpretation thresholds</strong> (based on the Cochrane Handbook, Chapter 10):</p>
+    <table class="data-table">
+      <tr><th>I&sup2; Range</th><th>Heterogeneity Level</th><th>Clinical Implication</th></tr>
+      <tr><td>0% - 25%</td><td>Low</td><td>Study results are broadly consistent. The pooled estimate is likely a good summary of the overall effect. A fixed-effect model is usually appropriate.</td></tr>
+      <tr><td>25% - 50%</td><td>Moderate</td><td>Some variation exists beyond chance. Consider exploring sources through subgroup analysis. Both models are reasonable; random-effects is safer.</td></tr>
+      <tr><td>50% - 75%</td><td>Substantial</td><td>Meaningful differences exist across studies. Subgroup or sensitivity analysis is expected. The pooled estimate should be interpreted cautiously. Investigate whether clinical or methodological differences explain the variation.</td></tr>
+      <tr><td>75% - 100%</td><td>Considerable</td><td>Studies are measuring fundamentally different effects. Pooling may not be appropriate. Narrative synthesis or separate subgroup analyses may be more informative than a single pooled estimate. The prediction interval will be very wide.</td></tr>
+    </table>
+
+    <div class="warn"><strong>Important caveat:</strong> I-squared should not be interpreted in isolation. A meta-analysis of two studies might have I&sup2; = 0% simply because there is insufficient power to detect heterogeneity. Conversely, a meta-analysis of 100 large studies might have I&sup2; = 40% that is highly statistically significant but clinically trivial if all effect sizes cluster in a narrow, clinically meaningful range. Always consider I&sup2; alongside the Q test, tau-squared, the prediction interval, and the visual spread of the forest plot.</div>
+
+    <h3>Cochran's Q Test: Is There Significant Heterogeneity?</h3>
+    <p>Cochran's Q is a chi-squared test that evaluates the null hypothesis that all studies share the same true effect size. It is computed as the weighted sum of squared deviations of each study's effect from the pooled effect.</p>
+
+    <div class="formula">
+Q = SUM(w_i * (theta_i - theta_pooled)^2)
+
+Where:
+  w_i = inverse variance weight of study i
+  theta_i = effect size of study i
+  theta_pooled = fixed-effect pooled estimate
+  Q follows a chi-squared distribution with df = k - 1
+    </div>
+
+    <p style="margin-top:12px"><strong>Interpretation:</strong> A significant Q test (p &lt; 0.10 -- a lenient threshold is used because Q has low statistical power, especially with fewer than 10 studies) indicates that the observed variation in effect sizes is greater than expected by chance alone. However, a non-significant Q does not prove homogeneity -- it may simply reflect low power to detect true heterogeneity.</p>
+
+    <p style="margin-top:8px">The Q statistic itself is also used in the calculation of I-squared and tau-squared. It is a building block of the heterogeneity assessment, not a standalone verdict. Reporting both Q (with its p-value and degrees of freedom) and I-squared provides complementary information.</p>
+
+    <h3>Tau-Squared (&tau;&sup2;): The Between-Study Variance</h3>
+    <p>While I-squared tells you the proportion of variation due to heterogeneity, tau-squared tells you the actual magnitude of between-study variance in the true effect sizes. It is expressed in the same squared units as the effect size, making it directly interpretable (though tau, the square root of tau-squared, is more intuitive as a standard deviation).</p>
+
+    <div class="formula">
+DerSimonian-Laird estimator:
+
+tau^2 = max(0, (Q - df) / (sum(w_i) - sum(w_i^2)/sum(w_i)))
+
+Where:
+  Q = Cochran's Q statistic
+  df = k - 1
+  w_i = fixed-effect inverse variance weights
+    </div>
+
+    <p style="margin-top:12px"><strong>Interpretation:</strong> Tau-squared represents the variance of the distribution of true effects. If tau^2 = 0, there is no between-study variability (the fixed-effect assumption holds). A large tau-squared means the true effects are widely dispersed. For example, if you are pooling odds ratios and tau^2 = 0.15 on the log(OR) scale, then tau = sqrt(0.15) = 0.39, meaning the standard deviation of the distribution of true log(ORs) is 0.39. Approximately 95% of true effects would fall within plus/minus 1.96*0.39 = 0.76 log-OR units of the pooled mean.</p>
+
+    <p style="margin-top:8px">Tau-squared is critical because it is used to calculate random-effects weights. In the random-effects model, each study's weight is 1 / (within-study variance + tau^2). This means that when tau^2 is large, the weights become more equal across studies -- large studies lose their dominance because the between-study variability swamps the within-study sampling error.</p>
+
+    <h3>Prediction Interval: The Clinically Crucial Statistic</h3>
+    <p>The prediction interval is perhaps the most underused and underreported statistic in meta-analysis. While the confidence interval tells you the uncertainty around the mean pooled effect, the prediction interval tells you the range within which the true effect of a new, future study is expected to fall. It incorporates both the uncertainty of the pooled mean and the between-study variability.</p>
+
+    <div class="formula">
+95% Prediction Interval = pooled_estimate +/- t(k-2, 0.025) * sqrt(tau^2 + SE_pooled^2)
+
+Where:
+  t(k-2, 0.025) = critical value from t-distribution with k-2 degrees of freedom
+  tau^2 = between-study variance
+  SE_pooled = standard error of the pooled estimate
+  k = number of studies
+    </div>
+
+    <p style="margin-top:12px"><strong>Why it matters clinically:</strong> Imagine a meta-analysis finding a pooled OR of 0.60 (95% CI: 0.45-0.80). This looks like a robust protective effect. But if the 95% prediction interval is 0.25-1.45, it means that in a new clinical setting, the true effect could plausibly favor either treatment or control. A clinician deciding whether to implement the intervention in their hospital needs to know this: the average effect is protective, but it might not apply in every setting. The prediction interval captures this practical uncertainty in a way the confidence interval does not.</p>
+
+    <p style="margin-top:8px">IntHout et al. (2016) demonstrated that in many published meta-analyses with statistically significant pooled results, the prediction interval crosses the null, fundamentally changing the clinical interpretation. The GRADE framework also considers prediction intervals when evaluating the certainty of evidence.</p>
+
+    <h3>Putting Heterogeneity Statistics Together</h3>
+    <p>No single heterogeneity statistic tells the full story. Best practice is to report all four metrics together:</p>
+    <ul>
+      <li><strong>Q test:</strong> Is there statistically significant heterogeneity? (Binary answer: yes/no, with the caveat of low power.)</li>
+      <li><strong>I-squared:</strong> What proportion of variation is due to true differences? (Relative measure, useful for comparison.)</li>
+      <li><strong>Tau-squared / tau:</strong> How large is the between-study variability? (Absolute measure, in effect-size units.)</li>
+      <li><strong>Prediction interval:</strong> What is the range of plausible effects in future settings? (Clinical measure, for decision-making.)</li>
+    </ul>
+
+    <div class="tip"><strong>MetaReview computes all four:</strong> When you run a meta-analysis in MetaReview, the results panel displays I-squared, Q (with p-value and degrees of freedom), tau-squared, and the prediction interval automatically. You do not need to calculate any of these by hand.</div>
+  </div>
+
+  <!-- Section 4: Fixed-Effect vs Random-Effects Models -->
+  <div class="section" id="models">
+    <h2>Fixed-Effect vs Random-Effects Models</h2>
+    <p>The choice between a fixed-effect model and a random-effects model is one of the most fundamental decisions in meta-analysis. It reflects your assumption about the nature of the true effect sizes across the included studies, and it directly affects the pooled estimate, the confidence interval width, the study weights, and the interpretation of results. Understanding the difference is essential for any researcher using a meta-analysis calculator.</p>
+
+    <h3>The Fixed-Effect Model</h3>
+    <p>The fixed-effect model (note: "fixed-effect," singular, not "fixed-effects" -- this is the conventional terminology in the Cochrane Handbook) assumes that all studies in the meta-analysis estimate the <strong>same true underlying effect size</strong>. Any variation in observed effect sizes across studies is attributed entirely to sampling error (within-study random variation). The model treats the true effect as a single, fixed parameter that every study shares.</p>
+
+    <p style="margin-top:8px">Under this model, the pooled estimate is calculated using <strong>inverse variance weighting</strong>:</p>
+
+    <div class="formula">
+Pooled estimate (fixed) = SUM(w_i * theta_i) / SUM(w_i)
+
+Where:
+  w_i = 1 / Var(theta_i)  (inverse of within-study variance)
+  theta_i = effect size of study i
+
+SE(pooled) = 1 / sqrt(SUM(w_i))
+95% CI = pooled +/- 1.96 * SE(pooled)
+    </div>
+
+    <p style="margin-top:12px"><strong>Consequences of the fixed-effect assumption:</strong></p>
+    <ul>
+      <li>Larger studies receive proportionally more weight because they have smaller variance.</li>
+      <li>The confidence interval reflects only within-study sampling error.</li>
+      <li>The model does not account for between-study variability, so the CI may be too narrow if true effects actually vary.</li>
+      <li>The pooled estimate represents the best estimate of the single common effect.</li>
+    </ul>
+
+    <p style="margin-top:8px"><strong>When is the fixed-effect model appropriate?</strong> In practice, very few meta-analyses genuinely meet the fixed-effect assumption. It is most defensible when: (1) all studies used virtually identical populations, interventions, comparators, outcomes, and settings (e.g., identical drug at identical dose in the same type of patient); (2) you are interested only in the specific set of included studies (not generalizing to other settings); or (3) there are very few studies (k = 2-3) and there is no statistical power to estimate tau-squared reliably.</p>
+
+    <h3>The Random-Effects Model</h3>
+    <p>The random-effects model assumes that each study estimates a <strong>different true effect size</strong>, and that these true effects are drawn from a probability distribution (typically assumed to be normal) with mean mu and variance tau-squared. The model acknowledges that studies differ in populations, intervention details, outcome measurement, and other factors that cause the true effect to vary from study to study.</p>
+
+    <div class="formula">
+Random-effects model:
+
+theta_i = mu + zeta_i + epsilon_i
+
+Where:
+  mu = overall mean of the distribution of true effects
+  zeta_i ~ N(0, tau^2)  (between-study random effect)
+  epsilon_i ~ N(0, sigma_i^2)  (within-study sampling error)
+
+Random-effects weights: w_i* = 1 / (sigma_i^2 + tau^2)
+
+Pooled estimate (random) = SUM(w_i* * theta_i) / SUM(w_i*)
+SE(pooled) = 1 / sqrt(SUM(w_i*))
+    </div>
+
+    <p style="margin-top:12px">The key difference is the addition of tau-squared in the weight denominator. This has several consequences:</p>
+    <ul>
+      <li><strong>More balanced weights:</strong> When tau-squared is large relative to within-study variances, all studies receive more similar weights. Small studies gain influence; very large studies lose some dominance. In the extreme case where tau-squared is much larger than any study's variance, the random-effects model approaches equal weighting.</li>
+      <li><strong>Wider confidence intervals:</strong> The standard error of the pooled estimate is larger because it incorporates both within-study and between-study uncertainty. This is more honest when true effects genuinely vary.</li>
+      <li><strong>Generalizable inference:</strong> The pooled estimate represents the mean of the distribution of true effects, which is relevant for predicting the effect in a new, different setting.</li>
+    </ul>
+
+    <h3>DerSimonian-Laird Estimator</h3>
+    <p>The DerSimonian-Laird (DL) method is the most commonly used approach for estimating tau-squared in random-effects meta-analysis. It is a method-of-moments estimator: it equates the observed Q statistic to its expected value under the random-effects model and solves for tau-squared.</p>
+
+    <div class="formula">
+tau^2_DL = max(0, (Q - (k-1)) / C)
+
+Where:
+  C = SUM(w_i) - SUM(w_i^2) / SUM(w_i)
+  Q = Cochran's Q statistic
+  k = number of studies
+  w_i = fixed-effect inverse variance weights
+
+If Q &lt;= k-1, then tau^2 = 0 (no heterogeneity detected)
+    </div>
+
+    <p style="margin-top:12px">The DL estimator is fast, simple, and does not require iteration. It is implemented in MetaReview and is the default in most meta-analysis software. However, it has known limitations: it can underestimate tau-squared when the number of studies is small (k &lt; 10-15), leading to confidence intervals that are too narrow. Alternative estimators include REML (restricted maximum likelihood), PM (Paule-Mandel), and HKSJ (Hartung-Knapp-Sidik-Jonkman) adjustments that produce more conservative inference with few studies.</p>
+
+    <h3>How Model Choice Affects Results</h3>
+    <p>To make the impact concrete, consider a hypothetical meta-analysis of 8 studies examining a new anticoagulant versus standard treatment for venous thromboembolism prevention:</p>
+
+    <table class="data-table">
+      <tr><th>Aspect</th><th>Fixed-Effect Result</th><th>Random-Effects Result</th></tr>
+      <tr><td>Pooled OR</td><td>0.58</td><td>0.62</td></tr>
+      <tr><td>95% CI</td><td>0.49 - 0.69</td><td>0.44 - 0.87</td></tr>
+      <tr><td>p-value</td><td>&lt; 0.0001</td><td>0.006</td></tr>
+      <tr><td>I-squared</td><td colspan="2">58% (moderate-to-substantial)</td></tr>
+      <tr><td>95% Prediction Interval</td><td>N/A (not applicable)</td><td>0.28 - 1.37</td></tr>
+      <tr><td>Interpretation</td><td>Strong, precise protective effect</td><td>Protective on average, but the effect may not apply in all settings</td></tr>
+    </table>
+
+    <p style="margin-top:12px">Notice that: (1) the random-effects CI is wider, appropriately reflecting between-study variability; (2) the random-effects pooled OR is slightly pulled toward the null, because small studies with more extreme results receive relatively more weight; (3) the prediction interval crosses 1.0, suggesting the treatment may not be beneficial in all settings. The fixed-effect model would have you believe the effect is highly precise and consistent. The random-effects model paints a more nuanced and honest picture.</p>
+
+    <h3>Common Misconceptions</h3>
+    <ul>
+      <li><strong>"Random-effects is always more conservative."</strong> Usually true for the confidence interval width, but not always for the point estimate. If small studies show larger effects (common in the presence of publication bias), the random-effects model gives them more weight, potentially producing a more extreme (not more conservative) pooled estimate.</li>
+      <li><strong>"Use fixed-effect when heterogeneity is low."</strong> When I-squared = 0%, both models give identical results, so there is no penalty for using random-effects. The choice should be based on the clinical plausibility of a common effect, not on the observed heterogeneity.</li>
+      <li><strong>"Random-effects accounts for heterogeneity."</strong> It accounts for heterogeneity in the sense that it widens confidence intervals, but it does not explain heterogeneity. High I-squared still requires investigation through subgroup analysis or meta-regression, regardless of which model you use.</li>
+      <li><strong>"You should try both and report the better one."</strong> This is outcome reporting bias. Choose your model a priori, justify it in your protocol, and report that model as primary. You may report the other model as a sensitivity analysis.</li>
+    </ul>
+
+    <div class="tip"><strong>Practical recommendation:</strong> For most meta-analyses, the random-effects model is the appropriate default. Clinical heterogeneity is almost always present to some degree. If I-squared is 0%, the results will be identical to fixed-effect anyway. MetaReview lets you toggle between models to compare, but you should pre-specify your primary model in your protocol.</div>
+  </div>
+
+  <!-- Section 5: Step-by-Step Tutorial -->
+  <div class="section" id="tutorial">
+    <h2>Step-by-Step: Run a Meta-Analysis with MetaReview</h2>
+    <p>This section walks you through the complete process of performing a meta-analysis using MetaReview's free online calculator. From opening the tool to exporting your final report, the entire workflow takes approximately 10 to 15 minutes for a standard meta-analysis with 5 to 20 studies.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">1</span>
+    <h2>Open MetaReview and Select Effect Measure</h2>
+    <p style="margin-top:16px">Open <a href="/" style="color:#1e40af">MetaReview</a> in any modern web browser (Chrome, Firefox, Safari, or Edge). No account registration, no software installation, and no payment is required. The tool runs entirely in your browser.</p>
+    <p>Begin by selecting the appropriate effect size measure for your data. This decision should align with your systematic review protocol and the nature of your included studies:</p>
+    <ul>
+      <li><strong>Odds Ratio (OR)</strong> -- For binary outcomes, especially case-control studies or when baseline event rates vary.</li>
+      <li><strong>Risk Ratio (RR)</strong> -- For binary outcomes in RCTs and cohort studies where "risk" is more clinically meaningful.</li>
+      <li><strong>Mean Difference (MD)</strong> -- For continuous outcomes measured on the same scale across all studies.</li>
+      <li><strong>Standardized Mean Difference (SMD / Hedges' g)</strong> -- For continuous outcomes measured on different scales.</li>
+    </ul>
+    <div class="tip"><strong>Not sure which to choose?</strong> Refer to the <a href="#effect-sizes" style="color:#1e40af">effect size selection guide</a> above, or read our detailed <a href="/guides/effect-size-selection" style="color:#1e40af">effect size selection tutorial</a>.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <h2>Enter Study Data (Binary or Continuous)</h2>
+    <p style="margin-top:16px">Enter the extracted data for each included study. MetaReview provides a clean data entry interface with real-time validation.</p>
+
+    <h3>For Binary Outcomes (OR or RR)</h3>
+    <table class="data-table">
+      <tr><th>Field</th><th>Description</th><th>Example</th></tr>
+      <tr><td>Study Name</td><td>First author and year</td><td>Smith 2019</td></tr>
+      <tr><td>Events (Intervention)</td><td>Number of events in treatment group</td><td>23</td></tr>
+      <tr><td>Total (Intervention)</td><td>Total participants in treatment group</td><td>150</td></tr>
+      <tr><td>Events (Control)</td><td>Number of events in control group</td><td>45</td></tr>
+      <tr><td>Total (Control)</td><td>Total participants in control group</td><td>148</td></tr>
+    </table>
+
+    <h3>For Continuous Outcomes (MD or SMD)</h3>
+    <table class="data-table">
+      <tr><th>Field</th><th>Description</th><th>Example</th></tr>
+      <tr><td>Study Name</td><td>First author and year</td><td>Jones 2020</td></tr>
+      <tr><td>Mean (Intervention)</td><td>Mean value in treatment group</td><td>-2.4</td></tr>
+      <tr><td>SD (Intervention)</td><td>Standard deviation in treatment group</td><td>1.8</td></tr>
+      <tr><td>N (Intervention)</td><td>Sample size of treatment group</td><td>85</td></tr>
+      <tr><td>Mean (Control)</td><td>Mean value in control group</td><td>-0.6</td></tr>
+      <tr><td>SD (Control)</td><td>Standard deviation in control group</td><td>2.1</td></tr>
+      <tr><td>N (Control)</td><td>Sample size of control group</td><td>82</td></tr>
+    </table>
+
+    <p style="margin-top:12px">MetaReview validates your inputs in real time. It will immediately flag: events exceeding the total sample size, negative standard deviations, zero or negative sample sizes, and missing required fields. Fix any errors before proceeding.</p>
+    <div class="warn"><strong>Double-check your data:</strong> Data entry errors are the most common source of incorrect meta-analysis results. After entering all studies, review the complete data table within MetaReview against your original data extraction spreadsheet. Pay special attention to intervention/control column assignment and decimal placement.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <h2>Import from CSV/Excel (Optional)</h2>
+    <p style="margin-top:16px">For meta-analyses with many studies, manual data entry is tedious. MetaReview supports CSV file import for faster data loading.</p>
+    <p>Prepare your data in a spreadsheet (Excel, Google Sheets, or any application that exports CSV) with one row per study and column headers matching MetaReview's expected format. Click the import button, select your file, and MetaReview will automatically map columns and display a preview of the imported data.</p>
+    <p style="margin-top:8px">Verify the preview carefully: check that column mapping is correct, all studies are present, and no data was truncated or misaligned. Once confirmed, the imported data populates the data entry table and is ready for analysis.</p>
+    <div class="tip"><strong>CSV format tip:</strong> Use UTF-8 encoding to ensure study author names with accented characters (e.g., Gonzalez, Muller) import correctly. Save as CSV (UTF-8) from Excel or use Google Sheets' native CSV export.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span>
+    <h2>Choose the Analysis Model</h2>
+    <p style="margin-top:16px">Select your statistical model for pooling. MetaReview offers two options:</p>
+    <ul>
+      <li><strong>Fixed-effect model</strong> -- Assumes all studies share one true effect. Uses inverse variance weighting. Produces narrower confidence intervals. Appropriate only when studies are clinically and methodologically homogeneous.</li>
+      <li><strong>Random-effects model</strong> -- Assumes true effects vary across studies. Uses DerSimonian-Laird estimation for tau-squared. Produces wider, more conservative confidence intervals. Appropriate for most real-world meta-analyses.</li>
+    </ul>
+    <p style="margin-top:8px">In the vast majority of published meta-analyses, the random-effects model is the appropriate choice because some degree of clinical heterogeneity is almost always present. When I-squared is 0%, both models produce identical results, so there is no penalty for defaulting to random-effects.</p>
+    <div class="tip"><strong>Protocol consistency:</strong> Your model choice should be pre-specified in your systematic review protocol (e.g., PROSPERO registration). Using the random-effects model as the primary analysis and the fixed-effect model as a sensitivity check is a common and defensible approach.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">5</span>
+    <h2>Review Pooled Results and Heterogeneity</h2>
+    <p style="margin-top:16px">MetaReview automatically computes and displays the complete results panel:</p>
+    <ul>
+      <li><strong>Pooled effect size</strong> -- The overall combined estimate (OR, RR, MD, or SMD) with its 95% confidence interval and p-value.</li>
+      <li><strong>Individual study results</strong> -- Each study's effect size, confidence interval, and weight in the pooled analysis.</li>
+      <li><strong>I-squared</strong> -- The percentage of variation due to true heterogeneity (0-100%).</li>
+      <li><strong>Cochran's Q</strong> -- The chi-squared test statistic with degrees of freedom and p-value.</li>
+      <li><strong>Tau-squared</strong> -- The estimated between-study variance (random-effects model only).</li>
+      <li><strong>Prediction interval</strong> -- The range within which a future study's true effect is expected to fall.</li>
+    </ul>
+    <p style="margin-top:8px">Review these results before proceeding to visualization. If I-squared is above 50%, consider whether subgroup analysis or sensitivity analysis is warranted. If the prediction interval crosses the null, note this for your discussion section.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">6</span>
+    <h2>Generate Forest Plot</h2>
+    <p style="margin-top:16px">Navigate to the forest plot view. MetaReview renders a publication-ready forest plot showing:</p>
+    <ul>
+      <li>Each study as a row with a square (point estimate) and horizontal line (95% CI)</li>
+      <li>Square sizes proportional to study weight</li>
+      <li>A diamond at the bottom representing the pooled estimate</li>
+      <li>Axis labels and direction indicators</li>
+      <li>Heterogeneity statistics below the plot</li>
+    </ul>
+    <p style="margin-top:8px">Customize the forest plot as needed: adjust study sorting (by effect size, weight, year, or entry order), toggle display of weight percentages and CI values, modify axis labels, and configure subgroup display if applicable. The plot updates in real time as you make changes.</p>
+    <div class="tip"><strong>Subgroup forest plots:</strong> If you have defined subgroups in your data (e.g., by study region, dose level, or risk of bias), MetaReview can display subgroup-specific pooled diamonds within the same forest plot, with an overall diamond at the bottom. This is essential for exploring sources of heterogeneity.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">7</span>
+    <h2>Check Publication Bias (Funnel Plot + Tests)</h2>
+    <p style="margin-top:16px">Publication bias occurs when studies with non-significant or unfavorable results are less likely to be published, leading to a systematically biased set of included studies. MetaReview provides tools to assess this:</p>
+    <ul>
+      <li><strong>Funnel plot:</strong> A scatter plot of each study's effect size (x-axis) against its standard error (y-axis). In the absence of bias, the points should form a symmetric inverted funnel centered on the pooled estimate. Asymmetry -- especially a gap in the lower-right corner (missing small studies with null results) -- suggests possible publication bias.</li>
+      <li><strong>Egger's regression test:</strong> A formal statistical test for funnel plot asymmetry. Available when you have 10 or more studies. A significant result (p &lt; 0.10) suggests asymmetry, though it can also be caused by genuine heterogeneity or other factors.</li>
+      <li><strong>Trim-and-fill method:</strong> If asymmetry is detected, this method estimates the number of "missing" studies, imputes them, and recalculates the pooled estimate. It provides an adjusted pooled effect that accounts for the suspected bias.</li>
+    </ul>
+    <div class="warn"><strong>Limitation:</strong> Publication bias tests require at least 10 studies for adequate statistical power. With fewer studies, visual inspection of the funnel plot is still informative but formal tests should not be over-interpreted. Funnel plot asymmetry can also result from genuine heterogeneity (e.g., if larger studies systematically differ from smaller studies in population or intervention), not just publication bias.</div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">8</span>
+    <h2>Export Report (HTML/DOCX/JSON)</h2>
+    <p style="margin-top:16px">Export your complete meta-analysis results in the format you need:</p>
+    <ul>
+      <li><strong>Forest plot (SVG):</strong> Vector graphics format, resolution-independent, ideal for journal submission. Can be further edited in Inkscape, Illustrator, or Affinity Designer.</li>
+      <li><strong>Forest plot (PNG):</strong> Raster format, suitable for presentations, posters, and web use.</li>
+      <li><strong>Funnel plot:</strong> Same export options as forest plot.</li>
+      <li><strong>Results summary:</strong> A structured output including the pooled estimate, CI, p-value, heterogeneity statistics, individual study data, and a ready-to-use text paragraph for your manuscript.</li>
+    </ul>
+    <p style="margin-top:8px">MetaReview generates a results paragraph that you can use as a starting point for your manuscript's methods and results sections. This paragraph follows standard reporting conventions and includes all the key statistics (pooled effect, CI, p-value, I-squared, model used, number of studies) that journal reviewers expect to see.</p>
+    <div class="tip"><strong>Complete in 10-15 minutes:</strong> From opening MetaReview to downloading your final forest plot and results summary, the entire process takes 10 to 15 minutes for a typical meta-analysis with 5 to 20 studies. This includes data entry, model selection, result review, and export.</div>
+  </div>
+
+  <!-- Section 6: Comparison Table -->
+  <div class="section" id="comparison">
+    <h2>Meta-Analysis Calculator Comparison Table</h2>
+    <p>Researchers have several options for computing meta-analyses. The best choice depends on your technical skill level, budget, analytical complexity, and workflow preferences. Below is a detailed comparison of the most widely used meta-analysis calculators and software packages.</p>
+
+    <table class="data-table">
+      <tr>
+        <th>Feature</th>
+        <th>MetaReview</th>
+        <th>R / metafor</th>
+        <th>RevMan (Cochrane)</th>
+        <th>Stata (meta)</th>
+        <th>CMA</th>
+        <th>OpenMeta[Analyst]</th>
+        <th>Meta-Mar</th>
+      </tr>
+      <tr>
+        <td><strong>Cost</strong></td>
+        <td>Free</td>
+        <td>Free (open source)</td>
+        <td>Free (Cochrane account)</td>
+        <td>$295-$895/year</td>
+        <td>$195-$1,395</td>
+        <td>Free (open source)</td>
+        <td>Free</td>
+      </tr>
+      <tr>
+        <td><strong>Platform</strong></td>
+        <td>Browser (any OS)</td>
+        <td>Desktop (any OS)</td>
+        <td>Desktop + Web</td>
+        <td>Desktop (Win/Mac)</td>
+        <td>Desktop (Windows)</td>
+        <td>Desktop (any OS)</td>
+        <td>Browser</td>
+      </tr>
+      <tr>
+        <td><strong>Coding Required</strong></td>
+        <td>No</td>
+        <td>Yes (R)</td>
+        <td>No</td>
+        <td>Yes (Stata syntax)</td>
+        <td>No</td>
+        <td>No</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Installation</strong></td>
+        <td>None</td>
+        <td>R + packages</td>
+        <td>Software download</td>
+        <td>Software + license</td>
+        <td>Software + license</td>
+        <td>Java required</td>
+        <td>None</td>
+      </tr>
+      <tr>
+        <td><strong>Effect Sizes: OR</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td><strong>Effect Sizes: RR</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td><strong>Effect Sizes: MD</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td><strong>Effect Sizes: SMD</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Limited</td>
+      </tr>
+      <tr>
+        <td><strong>Effect Sizes: HR</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes (generic inverse variance)</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Limited</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Forest Plot</strong></td>
+        <td>Yes (SVG/PNG)</td>
+        <td>Yes (highly customizable)</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes (basic)</td>
+      </tr>
+      <tr>
+        <td><strong>Funnel Plot</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Subgroup Analysis</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Meta-Regression</strong></td>
+        <td>Planned</td>
+        <td>Yes (full)</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Sensitivity Analysis</strong></td>
+        <td>Yes (leave-one-out)</td>
+        <td>Yes (all types)</td>
+        <td>Limited</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Publication Bias Tests</strong></td>
+        <td>Egger's, trim-and-fill</td>
+        <td>All (Egger, Begg, trim-fill, PET-PEESE, etc.)</td>
+        <td>Funnel plot only</td>
+        <td>All major tests</td>
+        <td>All major tests</td>
+        <td>Egger's, Begg's</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>GRADE Support</strong></td>
+        <td>Planned</td>
+        <td>No (use GRADEpro)</td>
+        <td>Integrated (GRADEpro link)</td>
+        <td>No</td>
+        <td>No</td>
+        <td>No</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>PRISMA Support</strong></td>
+        <td>Checklist export</td>
+        <td>No</td>
+        <td>Integrated</td>
+        <td>No</td>
+        <td>No</td>
+        <td>No</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><strong>Export Formats</strong></td>
+        <td>SVG, PNG, HTML</td>
+        <td>PDF, SVG, PNG, TIFF, EPS</td>
+        <td>Image, PDF, RevMan format</td>
+        <td>PDF, PNG, EPS</td>
+        <td>Image, CMA format</td>
+        <td>Image, CSV</td>
+        <td>Image</td>
+      </tr>
+      <tr>
+        <td><strong>Learning Curve</strong></td>
+        <td>5-10 minutes</td>
+        <td>Days to weeks</td>
+        <td>1-2 hours</td>
+        <td>Days to weeks</td>
+        <td>1-2 hours</td>
+        <td>30-60 minutes</td>
+        <td>5 minutes</td>
+      </tr>
+      <tr>
+        <td><strong>Citable in Papers</strong></td>
+        <td>Yes</td>
+        <td>Yes (Viechtbauer 2010)</td>
+        <td>Yes (Cochrane standard)</td>
+        <td>Yes</td>
+        <td>Yes (Borenstein et al.)</td>
+        <td>Yes (Wallace et al.)</td>
+        <td>Limited</td>
+      </tr>
+      <tr>
+        <td><strong>Best For</strong></td>
+        <td>Beginners, fast results, no-code workflow</td>
+        <td>Power users, custom analyses, meta-regression</td>
+        <td>Cochrane systematic reviews</td>
+        <td>Academic statisticians, epidemiologists</td>
+        <td>Researchers wanting GUI with advanced features</td>
+        <td>Open-source advocates, basic analyses</td>
+        <td>Quick, simple calculations</td>
+      </tr>
+    </table>
+
+    <h3>MetaReview: The Fastest Free Online Calculator</h3>
+    <p><strong>MetaReview</strong> occupies a unique position: it combines the ease of use of a simple online calculator with the analytical depth of professional software. It runs in any browser, requires no installation or coding, supports all standard effect sizes and models, and produces publication-ready forest plots. For the majority of systematic reviews published in biomedical journals -- those requiring standard pairwise meta-analysis with OR, RR, MD, or SMD -- MetaReview provides everything you need at zero cost.</p>
+
+    <h3>R / metafor: The Gold Standard for Power Users</h3>
+    <p>Wolfgang Viechtbauer's <strong>metafor</strong> package for R is the most comprehensive meta-analysis tool available. It supports every effect size measure, every heterogeneity estimator (DL, REML, PM, ML, HKSJ, and more), multivariate meta-analysis, network meta-analysis (with extensions), meta-regression with multiple moderators, and virtually unlimited plot customization. The trade-off is a steep learning curve: you must be comfortable writing R code, managing packages, and debugging scripts. If you need meta-regression, dose-response analysis, or non-standard effect sizes, metafor is the tool to use.</p>
+
+    <h3>RevMan: The Cochrane Ecosystem</h3>
+    <p><strong>RevMan</strong> (Review Manager) is developed and maintained by the Cochrane Collaboration. It is the standard tool for Cochrane systematic reviews and integrates with Cochrane's risk-of-bias tool and GRADEpro for evidence quality assessment. RevMan Web is gradually replacing the desktop version. For Cochrane-affiliated reviews, RevMan is the expected choice. For non-Cochrane reviews, it offers less flexibility than MetaReview or R.</p>
+
+    <h3>Stata and CMA: For Institutional Users</h3>
+    <p><strong>Stata</strong> (with the built-in <code>meta</code> command in version 16+ or the community-contributed <code>metan</code>) and <strong>Comprehensive Meta-Analysis (CMA)</strong> are widely used in universities and research institutions that hold site licenses. Both are capable tools with good documentation. Their main limitation is cost: Stata licenses range from $295 to $895 per year, and CMA starts at $195. For individual researchers, graduate students, or researchers in resource-limited settings, the cost is a significant barrier.</p>
+
+    <div class="tip"><strong>Our recommendation:</strong> Start with MetaReview for standard meta-analyses. It covers OR, RR, MD, SMD, both models, forest plots, funnel plots, and sensitivity analysis -- enough for 90% of published systematic reviews. Graduate to R/metafor only when you need meta-regression, network meta-analysis, or highly custom analyses. Avoid paying for software when free tools meet your needs.</div>
+  </div>
+
+  <!-- Section 7: Common Calculation Pitfalls -->
+  <div class="section" id="pitfalls">
+    <h2>Common Calculation Pitfalls</h2>
+    <p>Even with automated calculators, certain methodological decisions and data issues can lead to incorrect or misleading meta-analysis results. A good calculator prevents arithmetic errors, but it cannot prevent conceptual errors. Understanding these common pitfalls will help you avoid them and improve the credibility of your review.</p>
+
+    <h3>1. Zero Cells in 2x2 Tables</h3>
+    <p>A zero cell occurs when one or more cells in a 2x2 table have zero events. For example, if no patients in the treatment group experienced the adverse event, the cell count for "events in treatment" is zero. This creates a mathematical problem: the odds ratio involves division, and a zero in the denominator produces an undefined value. The log(OR) formula requires taking the natural log of zero, which is negative infinity.</p>
+
+    <p style="margin-top:8px"><strong>How calculators handle it:</strong> The standard approach is to add a continuity correction -- typically 0.5 to all four cells of the affected study. This allows the OR and its variance to be computed. However, this correction introduces a small bias, and different correction values (0.5 vs 0.01 vs treatment-arm-specific corrections) can produce different results. Some approaches (the Peto method, or exact methods) avoid the continuity correction entirely.</p>
+
+    <p style="margin-top:8px"><strong>What you should do:</strong> Report whether any studies had zero cells, which continuity correction was applied, and consider a sensitivity analysis using different approaches (e.g., Peto OR for rare events, or excluding studies with zero cells). If many studies have zero cells, it often indicates a very rare event, and the Peto method or exact methods may be more appropriate than the standard inverse variance method with continuity correction.</p>
+
+    <h3>2. Small Sample Corrections and Hedges' g</h3>
+    <p>When calculating the standardized mean difference (SMD), Cohen's d has a known upward bias with small sample sizes. The bias is small but systematic: Cohen's d slightly overestimates the true SMD, especially when total sample sizes are below 20-30. Hedges' g corrects for this bias by multiplying d by a correction factor J that is slightly less than 1 for small samples and approaches 1 as sample size increases.</p>
+
+    <div class="formula">
+J = 1 - 3 / (4 * (n1 + n2) - 9)
+
+For n1 + n2 = 10:  J = 0.9231 (7.7% reduction)
+For n1 + n2 = 20:  J = 0.9605 (4.0% reduction)
+For n1 + n2 = 50:  J = 0.9844 (1.6% reduction)
+For n1 + n2 = 200: J = 0.9962 (0.4% reduction)
+    </div>
+
+    <p style="margin-top:12px"><strong>What you should do:</strong> Always use Hedges' g (not Cohen's d) in meta-analysis. MetaReview applies the Hedges' g correction automatically when you select SMD as the effect measure. If you are extracting pre-computed SMD values from individual studies, verify whether the original authors reported Cohen's d or Hedges' g, and apply the correction if needed.</p>
+
+    <h3>3. Unit of Analysis Errors</h3>
+    <p>A unit of analysis error occurs when the same participants are counted more than once in the analysis, or when the analysis does not properly account for the study design. Common scenarios include:</p>
+    <ul>
+      <li><strong>Multi-arm trials:</strong> A trial with two treatment arms and one control arm should not be entered as two separate comparisons sharing the same control group, because the control group participants would be double-counted. This artificially inflates the total sample size and gives the study too much weight.</li>
+      <li><strong>Cluster-randomized trials:</strong> If a trial randomized clusters (e.g., hospitals, schools) but reports results at the individual level, the effective sample size is smaller than the reported sample size. Using the reported N without adjustment underestimates the variance and overweights the study.</li>
+      <li><strong>Crossover trials:</strong> In a crossover design, the same participants receive both treatment and control at different times. The standard error of the effect should account for the within-subject correlation, which is usually smaller than in a parallel-group design. Using the crossover trial data as if it were a parallel-group trial inflates the variance.</li>
+    </ul>
+
+    <p style="margin-top:8px"><strong>Solutions:</strong> For multi-arm trials, either split the shared control group proportionally (e.g., half the control N to each comparison) or combine the treatment arms if they are similar. For cluster-randomized trials, inflate the variance by the design effect (1 + (m-1)*ICC, where m = average cluster size and ICC = intraclass correlation). For crossover trials, use the paired analysis if reported, or estimate the correlation from available data.</p>
+
+    <h3>4. Double-Counting Participants</h3>
+    <p>Beyond multi-arm trials, double-counting can occur in other ways. If the same trial is published in multiple reports (e.g., an interim analysis and a final analysis), including both would count those participants twice. Similarly, if a study reports results separately for different subgroups, including all subgroups as separate "studies" while also including the overall result would double-count every participant.</p>
+
+    <p style="margin-top:8px"><strong>How to avoid it:</strong> During study selection, carefully track all publications from each trial (using trial registration numbers like NCT identifiers). For each unique trial, select only one publication -- typically the most complete or most recent. If different publications report different outcomes, link them to the same trial rather than treating them as independent studies.</p>
+
+    <h3>5. Combining Different Outcome Scales Without SMD</h3>
+    <p>If some studies measure depression with the Hamilton scale (0-52 range) and others with the PHQ-9 (0-27 range), you cannot pool them using mean difference. The raw mean difference in Hamilton scores is not comparable to the raw mean difference in PHQ-9 scores because the scales have different ranges, different standard deviations, and different clinically meaningful thresholds. Pooling them as if they were the same scale would produce a meaningless number.</p>
+
+    <p style="margin-top:8px"><strong>Solution:</strong> Use the standardized mean difference (Hedges' g), which expresses each study's effect in standard deviation units. This removes the scale dependency and allows valid pooling. Alternatively, if conversion formulas between scales have been validated (e.g., HDRS to BDI conversion), you could convert all studies to a common scale and use MD -- but this introduces additional assumptions and potential error.</p>
+
+    <h3>6. Ignoring the Direction of the Effect</h3>
+    <p>When pooling studies, all effects must be coded in the same direction. If some studies report "improvement" as a positive number and others report "improvement" as a negative number (e.g., blood pressure reduction), the pooled result will be meaningless. Similarly, for binary outcomes, the comparison direction (treatment vs control) must be consistent. A calculator will happily pool mismatched directions without warning, producing a result that underestimates the true effect or even reverses its sign.</p>
+
+    <p style="margin-top:8px"><strong>How to avoid it:</strong> Before entering data, establish a consistent convention: for example, "negative values favor treatment." Then verify each study's direction. If a study reports the effect in the opposite direction, reverse the sign (for MD/SMD) or invert the ratio (for OR/RR, swap intervention and control columns) before entering it into the calculator.</p>
+
+    <h3>7. Using Standard Error Instead of Standard Deviation (or Vice Versa)</h3>
+    <p>This is a surprisingly common data extraction error. Standard error (SE) and standard deviation (SD) are related but different: SE = SD / sqrt(n). Entering SE where SD is expected (or vice versa) will dramatically distort the effect size and its variance. A study with SD = 12 and n = 100 has SE = 1.2. Entering 1.2 where the calculator expects SD would make the study appear 10 times more precise than it actually is.</p>
+
+    <p style="margin-top:8px"><strong>How to avoid it:</strong> During data extraction, always note whether the original paper reports SD or SE (look for the exact label, or check whether the reported value seems plausible given the sample size). If in doubt, calculate: SE should be much smaller than SD for any study with n &gt; 4. MetaReview expects SD for continuous outcomes.</p>
+
+    <div class="warn"><strong>The calculator is not a safeguard against all errors.</strong> Automated tools prevent arithmetic mistakes, but conceptual errors -- wrong effect measure, double-counted participants, unit of analysis issues, mismatched directions -- require human judgment. Always have a second person verify your data extraction and analysis setup before finalizing results.</div>
+  </div>
+
+  <!-- Section 8: Reporting Meta-Analysis Results -->
+  <div class="section" id="reporting">
+    <h2>Reporting Meta-Analysis Results</h2>
+    <p>Transparent, complete reporting is a cornerstone of credible meta-analysis. The PRISMA 2020 statement (Page et al., BMJ, 2021) provides the definitive checklist for reporting systematic reviews and meta-analyses. This section covers what to include in your manuscript and how to cite MetaReview when it is used as your analysis tool.</p>
+
+    <h3>PRISMA 2020 Checklist: Key Items for Meta-Analysis</h3>
+    <p>The PRISMA 2020 checklist contains 27 items. Those most relevant to the meta-analysis calculation are:</p>
+
+    <table class="data-table">
+      <tr><th>PRISMA Item</th><th>Section</th><th>What to Report</th></tr>
+      <tr><td>#13a: Synthesis methods</td><td>Methods</td><td>The effect measure (OR, RR, MD, SMD), the statistical model (fixed-effect or random-effects), the estimator for tau-squared (DerSimonian-Laird, REML, etc.), and the software used (MetaReview).</td></tr>
+      <tr><td>#13b: Combining results</td><td>Methods</td><td>How you decided whether meta-analysis was appropriate (e.g., clinical similarity of studies), any data transformations applied (log transformation of OR/RR), and how you handled multi-arm trials or missing data.</td></tr>
+      <tr><td>#13c: Heterogeneity</td><td>Methods</td><td>Which heterogeneity statistics you planned to compute (I-squared, Q, tau-squared, prediction interval), the thresholds used for interpretation, and what you planned to do if heterogeneity was high (subgroup analysis, meta-regression).</td></tr>
+      <tr><td>#13d: Sensitivity analysis</td><td>Methods</td><td>Planned sensitivity analyses: leave-one-out, excluding high risk-of-bias studies, using different models, using different effect measures.</td></tr>
+      <tr><td>#13e: Publication bias</td><td>Methods</td><td>Methods for assessing publication bias: funnel plot, Egger's test, trim-and-fill. Specify the minimum number of studies required (typically 10).</td></tr>
+      <tr><td>#21: Synthesis results</td><td>Results</td><td>For each meta-analysis: pooled effect estimate, 95% CI, p-value, number of studies (k), total number of participants (N), I-squared, Q with p-value, tau-squared, prediction interval. Present a forest plot for each primary outcome.</td></tr>
+      <tr><td>#22: Publication bias</td><td>Results</td><td>Funnel plot, results of Egger's test or other bias tests, adjusted estimate from trim-and-fill if applicable.</td></tr>
+    </table>
+
+    <h3>What to Include in the Methods Section</h3>
+    <p>Your methods section should allow a reader to reproduce your analysis exactly. Include the following:</p>
+    <ol>
+      <li><strong>Effect measure and justification:</strong> "We used the odds ratio (OR) as the effect measure for binary outcomes because the included studies were a mix of case-control and cohort designs with varying baseline event rates."</li>
+      <li><strong>Statistical model:</strong> "A random-effects model using the DerSimonian-Laird estimator for between-study variance (tau-squared) was used for all analyses."</li>
+      <li><strong>Heterogeneity assessment:</strong> "Heterogeneity was assessed using I-squared, Cochran's Q test (with a significance threshold of p &lt; 0.10), tau-squared, and the 95% prediction interval. I-squared values of 0-25%, 25-50%, 50-75%, and above 75% were interpreted as low, moderate, substantial, and considerable heterogeneity, respectively."</li>
+      <li><strong>Software:</strong> "Meta-analysis calculations were performed using MetaReview (https://metareview-8c1.pages.dev), a free, browser-based meta-analysis tool."</li>
+      <li><strong>Sensitivity analyses:</strong> "Leave-one-out sensitivity analysis was conducted to assess the influence of individual studies on the pooled estimate. A fixed-effect model was used as a sensitivity check."</li>
+      <li><strong>Publication bias:</strong> "Publication bias was assessed visually using funnel plots and quantitatively using Egger's regression test for meta-analyses including 10 or more studies."</li>
+    </ol>
+
+    <h3>What to Include in the Results Section</h3>
+    <p>For each meta-analysis, report the complete set of results. Here is a template paragraph that follows PRISMA 2020 conventions:</p>
+
+    <div class="anatomy">
+"[Number] studies involving [total participants] participants were included
+in the meta-analysis of [outcome]. The pooled [effect measure] was [value]
+(95% CI: [lower] to [upper]; p = [value]), indicating [interpretation].
+Heterogeneity was [low/moderate/substantial/considerable] (I&sup2; = [value]%,
+Q = [value], df = [value], p = [value]; tau&sup2; = [value]). The 95% prediction
+interval was [lower] to [upper]. [Figure reference] presents the forest plot."
+    </div>
+
+    <p style="margin-top:16px"><strong>Example with real numbers:</strong></p>
+    <p>"Eight randomized controlled trials involving 12,456 participants were included in the meta-analysis of cardiovascular events. The pooled odds ratio was 0.72 (95% CI: 0.58 to 0.89; p = 0.003), indicating that the intervention significantly reduced the odds of cardiovascular events. Heterogeneity was moderate (I&sup2; = 41%, Q = 11.9, df = 7, p = 0.10; tau&sup2; = 0.06). The 95% prediction interval was 0.38 to 1.36, suggesting that while the average effect favors the intervention, the true effect in some settings could be null or even favor the control. Figure 2 presents the forest plot."</p>
+
+    <h3>Reporting Subgroup and Sensitivity Analyses</h3>
+    <p>Subgroup results should be reported with the same level of detail as the primary analysis. Additionally, include:</p>
+    <ul>
+      <li>The test for subgroup interaction (chi-squared test for subgroup differences, with p-value).</li>
+      <li>The number of studies and participants in each subgroup.</li>
+      <li>Whether heterogeneity within subgroups decreased compared to the overall analysis.</li>
+      <li>A subgroup forest plot showing subgroup-specific diamonds.</li>
+    </ul>
+    <p>For leave-one-out sensitivity analysis, report whether the pooled estimate was robust (i.e., remained significant and in the same direction when any individual study was removed) or whether certain studies had a disproportionate influence.</p>
+
+    <h3>How to Cite MetaReview</h3>
+    <p>When citing MetaReview in your manuscript, include the tool name, URL, and the date of access:</p>
+
+    <div class="anatomy">
+In-text: "Meta-analysis was conducted using MetaReview
+(https://metareview-8c1.pages.dev; accessed [date])."
+
+Reference list:
+MetaReview. Free Online Meta-Analysis Tool [Internet].
+Available from: https://metareview-8c1.pages.dev
+[Accessed YYYY-MM-DD].
+    </div>
+
+    <p style="margin-top:12px">Citing the software used for meta-analysis is required by PRISMA 2020 (Item #13a) and expected by virtually all journals. It ensures reproducibility: readers and reviewers can verify your results by entering the same data into the same tool. MetaReview produces deterministic results -- the same input always produces the same output -- so any reader can independently confirm your reported pooled estimates, heterogeneity statistics, and forest plots.</p>
+
+    <h3>Common Reporting Errors to Avoid</h3>
+    <ul>
+      <li><strong>Reporting the pooled estimate without the CI:</strong> A pooled OR of 0.72 is incomplete without its confidence interval. Always report estimate, CI, and p-value together.</li>
+      <li><strong>Omitting the number of studies and participants:</strong> "The pooled OR was 0.72" -- pooled from how many studies? How many participants? Both numbers are essential context.</li>
+      <li><strong>Reporting I-squared without the Q test:</strong> I-squared alone can be misleading, especially with few studies. Always report both Q (with df and p-value) and I-squared.</li>
+      <li><strong>Ignoring the prediction interval:</strong> When heterogeneity is present (I-squared &gt; 0%), the prediction interval provides critical information about the range of plausible effects in future settings. It should be reported alongside the confidence interval in the text.</li>
+      <li><strong>Not specifying the model:</strong> "A meta-analysis was performed" -- using which model? Fixed-effect or random-effects? Which tau-squared estimator? These details are required for reproducibility.</li>
+      <li><strong>Forgetting to cite the software:</strong> PRISMA 2020 requires reporting the software used. Omitting this is a checklist violation that reviewers will flag.</li>
+    </ul>
+
+    <div class="tip"><strong>MetaReview helps you report correctly:</strong> The results export includes a pre-written methods paragraph and a results paragraph that follow PRISMA 2020 conventions, including all required statistics (pooled estimate, CI, p-value, I-squared, Q, tau-squared, prediction interval, model, and number of studies). Use these as starting points for your manuscript.</div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <h2>Calculate Your Meta-Analysis Now</h2>
+    <p>MetaReview is a free online meta-analysis calculator. Compute pooled effect sizes, heterogeneity statistics, and generate forest plots in under 15 minutes. No installation, no coding, no cost.</p>
+    <a href="/">Open MetaReview - It's Free</a>
+  </div>
+
+  <!-- Email Subscription -->
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">Stay Updated</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">Get notified about new features, meta-analysis tips, and calculation guides.</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="Enter your email" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Subscribe</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">No spam. Unsubscribe anytime.</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='Submitting...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-calculator-en',lang:'en'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?"You're already subscribed!":'Subscribed! We\'ll notify you about new features.';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Please enter a valid email address.';btn.textContent='Subscribe';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Submission failed. Please try again later.';btn.textContent='Subscribe';btn.disabled=false;});
+  });
+  </script>
+
+  <!-- FAQ Section -->
+  <div class="faq" id="faq">
+    <h2>Frequently Asked Questions</h2>
+
+    <h3>Is MetaReview free to use?</h3>
+    <p>Yes, MetaReview is completely free to use with no restrictions. It runs entirely in your web browser -- there is no software to install, no account to create, and no usage limits. You can compute pooled effect sizes (OR, RR, MD, SMD), generate forest plots and funnel plots, run leave-one-out sensitivity analyses, assess publication bias, and export publication-ready figures at no cost. There are no hidden paywalls, no trial periods, and no feature tiers. MetaReview is free because we believe meta-analysis tools should be accessible to all researchers, including graduate students, early-career researchers, and institutions with limited budgets. The tool is supported by the research community and will remain free.</p>
+
+    <h3>How do I calculate odds ratio in meta-analysis?</h3>
+    <p>To calculate a pooled odds ratio in meta-analysis, you need the 2x2 table data from each study: the number of events and total participants in both the intervention and control groups. The odds ratio for each individual study is computed as OR = (a * d) / (b * c), where a = events in intervention, b = non-events in intervention, c = events in control, and d = non-events in control. The meta-analysis calculation works on the natural log scale: ln(OR) is computed for each study along with its variance (1/a + 1/b + 1/c + 1/d). Studies are then weighted by the inverse of their variance and combined to produce a pooled ln(OR), which is back-transformed by exponentiation to give the pooled OR with its 95% confidence interval. In MetaReview, you simply select "Odds Ratio," enter event counts and totals, and the tool performs all of these calculations automatically. The result includes the pooled OR, confidence interval, p-value, study weights, and heterogeneity statistics.</p>
+
+    <h3>What does I-squared mean in meta-analysis?</h3>
+    <p>I-squared (I&sup2;) is a heterogeneity statistic that tells you what percentage of the total variation in observed effect sizes is due to true differences between studies, as opposed to random sampling error. It ranges from 0% to 100%. An I-squared of 0% means all the variation you see is consistent with chance -- the studies are essentially measuring the same effect. An I-squared of 30% means about 30% of the observed variation reflects genuine differences across studies. The Cochrane Handbook suggests these rough benchmarks: 0-25% is low heterogeneity, 25-50% is moderate, 50-75% is substantial, and 75-100% is considerable. When I-squared is high, the pooled effect estimate may not adequately represent any single study's true effect, and you should investigate the sources of heterogeneity through subgroup analysis or meta-regression. I-squared should always be reported alongside Cochran's Q test, tau-squared, and the prediction interval for a complete picture of heterogeneity.</p>
+
+    <h3>Can I do meta-analysis without R or Stata?</h3>
+    <p>Absolutely. MetaReview is specifically designed for researchers who do not use R or Stata. It provides a visual, point-and-click interface for performing all standard meta-analysis calculations: pooled effect sizes (OR, RR, MD, SMD) using inverse variance weighting, fixed-effect and random-effects models (DerSimonian-Laird), complete heterogeneity statistics (I-squared, Cochran's Q, tau-squared, prediction intervals), forest plots, funnel plots, Egger's test for publication bias, leave-one-out sensitivity analysis, and subgroup analysis. You enter your data through a simple form or CSV import, and MetaReview handles all the statistical computation. The tool produces publication-ready forest plots that can be exported as SVG or PNG. For the vast majority of systematic reviews published in biomedical journals, MetaReview provides all the analytical capability you need. R and Stata are only necessary for advanced techniques like meta-regression, network meta-analysis, or highly custom analyses that go beyond standard pairwise meta-analysis.</p>
+
+    <h3>How many studies do I need for a meta-analysis?</h3>
+    <p>A meta-analysis can technically be computed with as few as two studies. However, the reliability and interpretability of results improve with more studies. With 2-3 studies, you can compute a pooled estimate, but the random-effects model's estimate of tau-squared will be very imprecise, and you cannot meaningfully assess heterogeneity (I-squared will have wide confidence intervals) or publication bias. With 5-10 studies, heterogeneity estimates become more stable and subgroup analysis becomes possible (though with limited power). With 10 or more studies, you can formally test for publication bias using Egger's test and interpret I-squared with reasonable confidence. The Cochrane Handbook does not specify a hard minimum; it recommends that meta-analysis should be performed when it is "sensible" -- that is, when the studies are sufficiently similar in clinical and methodological terms. Even with just 2-3 high-quality studies, formal pooling provides a more rigorous summary than narrative comparison. The key is to be transparent about the limitations when the number of studies is small.</p>
+
+    <h3>What is the difference between fixed and random effects in meta-analysis?</h3>
+    <p>The fixed-effect model assumes all studies share one common true effect size. Any variation in observed results is attributed entirely to sampling error (random chance within each study). It weights studies purely by their precision (inverse variance), giving large studies substantially more influence. The random-effects model assumes each study estimates a somewhat different true effect size, because populations, interventions, and settings differ. It adds between-study variance (tau-squared) to the weighting formula, which balances study weights: large studies still get more weight, but less disproportionately. As a result, random-effects confidence intervals are wider, reflecting the additional uncertainty from between-study variability. In practice, the random-effects model is almost always the appropriate choice because some degree of clinical heterogeneity is inevitable across independently conducted studies. When I-squared = 0%, both models produce identical results. A common and defensible approach is to use random-effects as the primary analysis and fixed-effect as a sensitivity analysis, pre-specified in your protocol.</p>
+
+    <h3>How do I handle missing data in meta-analysis?</h3>
+    <p>Missing data in meta-analysis can take several forms, each requiring a different approach. If a study does not report standard deviations but reports confidence intervals, standard errors, or p-values, you can often back-calculate the SD using standard formulas (e.g., SD = SE * sqrt(n), or deriving SE from the CI width divided by 2*1.96). If means are missing but medians are reported, estimation methods exist (e.g., Wan's method for converting median/IQR to mean/SD), though these introduce assumptions. If the required data truly cannot be recovered from the published report or supplementary materials, contact the original study authors -- response rates of 30-60% are typical. If data remains unavailable after these efforts, document the study as "excluded due to insufficient data" and assess whether its exclusion might bias the overall results (e.g., if excluded studies tend to be smaller or older). For missing participant-level data (e.g., intention-to-treat vs per-protocol populations), conduct sensitivity analyses with different assumptions: best-case (missing participants had favorable outcomes), worst-case (missing participants had unfavorable outcomes), and available-case analysis.</p>
+
+    <h3>Can MetaReview generate a forest plot?</h3>
+    <p>Yes, forest plot generation is a core feature of MetaReview. When you enter your study data and run the meta-analysis, MetaReview automatically generates a publication-ready forest plot. The plot displays each study as a row with a square (point estimate) proportional to its weight and a horizontal line (95% confidence interval). A diamond at the bottom represents the pooled effect estimate and its confidence interval. Heterogeneity statistics (I-squared, Q, tau-squared) are displayed below the plot. You can customize the forest plot's appearance: sort studies by effect size, weight, year, or entry order; toggle display of weight percentages and numerical CI values; adjust axis labels and direction indicators; and configure subgroup display with subgroup-specific diamonds. The forest plot can be exported as SVG (vector format, resolution-independent, ideal for journal submission) or PNG (raster format, suitable for presentations). For a detailed guide on creating and interpreting forest plots, see our <a href="/guides/free-forest-plot-generator" style="color:#1e40af">Free Forest Plot Generator Guide</a>.</p>
+  </div>
+
+  <!-- Related Guides -->
+  <div class="related">
+    <h2>Related Guides</h2>
+    <ul>
+      <li><a href="/guides/free-forest-plot-generator">Free Forest Plot Generator: Create Publication-Ready Forest Plots</a></li>
+      <li><a href="/guides/free-funnel-plot-maker">Free Funnel Plot Maker: Detect Publication Bias</a></li>
+      <li><a href="/guides/how-to-meta-analysis">How to Do a Meta-Analysis: Complete Step-by-Step Tutorial</a></li>
+      <li><a href="/guides/meta-analysis-steps">Meta-Analysis Step-by-Step Guide (Chinese)</a></li>
+      <li><a href="/guides/forest-plot-generator">Forest Plot Guide (Chinese)</a></li>
+      <li><a href="/guides/effect-size-selection">Choosing Effect Sizes: OR, RR, MD, SMD Guide (Chinese)</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta-Analysis Software Comparison (Chinese)</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 Flow Diagram Guide</a></li>
+      <li><a href="/guides/survival-analysis-meta">Survival Data Meta-Analysis: HR Guide</a></li>
+      <li><a href="/guides/tumor-meta-analysis">Oncology Meta-Analysis Guide</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">Cardiovascular Meta-Analysis Guide</a></li>
+      <li><a href="/guides/diabetes-meta-analysis">Diabetes Meta-Analysis Guide</a></li>
+      <li><a href="/guides/covid-meta-analysis">COVID-19 Meta-Analysis Guide</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis">Psychiatric Meta-Analysis Guide</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> -- Free Online Meta-Analysis Tool</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
