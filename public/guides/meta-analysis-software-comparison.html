@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meta 分析软件对比：MetaReview vs RevMan vs R vs Stata（2026 最新）| MetaReview</title>
+  <meta name="description" content="2026 年 Meta 分析工具全面对比：MetaReview（免费在线）vs RevMan vs R/metafor vs Stata vs Covidence vs Meta-Mar。功能、价格、学习曲线一表看清。附免费在线工具。" />
+  <meta name="keywords" content="meta分析软件对比, RevMan替代, 免费meta分析工具, meta analysis software comparison, RevMan alternative free, meta分析工具比较, 免费森林图, 在线meta分析, metafor替代, Stata meta分析, meta-analysis tool free, RevMan Web" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/meta-analysis-software-comparison" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/meta-analysis-software-comparison" />
+  <meta property="og:title" content="Meta 分析软件对比：MetaReview vs RevMan vs R vs Stata（2026）" />
+  <meta property="og:description" content="2026 年 Meta 分析工具全面对比。功能、价格、学习曲线一表看清，附免费在线工具。" />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Meta 分析软件对比：MetaReview vs RevMan vs R vs Stata（2026 最新）",
+    "description": "2026 年 Meta 分析工具全面对比：功能、价格、学习曲线。帮助研究者选择最适合的 Meta 分析软件。",
+    "author": {"@type": "Organization", "name": "MetaReview"},
+    "publisher": {"@type": "Organization", "name": "MetaReview"},
+    "datePublished": "2026-02-25",
+    "dateModified": "2026-02-25"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "有没有免费的 Meta 分析软件？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "有。MetaReview 是完全免费的在线 Meta 分析工具，无需安装，支持 OR/RR/HR/MD/SMD 五种效应量、森林图、漏斗图、PRISMA 流程图、AI 文献筛选等功能。R 语言的 meta/metafor 包也免费，但需要编程能力。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "RevMan 和 MetaReview 有什么区别？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "RevMan 是 Cochrane 协作网开发的传统 Meta 分析软件，功能成熟但界面老旧、学习曲线较高。MetaReview 是免费在线工具，5 分钟即可上手，支持中文界面、AI 文献筛选、一键导出 DOCX 报告，且包含 Galbraith 图、L'Abbe 图、GRADE 评估等 RevMan 没有的高级分析功能。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "不会编程可以做 Meta 分析吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "可以。MetaReview 提供完全可视化的界面，不需要任何编程知识。输入数据后自动计算效应量、生成森林图和漏斗图、检测异质性和发表偏倚，还能一键导出 Word 格式的完整分析报告。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Meta 分析需要用 R 或 Stata 吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "不一定。R 和 Stata 功能强大但学习成本高（需掌握编程）。对于标准的 Meta 分析（合并效应量、森林图、漏斗图、亚组分析、敏感性分析），MetaReview 等在线工具完全能满足需求，且大幅降低使用门槛。只有需要复杂的自定义统计模型时才必须使用 R 或 Stata。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "哪个 Meta 分析软件最适合中国医学研究生？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "推荐 MetaReview。原因：(1) 完整中文界面，不存在语言障碍；(2) 免费，不需要科研经费支持；(3) 在线使用，不需要安装配置；(4) 内置新手引导，5 分钟上手；(5) 一键导出 Word 报告，直接用于论文写作；(6) 支持 PubMed 检索和 AI 文献筛选，覆盖完整研究流程。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "MetaReview 的数据安全吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MetaReview 的所有数据都保存在你的浏览器本地（localStorage），不上传到任何服务器。关闭浏览器后数据仍然保留，但建议定期导出 CSV 或 JSON 备份。这种架构确保你的研究数据完全在自己掌控之中。"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fefce8; border-left: 4px solid #eab308; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #854d0e; }
+    .comp-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+    .comp-table th, .comp-table td { border: 1px solid #e5e7eb; padding: 8px 10px; text-align: center; }
+    .comp-table th { background: #f3f4f6; font-weight: 600; color: #111827; font-size: 13px; }
+    .comp-table td { color: #4b5563; }
+    .comp-table td:first-child { text-align: left; font-weight: 500; color: #374151; }
+    .comp-table .yes { color: #059669; font-weight: 600; }
+    .comp-table .no { color: #dc2626; }
+    .comp-table .partial { color: #d97706; }
+    .comp-table .highlight-col { background: #eff6ff; }
+    .verdict { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 16px 0; }
+    .verdict h4 { color: #166534; font-size: 15px; margin-bottom: 6px; }
+    .verdict p { font-size: 14px; color: #166534; }
+    .vs-card { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .vs-card > div { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; }
+    .vs-card h4 { font-size: 14px; color: #111827; margin-bottom: 8px; }
+    .vs-card ul { font-size: 13px; padding-left: 16px; }
+    .vs-card li { margin-bottom: 2px; color: #4b5563; }
+    .price-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+    .price-free { background: #ecfdf5; color: #065f46; }
+    .price-paid { background: #fef2f2; color: #991b1b; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .related { padding: 20px; } .comp-table { font-size: 11px; } .comp-table th, .comp-table td { padding: 6px 4px; } .vs-card { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">打开工具</a>
+      <a href="/guides/meta-analysis-steps">Meta 分析步骤</a>
+      <a href="/guides/forest-plot-generator">森林图指南</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Meta 分析软件对比：哪个最适合你？（2026 最新）</h1>
+  <p>MetaReview vs RevMan vs R vs Stata vs Covidence vs Meta-Mar — 功能、价格、学习曲线全面对比</p>
+</div>
+
+<div class="container">
+
+  <!-- Section 1: Overview -->
+  <div class="section">
+    <h2>为什么需要这篇对比？</h2>
+    <p>做 Meta 分析的第一步不是找文献，而是<strong>选对工具</strong>。选错工具可能浪费数周时间在学习编程上，或者花费不必要的费用在商业软件上。</p>
+    <p style="margin-top:12px">本文对比 2026 年主流的 6 款 Meta 分析工具，从<strong>功能覆盖、价格、学习曲线、图表质量、报告导出</strong>五个维度帮你做出选择。</p>
+    <div class="tip">如果你赶时间：MetaReview 是唯一免费、在线、中文界面、零编程的全功能 Meta 分析工具。<a href="/" style="color:#1e40af;font-weight:600">直接使用 &rarr;</a></div>
+  </div>
+
+  <!-- Section 2: Quick Comparison Table -->
+  <div class="section">
+    <h2>一表看清：6 款工具核心对比</h2>
+    <div style="overflow-x:auto">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th style="min-width:120px">功能</th>
+          <th class="highlight-col" style="min-width:100px">MetaReview</th>
+          <th>RevMan</th>
+          <th>R (metafor)</th>
+          <th>Stata</th>
+          <th>Covidence</th>
+          <th>Meta-Mar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>价格</td>
+          <td class="highlight-col"><span class="price-tag price-free">免费</span></td>
+          <td><span class="price-tag price-paid">需注册</span></td>
+          <td><span class="price-tag price-free">免费</span></td>
+          <td><span class="price-tag price-paid">$895+</span></td>
+          <td><span class="price-tag price-paid">$225/yr</span></td>
+          <td><span class="price-tag price-paid">&euro;19-69</span></td>
+        </tr>
+        <tr>
+          <td>需要安装</td>
+          <td class="highlight-col yes">不需要</td>
+          <td class="no">需要</td>
+          <td class="no">需要</td>
+          <td class="no">需要</td>
+          <td class="yes">不需要</td>
+          <td class="yes">不需要</td>
+        </tr>
+        <tr>
+          <td>编程要求</td>
+          <td class="highlight-col yes">零编程</td>
+          <td class="yes">无需</td>
+          <td class="no">需要 R</td>
+          <td class="no">需要 Stata</td>
+          <td class="yes">无需</td>
+          <td class="yes">无需</td>
+        </tr>
+        <tr>
+          <td>中文界面</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>上手时间</td>
+          <td class="highlight-col"><strong>5 分钟</strong></td>
+          <td>1-2 天</td>
+          <td>1-4 周</td>
+          <td>1-4 周</td>
+          <td>30 分钟</td>
+          <td>30 分钟</td>
+        </tr>
+        <tr><td colspan="7" style="background:#f3f4f6;font-weight:600;text-align:left;font-size:12px;color:#6b7280">统计分析</td></tr>
+        <tr>
+          <td>效应量类型</td>
+          <td class="highlight-col"><strong>OR/RR/HR/MD/SMD</strong></td>
+          <td>OR/RR/MD/SMD</td>
+          <td>全部</td>
+          <td>全部</td>
+          <td class="no">无统计</td>
+          <td>OR/RR/MD/SMD</td>
+        </tr>
+        <tr>
+          <td>生存数据 (HR)</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>亚组分析</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+        </tr>
+        <tr>
+          <td>Meta 回归</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>累积 Meta 分析</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>Trim-and-Fill</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>Dose-Response 分析</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>预测区间</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>GRADE 证据评估</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="partial">需包</td>
+          <td class="partial">需包</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr><td colspan="7" style="background:#f3f4f6;font-weight:600;text-align:left;font-size:12px;color:#6b7280">图表输出</td></tr>
+        <tr>
+          <td>森林图</td>
+          <td class="highlight-col yes">&#10003; SVG/PNG</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+        </tr>
+        <tr>
+          <td>漏斗图</td>
+          <td class="highlight-col yes">&#10003; 含 Contour</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+        </tr>
+        <tr>
+          <td>Galbraith 图</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>L'Abbe 图</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+          <td class="partial">需包</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>Baujat 图</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+          <td class="partial">需包</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>网络 Meta 分析图</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>PRISMA 流程图</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr><td colspan="7" style="background:#f3f4f6;font-weight:600;text-align:left;font-size:12px;color:#6b7280">研究流程</td></tr>
+        <tr>
+          <td>PubMed 文献检索</td>
+          <td class="highlight-col yes">&#10003; 内置</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>AI 文献筛选</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>RIS/EndNote 导入</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>Excel 粘贴导入</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr><td colspan="7" style="background:#f3f4f6;font-weight:600;text-align:left;font-size:12px;color:#6b7280">报告输出</td></tr>
+        <tr>
+          <td>DOCX 报告导出</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>HTML 报告导出</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>Methods 段落生成</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>Results 叙述生成</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+        <tr>
+          <td>JSON 数据导出</td>
+          <td class="highlight-col yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="yes">&#10003;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+          <td class="no">&#10007;</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:13px;color:#9ca3af;margin-top:8px">数据截至 2026 年 2 月。RevMan 指 RevMan Web 版本。R 指 meta/metafor 包。</p>
+  </div>
+
+  <!-- Section 3: Detailed Reviews -->
+  <div class="section">
+    <h2>逐一详解：每款工具的优缺点</h2>
+
+    <h3>1. MetaReview — 免费在线全功能工具</h3>
+    <div class="vs-card">
+      <div style="border-color:#bbf7d0;background:#f0fdf4">
+        <h4 style="color:#166534">优势</h4>
+        <ul>
+          <li>完全免费，无任何付费门槛</li>
+          <li>在线使用，无需安装任何软件</li>
+          <li>中英双语界面，中国用户零障碍</li>
+          <li>5 分钟上手，内置新手引导</li>
+          <li>内置 PubMed 检索 + AI 文献筛选</li>
+          <li>11 种图表（含 Galbraith、L'Abbe、Baujat、网络图）</li>
+          <li>一键导出 Word/HTML 完整报告</li>
+          <li>自动生成 Methods + Results 段落</li>
+          <li>数据本地存储，隐私安全</li>
+        </ul>
+      </div>
+      <div style="border-color:#fecaca;background:#fef2f2">
+        <h4 style="color:#991b1b">局限</h4>
+        <ul>
+          <li>不支持自定义统计模型</li>
+          <li>网络 Meta 分析仅限可视化</li>
+          <li>数据存在浏览器，需手动备份</li>
+          <li>较新的工具，社区生态还在成长</li>
+        </ul>
+      </div>
+    </div>
+    <div class="verdict">
+      <h4>适合人群</h4>
+      <p>医学研究生（首次做 Meta 分析）、低年资临床医生（时间紧张）、没有编程基础的研究者、预算有限的团队。</p>
+    </div>
+
+    <h3>2. RevMan — Cochrane 官方工具</h3>
+    <div class="vs-card">
+      <div style="border-color:#bbf7d0;background:#f0fdf4">
+        <h4 style="color:#166534">优势</h4>
+        <ul>
+          <li>Cochrane 协作网官方工具</li>
+          <li>学术认可度高</li>
+          <li>功能成熟稳定</li>
+          <li>内置 RoB 偏倚风险评估</li>
+        </ul>
+      </div>
+      <div style="border-color:#fecaca;background:#fef2f2">
+        <h4 style="color:#991b1b">局限</h4>
+        <ul>
+          <li>界面老旧，学习曲线陡</li>
+          <li>仅英文界面</li>
+          <li>不支持 Meta 回归</li>
+          <li>无 Galbraith/L'Abbe/Baujat 图</li>
+          <li>无 Dose-Response 分析</li>
+          <li>无自动段落生成</li>
+          <li>需注册 Cochrane 账户</li>
+        </ul>
+      </div>
+    </div>
+    <div class="verdict">
+      <h4>适合人群</h4>
+      <p>Cochrane 系统综述作者、熟悉 RevMan 的资深研究者、需要 RoB 评估的团队。</p>
+    </div>
+
+    <h3>3. R (meta/metafor) — 编程工具</h3>
+    <div class="vs-card">
+      <div style="border-color:#bbf7d0;background:#f0fdf4">
+        <h4 style="color:#166534">优势</h4>
+        <ul>
+          <li>免费开源</li>
+          <li>统计功能最全面</li>
+          <li>高度可定制</li>
+          <li>学术社区庞大</li>
+          <li>可复现性好</li>
+        </ul>
+      </div>
+      <div style="border-color:#fecaca;background:#fef2f2">
+        <h4 style="color:#991b1b">局限</h4>
+        <ul>
+          <li><strong>需要 R 编程能力</strong>（学习 1-4 周）</li>
+          <li>需要安装 R + RStudio</li>
+          <li>没有图形界面</li>
+          <li>调试需要时间</li>
+          <li>图表美化需额外代码</li>
+        </ul>
+      </div>
+    </div>
+    <div class="verdict">
+      <h4>适合人群</h4>
+      <p>有编程基础的研究者、需要高度自定义分析的团队、统计学专业人员。</p>
+    </div>
+
+    <h3>4. Stata — 商业统计软件</h3>
+    <div class="vs-card">
+      <div style="border-color:#bbf7d0;background:#f0fdf4">
+        <h4 style="color:#166534">优势</h4>
+        <ul>
+          <li>统计功能全面</li>
+          <li>metan/metafor 包成熟</li>
+          <li>有商业技术支持</li>
+          <li>学术认可度高</li>
+        </ul>
+      </div>
+      <div style="border-color:#fecaca;background:#fef2f2">
+        <h4 style="color:#991b1b">局限</h4>
+        <ul>
+          <li><strong>价格昂贵（$895+/永久授权）</strong></li>
+          <li>需要 Stata 编程能力</li>
+          <li>仅英文界面</li>
+          <li>需要本地安装</li>
+          <li>Meta 分析功能需要额外包</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>5. Covidence — 文献管理平台</h3>
+    <div class="vs-card">
+      <div style="border-color:#bbf7d0;background:#f0fdf4">
+        <h4 style="color:#166534">优势</h4>
+        <ul>
+          <li>文献筛选流程管理好</li>
+          <li>团队协作功能</li>
+          <li>PRISMA 流程图</li>
+          <li>与 Cochrane 集成</li>
+        </ul>
+      </div>
+      <div style="border-color:#fecaca;background:#fef2f2">
+        <h4 style="color:#991b1b">局限</h4>
+        <ul>
+          <li><strong>$225/年</strong></li>
+          <li><strong>没有统计分析功能</strong></li>
+          <li>不能生成森林图/漏斗图</li>
+          <li>需要配合其他工具完成分析</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>6. Meta-Mar — 在线 Meta 分析</h3>
+    <div class="vs-card">
+      <div style="border-color:#bbf7d0;background:#f0fdf4">
+        <h4 style="color:#166534">优势</h4>
+        <ul>
+          <li>在线使用，无需安装</li>
+          <li>界面简洁</li>
+          <li>基本功能覆盖</li>
+        </ul>
+      </div>
+      <div style="border-color:#fecaca;background:#fef2f2">
+        <h4 style="color:#991b1b">局限</h4>
+        <ul>
+          <li><strong>&euro;19-69 收费</strong></li>
+          <li>无高级分析（Meta 回归、Dose-Response）</li>
+          <li>无 AI 筛选</li>
+          <li>无 PubMed 检索</li>
+          <li>无中文界面</li>
+          <li>无 DOCX 报告导出</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Decision Tree -->
+  <div class="section">
+    <h2>选择决策树：3 个问题帮你决定</h2>
+    <ol>
+      <li style="margin-bottom:12px"><strong>你会编程吗？</strong>
+        <ul>
+          <li>不会 &rarr; 排除 R 和 Stata</li>
+          <li>会 R 且需要高度自定义 &rarr; 用 R/metafor</li>
+        </ul>
+      </li>
+      <li style="margin-bottom:12px"><strong>你有预算吗？</strong>
+        <ul>
+          <li>没有（学生/自费）&rarr; MetaReview（免费）或 R（免费但需编程）</li>
+          <li>有科研经费 &rarr; 可考虑 Stata 或 Covidence</li>
+        </ul>
+      </li>
+      <li style="margin-bottom:12px"><strong>你需要什么功能？</strong>
+        <ul>
+          <li>只需文献筛选 &rarr; Covidence</li>
+          <li>标准 Meta 分析 + 报告 &rarr; MetaReview</li>
+          <li>Cochrane 系统综述 &rarr; RevMan</li>
+          <li>复杂统计建模 &rarr; R 或 Stata</li>
+        </ul>
+      </li>
+    </ol>
+    <div class="tip">对于 90% 的医学 Meta 分析（合并效应量 + 森林图 + 漏斗图 + 亚组分析 + 报告），MetaReview 完全够用且免费。</div>
+  </div>
+
+  <!-- Section 5: MetaReview vs RevMan Head-to-Head -->
+  <div class="section">
+    <h2>MetaReview vs RevMan：深度对比</h2>
+    <p>RevMan 是最广泛使用的 Meta 分析软件之一，但它也有明显的局限性。以下是两者的详细对比：</p>
+
+    <h3>功能对比</h3>
+    <table class="comp-table">
+      <thead>
+        <tr><th style="text-align:left">功能</th><th class="highlight-col">MetaReview</th><th>RevMan Web</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Meta 回归</td><td class="highlight-col yes">&#10003; 散点图 + 回归线 + CI 带</td><td class="no">&#10007;</td></tr>
+        <tr><td>Dose-Response</td><td class="highlight-col yes">&#10003; 线性 + 二次模型</td><td class="no">&#10007;</td></tr>
+        <tr><td>Galbraith 图</td><td class="highlight-col yes">&#10003;</td><td class="no">&#10007;</td></tr>
+        <tr><td>L'Abbe 图</td><td class="highlight-col yes">&#10003;</td><td class="no">&#10007;</td></tr>
+        <tr><td>Baujat 图</td><td class="highlight-col yes">&#10003;</td><td class="no">&#10007;</td></tr>
+        <tr><td>影响力诊断</td><td class="highlight-col yes">&#10003; 6 维度</td><td class="no">&#10007;</td></tr>
+        <tr><td>Begg's 检验</td><td class="highlight-col yes">&#10003;</td><td class="no">&#10007;</td></tr>
+        <tr><td>Contour 漏斗图</td><td class="highlight-col yes">&#10003;</td><td class="no">&#10007;</td></tr>
+        <tr><td>森林图排序</td><td class="highlight-col yes">&#10003; 5 种模式</td><td class="partial">有限</td></tr>
+        <tr><td>森林图 tooltip</td><td class="highlight-col yes">&#10003; 交互式</td><td class="no">&#10007;</td></tr>
+        <tr><td>中文界面</td><td class="highlight-col yes">&#10003;</td><td class="no">&#10007;</td></tr>
+        <tr><td>PubMed 内置检索</td><td class="highlight-col yes">&#10003;</td><td class="no">&#10007;</td></tr>
+        <tr><td>AI 文献筛选</td><td class="highlight-col yes">&#10003;</td><td class="no">&#10007;</td></tr>
+        <tr><td>Methods 段落生成</td><td class="highlight-col yes">&#10003; PRISMA 格式</td><td class="no">&#10007;</td></tr>
+        <tr><td>Excel 粘贴导入</td><td class="highlight-col yes">&#10003;</td><td class="no">&#10007;</td></tr>
+        <tr><td>临床效应量解读</td><td class="highlight-col yes">&#10003;</td><td class="no">&#10007;</td></tr>
+        <tr><td>撤销/重做</td><td class="highlight-col yes">&#10003; 50 步</td><td class="partial">基本</td></tr>
+        <tr><td>RoB 偏倚风险评估</td><td class="no">&#10007;</td><td class="yes">&#10003; 内置</td></tr>
+        <tr><td>团队协作</td><td class="no">&#10007;</td><td class="yes">&#10003;</td></tr>
+      </tbody>
+    </table>
+    <div class="warn">RevMan 的独特优势在于 RoB 偏倚风险评估和 Cochrane 生态集成。如果你正在做 Cochrane 系统综述，RevMan 仍然是首选。但对于独立的 Meta 分析研究，MetaReview 在功能覆盖上已全面超越 RevMan。</div>
+  </div>
+
+  <!-- Section 6: Pricing -->
+  <div class="section">
+    <h2>价格对比：做一次 Meta 分析要花多少钱？</h2>
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th style="text-align:left">工具</th>
+          <th>价格</th>
+          <th>计费方式</th>
+          <th>学生优惠</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>MetaReview</strong></td>
+          <td class="yes"><strong>$0</strong></td>
+          <td>免费</td>
+          <td>免费</td>
+        </tr>
+        <tr>
+          <td>R + RStudio</td>
+          <td class="yes">$0</td>
+          <td>免费开源</td>
+          <td>免费</td>
+        </tr>
+        <tr>
+          <td>RevMan Web</td>
+          <td>免费*</td>
+          <td>需 Cochrane 账户</td>
+          <td>免费*</td>
+        </tr>
+        <tr>
+          <td>Meta-Mar</td>
+          <td class="no">&euro;19-69</td>
+          <td>按项目</td>
+          <td>无</td>
+        </tr>
+        <tr>
+          <td>Covidence</td>
+          <td class="no">$225/年</td>
+          <td>年付</td>
+          <td>免费（1 个项目）</td>
+        </tr>
+        <tr>
+          <td>Stata</td>
+          <td class="no">$895+</td>
+          <td>永久授权</td>
+          <td>$225（教育版）</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:#9ca3af;margin-top:8px">* RevMan Web 对 Cochrane 注册用户免费使用。</p>
+    <div class="tip">对于一个医学研究生来说，MetaReview 是零成本的全功能方案。不需要说服导师买软件，不需要申请经费，打开浏览器就能用。</div>
+  </div>
+
+  <!-- Section 7: Real Scenario -->
+  <div class="section">
+    <h2>实际场景：用 MetaReview 做一篇 Meta 分析论文</h2>
+    <p>假设你要做一篇 "阿司匹林 vs 安慰剂预防心血管事件" 的 Meta 分析，以下是完整流程：</p>
+    <ol>
+      <li style="margin-bottom:8px"><strong>检索文献</strong> — 在 MetaReview 内置的 PubMed 搜索中输入关键词，筛选 RCT 文献类型</li>
+      <li style="margin-bottom:8px"><strong>AI 文献筛选</strong> — 一键启动 AI 筛选，自动判断每篇文献的相关性并给出理由</li>
+      <li style="margin-bottom:8px"><strong>数据录入</strong> — 在数据表中输入各研究的事件数和样本量（支持从 Excel 直接粘贴）</li>
+      <li style="margin-bottom:8px"><strong>运行分析</strong> — 选择 OR + 随机效应模型，点击分析</li>
+      <li style="margin-bottom:8px"><strong>查看结果</strong> — 自动生成森林图、漏斗图、累积分析、敏感性分析、GRADE 评估</li>
+      <li style="margin-bottom:8px"><strong>导出报告</strong> — 一键导出 Word 格式完整报告，含 Methods 和 Results 段落</li>
+      <li style="margin-bottom:8px"><strong>投稿</strong> — 直接将导出的报告整合到论文中</li>
+    </ol>
+    <p style="margin-top:12px"><strong>总耗时：录入数据 + 分析 + 导出，约 30 分钟</strong>（不含文献检索和全文阅读时间）。</p>
+    <div class="tip">MetaReview 内置了 Demo 数据（7 篇阿司匹林 RCT），你可以立即体验完整流程。</div>
+  </div>
+
+  <div class="cta">
+    <h2>免费开始你的 Meta 分析</h2>
+    <p>零成本、零编程、零安装。5 分钟从数据到森林图，一键导出 Word 报告。</p>
+    <a href="/">立即使用 MetaReview</a>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">获取更新通知</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">留下邮箱，第一时间获取新功能通知和 Meta 分析技巧。</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="输入邮箱地址" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">订阅</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">我们不会发送垃圾邮件，随时可退订。</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='提交中...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-comparison',lang:'zh'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'你已经订阅过了！':'订阅成功！我们会在有新功能时通知你。';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='请输入有效的邮箱地址。';btn.textContent='订阅';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='提交失败，请稍后重试。';btn.textContent='订阅';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="related">
+    <h2>相关指南</h2>
+    <ul>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤：从研究问题到发表的全流程指南</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图怎么画？在线生成森林图完全指南</a></li>
+      <li><a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？效应量完整指南</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 流程图：在线制作模板与填写指南</a></li>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析：HR 的提取、计算与解读指南</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> — 免费在线 Meta 分析工具</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
