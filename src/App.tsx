@@ -9,7 +9,8 @@ import FunnelPlot from './components/FunnelPlot';
 import ResultsSummary from './components/ResultsSummary';
 import SensitivityTable from './components/SensitivityTable';
 import PRISMAFlow from './components/PRISMAFlow';
-import LiteratureSearch from './components/LiteratureSearch';
+// Lazy-load large tab-only component to reduce initial bundle
+const LiteratureSearch = lazy(() => import('./components/LiteratureSearch'));
 import OnboardingTour from './components/OnboardingTour';
 import CumulativeMeta from './components/CumulativeMeta';
 import GalbraithPlot from './components/GalbraithPlot';
@@ -265,6 +266,19 @@ export default function App() {
   const [showTrimFill, setShowTrimFill] = useState(false);
   const [showContours, setShowContours] = useState(false);
   const [showEggersLine, setShowEggersLine] = useState(false);
+
+  // Defer hidden renderer mounting until browser is idle (avoids blocking initial result render)
+  const [hiddenReady, setHiddenReady] = useState(false);
+  useEffect(() => {
+    if (!result) { setHiddenReady(false); return; }
+    const ric = typeof requestIdleCallback === 'function'
+      ? requestIdleCallback(() => setHiddenReady(true))
+      : setTimeout(() => setHiddenReady(true), 100) as unknown as number;
+    return () => {
+      if (typeof cancelIdleCallback === 'function') cancelIdleCallback(ric);
+      else clearTimeout(ric);
+    };
+  }, [result]);
 
   const { undo, redo, canUndo, canRedo } = useProjectStore();
 
@@ -701,15 +715,17 @@ export default function App() {
 
       {/* Literature Search Tab */}
       {activeTab === 'search' && (
-        <LiteratureSearch
-          lang={lang}
-          measure={measure}
-          studies={studies}
-          pico={pico}
-          onStudiesChange={setStudies}
-          onSwitchToInput={() => setActiveTab('input')}
-          onPRISMAUpdate={(updates) => setPRISMA({ ...prisma, ...updates })}
-        />
+        <Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6b7280' }}>Loading...</div>}>
+          <LiteratureSearch
+            lang={lang}
+            measure={measure}
+            studies={studies}
+            pico={pico}
+            onStudiesChange={setStudies}
+            onSwitchToInput={() => setActiveTab('input')}
+            onPRISMAUpdate={(updates) => setPRISMA({ ...prisma, ...updates })}
+          />
+        </Suspense>
       )}
 
       {/* PDF Data Extraction Tab */}
@@ -1029,8 +1045,8 @@ export default function App() {
         />
       )}
 
-      {/* Hidden plot renderers for report export — ensures SVGs are in DOM regardless of active tab */}
-      {result && (
+      {/* Hidden plot renderers for report export — deferred via requestIdleCallback to avoid blocking initial render */}
+      {result && hiddenReady && (
         <div style={{ position: 'absolute', left: -9999, top: -9999, width: 800, overflow: 'hidden', pointerEvents: 'none' }} aria-hidden="true">
           <div className="forest-plot-container">
             <ForestPlot result={result} subgroupResult={subgroupResult} title={title || 'Forest Plot'} lang={lang} />
