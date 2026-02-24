@@ -82,6 +82,11 @@ export default function HeroSection({ lang, onGetStarted, onLoadDemo, onSwitchLa
             {t('hero.demo', lang)}
           </button>
         </div>
+        <p style={{ marginTop: 16 }}>
+          <a href="/?s=6ae5971c" style={{ color: '#2563eb', fontSize: 14, textDecoration: 'underline' }}>
+            {t('hero.liveExample', lang)}
+          </a>
+        </p>
       </section>
 
       {/* Features */}

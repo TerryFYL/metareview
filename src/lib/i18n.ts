@@ -459,6 +459,8 @@ const translations = {
   'hero.cta.en': 'Get Started',
   'hero.demo.zh': '查看示例数据',
   'hero.demo.en': 'Try Demo Data',
+  'hero.liveExample.zh': '查看在线示例：阿司匹林 vs 安慰剂 Meta 分析（7 篇 RCT）\u2192',
+  'hero.liveExample.en': 'See live example: Aspirin vs Placebo meta-analysis (7 RCTs) \u2192',
   'hero.feat1.title.zh': 'PubMed 文献检索',
   'hero.feat1.title.en': 'PubMed Search',
   'hero.feat1.desc.zh': '内置 PubMed 搜索，AI 智能筛选文献相关性，自动判断纳入/排除并给出理由。',
