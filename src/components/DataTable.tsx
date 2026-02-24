@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import type { Study, EffectMeasure, BinaryData, ContinuousData, HRData } from '../lib/types';
 import { exportCSV, importCSV } from '../lib/csv';
+import { importRIS } from '../lib/ris';
 import { t, type Lang } from '../lib/i18n';
 import { trackFeature } from '../lib/analytics';
 
@@ -94,6 +95,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
   const [batchSubgroup, setBatchSubgroup] = useState('');
   const [showSubgroupInput, setShowSubgroupInput] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const risInputRef = useRef<HTMLInputElement>(null);
   const tableRef = useRef<HTMLTableElement>(null);
 
   const handleExportCSV = () => {
@@ -117,6 +119,26 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
       const imported = importCSV(text, measure);
       if (imported.length > 0) {
         onStudiesChange([...studies, ...imported]);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
+  const handleImportRIS = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result;
+      if (typeof text !== 'string') return;
+      const imported = importRIS(text, measure);
+      if (imported.length > 0) {
+        onStudiesChange([...studies, ...imported]);
+        trackFeature('ris_import');
+        const msg = t('table.risImportHint', lang).replace('{n}', String(imported.length));
+        setPasteToast(msg);
+        setTimeout(() => setPasteToast(null), 3000);
       }
     };
     reader.readAsText(file);
@@ -532,6 +554,16 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
           type="file"
           accept=".csv,text/csv"
           onChange={handleImportCSV}
+          style={{ display: 'none' }}
+        />
+        <button onClick={() => risInputRef.current?.click()} style={csvBtnStyle}>
+          {t('table.importRIS', lang)}
+        </button>
+        <input
+          ref={risInputRef}
+          type="file"
+          accept=".ris,.enw"
+          onChange={handleImportRIS}
           style={{ display: 'none' }}
         />
         {studies.length > 0 && (

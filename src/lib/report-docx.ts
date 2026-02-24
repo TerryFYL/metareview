@@ -16,6 +16,8 @@ import {
 } from 'docx';
 import type { MetaAnalysisResult, EggersTest, SubgroupAnalysisResult, SensitivityResult, PICO } from './types';
 import type { PRISMAData } from '../components/PRISMAFlow';
+import type { ReportSections } from './report-export';
+import { defaultReportSections } from './report-export';
 
 interface ReportData {
   title: string;
@@ -24,6 +26,7 @@ interface ReportData {
   eggers: EggersTest | null;
   subgroupResult: SubgroupAnalysisResult | null;
   sensitivityResults: SensitivityResult[];
+  sections?: ReportSections;
 }
 
 const formatP = (p: number) => (p < 0.001 ? '< 0.001' : p.toFixed(3));
@@ -285,6 +288,7 @@ function narrativeText(r: MetaAnalysisResult, eggers: EggersTest | null, sg: Sub
 
 export async function generateReportDOCX(data: ReportData): Promise<Blob> {
   const { title, pico, result, eggers, subgroupResult, sensitivityResults } = data;
+  const s = data.sections || defaultReportSections;
   const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
   const children: (Paragraph | Table)[] = [];
@@ -304,34 +308,42 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
   );
 
   // PICO
-  const picoT = picoTable(pico);
-  if (picoT) {
-    children.push(
-      new Paragraph({ text: 'PICO Framework', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
-      picoT,
-    );
+  if (s.pico) {
+    const picoT = picoTable(pico);
+    if (picoT) {
+      children.push(
+        new Paragraph({ text: 'PICO Framework', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+        picoT,
+      );
+    }
   }
 
   // Overall Effect & Heterogeneity
-  children.push(
-    new Paragraph({ text: 'Overall Effect & Heterogeneity', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
-    overallEffectTable(result),
-  );
+  if (s.overall) {
+    children.push(
+      new Paragraph({ text: 'Overall Effect & Heterogeneity', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      overallEffectTable(result),
+    );
+  }
 
   // Clinical Interpretation
-  children.push(
-    new Paragraph({ text: 'Clinical Interpretation', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
-    ...interpretationRows(result),
-  );
+  if (s.interpretation) {
+    children.push(
+      new Paragraph({ text: 'Clinical Interpretation', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      ...interpretationRows(result),
+    );
+  }
 
   // Individual Study Results
-  children.push(
-    new Paragraph({ text: 'Individual Study Results', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
-    studyResultsTable(result),
-  );
+  if (s.studyTable) {
+    children.push(
+      new Paragraph({ text: 'Individual Study Results', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      studyResultsTable(result),
+    );
+  }
 
   // Egger's Test
-  if (eggers) {
+  if (s.eggers && eggers) {
     children.push(
       new Paragraph({ text: "Publication Bias (Egger's Test)", heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
       eggersTable(eggers),
@@ -351,7 +363,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
   }
 
   // Subgroup Analysis
-  if (subgroupResult && subgroupResult.subgroups.length > 1) {
+  if (s.subgroup && subgroupResult && subgroupResult.subgroups.length > 1) {
     children.push(
       new Paragraph({ text: 'Subgroup Analysis', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
       subgroupTable(subgroupResult, result.measure),
@@ -368,7 +380,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
   }
 
   // Sensitivity Analysis
-  if (sensitivityResults.length > 0) {
+  if (s.sensitivity && sensitivityResults.length > 0) {
     children.push(
       new Paragraph({ text: 'Sensitivity Analysis (Leave-One-Out)', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
       sensitivityTable(sensitivityResults, result),
@@ -376,17 +388,19 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
   }
 
   // Narrative Summary
-  children.push(
-    new Paragraph({ text: 'Narrative Summary', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
-    new Paragraph({
-      children: [new TextRun({
-        text: narrativeText(result, eggers, subgroupResult, sensitivityResults),
-        size: 22,
-        font: 'Times New Roman',
-      })],
-      spacing: { after: 200 },
-    }),
-  );
+  if (s.narrative) {
+    children.push(
+      new Paragraph({ text: 'Narrative Summary', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      new Paragraph({
+        children: [new TextRun({
+          text: narrativeText(result, eggers, subgroupResult, sensitivityResults),
+          size: 22,
+          font: 'Times New Roman',
+        })],
+        spacing: { after: 200 },
+      }),
+    );
+  }
 
   // Footer
   children.push(

@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import type { MetaAnalysisResult, EggersTest, SubgroupAnalysisResult, SensitivityResult } from '../lib/types';
+import type { ReportSections } from '../lib/report-export';
+import { defaultReportSections } from '../lib/report-export';
 import { t, type Lang } from '../lib/i18n';
 import { useProjectStore } from '../store';
+import { trackFeature } from '../lib/analytics';
 
 interface ResultsSummaryProps {
   result: MetaAnalysisResult;
@@ -9,13 +12,56 @@ interface ResultsSummaryProps {
   subgroupResult: SubgroupAnalysisResult | null;
   sensitivityResults: SensitivityResult[];
   lang: Lang;
-  onExportReport?: () => void;
-  onExportDOCX?: () => void;
+  onExportReport?: (sections: ReportSections) => void;
+  onExportDOCX?: (sections: ReportSections) => void;
 }
 
 export default function ResultsSummary({ result, eggers, subgroupResult, sensitivityResults, lang, onExportReport, onExportDOCX }: ResultsSummaryProps) {
   const { measure, model, heterogeneity: het } = result;
   const k = result.studies.length;
+  const [showSections, setShowSections] = useState(false);
+  const [sections, setSections] = useState<ReportSections>({ ...defaultReportSections });
+
+  const toggleSection = (key: keyof ReportSections) => {
+    setSections(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const toggleAllSections = () => {
+    const allOn = Object.values(sections).every(v => v);
+    const newVal = !allOn;
+    setSections({
+      pico: newVal, overall: newVal, interpretation: newVal, studyTable: newVal,
+      eggers: newVal, plots: newVal, subgroup: newVal, sensitivity: newVal,
+      methods: newVal, narrative: newVal,
+    });
+  };
+
+  const handleExportHTML = () => {
+    if (onExportReport) {
+      trackFeature('export_html_custom');
+      onExportReport(sections);
+    }
+  };
+
+  const handleExportDOCX = () => {
+    if (onExportDOCX) {
+      trackFeature('export_docx_custom');
+      onExportDOCX(sections);
+    }
+  };
+
+  const sectionKeys: { key: keyof ReportSections; labelKey: string }[] = [
+    { key: 'pico', labelKey: 'report.section.pico' },
+    { key: 'overall', labelKey: 'report.section.overall' },
+    { key: 'interpretation', labelKey: 'report.section.interpretation' },
+    { key: 'studyTable', labelKey: 'report.section.studyTable' },
+    { key: 'eggers', labelKey: 'report.section.eggers' },
+    { key: 'plots', labelKey: 'report.section.plots' },
+    { key: 'subgroup', labelKey: 'report.section.subgroup' },
+    { key: 'sensitivity', labelKey: 'report.section.sensitivity' },
+    { key: 'methods', labelKey: 'report.section.methods' },
+    { key: 'narrative', labelKey: 'report.section.narrative' },
+  ];
 
   const formatP = (p: number) => {
     if (p < 0.001) return '< 0.001';
@@ -24,23 +70,47 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
 
   return (
     <div style={{ fontSize: 13, lineHeight: 1.8, color: '#374151' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
         <h3 style={{ fontSize: 15, fontWeight: 600, color: '#111827', margin: 0 }}>
           {t('results.title', lang)}
         </h3>
-        <div style={{ display: 'flex', gap: 6 }}>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <button onClick={() => setShowSections(!showSections)} style={sectionToggleBtnStyle}>
+            {t('report.customize', lang)}
+          </button>
           {onExportReport && (
-            <button onClick={onExportReport} style={exportBtnStyle}>
+            <button onClick={handleExportHTML} style={exportBtnStyle}>
               {t('results.exportReport', lang)}
             </button>
           )}
           {onExportDOCX && (
-            <button onClick={onExportDOCX} style={docxBtnStyle}>
+            <button onClick={handleExportDOCX} style={docxBtnStyle}>
               {t('results.exportDOCX', lang)}
             </button>
           )}
         </div>
       </div>
+
+      {/* Section selection panel */}
+      {showSections && (
+        <div style={{ background: '#f0f9ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '12px 16px', marginBottom: 12 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#374151' }}>{t('report.customize', lang)}</span>
+            <label style={{ fontSize: 11, color: '#6b7280', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <input type="checkbox" checked={Object.values(sections).every(v => v)} onChange={toggleAllSections} />
+              {t('report.selectAll', lang)}
+            </label>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 16px' }}>
+            {sectionKeys.map(({ key, labelKey }) => (
+              <label key={key} style={{ fontSize: 12, color: '#374151', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, minWidth: 140 }}>
+                <input type="checkbox" checked={sections[key]} onChange={() => toggleSection(key)} />
+                {t(labelKey, lang)}
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Overall effect */}
       <div style={cardStyle}>
@@ -403,5 +473,15 @@ const docxBtnStyle: React.CSSProperties = {
   borderRadius: 6,
   fontSize: 12,
   fontWeight: 600,
+  cursor: 'pointer',
+};
+
+const sectionToggleBtnStyle: React.CSSProperties = {
+  padding: '7px 14px',
+  background: '#f3f4f6',
+  color: '#374151',
+  border: '1px solid #d1d5db',
+  borderRadius: 6,
+  fontSize: 12,
   cursor: 'pointer',
 };

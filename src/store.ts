@@ -221,6 +221,7 @@ const defaultPlotSettings: PlotSettings = {
 interface UIStore {
   lang: Lang;
   heroSeen: boolean;
+  tourSeen: boolean;
   result: MetaAnalysisResult | null;
   eggers: EggersTest | null;
   error: string | null;
@@ -228,6 +229,7 @@ interface UIStore {
   plotSettings: PlotSettings;
   setLang: (lang: Lang) => void;
   setHeroSeen: (seen: boolean) => void;
+  setTourSeen: (seen: boolean) => void;
   setResult: (result: MetaAnalysisResult | null) => void;
   setEggers: (eggers: EggersTest | null) => void;
   setError: (error: string | null) => void;
@@ -240,6 +242,7 @@ export const useUIStore = create<UIStore>()(
     (set) => ({
       lang: 'zh',
       heroSeen: false,
+      tourSeen: false,
       result: null,
       eggers: null,
       error: null,
@@ -247,6 +250,7 @@ export const useUIStore = create<UIStore>()(
       plotSettings: defaultPlotSettings,
       setLang: (lang) => set({ lang }),
       setHeroSeen: (heroSeen) => set({ heroSeen }),
+      setTourSeen: (tourSeen) => set({ tourSeen }),
       setResult: (result) => set({ result }),
       setEggers: (eggers) => set({ eggers }),
       setError: (error) => set({ error }),
@@ -257,7 +261,7 @@ export const useUIStore = create<UIStore>()(
     }),
     {
       name: 'metareview-ui',
-      partialize: (state) => ({ lang: state.lang, heroSeen: state.heroSeen, plotSettings: state.plotSettings }),
+      partialize: (state) => ({ lang: state.lang, heroSeen: state.heroSeen, tourSeen: state.tourSeen, plotSettings: state.plotSettings }),
     }
   )
 );

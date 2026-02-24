@@ -10,8 +10,9 @@ import ResultsSummary from './components/ResultsSummary';
 import SensitivityTable from './components/SensitivityTable';
 import PRISMAFlow from './components/PRISMAFlow';
 import LiteratureSearch from './components/LiteratureSearch';
+import OnboardingTour from './components/OnboardingTour';
 import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, isBinaryData, isContinuousData, isHRData } from './lib/statistics';
-import { generateReportHTML } from './lib/report-export';
+import { generateReportHTML, type ReportSections } from './lib/report-export';
 import { generateReportDOCX } from './lib/report-docx';
 import { t, type Lang } from './lib/i18n';
 import { trackPageView, trackTabSwitch } from './lib/analytics';
@@ -223,8 +224,8 @@ export default function App() {
   } = useProjectStore();
 
   const {
-    lang, heroSeen, result, eggers, error, activeTab,
-    setLang, setHeroSeen, setResult, setEggers, setError, setActiveTab,
+    lang, heroSeen, tourSeen, result, eggers, error, activeTab,
+    setLang, setHeroSeen, setTourSeen, setResult, setEggers, setError, setActiveTab,
   } = useUIStore();
 
   const [subgroupResult, setSubgroupResult] = useState<SubgroupAnalysisResult | null>(null);
@@ -339,7 +340,7 @@ export default function App() {
     URL.revokeObjectURL(url);
   }, [title]);
 
-  const exportReport = useCallback(() => {
+  const exportReport = useCallback((sections?: ReportSections) => {
     if (!result) return;
     const serializer = new XMLSerializer();
     const forestEl = document.querySelector('.forest-plot-container svg');
@@ -355,6 +356,7 @@ export default function App() {
       sensitivityResults,
       forestSvg,
       funnelSvg,
+      sections,
     });
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -362,7 +364,7 @@ export default function App() {
     setTimeout(() => URL.revokeObjectURL(url), 10000);
   }, [result, title, pico, eggers, subgroupResult, sensitivityResults]);
 
-  const exportDOCX = useCallback(async () => {
+  const exportDOCX = useCallback(async (sections?: ReportSections) => {
     if (!result) return;
     const blob = await generateReportDOCX({
       title,
@@ -371,6 +373,7 @@ export default function App() {
       eggers,
       subgroupResult,
       sensitivityResults,
+      sections,
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -421,6 +424,9 @@ export default function App() {
           >
             {lang === 'zh' ? 'EN' : '中文'}
           </button>
+          <button onClick={() => setTourSeen(false)} style={secondaryBtnStyle} title={t('tour.startTour', lang)}>
+            {t('tour.startTour', lang)}
+          </button>
           <button onClick={loadDemo} style={secondaryBtnStyle}>
             {t('header.loadDemo', lang)}
           </button>
@@ -444,6 +450,7 @@ export default function App() {
           return (
             <button
               key={tab}
+              data-tour={`tab-${tab}`}
               onClick={() => setActiveTab(tab)}
               style={{
                 padding: '10px 16px',
@@ -547,7 +554,7 @@ export default function App() {
           </section>
 
           {/* Data Table */}
-          <section style={sectionStyle}>
+          <section style={sectionStyle} data-tour="import-csv">
             <h2 style={h2Style}>{t('input.studyData', lang)}</h2>
             <DataTable studies={studies} measure={measure} onStudiesChange={setStudies} lang={lang} onUndo={undo} onRedo={redo} canUndo={canUndo()} canRedo={canRedo()} />
           </section>
@@ -560,7 +567,7 @@ export default function App() {
           )}
 
           {/* Run button */}
-          <button onClick={runAnalysis} style={primaryBtnStyle} disabled={studies.length < 2}>
+          <button data-tour="run-analysis" onClick={runAnalysis} style={primaryBtnStyle} disabled={studies.length < 2}>
             {t('input.runAnalysis', lang)}
           </button>
         </div>
@@ -666,6 +673,15 @@ export default function App() {
       {/* PRISMA Flow Tab */}
       {activeTab === 'prisma' && (
         <PRISMAFlow data={prisma} onChange={setPRISMA} lang={lang} />
+      )}
+
+      {/* Onboarding Tour */}
+      {!tourSeen && (
+        <OnboardingTour
+          lang={lang}
+          onComplete={() => setTourSeen(true)}
+          onTabSwitch={(tab) => setActiveTab(tab as typeof activeTab)}
+        />
       )}
 
       {/* Footer */}
