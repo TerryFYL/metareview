@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import type { MetaAnalysisResult, EggersTest, SubgroupAnalysisResult, SensitivityResult } from '../lib/types';
 import { t, type Lang } from '../lib/i18n';
+import { useProjectStore } from '../store';
 
 interface ResultsSummaryProps {
   result: MetaAnalysisResult;
@@ -85,6 +87,9 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
         </div>
       )}
 
+      {/* Methods paragraph (for manuscript) */}
+      <MethodsParagraph result={result} eggers={eggers} subgroupResult={subgroupResult} sensitivityResults={sensitivityResults} lang={lang} />
+
       {/* Auto-generated paragraph (always in English for academic use) */}
       <div style={cardStyle}>
         <div style={cardTitleStyle}>{t('results.narrative', lang)}</div>
@@ -119,6 +124,105 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
           })()}
         </p>
       </div>
+    </div>
+  );
+}
+
+function MethodsParagraph({ result, eggers, subgroupResult, sensitivityResults, lang }: {
+  result: MetaAnalysisResult;
+  eggers: EggersTest | null;
+  subgroupResult: SubgroupAnalysisResult | null;
+  sensitivityResults: SensitivityResult[];
+  lang: Lang;
+}) {
+  const { pico, measure, model } = useProjectStore();
+  const [copied, setCopied] = useState(false);
+  const k = result.studies.length;
+
+  // Build methods paragraph following PRISMA 2020 reporting guidelines
+  const parts: string[] = [];
+
+  // 1. Study design
+  parts.push('A systematic review and meta-analysis was conducted following the PRISMA 2020 guidelines.');
+
+  // 2. PICO context (if filled)
+  if (pico.population || pico.intervention || pico.comparison || pico.outcome) {
+    const picoDesc = [
+      pico.intervention && pico.comparison
+        ? `the ${measure === 'OR' || measure === 'RR' ? 'association between' : 'effect of'} ${pico.intervention} ${measure === 'OR' || measure === 'RR' ? 'and' : 'compared with'} ${pico.comparison}`
+        : null,
+      pico.outcome ? `on ${pico.outcome}` : null,
+      pico.population ? `in ${pico.population}` : null,
+    ].filter(Boolean).join(' ');
+    if (picoDesc) {
+      parts.push(`The aim was to evaluate ${picoDesc}.`);
+    }
+  }
+
+  // 3. Statistical methods
+  const modelName = model === 'random' ? 'random-effects' : 'fixed-effect';
+  const estimator = model === 'random' ? 'DerSimonian-Laird' : 'inverse variance';
+  const measureFull: Record<string, string> = {
+    OR: 'odds ratios (ORs)',
+    RR: 'risk ratios (RRs)',
+    MD: 'mean differences (MDs)',
+    SMD: 'standardized mean differences (SMDs)',
+  };
+  parts.push(
+    `A ${modelName} model with the ${estimator} estimator was used to pool effect sizes across ${k} studies. Results were expressed as ${measureFull[measure] || measure} with 95% confidence intervals (CIs).`
+  );
+
+  // 4. Heterogeneity assessment
+  parts.push(
+    "Statistical heterogeneity was assessed using Cochran's Q test and quantified with the I\u00B2 statistic, where I\u00B2 values of 25%, 50%, and 75% were interpreted as low, moderate, and high heterogeneity, respectively (Higgins et al., 2003)."
+  );
+
+  // 5. Publication bias
+  if (eggers) {
+    parts.push(
+      "Publication bias was evaluated by visual inspection of funnel plot asymmetry and formally tested using Egger's linear regression test."
+    );
+  }
+
+  // 6. Sensitivity analysis
+  if (sensitivityResults.length > 0) {
+    parts.push(
+      'Sensitivity analysis was performed using the leave-one-out method, whereby each study was sequentially removed to assess its influence on the pooled estimate.'
+    );
+  }
+
+  // 7. Subgroup analysis
+  if (subgroupResult && subgroupResult.subgroups.length > 1) {
+    parts.push(
+      'Subgroup analysis was conducted to explore potential sources of heterogeneity, and the test for subgroup differences (Q-between) was used to evaluate effect modification.'
+    );
+  }
+
+  // 8. Software
+  parts.push(
+    'All analyses were performed using MetaReview (https://metareview-8c1.pages.dev/), an open-source online meta-analysis platform. A two-sided P value < 0.05 was considered statistically significant.'
+  );
+
+  const methodsText = parts.join(' ');
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(methodsText).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  return (
+    <div style={cardStyle}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <div style={cardTitleStyle}>{t('results.methods', lang)}</div>
+        <button onClick={handleCopy} style={copyBtnStyle}>
+          {copied ? t('results.methods.copy', lang) : 'Copy'}
+        </button>
+      </div>
+      <p style={{ fontSize: 13, lineHeight: 1.7, color: '#374151' }}>
+        {methodsText}
+      </p>
     </div>
   );
 }
@@ -171,6 +275,16 @@ const cardTitleStyle: React.CSSProperties = {
 
 const tableStyle: React.CSSProperties = {
   fontSize: 13,
+};
+
+const copyBtnStyle: React.CSSProperties = {
+  padding: '4px 10px',
+  background: '#f3f4f6',
+  color: '#374151',
+  border: '1px solid #d1d5db',
+  borderRadius: 4,
+  fontSize: 11,
+  cursor: 'pointer',
 };
 
 const exportBtnStyle: React.CSSProperties = {
