@@ -3,6 +3,7 @@ import { t } from '../lib/i18n';
 import type { Lang } from '../lib/i18n';
 import type { Study, BinaryData, ContinuousData, PICO, ScreeningScore } from '../lib/types';
 import type { EffectMeasure } from '../lib/types';
+import type { PRISMAData } from './PRISMAFlow';
 import { scorePICORelevance } from '../lib/screening/pico-scorer';
 import { batchScreen } from '../lib/screening/ai-screener';
 import type { AIScreeningResult } from '../lib/screening/ai-screener';
@@ -23,7 +24,7 @@ interface Props {
   pico: PICO;
   onStudiesChange: (studies: Study[]) => void;
   onSwitchToInput: () => void;
-  onPRISMAUpdate?: (dbRecords: number) => void;
+  onPRISMAUpdate?: (updates: Partial<PRISMAData>) => void;
 }
 
 const PAGE_SIZE = 20;
@@ -227,13 +228,25 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
 
       setAiResults(screeningResults);
       setAiDone(true);
+
+      // Auto-update PRISMA with screening results
+      if (onPRISMAUpdate) {
+        let excludeCount = 0;
+        for (const r of screeningResults.values()) {
+          if (r.verdict === 'exclude') excludeCount++;
+        }
+        onPRISMAUpdate({
+          recordsScreened: String(screeningResults.size),
+          recordsExcluded: String(excludeCount),
+        });
+      }
     } catch {
       setAiError('error');
     } finally {
       setAiScreening(false);
       abortRef.current = null;
     }
-  }, [hasPICO, results, pico, fetchAbstractsBatch]);
+  }, [hasPICO, results, pico, fetchAbstractsBatch, onPRISMAUpdate]);
 
   const cancelAiScreening = useCallback(() => {
     abortRef.current?.abort();
@@ -413,7 +426,7 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
 
       // Auto-update PRISMA flowchart
       if (onPRISMAUpdate && totalCount > 0) {
-        onPRISMAUpdate(totalCount);
+        onPRISMAUpdate({ dbRecords: String(totalCount) });
         setPrismaNotice(true);
         setTimeout(() => setPrismaNotice(false), 3000);
       }

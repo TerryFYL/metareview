@@ -7,29 +7,29 @@
     <!-- Primary Meta -->
     <title>MetaReview — 免费在线 Meta 分析工具 | Free Online Meta-Analysis Tool</title>
     <meta name="description" content="免费在线 Meta 分析工具，5 分钟从数据到森林图。支持 OR/RR/MD/SMD，生成森林图、漏斗图，无需 R 或 Stata。Free online meta-analysis tool with forest plot generator." />
-    <meta name="keywords" content="meta分析工具, 森林图生成器, 系统综述, meta-analysis tool, forest plot generator, 漏斗图, 异质性检验, 随机效应模型, 免费meta分析, PRISMA, 循证医学, systematic review, funnel plot" />
+    <meta name="keywords" content="meta分析工具, 森林图生成器, 系统综述, meta-analysis tool, forest plot generator, 漏斗图, 异质性检验, 随机效应模型, 免费meta分析, PRISMA, 循证医学, systematic review, funnel plot, AI文献筛选, PubMed检索, 亚组分析, 敏感性分析, 发表偏倚, Egger检验, 效应量计算, 在线meta分析, 不用R做meta分析" />
     <meta name="author" content="MetaReview" />
     <meta name="robots" content="index, follow" />
 
-    <!-- Canonical URL (update when domain is finalized) -->
-    <link rel="canonical" href="https://metareview.app" />
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://metareview-8c1.pages.dev" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://metareview.app" />
-    <meta property="og:title" content="MetaReview — 免费在线 Meta 分析工具" />
-    <meta property="og:description" content="5 分钟从数据到森林图。计算合并效应量、异质性检验、发表偏倚检测。免费、无需安装、保护隐私。" />
-    <meta property="og:image" content="https://metareview.app/og-image.png" />
+    <meta property="og:url" content="https://metareview-8c1.pages.dev" />
+    <meta property="og:title" content="MetaReview — 免费在线 Meta 分析工具 | AI 智能文献筛选" />
+    <meta property="og:description" content="5 分钟从数据到森林图。AI 智能文献筛选 + PubMed 检索 + Meta 分析统计 + PRISMA 流程图。免费、无需安装、保护隐私。" />
+    <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
     <meta property="og:locale" content="zh_CN" />
     <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:site_name" content="MetaReview" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://metareview.app" />
-    <meta name="twitter:title" content="MetaReview — 免费在线 Meta 分析工具" />
-    <meta name="twitter:description" content="5 分钟从数据到森林图。计算合并效应量、异质性检验、发表偏倚检测。免费、无需安装。" />
-    <meta name="twitter:image" content="https://metareview.app/og-image.png" />
+    <meta name="twitter:url" content="https://metareview-8c1.pages.dev" />
+    <meta name="twitter:title" content="MetaReview — 免费在线 Meta 分析工具 | AI 智能文献筛选" />
+    <meta name="twitter:description" content="5 分钟从数据到森林图。AI 智能文献筛选 + PubMed 检索 + Meta 分析统计。免费、无需安装。" />
+    <meta name="twitter:image" content="https://metareview-8c1.pages.dev/og-image.png" />
 
     <!-- Favicon: microscope emoji as SVG -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
@@ -51,18 +51,65 @@
         "price": "0",
         "priceCurrency": "USD"
       },
-      "description": "Free online meta-analysis tool for systematic reviews. Generate forest plots, funnel plots, and compute pooled effect sizes in your browser.",
+      "description": "Free online meta-analysis tool with AI-powered literature screening. Generate forest plots, funnel plots, search PubMed, and compute pooled effect sizes in your browser.",
+      "url": "https://metareview-8c1.pages.dev",
       "featureList": [
-        "Forest plot generation",
+        "AI-powered literature screening (PICO keyword + LLM deep screening)",
+        "PubMed literature search with advanced filters",
+        "Forest plot generation (SVG export)",
         "Funnel plot with Egger's test",
         "Fixed and random effects models",
         "Odds ratio, risk ratio, mean difference, standardized mean difference",
         "Heterogeneity assessment (I-squared, Q, tau-squared)",
         "Subgroup analysis with test for differences",
-        "PRISMA 2020 flow diagram",
-        "SVG export for publication",
+        "Sensitivity analysis (leave-one-out)",
+        "PRISMA 2020 flow diagram (SVG/PNG export)",
         "Auto-generated results narrative",
-        "Chinese-English bilingual interface"
+        "Full analysis report export",
+        "Chinese-English bilingual interface",
+        "CSV import/export"
+      ]
+    }
+    </script>
+
+    <!-- Structured Data: FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "如何免费做 Meta 分析？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "使用 MetaReview，只需输入 PICO 研究问题、录入研究数据（事件数/总数 或 均值/标准差/样本量），一键生成森林图、漏斗图和统计结果。无需安装 R 或 Stata，完全免费。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "不会编程可以做 Meta 分析吗？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "完全可以。MetaReview 是零代码的在线工具，提供可视化界面录入数据、选择效应量指标和统计模型，自动计算并生成森林图。支持 OR、RR、MD、SMD 四种效应量。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "如何用 AI 筛选系统综述文献？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MetaReview 内置 PubMed 文献检索和 AI 智能筛选功能。输入 PICO 纳入标准后，系统通过关键词评分和 AI 深度分析自动判断每篇文献的相关性，给出纳入/排除建议和理由。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "MetaReview 支持哪些 Meta 分析功能？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "支持固定效应和随机效应模型、森林图/漏斗图生成、Egger's 发表偏倚检验、亚组分析、敏感性分析（留一法）、PRISMA 2020 流程图、结果段落自动生成、完整分析报告导出。"
+          }
+        }
       ]
     }
     </script>
