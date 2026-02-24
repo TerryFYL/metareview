@@ -836,10 +836,7 @@ export default function App() {
           <div className="funnel-plot-container" style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
             <FunnelPlot result={result} lang={lang} trimFillResult={showTrimFill ? trimFillResult : undefined} showContours={showContours} eggers={showEggersLine ? eggers : undefined} showEggersLine={showEggersLine} />
           </div>
-          {/* Hidden contour funnel plot for report export (always renders with contours enabled) */}
-          <div className="contour-funnel-plot-container" style={{ position: 'absolute', left: -9999, top: -9999, overflow: 'hidden' }}>
-            <FunnelPlot result={result} lang={lang} showContours={true} />
-          </div>
+          {/* Contour funnel hidden renderer moved to export renderers block below */}
           {/* Trim-and-Fill results */}
           {showTrimFill && trimFillResult && (
             <div style={{
@@ -1030,6 +1027,52 @@ export default function App() {
           onComplete={() => setTourSeen(true)}
           onTabSwitch={(tab) => setActiveTab(tab as typeof activeTab)}
         />
+      )}
+
+      {/* Hidden plot renderers for report export — ensures SVGs are in DOM regardless of active tab */}
+      {result && (
+        <div style={{ position: 'absolute', left: -9999, top: -9999, width: 800, overflow: 'hidden', pointerEvents: 'none' }} aria-hidden="true">
+          <div className="forest-plot-container">
+            <ForestPlot result={result} subgroupResult={subgroupResult} title={title || 'Forest Plot'} lang={lang} />
+          </div>
+          <div className="funnel-plot-container">
+            <FunnelPlot result={result} lang={lang} trimFillResult={showTrimFill ? trimFillResult : undefined} showContours={showContours} eggers={showEggersLine ? eggers : undefined} showEggersLine={showEggersLine} />
+          </div>
+          <div className="contour-funnel-plot-container">
+            <FunnelPlot result={result} lang={lang} showContours={true} />
+          </div>
+          <div className="galbraith-plot-container">
+            <GalbraithPlot result={result} lang={lang} />
+          </div>
+          <div className="baujat-plot-container">
+            <BaujatPlot result={result} lang={lang} />
+          </div>
+          {metaRegression && (
+            <div className="metareg-plot-container">
+              <MetaRegressionPlot metaRegression={metaRegression} lang={lang} />
+            </div>
+          )}
+          <LabbePlot studies={studies} lang={lang} />
+          {studies.length >= 3 && sensitivityResults.length > 0 && (
+            <div className="loo-plot-container">
+              <LeaveOneOutPlot result={result} sensitivityResults={sensitivityResults} lang={lang} />
+            </div>
+          )}
+          <div className="network-graph-container">
+            <NetworkGraph studies={studies} lang={lang} />
+          </div>
+          <div className="dose-response-container">
+            <DoseResponsePlot
+              result={result}
+              doses={studies.map(s => s.dose ?? NaN)}
+              names={studies.map(s => s.name)}
+              lang={lang}
+            />
+          </div>
+          {cumulativeResults.length > 0 && (
+            <CumulativeMeta results={cumulativeResults} measure={measure} lang={lang} />
+          )}
+        </div>
       )}
 
       {/* Footer */}

@@ -1063,6 +1063,49 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
     );
   }
 
+  // Methods Paragraph (for manuscript)
+  if (s.methods) {
+    const methodsParts: string[] = [];
+    methodsParts.push('A systematic review and meta-analysis was conducted following the PRISMA 2020 guidelines.');
+    if (pico.population || pico.intervention || pico.comparison || pico.outcome) {
+      const isRatioM = result.measure === 'OR' || result.measure === 'RR' || result.measure === 'HR';
+      const picoDesc = [
+        pico.intervention && pico.comparison
+          ? `the ${isRatioM ? 'association between' : 'effect of'} ${pico.intervention} ${isRatioM ? 'and' : 'compared with'} ${pico.comparison}`
+          : null,
+        pico.outcome ? `on ${pico.outcome}` : null,
+        pico.population ? `in ${pico.population}` : null,
+      ].filter(Boolean).join(' ');
+      if (picoDesc) methodsParts.push(`The aim was to evaluate ${picoDesc}.`);
+    }
+    const modelName = result.model === 'random' ? 'random-effects' : 'fixed-effect';
+    const estimator = result.model === 'random' ? 'DerSimonian-Laird' : 'inverse variance';
+    const measureFull: Record<string, string> = { OR: 'odds ratios (ORs)', RR: 'risk ratios (RRs)', HR: 'hazard ratios (HRs)', MD: 'mean differences (MDs)', SMD: 'standardized mean differences (SMDs)' };
+    methodsParts.push(`A ${modelName} model with the ${estimator} estimator was used to pool effect sizes across ${result.studies.length} studies. Results were expressed as ${measureFull[result.measure] || result.measure} with 95% confidence intervals (CIs).`);
+    methodsParts.push("Statistical heterogeneity was assessed using Cochran's Q test and quantified with the I\u00B2 statistic, where I\u00B2 values of 25%, 50%, and 75% were interpreted as low, moderate, and high heterogeneity, respectively (Higgins et al., 2003).");
+    if (eggers) {
+      methodsParts.push("Publication bias was evaluated by visual inspection of funnel plot asymmetry and formally tested using Egger's linear regression test and Begg's rank correlation test.");
+    }
+    if (sensitivityResults.length > 0) {
+      methodsParts.push('Sensitivity analysis was performed using the leave-one-out method, whereby each study was sequentially removed to assess its influence on the pooled estimate.');
+    }
+    if (subgroupResult && subgroupResult.subgroups.length > 1) {
+      methodsParts.push('Subgroup analysis was conducted to explore potential sources of heterogeneity, and the test for subgroup differences (Q-between) was used to evaluate effect modification.');
+    }
+    methodsParts.push('All analyses were performed using MetaReview (metareview-8c1.pages.dev), an open-source online meta-analysis platform. A two-sided P value < 0.05 was considered statistically significant.');
+    children.push(
+      new Paragraph({ text: 'Methods Paragraph (for manuscript)', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      new Paragraph({
+        children: [new TextRun({
+          text: methodsParts.join(' '),
+          size: 22,
+          font: 'Times New Roman',
+        })],
+        spacing: { after: 200 },
+      }),
+    );
+  }
+
   // Narrative Summary
   if (s.narrative) {
     children.push(
