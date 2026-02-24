@@ -31,7 +31,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     const newVal = !allOn;
     setSections({
       pico: newVal, prisma: newVal, overall: newVal, interpretation: newVal, studyTable: newVal,
-      eggers: newVal, plots: newVal, subgroup: newVal, sensitivity: newVal,
+      eggers: newVal, plots: newVal, galbraith: newVal, subgroup: newVal, sensitivity: newVal,
       methods: newVal, narrative: newVal,
     });
   };
@@ -58,6 +58,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     { key: 'studyTable', labelKey: 'report.section.studyTable' },
     { key: 'eggers', labelKey: 'report.section.eggers' },
     { key: 'plots', labelKey: 'report.section.plots' },
+    { key: 'galbraith', labelKey: 'report.section.galbraith' },
     { key: 'subgroup', labelKey: 'report.section.subgroup' },
     { key: 'sensitivity', labelKey: 'report.section.sensitivity' },
     { key: 'methods', labelKey: 'report.section.methods' },

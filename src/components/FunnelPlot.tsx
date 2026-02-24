@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import type { MetaAnalysisResult } from '../lib/types';
 import { funnelPlotData } from '../lib/statistics';
+import type { TrimAndFillResult } from '../lib/statistics';
 import { t, type Lang } from '../lib/i18n';
 import { useUIStore, type ColorScheme } from '../store';
 
@@ -10,14 +11,15 @@ interface FunnelPlotProps {
   lang?: Lang;
   width?: number;
   height?: number;
+  trimFillResult?: TrimAndFillResult | null;
 }
 
 const MARGIN = { top: 30, right: 30, bottom: 50, left: 60 };
 
-const FUNNEL_COLORS: Record<ColorScheme, { point: string; summary: string; funnel: string; funnelStroke: string }> = {
-  default: { point: '#2563eb', summary: '#dc2626', funnel: '#f3f4f6', funnelStroke: '#d1d5db' },
-  bw: { point: '#333333', summary: '#000000', funnel: '#f5f5f5', funnelStroke: '#999999' },
-  colorblind: { point: '#0072B2', summary: '#D55E00', funnel: '#f0f4f8', funnelStroke: '#a0aec0' },
+const FUNNEL_COLORS: Record<ColorScheme, { point: string; summary: string; funnel: string; funnelStroke: string; imputed: string }> = {
+  default: { point: '#2563eb', summary: '#dc2626', funnel: '#f3f4f6', funnelStroke: '#d1d5db', imputed: '#f97316' },
+  bw: { point: '#333333', summary: '#000000', funnel: '#f5f5f5', funnelStroke: '#999999', imputed: '#888888' },
+  colorblind: { point: '#0072B2', summary: '#D55E00', funnel: '#f0f4f8', funnelStroke: '#a0aec0', imputed: '#CC79A7' },
 };
 
 export default function FunnelPlot({
@@ -25,6 +27,7 @@ export default function FunnelPlot({
   lang = 'en',
   width = 500,
   height = 400,
+  trimFillResult,
 }: FunnelPlotProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const plotSettings = useUIStore((s) => s.plotSettings);
@@ -110,6 +113,34 @@ export default function FunnelPlot({
       .append('title')
       .text((d) => `${d.name}: ${d.x.toFixed(3)}`);
 
+    // Trim-and-Fill: imputed points (open circles with dashed stroke)
+    if (trimFillResult && trimFillResult.imputedPoints.length > 0) {
+      g.selectAll('.imputed-point')
+        .data(trimFillResult.imputedPoints)
+        .enter()
+        .append('circle')
+        .attr('class', 'imputed-point')
+        .attr('cx', (d) => xScale(d.x))
+        .attr('cy', (d) => yScale(d.y))
+        .attr('r', 4)
+        .attr('fill', 'none')
+        .attr('stroke', colors.imputed)
+        .attr('stroke-width', 2)
+        .attr('stroke-dasharray', '3,2')
+        .append('title')
+        .text((d) => `${d.name}: ${d.x.toFixed(3)}`);
+
+      // Adjusted summary line
+      g.append('line')
+        .attr('x1', xScale(trimFillResult.adjustedSummary))
+        .attr('x2', xScale(trimFillResult.adjustedSummary))
+        .attr('y1', 0)
+        .attr('y2', plotH)
+        .attr('stroke', colors.imputed)
+        .attr('stroke-width', 1)
+        .attr('stroke-dasharray', '4,4');
+    }
+
     // X axis
     g.append('g')
       .attr('transform', `translate(0,${plotH})`)
@@ -151,7 +182,7 @@ export default function FunnelPlot({
       .attr('font-weight', 'bold')
       .attr('fill', '#333')
       .text(plotSettings.customTitle || 'Funnel Plot');
-  }, [result, width, height, plotSettings]);
+  }, [result, width, height, plotSettings, trimFillResult]);
 
   return (
     <svg

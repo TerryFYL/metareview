@@ -13,7 +13,8 @@ import LiteratureSearch from './components/LiteratureSearch';
 import OnboardingTour from './components/OnboardingTour';
 import CumulativeMeta from './components/CumulativeMeta';
 import GalbraithPlot from './components/GalbraithPlot';
-import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, isBinaryData, isContinuousData, isHRData } from './lib/statistics';
+import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, isBinaryData, isContinuousData, isHRData, trimAndFill, isLogScale } from './lib/statistics';
+import type { TrimAndFillResult } from './lib/statistics';
 import { generateReportHTML, type ReportSections } from './lib/report-export';
 import { generateReportDOCX } from './lib/report-docx';
 import { t, type Lang } from './lib/i18n';
@@ -33,7 +34,7 @@ const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
 
 const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'galbraith', 'cumulative', 'sensitivity', 'subgroup', 'prisma'] as const;
 
-function ForestPlotControls({ lang, onDownloadSVG }: { lang: Lang; onDownloadSVG: () => void }) {
+function ForestPlotControls({ lang, onDownloadSVG, onDownloadPNG }: { lang: Lang; onDownloadSVG: () => void; onDownloadPNG: () => void }) {
   const { plotSettings, setPlotSettings } = useUIStore();
   const [showSettings, setShowSettings] = useState(false);
 
@@ -45,6 +46,9 @@ function ForestPlotControls({ lang, onDownloadSVG }: { lang: Lang; onDownloadSVG
         </button>
         <button onClick={onDownloadSVG} style={secondaryBtnStyle}>
           {t('forest.download', lang)}
+        </button>
+        <button onClick={onDownloadPNG} style={secondaryBtnStyle}>
+          {t('forest.downloadPNG', lang)}
         </button>
       </div>
       {showSettings && (
@@ -231,6 +235,8 @@ export default function App() {
   } = useUIStore();
 
   const [subgroupResult, setSubgroupResult] = useState<SubgroupAnalysisResult | null>(null);
+  const [trimFillResult, setTrimFillResult] = useState<TrimAndFillResult | null>(null);
+  const [showTrimFill, setShowTrimFill] = useState(false);
 
   const { undo, redo, canUndo, canRedo } = useProjectStore();
 
@@ -318,6 +324,8 @@ export default function App() {
       const res = metaAnalysis(studies, measure, model);
       setResult(res);
       setEggers(eggersTest(res.studies));
+      // Trim-and-Fill: publication bias correction
+      setTrimFillResult(trimAndFill(res.studies, res.summary, isLogScale(res.measure)));
       // Subgroup analysis: only if at least one study has a subgroup defined
       const hasSubgroups = studies.some((s) => s.subgroup?.trim());
       if (hasSubgroups) {
@@ -332,6 +340,7 @@ export default function App() {
       setResult(null);
       setEggers(null);
       setSubgroupResult(null);
+      setTrimFillResult(null);
     }
   }, [studies, measure, model, lang, validateStudies, setResult, setEggers, setError, setActiveTab]);
 
@@ -359,13 +368,51 @@ export default function App() {
     URL.revokeObjectURL(url);
   }, [title]);
 
+  const downloadPNG = useCallback(() => {
+    const svgEl = document.querySelector('.forest-plot-container svg') as SVGSVGElement | null;
+    if (!svgEl) return;
+    const scale = 2; // 2x retina
+    const w = svgEl.width.baseVal.value;
+    const h = svgEl.height.baseVal.value;
+    const serializer = new XMLSerializer();
+    let source = serializer.serializeToString(svgEl);
+    // Ensure xmlns is present
+    if (!source.includes('xmlns=')) {
+      source = source.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = w * scale;
+    canvas.height = h * scale;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    // White background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.scale(scale, scale);
+    const img = new Image();
+    const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      const pngUrl = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = pngUrl;
+      a.download = `forest-plot-${title || 'metareview'}.png`;
+      a.click();
+    };
+    img.src = url;
+  }, [title]);
+
   const exportReport = useCallback((sections?: ReportSections) => {
     if (!result) return;
     const serializer = new XMLSerializer();
     const forestEl = document.querySelector('.forest-plot-container svg');
     const funnelEl = document.querySelector('.funnel-plot-container svg');
+    const galbraithEl = document.querySelector('.galbraith-plot-container svg');
     const forestSvg = forestEl ? serializer.serializeToString(forestEl) : null;
     const funnelSvg = funnelEl ? serializer.serializeToString(funnelEl) : null;
+    const galbraithSvg = galbraithEl ? serializer.serializeToString(galbraithEl) : null;
     const html = generateReportHTML({
       title,
       pico,
@@ -375,6 +422,8 @@ export default function App() {
       sensitivityResults,
       forestSvg,
       funnelSvg,
+      galbraithSvg,
+      trimFillResult,
       prisma,
       sections,
     });
@@ -382,7 +431,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
     setTimeout(() => URL.revokeObjectURL(url), 10000);
-  }, [result, title, pico, prisma, eggers, subgroupResult, sensitivityResults]);
+  }, [result, title, pico, prisma, eggers, subgroupResult, sensitivityResults, trimFillResult]);
 
   const exportDOCX = useCallback(async (sections?: ReportSections) => {
     if (!result) return;
@@ -393,6 +442,7 @@ export default function App() {
       eggers,
       subgroupResult,
       sensitivityResults,
+      trimFillResult,
       prisma,
       sections,
     });
@@ -402,7 +452,7 @@ export default function App() {
     a.download = `${title || 'metareview-report'}.docx`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 10000);
-  }, [result, title, pico, prisma, eggers, subgroupResult, sensitivityResults]);
+  }, [result, title, pico, prisma, eggers, subgroupResult, sensitivityResults, trimFillResult]);
 
   // Show hero for new visitors
   if (!heroSeen) {
@@ -635,7 +685,7 @@ export default function App() {
       {/* Forest Plot Tab */}
       {activeTab === 'forest' && result && (
         <div>
-          <ForestPlotControls lang={lang} onDownloadSVG={downloadSVG} />
+          <ForestPlotControls lang={lang} onDownloadSVG={downloadSVG} onDownloadPNG={downloadPNG} />
           <div className="forest-plot-container">
             <ForestPlot result={result} subgroupResult={subgroupResult} title={title || 'Forest Plot'} lang={lang} />
           </div>
@@ -646,15 +696,60 @@ export default function App() {
       {activeTab === 'funnel' && result && (
         <div>
           <FunnelPlotControls lang={lang} />
-          <div className="funnel-plot-container" style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
-            <FunnelPlot result={result} lang={lang} />
+          {/* Trim-and-Fill toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <label style={{ fontSize: 12, color: '#374151', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <input type="checkbox" checked={showTrimFill} onChange={(e) => setShowTrimFill(e.target.checked)} />
+              {t('trimFill.show', lang)}
+            </label>
           </div>
+          <div className="funnel-plot-container" style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
+            <FunnelPlot result={result} lang={lang} trimFillResult={showTrimFill ? trimFillResult : undefined} />
+          </div>
+          {/* Trim-and-Fill results */}
+          {showTrimFill && trimFillResult && (
+            <div style={{
+              marginTop: 12,
+              padding: '10px 14px',
+              background: trimFillResult.k0 > 0 ? '#fff7ed' : '#f0fdf4',
+              border: `1px solid ${trimFillResult.k0 > 0 ? '#fed7aa' : '#bbf7d0'}`,
+              borderRadius: 8,
+              fontSize: 13,
+            }}>
+              {trimFillResult.k0 > 0 ? (
+                <div>
+                  <div style={{ fontWeight: 500, color: '#c2410c', marginBottom: 4 }}>
+                    {t('trimFill.title', lang)}
+                  </div>
+                  <div style={{ color: '#374151' }}>
+                    {t('trimFill.imputed', lang)
+                      .replace('{k0}', String(trimFillResult.k0))
+                      .replace('{side}', t(`trimFill.side.${trimFillResult.side}`, lang))}
+                  </div>
+                  <div style={{ marginTop: 6, fontSize: 12, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+                    <span>
+                      <span style={{ color: '#6b7280' }}>{t('trimFill.original', lang)} {result.measure}: </span>
+                      <span style={{ fontFamily: 'monospace' }}>{result.effect.toFixed(4)} [{result.ciLower.toFixed(4)}, {result.ciUpper.toFixed(4)}]</span>
+                    </span>
+                    <span>
+                      <span style={{ color: '#c2410c', fontWeight: 500 }}>{t('trimFill.adjusted', lang)} {result.measure}: </span>
+                      <span style={{ fontFamily: 'monospace', fontWeight: 600 }}>{trimFillResult.adjustedEffect.toFixed(4)} [{trimFillResult.adjustedCILower.toFixed(4)}, {trimFillResult.adjustedCIUpper.toFixed(4)}]</span>
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <span style={{ color: '#16a34a' }}>{t('trimFill.noMissing', lang)}</span>
+              )}
+            </div>
+          )}
         </div>
       )}
 
       {/* Galbraith Plot Tab */}
       {activeTab === 'galbraith' && result && (
-        <GalbraithPlot result={result} lang={lang} />
+        <div className="galbraith-plot-container">
+          <GalbraithPlot result={result} lang={lang} />
+        </div>
       )}
 
       {/* Cumulative Meta-Analysis Tab */}

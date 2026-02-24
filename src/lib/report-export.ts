@@ -1,6 +1,7 @@
 // Report export — generates a printable HTML report
 import type { MetaAnalysisResult, EggersTest, SubgroupAnalysisResult, SensitivityResult, PICO } from './types';
 import type { PRISMAData } from '../components/PRISMAFlow';
+import type { TrimAndFillResult } from './statistics/publication-bias';
 
 export interface ReportSections {
   pico: boolean;
@@ -10,6 +11,7 @@ export interface ReportSections {
   studyTable: boolean;
   eggers: boolean;
   plots: boolean;
+  galbraith: boolean;
   subgroup: boolean;
   sensitivity: boolean;
   methods: boolean;
@@ -24,6 +26,7 @@ export const defaultReportSections: ReportSections = {
   studyTable: true,
   eggers: true,
   plots: true,
+  galbraith: true,
   subgroup: true,
   sensitivity: true,
   methods: true,
@@ -39,6 +42,8 @@ interface ReportData {
   sensitivityResults: SensitivityResult[];
   forestSvg: string | null;
   funnelSvg: string | null;
+  galbraithSvg?: string | null;
+  trimFillResult?: TrimAndFillResult | null;
   prisma?: PRISMAData;
   sections?: ReportSections;
 }
@@ -331,8 +336,23 @@ function esc(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+function trimFillSection(tf: TrimAndFillResult, measure: string): string {
+  if (tf.k0 === 0) {
+    return `
+    <div class="callout callout-green">
+      <strong>Trim-and-Fill (Duval &amp; Tweedie, 2000):</strong> No funnel plot asymmetry detected &mdash; no imputation needed.
+    </div>`;
+  }
+  return `
+    <div class="callout callout-red">
+      <strong>Trim-and-Fill (Duval &amp; Tweedie, 2000)</strong><br>
+      Estimated ${tf.k0} missing ${tf.k0 === 1 ? 'study' : 'studies'} on the ${tf.side} side.<br>
+      Adjusted ${measure}: ${tf.adjustedEffect.toFixed(4)} [${tf.adjustedCILower.toFixed(4)}, ${tf.adjustedCIUpper.toFixed(4)}]
+    </div>`;
+}
+
 export function generateReportHTML(data: ReportData): string {
-  const { title, pico, result, eggers, subgroupResult, sensitivityResults, forestSvg, funnelSvg, prisma } = data;
+  const { title, pico, result, eggers, subgroupResult, sensitivityResults, forestSvg, funnelSvg, galbraithSvg, trimFillResult, prisma } = data;
   const s = data.sections || defaultReportSections;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -390,6 +410,8 @@ export function generateReportHTML(data: ReportData): string {
   ${s.eggers && eggers ? eggersSection(eggers) : ''}
   ${s.plots && forestSvg ? `<div class="figure">${forestSvg}<p class="figure-caption">Figure 1. Forest plot</p></div>` : ''}
   ${s.plots && funnelSvg ? `<div class="figure">${funnelSvg}<p class="figure-caption">Figure 2. Funnel plot</p></div>` : ''}
+  ${s.eggers && trimFillResult ? trimFillSection(trimFillResult, result.measure) : ''}
+  ${s.galbraith && galbraithSvg ? `<div class="figure">${galbraithSvg}<p class="figure-caption">Figure 3. Galbraith plot (radial plot)</p></div>` : ''}
   ${s.subgroup && subgroupResult ? subgroupSection(subgroupResult, result.measure) : ''}
   ${s.sensitivity ? sensitivitySection(sensitivityResults, result) : ''}
   ${s.methods ? methodsSection(result, pico, eggers, subgroupResult, sensitivityResults) : ''}

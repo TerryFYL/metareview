@@ -846,6 +846,32 @@ const translations = {
   'a11y.tabs.zh': '分析步骤导航',
   'a11y.tabs.en': 'Analysis step navigation',
 
+  // Trim-and-Fill
+  'trimFill.title.zh': 'Trim-and-Fill 分析（Duval & Tweedie, 2000）',
+  'trimFill.title.en': 'Trim-and-Fill Analysis (Duval & Tweedie, 2000)',
+  'trimFill.imputed.zh': '估计缺失 {k0} 个研究（{side}侧），已填充并校正合并效应量。',
+  'trimFill.imputed.en': 'Estimated {k0} missing study(ies) on the {side} side. Filled and adjusted pooled effect.',
+  'trimFill.noMissing.zh': '未检测到漏斗图不对称，无需填充。',
+  'trimFill.noMissing.en': 'No funnel plot asymmetry detected — no imputation needed.',
+  'trimFill.adjusted.zh': '校正后',
+  'trimFill.adjusted.en': 'Adjusted',
+  'trimFill.original.zh': '原始',
+  'trimFill.original.en': 'Original',
+  'trimFill.side.left.zh': '左',
+  'trimFill.side.left.en': 'left',
+  'trimFill.side.right.zh': '右',
+  'trimFill.side.right.en': 'right',
+  'trimFill.show.zh': '显示 Trim-and-Fill',
+  'trimFill.show.en': 'Show Trim-and-Fill',
+
+  // Report section: Galbraith
+  'report.section.galbraith.zh': 'Galbraith 图',
+  'report.section.galbraith.en': 'Galbraith Plot',
+
+  // Forest Plot PNG
+  'forest.downloadPNG.zh': '下载 PNG',
+  'forest.downloadPNG.en': 'Download PNG',
+
   // Footer
   'footer.text.zh': 'MetaReview — 开源免费的医学研究 Meta 分析平台',
   'footer.text.en': 'MetaReview — Open-source meta-analysis platform for medical research',

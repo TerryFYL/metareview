@@ -1,7 +1,7 @@
-// Publication bias assessment: Funnel plot data, Galbraith plot data, and Egger's regression test
+// Publication bias assessment: Funnel plot data, Galbraith plot data, Egger's regression test, and Trim-and-Fill
 
 import type { StudyEffect, EggersTest, FunnelPoint } from '../types';
-import { tToP } from './distributions';
+import { tToP, normalQuantile } from './distributions';
 
 export interface GalbraithPoint {
   name: string;
@@ -100,5 +100,139 @@ export function eggersTest(studies: StudyEffect[]): EggersTest | null {
     tValue,
     pValue,
     df,
+  };
+}
+
+/** Trim-and-Fill result for publication bias correction (Duval & Tweedie, 2000) */
+export interface TrimAndFillResult {
+  /** Number of imputed (missing) studies */
+  k0: number;
+  /** Side where studies are imputed */
+  side: 'left' | 'right';
+  /** Adjusted summary effect (log-scale for ratio measures) */
+  adjustedSummary: number;
+  /** Adjusted SE */
+  adjustedSE: number;
+  /** Adjusted summary on original scale */
+  adjustedEffect: number;
+  /** Adjusted 95% CI lower (original scale) */
+  adjustedCILower: number;
+  /** Adjusted 95% CI upper (original scale) */
+  adjustedCIUpper: number;
+  /** Imputed study positions for funnel plot overlay */
+  imputedPoints: FunnelPoint[];
+}
+
+/** Trim-and-Fill method for estimating missing studies and adjusted effect
+ *  Uses the R₀ rank-based estimator (Duval & Tweedie, 2000)
+ *  @param studies - Computed study effects from meta-analysis
+ *  @param summaryEffect - Pooled summary on log-scale
+ *  @param isLogScale - Whether effect measure uses log transformation (OR/RR/HR)
+ */
+export function trimAndFill(
+  studies: StudyEffect[],
+  summaryEffect: number,
+  isLogScale: boolean,
+): TrimAndFillResult | null {
+  const n = studies.length;
+  if (n < 3) return null;
+
+  // 1. Rank studies by |yi - θ̂|
+  const items = studies.map((s) => ({
+    yi: s.yi,
+    sei: s.sei,
+    diff: s.yi - summaryEffect,
+    absDiff: Math.abs(s.yi - summaryEffect),
+    name: s.name,
+  }));
+
+  items.sort((a, b) => a.absDiff - b.absDiff);
+  // Assign ranks 1..n
+  const ranks = items.map((_, i) => i + 1);
+
+  // 2. Sum of ranks for studies on right (yi > summary) and left (yi < summary)
+  let Tright = 0;
+  let Tleft = 0;
+  for (let i = 0; i < n; i++) {
+    if (items[i].diff > 0) Tright += ranks[i];
+    else if (items[i].diff < 0) Tleft += ranks[i];
+  }
+
+  // 3. R₀ estimator: k₀ = max(0, round((4*T - n*(n+1)/2) / (2n - 1)))
+  // Apply to the heavier side
+  let k0: number;
+  let side: 'left' | 'right';
+
+  if (Tright >= Tleft) {
+    // More extreme studies on right → missing studies on left
+    k0 = Math.max(0, Math.round((4 * Tright - n * (n + 1) / 2) / (2 * n - 1)));
+    side = 'left';
+  } else {
+    // More extreme studies on left → missing studies on right
+    k0 = Math.max(0, Math.round((4 * Tleft - n * (n + 1) / 2) / (2 * n - 1)));
+    side = 'right';
+  }
+
+  // 4. If no asymmetry detected, return with original values
+  if (k0 === 0) {
+    const z196 = normalQuantile(0.975);
+    const origEffect = isLogScale ? Math.exp(summaryEffect) : summaryEffect;
+    const origSE = Math.sqrt(1 / studies.reduce((sum, s) => sum + 1 / s.vi, 0));
+    return {
+      k0: 0,
+      side,
+      adjustedSummary: summaryEffect,
+      adjustedSE: origSE,
+      adjustedEffect: origEffect,
+      adjustedCILower: isLogScale
+        ? Math.exp(summaryEffect - z196 * origSE)
+        : summaryEffect - z196 * origSE,
+      adjustedCIUpper: isLogScale
+        ? Math.exp(summaryEffect + z196 * origSE)
+        : summaryEffect + z196 * origSE,
+      imputedPoints: [],
+    };
+  }
+
+  // 5. Find k₀ most extreme studies on the heavier side
+  const heavySide = side === 'left' ? 'right' : 'left';
+  const extremeStudies = items
+    .filter((s) => (heavySide === 'right' ? s.diff > 0 : s.diff < 0))
+    .sort((a, b) => b.absDiff - a.absDiff)
+    .slice(0, k0);
+
+  // 6. Create imputed points by reflecting across the summary
+  const imputedPoints: FunnelPoint[] = extremeStudies.map((s, i) => ({
+    x: 2 * summaryEffect - s.yi,
+    y: s.sei,
+    name: `Imputed ${i + 1}`,
+  }));
+
+  // 7. Recalculate summary with original + imputed studies (fixed-effect IV)
+  const allYi = [...studies.map((s) => s.yi), ...imputedPoints.map((p) => p.x)];
+  const allVi = [...studies.map((s) => s.vi), ...extremeStudies.map((s) => s.sei * s.sei)];
+  const allWi = allVi.map((v) => 1 / v);
+  const totalW = allWi.reduce((a, b) => a + b, 0);
+  const adjSummary = allWi.reduce((sum, w, i) => sum + w * allYi[i], 0) / totalW;
+  const adjSE = Math.sqrt(1 / totalW);
+
+  const z196 = normalQuantile(0.975);
+  const adjEffect = isLogScale ? Math.exp(adjSummary) : adjSummary;
+  const adjCILower = isLogScale
+    ? Math.exp(adjSummary - z196 * adjSE)
+    : adjSummary - z196 * adjSE;
+  const adjCIUpper = isLogScale
+    ? Math.exp(adjSummary + z196 * adjSE)
+    : adjSummary + z196 * adjSE;
+
+  return {
+    k0,
+    side,
+    adjustedSummary: adjSummary,
+    adjustedSE: adjSE,
+    adjustedEffect: adjEffect,
+    adjustedCILower: adjCILower,
+    adjustedCIUpper: adjCIUpper,
+    imputedPoints,
   };
 }

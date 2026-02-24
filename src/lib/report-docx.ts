@@ -18,6 +18,7 @@ import type { MetaAnalysisResult, EggersTest, SubgroupAnalysisResult, Sensitivit
 import type { PRISMAData } from '../components/PRISMAFlow';
 import type { ReportSections } from './report-export';
 import { defaultReportSections } from './report-export';
+import type { TrimAndFillResult } from './statistics/publication-bias';
 
 interface ReportData {
   title: string;
@@ -26,6 +27,7 @@ interface ReportData {
   eggers: EggersTest | null;
   subgroupResult: SubgroupAnalysisResult | null;
   sensitivityResults: SensitivityResult[];
+  trimFillResult?: TrimAndFillResult | null;
   prisma?: PRISMAData;
   sections?: ReportSections;
 }
@@ -310,7 +312,7 @@ function prismaSummaryTable(prisma: PRISMAData): Table | null {
 }
 
 export async function generateReportDOCX(data: ReportData): Promise<Blob> {
-  const { title, pico, result, eggers, subgroupResult, sensitivityResults, prisma } = data;
+  const { title, pico, result, eggers, subgroupResult, sensitivityResults, trimFillResult, prisma } = data;
   const s = data.sections || defaultReportSections;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -390,6 +392,54 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
             : 'No significant funnel plot asymmetry detected.',
           italics: true,
           size: 20,
+          color: '666666',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 100 },
+      }),
+    );
+  }
+
+  // Trim-and-Fill
+  if (s.eggers && trimFillResult) {
+    const tfText = trimFillResult.k0 === 0
+      ? 'Trim-and-Fill (Duval & Tweedie, 2000): No funnel plot asymmetry detected \u2014 no imputation needed.'
+      : `Trim-and-Fill (Duval & Tweedie, 2000): Estimated ${trimFillResult.k0} missing ${trimFillResult.k0 === 1 ? 'study' : 'studies'} on the ${trimFillResult.side} side. Adjusted ${result.measure}: ${trimFillResult.adjustedEffect.toFixed(4)} [${trimFillResult.adjustedCILower.toFixed(4)}, ${trimFillResult.adjustedCIUpper.toFixed(4)}].`;
+    children.push(
+      new Paragraph({
+        children: [new TextRun({
+          text: tfText,
+          bold: trimFillResult.k0 > 0,
+          size: 20,
+          color: trimFillResult.k0 > 0 ? 'CC6600' : '228B22',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 100 },
+      }),
+    );
+  }
+
+  // Galbraith Plot (text summary since DOCX can't embed SVG)
+  if (s.galbraith) {
+    const { galbraithPlotData } = await import('./statistics/publication-bias');
+    const gData = galbraithPlotData(result.studies, result.summary);
+    children.push(
+      new Paragraph({ text: 'Galbraith Plot (Radial Plot)', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      new Paragraph({
+        children: [new TextRun({
+          text: gData.outliers.length > 0
+            ? `${gData.outliers.length} study(ies) outside \u00B12 confidence band, likely source(s) of heterogeneity: ${gData.outliers.join(', ')}.`
+            : 'All studies within \u00B12 confidence band \u2014 no obvious sources of heterogeneity.',
+          size: 20,
+          color: gData.outliers.length > 0 ? 'CC0000' : '228B22',
+          font: 'Times New Roman',
+        })],
+      }),
+      new Paragraph({
+        children: [new TextRun({
+          text: 'Note: For the graphical Galbraith plot, export the HTML report or download SVG from MetaReview.',
+          italics: true,
+          size: 18,
           color: '666666',
           font: 'Times New Roman',
         })],
