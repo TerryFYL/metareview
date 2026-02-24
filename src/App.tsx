@@ -7,6 +7,7 @@ import FunnelPlot from './components/FunnelPlot';
 import ResultsSummary from './components/ResultsSummary';
 import SensitivityTable from './components/SensitivityTable';
 import PRISMAFlow from './components/PRISMAFlow';
+import LiteratureSearch from './components/LiteratureSearch';
 import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, isBinaryData, isContinuousData } from './lib/statistics';
 import { generateReportHTML } from './lib/report-export';
 import { t } from './lib/i18n';
@@ -19,7 +20,7 @@ const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'SMD', label: "Hedges' g (SMD)", desc: 'Continuous, different scales' },
 ];
 
-const TAB_KEYS = ['input', 'results', 'forest', 'funnel', 'sensitivity', 'subgroup', 'prisma'] as const;
+const TAB_KEYS = ['search', 'input', 'results', 'forest', 'funnel', 'sensitivity', 'subgroup', 'prisma'] as const;
 
 export default function App() {
   const {
@@ -168,11 +169,11 @@ export default function App() {
       {/* Tab navigation */}
       <nav style={{ display: 'flex', gap: 0, borderBottom: '2px solid #e5e7eb', marginBottom: 20, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
         {TAB_KEYS.map((tab) => {
-          const isPrisma = tab === 'prisma';
+          const isAlwaysEnabled = tab === 'prisma' || tab === 'search' || tab === 'input';
           const isSubgroup = tab === 'subgroup';
           const isSensitivity = tab === 'sensitivity';
-          const disabled = !isPrisma && (
-            tab !== 'input' && !result
+          const disabled = !isAlwaysEnabled && (
+            !result
             || (isSensitivity && studies.length < 3)
             || (isSubgroup && !subgroupResult)
           );
@@ -200,6 +201,17 @@ export default function App() {
           );
         })}
       </nav>
+
+      {/* Literature Search Tab */}
+      {activeTab === 'search' && (
+        <LiteratureSearch
+          lang={lang}
+          measure={measure}
+          studies={studies}
+          onStudiesChange={setStudies}
+          onSwitchToInput={() => setActiveTab('input')}
+        />
+      )}
 
       {/* Data Input Tab */}
       {activeTab === 'input' && (
