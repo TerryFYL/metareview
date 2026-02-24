@@ -47,6 +47,7 @@ export interface Study {
   id: string;
   name: string;
   year?: number;
+  subgroup?: string;
   data: BinaryData | ContinuousData | GenericData;
 }
 
@@ -135,6 +136,34 @@ export interface EggersTest {
   tValue: number;
   pValue: number;
   df: number;
+}
+
+/** Subgroup analysis result */
+export interface SubgroupResult {
+  /** Subgroup name */
+  name: string;
+  /** Meta-analysis result for this subgroup */
+  result: MetaAnalysisResult;
+}
+
+/** Test for subgroup differences */
+export interface SubgroupTest {
+  /** Q statistic for between-subgroup differences */
+  Q: number;
+  /** Degrees of freedom (number of subgroups - 1) */
+  df: number;
+  /** P-value */
+  pValue: number;
+}
+
+/** Full subgroup analysis output */
+export interface SubgroupAnalysisResult {
+  /** Per-subgroup results */
+  subgroups: SubgroupResult[];
+  /** Test for subgroup differences */
+  test: SubgroupTest;
+  /** Overall result across all studies */
+  overall: MetaAnalysisResult;
 }
 
 /** Funnel plot data point */

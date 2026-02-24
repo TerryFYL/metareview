@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useProjectStore, useUIStore } from './store';
 import PICOForm from './components/PICOForm';
 import DataTable from './components/DataTable';
@@ -7,9 +7,9 @@ import FunnelPlot from './components/FunnelPlot';
 import ResultsSummary from './components/ResultsSummary';
 import SensitivityTable from './components/SensitivityTable';
 import PRISMAFlow from './components/PRISMAFlow';
-import { metaAnalysis, eggersTest, sensitivityAnalysis, isBinaryData, isContinuousData } from './lib/statistics';
+import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, isBinaryData, isContinuousData } from './lib/statistics';
 import { t } from './lib/i18n';
-import type { EffectMeasure, ModelType, Study, BinaryData, ContinuousData } from './lib/types';
+import type { EffectMeasure, ModelType, Study, BinaryData, ContinuousData, SubgroupAnalysisResult } from './lib/types';
 
 const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'OR', label: 'Odds Ratio', desc: 'Binary outcomes (2\u00D72 table)' },
@@ -18,7 +18,7 @@ const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'SMD', label: "Hedges' g (SMD)", desc: 'Continuous, different scales' },
 ];
 
-const TAB_KEYS = ['input', 'results', 'forest', 'funnel', 'sensitivity', 'prisma'] as const;
+const TAB_KEYS = ['input', 'results', 'forest', 'funnel', 'sensitivity', 'subgroup', 'prisma'] as const;
 
 export default function App() {
   const {
@@ -30,6 +30,8 @@ export default function App() {
     lang, result, eggers, error, activeTab,
     setLang, setResult, setEggers, setError, setActiveTab,
   } = useUIStore();
+
+  const [subgroupResult, setSubgroupResult] = useState<SubgroupAnalysisResult | null>(null);
 
   const validateStudies = useCallback((studyList: Study[]): string | null => {
     for (let i = 0; i < studyList.length; i++) {
@@ -74,11 +76,20 @@ export default function App() {
       const res = metaAnalysis(studies, measure, model);
       setResult(res);
       setEggers(eggersTest(res.studies));
+      // Subgroup analysis: only if at least one study has a subgroup defined
+      const hasSubgroups = studies.some((s) => s.subgroup?.trim());
+      if (hasSubgroups) {
+        const sgResult = subgroupAnalysis(studies, measure, model);
+        setSubgroupResult(sgResult);
+      } else {
+        setSubgroupResult(null);
+      }
       setActiveTab('results');
     } catch (e) {
       setError(e instanceof Error ? e.message : t('input.analysisFailed', lang));
       setResult(null);
       setEggers(null);
+      setSubgroupResult(null);
     }
   }, [studies, measure, model, lang, validateStudies, setResult, setEggers, setError, setActiveTab]);
 
@@ -133,9 +144,14 @@ export default function App() {
       {/* Tab navigation */}
       <nav style={{ display: 'flex', gap: 0, borderBottom: '2px solid #e5e7eb', marginBottom: 20, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
         {TAB_KEYS.map((tab) => {
-          const isSensitivity = tab === 'sensitivity';
           const isPrisma = tab === 'prisma';
-          const disabled = !isPrisma && (tab !== 'input' && !result || (isSensitivity && studies.length < 3));
+          const isSubgroup = tab === 'subgroup';
+          const isSensitivity = tab === 'sensitivity';
+          const disabled = !isPrisma && (
+            tab !== 'input' && !result
+            || (isSensitivity && studies.length < 3)
+            || (isSubgroup && !subgroupResult)
+          );
           return (
             <button
               key={tab}
@@ -248,7 +264,7 @@ export default function App() {
             </button>
           </div>
           <div className="forest-plot-container">
-            <ForestPlot result={result} title={title || 'Forest Plot'} lang={lang} />
+            <ForestPlot result={result} subgroupResult={subgroupResult} title={title || 'Forest Plot'} lang={lang} />
           </div>
         </div>
       )}
@@ -263,6 +279,73 @@ export default function App() {
       {/* Sensitivity Analysis Tab */}
       {activeTab === 'sensitivity' && result && sensitivityResults.length > 0 && (
         <SensitivityTable results={sensitivityResults} fullResult={result} lang={lang} />
+      )}
+
+      {/* Subgroup Analysis Tab */}
+      {activeTab === 'subgroup' && result && subgroupResult && (
+        <div>
+          <h2 style={h2Style}>{t('subgroup.title', lang)}</h2>
+
+          {/* Subgroup comparison table */}
+          <div style={{ overflowX: 'auto', marginBottom: 20 }}>
+            <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 13, minWidth: 500 }}>
+              <thead>
+                <tr>
+                  <th style={sgThStyle}>{lang === 'zh' ? '亚组' : 'Subgroup'}</th>
+                  <th style={sgThStyle}>k</th>
+                  <th style={sgThStyle}>{result.measure} [95% CI]</th>
+                  <th style={sgThStyle}>I²</th>
+                  <th style={sgThStyle}>p</th>
+                </tr>
+              </thead>
+              <tbody>
+                {subgroupResult.subgroups.map((sg, i) => (
+                  <tr key={sg.name} style={{ background: i % 2 ? '#f9fafb' : '#fff' }}>
+                    <td style={sgTdStyle}>{sg.name || (lang === 'zh' ? '未分组' : 'Ungrouped')}</td>
+                    <td style={sgTdStyle}>{sg.result.studies.length}</td>
+                    <td style={{ ...sgTdStyle, fontFamily: 'monospace' }}>
+                      {sg.result.effect.toFixed(2)} [{sg.result.ciLower.toFixed(2)}, {sg.result.ciUpper.toFixed(2)}]
+                    </td>
+                    <td style={sgTdStyle}>{sg.result.heterogeneity.I2.toFixed(1)}%</td>
+                    <td style={sgTdStyle}>{sg.result.pValue < 0.001 ? '< 0.001' : sg.result.pValue.toFixed(3)}</td>
+                  </tr>
+                ))}
+                <tr style={{ background: '#f0f9ff', fontWeight: 600 }}>
+                  <td style={sgTdStyle}>{t('subgroup.overall', lang)}</td>
+                  <td style={sgTdStyle}>{result.studies.length}</td>
+                  <td style={{ ...sgTdStyle, fontFamily: 'monospace' }}>
+                    {result.effect.toFixed(2)} [{result.ciLower.toFixed(2)}, {result.ciUpper.toFixed(2)}]
+                  </td>
+                  <td style={sgTdStyle}>{result.heterogeneity.I2.toFixed(1)}%</td>
+                  <td style={sgTdStyle}>{result.pValue < 0.001 ? '< 0.001' : result.pValue.toFixed(3)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Test for subgroup differences */}
+          <div style={{
+            padding: '12px 16px',
+            background: subgroupResult.test.pValue < 0.05 ? '#fef2f2' : '#f0fdf4',
+            border: `1px solid ${subgroupResult.test.pValue < 0.05 ? '#fecaca' : '#bbf7d0'}`,
+            borderRadius: 8,
+            marginBottom: 20,
+          }}>
+            <h3 style={{ fontSize: 13, fontWeight: 600, margin: '0 0 6px', color: '#111827' }}>
+              {t('subgroup.testTitle', lang)}
+            </h3>
+            <p style={{ fontSize: 13, color: '#374151', margin: 0 }}>
+              {t('subgroup.qBetween', lang)} = {subgroupResult.test.Q.toFixed(2)},
+              {' '}df = {subgroupResult.test.df},
+              {' '}p = {subgroupResult.test.pValue < 0.001 ? '< 0.001' : subgroupResult.test.pValue.toFixed(3)}
+            </p>
+            <p style={{ fontSize: 12, color: subgroupResult.test.pValue < 0.05 ? '#dc2626' : '#16a34a', margin: '4px 0 0', fontWeight: 500 }}>
+              {subgroupResult.test.pValue < 0.05
+                ? t('subgroup.significant', lang)
+                : t('subgroup.notSignificant', lang)}
+            </p>
+          </div>
+        </div>
       )}
 
       {/* PRISMA Flow Tab */}
@@ -334,4 +417,19 @@ const langBtnStyle: React.CSSProperties = {
   fontSize: 12,
   fontWeight: 600,
   cursor: 'pointer',
+};
+
+const sgThStyle: React.CSSProperties = {
+  padding: '8px 10px',
+  borderBottom: '2px solid #e5e7eb',
+  textAlign: 'left',
+  fontSize: 12,
+  fontWeight: 600,
+  color: '#6b7280',
+};
+
+const sgTdStyle: React.CSSProperties = {
+  padding: '8px 10px',
+  borderBottom: '1px solid #f3f4f6',
+  fontSize: 13,
 };

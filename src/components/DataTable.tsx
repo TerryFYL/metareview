@@ -80,6 +80,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang }: D
         if (s.id !== id) return s;
         if (field === 'name') return { ...s, name: value };
         if (field === 'year') return { ...s, year: value ? parseInt(value) : undefined };
+        if (field === 'subgroup') return { ...s, subgroup: value || undefined };
         const numVal = parseFloat(value) || 0;
         return { ...s, data: { ...s.data, [field]: numVal } };
       })
@@ -92,6 +93,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang }: D
     ? [
         { key: 'name', label: t('table.study', lang), type: 'text' as const, width: '140px' },
         { key: 'year', label: t('table.year', lang), type: 'number' as const, width: '65px' },
+        { key: 'subgroup', label: t('table.subgroup', lang), type: 'text' as const, width: '100px' },
         { key: 'events1', label: t('table.eventsT', lang), type: 'number' as const, width: '80px' },
         { key: 'total1', label: t('table.totalT', lang), type: 'number' as const, width: '80px' },
         { key: 'events2', label: t('table.eventsC', lang), type: 'number' as const, width: '80px' },
@@ -100,6 +102,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang }: D
     : [
         { key: 'name', label: t('table.study', lang), type: 'text' as const, width: '140px' },
         { key: 'year', label: t('table.year', lang), type: 'number' as const, width: '65px' },
+        { key: 'subgroup', label: t('table.subgroup', lang), type: 'text' as const, width: '100px' },
         { key: 'mean1', label: t('table.meanT', lang), type: 'number' as const, width: '80px' },
         { key: 'sd1', label: t('table.sdT', lang), type: 'number' as const, width: '75px' },
         { key: 'n1', label: t('table.nT', lang), type: 'number' as const, width: '65px' },
@@ -111,6 +114,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang }: D
   const getValue = (study: Study, key: string): string => {
     if (key === 'name') return study.name;
     if (key === 'year') return study.year?.toString() || '';
+    if (key === 'subgroup') return study.subgroup || '';
     const val = (study.data as unknown as Record<string, number>)[key];
     return val?.toString() || '0';
   };

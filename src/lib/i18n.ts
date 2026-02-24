@@ -226,6 +226,28 @@ const translations = {
   'prisma.box.quantSynthesis.zh': '纳入定量合成 (Meta 分析)',
   'prisma.box.quantSynthesis.en': 'Studies in quantitative synthesis (meta-analysis)',
 
+  // Subgroup Analysis
+  'table.subgroup.zh': '亚组',
+  'table.subgroup.en': 'Subgroup',
+  'subgroup.title.zh': '亚组分析',
+  'subgroup.title.en': 'Subgroup Analysis',
+  'subgroup.testTitle.zh': '亚组差异检验',
+  'subgroup.testTitle.en': 'Test for Subgroup Differences',
+  'subgroup.qBetween.zh': '组间 Q',
+  'subgroup.qBetween.en': 'Q between',
+  'subgroup.subtotal.zh': '小计',
+  'subgroup.subtotal.en': 'Subtotal',
+  'subgroup.overall.zh': '总计',
+  'subgroup.overall.en': 'Overall',
+  'subgroup.significant.zh': '亚组间存在显著差异',
+  'subgroup.significant.en': 'Significant difference between subgroups',
+  'subgroup.notSignificant.zh': '亚组间无显著差异',
+  'subgroup.notSignificant.en': 'No significant difference between subgroups',
+  'subgroup.noSubgroups.zh': '未定义亚组。在数据录入中填写"亚组"列即可启用亚组分析。',
+  'subgroup.noSubgroups.en': 'No subgroups defined. Fill in the "Subgroup" column in data input to enable subgroup analysis.',
+  'tab.subgroup.zh': '亚组分析',
+  'tab.subgroup.en': 'Subgroup',
+
   // Footer
   'footer.text.zh': 'MetaReview — 开源免费的医学研究 Meta 分析平台',
   'footer.text.en': 'MetaReview — Open-source meta-analysis platform for medical research',

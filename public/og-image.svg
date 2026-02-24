@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a5f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)" />
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.05" stroke="#fff" stroke-width="1">
+    <line x1="0" y1="100" x2="1200" y2="100" />
+    <line x1="0" y1="200" x2="1200" y2="200" />
+    <line x1="0" y1="300" x2="1200" y2="300" />
+    <line x1="0" y1="400" x2="1200" y2="400" />
+    <line x1="0" y1="500" x2="1200" y2="500" />
+    <line x1="200" y1="0" x2="200" y2="630" />
+    <line x1="400" y1="0" x2="400" y2="630" />
+    <line x1="600" y1="0" x2="600" y2="630" />
+    <line x1="800" y1="0" x2="800" y2="630" />
+    <line x1="1000" y1="0" x2="1000" y2="630" />
+  </g>
+
+  <!-- Forest plot illustration (left side) -->
+  <g transform="translate(80, 140)">
+    <!-- Null line -->
+    <line x1="200" y1="0" x2="200" y2="320" stroke="#475569" stroke-width="1" stroke-dasharray="6,4" />
+
+    <!-- Study rows -->
+    <!-- Study 1 -->
+    <line x1="120" y1="30" x2="280" y2="30" stroke="#60a5fa" stroke-width="2" />
+    <rect x="190" y="20" width="16" height="16" fill="#3b82f6" rx="2" />
+    <line x1="120" y1="24" x2="120" y2="36" stroke="#60a5fa" stroke-width="2" />
+    <line x1="280" y1="24" x2="280" y2="36" stroke="#60a5fa" stroke-width="2" />
+
+    <!-- Study 2 -->
+    <line x1="100" y1="80" x2="220" y2="80" stroke="#60a5fa" stroke-width="2" />
+    <rect x="148" y="72" width="12" height="12" fill="#3b82f6" rx="2" />
+    <line x1="100" y1="74" x2="100" y2="86" stroke="#60a5fa" stroke-width="2" />
+    <line x1="220" y1="74" x2="220" y2="86" stroke="#60a5fa" stroke-width="2" />
+
+    <!-- Study 3 -->
+    <line x1="140" y1="130" x2="330" y2="130" stroke="#60a5fa" stroke-width="2" />
+    <rect x="224" y="120" width="18" height="18" fill="#3b82f6" rx="2" />
+    <line x1="140" y1="124" x2="140" y2="136" stroke="#60a5fa" stroke-width="2" />
+    <line x1="330" y1="124" x2="330" y2="136" stroke="#60a5fa" stroke-width="2" />
+
+    <!-- Study 4 -->
+    <line x1="130" y1="180" x2="240" y2="180" stroke="#60a5fa" stroke-width="2" />
+    <rect x="176" y="172" width="14" height="14" fill="#3b82f6" rx="2" />
+    <line x1="130" y1="174" x2="130" y2="186" stroke="#60a5fa" stroke-width="2" />
+    <line x1="240" y1="174" x2="240" y2="186" stroke="#60a5fa" stroke-width="2" />
+
+    <!-- Study 5 -->
+    <line x1="150" y1="230" x2="260" y2="230" stroke="#60a5fa" stroke-width="2" />
+    <rect x="196" y="222" width="13" height="13" fill="#3b82f6" rx="2" />
+    <line x1="150" y1="224" x2="150" y2="236" stroke="#60a5fa" stroke-width="2" />
+    <line x1="260" y1="224" x2="260" y2="236" stroke="#60a5fa" stroke-width="2" />
+
+    <!-- Separator -->
+    <line x1="0" y1="270" x2="400" y2="270" stroke="#334155" stroke-width="1" />
+
+    <!-- Summary diamond -->
+    <polygon points="140,310 185,295 230,310 185,325" fill="#ef4444" opacity="0.9" />
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="72" font-weight="700" fill="#ffffff" text-anchor="middle">MetaReview</text>
+
+  <!-- Subtitle Chinese -->
+  <text x="600" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" fill="#94a3b8" text-anchor="middle">免费在线 Meta 分析工具</text>
+
+  <!-- Subtitle English -->
+  <text x="600" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#64748b" text-anchor="middle">From data to forest plot in 5 minutes</text>
+
+  <!-- Feature pills -->
+  <g transform="translate(600, 400)" text-anchor="middle">
+    <rect x="-320" y="-20" width="130" height="36" rx="18" fill="#1e40af" opacity="0.4" />
+    <text x="-255" y="6" font-family="-apple-system, sans-serif" font-size="14" fill="#93c5fd">Forest Plot</text>
+
+    <rect x="-160" y="-20" width="130" height="36" rx="18" fill="#1e40af" opacity="0.4" />
+    <text x="-95" y="6" font-family="-apple-system, sans-serif" font-size="14" fill="#93c5fd">Funnel Plot</text>
+
+    <rect x="0" y="-20" width="160" height="36" rx="18" fill="#1e40af" opacity="0.4" />
+    <text x="80" y="6" font-family="-apple-system, sans-serif" font-size="14" fill="#93c5fd">Subgroup Analysis</text>
+
+    <rect x="190" y="-20" width="130" height="36" rx="18" fill="#1e40af" opacity="0.4" />
+    <text x="255" y="6" font-family="-apple-system, sans-serif" font-size="14" fill="#93c5fd">PRISMA Flow</text>
+  </g>
+
+  <!-- Bottom accent line -->
+  <rect x="0" y="610" width="1200" height="20" fill="#2563eb" opacity="0.8" />
+
+  <!-- URL -->
+  <text x="600" y="520" font-family="-apple-system, sans-serif" font-size="18" fill="#475569" text-anchor="middle">metareview-8c1.pages.dev</text>
+</svg>

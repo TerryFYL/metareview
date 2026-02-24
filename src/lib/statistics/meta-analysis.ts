@@ -4,6 +4,7 @@
 import type {
   Study, StudyEffect, MetaAnalysisResult,
   EffectMeasure, ModelType, Heterogeneity,
+  SubgroupAnalysisResult,
 } from '../types';
 import {
   calculateEffectSize, toOriginalScale, calculateCI,
@@ -153,6 +154,63 @@ export function metaAnalysis(
     measure,
     studies: studyEffects,
     heterogeneity: het,
+  };
+}
+
+/** Subgroup analysis: separate meta-analyses per subgroup + test for differences */
+export function subgroupAnalysis(
+  studies: Study[],
+  measure: EffectMeasure,
+  model: ModelType = 'random'
+): SubgroupAnalysisResult {
+  // Group studies by subgroup
+  const groups = new Map<string, Study[]>();
+  for (const s of studies) {
+    const key = s.subgroup || '';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(s);
+  }
+
+  // Run meta-analysis for each subgroup
+  const subgroups = Array.from(groups.entries())
+    .filter(([, g]) => g.length >= 1)
+    .map(([name, g]) => ({
+      name,
+      result: metaAnalysis(g, measure, model),
+    }));
+
+  // Overall result
+  const overall = metaAnalysis(studies, measure, model);
+
+  // Test for subgroup differences (Q-between)
+  // Using subgroup pooled estimates and their SEs
+  const K = subgroups.length;
+  if (K < 2) {
+    return {
+      subgroups,
+      test: { Q: 0, df: 0, pValue: 1 },
+      overall,
+    };
+  }
+
+  // Weights = 1/variance of each subgroup estimate
+  const weights = subgroups.map((sg) => 1 / (sg.result.se * sg.result.se));
+  const sumW = weights.reduce((a, b) => a + b, 0);
+  const weightedMean =
+    subgroups.reduce((sum, sg, i) => sum + weights[i] * sg.result.summary, 0) / sumW;
+
+  // Q_between = sum(w_k * (theta_k - theta_weighted)^2)
+  const Qbetween = subgroups.reduce(
+    (sum, sg, i) => sum + weights[i] * (sg.result.summary - weightedMean) ** 2,
+    0
+  );
+  const df = K - 1;
+  const pValue = chiSquaredPValue(Qbetween, df);
+
+  return {
+    subgroups,
+    test: { Q: Qbetween, df, pValue },
+    overall,
   };
 }
 

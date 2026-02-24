@@ -73,42 +73,49 @@ export const useProjectStore = create<ProjectStore>()(
               id: 'd1',
               name: 'ISIS-2',
               year: 1988,
+              subgroup: 'Secondary Prevention',
               data: { events1: 791, total1: 8587, events2: 1029, total2: 8600 },
             },
             {
               id: 'd2',
               name: 'SALT',
               year: 1991,
+              subgroup: 'Secondary Prevention',
               data: { events1: 150, total1: 676, events2: 196, total2: 684 },
             },
             {
               id: 'd3',
               name: 'UK-TIA',
               year: 1991,
+              subgroup: 'Secondary Prevention',
               data: { events1: 286, total1: 1632, events2: 168, total2: 814 },
             },
             {
               id: 'd4',
               name: 'ESPS-2',
               year: 1996,
+              subgroup: 'Secondary Prevention',
               data: { events1: 356, total1: 1649, events2: 441, total2: 1649 },
             },
             {
               id: 'd5',
               name: 'TPT',
               year: 1998,
+              subgroup: 'Primary Prevention',
               data: { events1: 142, total1: 2545, events2: 166, total2: 2540 },
             },
             {
               id: 'd6',
               name: 'HOT',
               year: 1998,
+              subgroup: 'Primary Prevention',
               data: { events1: 127, total1: 9399, events2: 151, total2: 9391 },
             },
             {
               id: 'd7',
               name: 'PPP',
               year: 2001,
+              subgroup: 'Primary Prevention',
               data: { events1: 20, total1: 2226, events2: 32, total2: 2269 },
             },
           ],
@@ -124,7 +131,7 @@ interface UIStore {
   result: MetaAnalysisResult | null;
   eggers: EggersTest | null;
   error: string | null;
-  activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'sensitivity' | 'prisma';
+  activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'sensitivity' | 'subgroup' | 'prisma';
   setLang: (lang: Lang) => void;
   setResult: (result: MetaAnalysisResult | null) => void;
   setEggers: (eggers: EggersTest | null) => void;
