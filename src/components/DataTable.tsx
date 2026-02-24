@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import type { Study, EffectMeasure, BinaryData, ContinuousData } from '../lib/types';
+import { exportCSV, importCSV } from '../lib/csv';
 
 interface DataTableProps {
   studies: Study[];
@@ -33,6 +34,35 @@ const isBinary = (m: EffectMeasure) => m === 'OR' || m === 'RR';
 
 export default function DataTable({ studies, measure, onStudiesChange }: DataTableProps) {
   const [editingCell, setEditingCell] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleExportCSV = () => {
+    const csv = exportCSV(studies, measure);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `metareview-${measure.toLowerCase()}-data.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportCSV = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result;
+      if (typeof text !== 'string') return;
+      const imported = importCSV(text, measure);
+      if (imported.length > 0) {
+        onStudiesChange([...studies, ...imported]);
+      }
+    };
+    reader.readAsText(file);
+    // Reset so the same file can be re-imported
+    e.target.value = '';
+  };
 
   const addStudy = () => {
     const newStudy = isBinary(measure) ? emptyBinaryStudy() : emptyContinuousStudy();
@@ -147,9 +177,24 @@ export default function DataTable({ studies, measure, onStudiesChange }: DataTab
         </table>
       </div>
 
-      <button onClick={addStudy} style={addBtnStyle}>
-        + Add Study
-      </button>
+      <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
+        <button onClick={addStudy} style={addBtnStyle}>
+          + Add Study
+        </button>
+        <button onClick={handleExportCSV} style={csvBtnStyle} disabled={studies.length === 0}>
+          Export CSV
+        </button>
+        <button onClick={() => fileInputRef.current?.click()} style={csvBtnStyle}>
+          Import CSV
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".csv,text/csv"
+          onChange={handleImportCSV}
+          style={{ display: 'none' }}
+        />
+      </div>
 
       {studies.length === 0 && (
         <p style={{ color: '#9ca3af', textAlign: 'center', marginTop: 24, fontSize: 13 }}>
@@ -188,13 +233,22 @@ const inputStyle: React.CSSProperties = {
 };
 
 const addBtnStyle: React.CSSProperties = {
-  marginTop: 12,
   padding: '7px 16px',
   background: '#f3f4f6',
   border: '1px dashed #d1d5db',
   borderRadius: 6,
   cursor: 'pointer',
   fontSize: 13,
+  color: '#374151',
+};
+
+const csvBtnStyle: React.CSSProperties = {
+  padding: '7px 14px',
+  background: '#fff',
+  border: '1px solid #d1d5db',
+  borderRadius: 6,
+  cursor: 'pointer',
+  fontSize: 12,
   color: '#374151',
 };
 

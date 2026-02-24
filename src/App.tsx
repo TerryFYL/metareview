@@ -1,11 +1,12 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useProjectStore, useUIStore } from './store';
 import PICOForm from './components/PICOForm';
 import DataTable from './components/DataTable';
 import ForestPlot from './components/ForestPlot';
 import FunnelPlot from './components/FunnelPlot';
 import ResultsSummary from './components/ResultsSummary';
-import { metaAnalysis, eggersTest } from './lib/statistics';
+import SensitivityTable from './components/SensitivityTable';
+import { metaAnalysis, eggersTest, sensitivityAnalysis } from './lib/statistics';
 import type { EffectMeasure, ModelType } from './lib/types';
 
 const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
@@ -43,6 +44,11 @@ export default function App() {
       setEggers(null);
     }
   }, [studies, measure, model, setResult, setEggers, setError, setActiveTab]);
+
+  const sensitivityResults = useMemo(() => {
+    if (!result || studies.length < 3) return [];
+    return sensitivityAnalysis(studies, measure, model);
+  }, [result, studies, measure, model]);
 
   const downloadSVG = useCallback(() => {
     const svg = document.querySelector('.forest-plot-container svg');
@@ -82,29 +88,34 @@ export default function App() {
 
       {/* Tab navigation */}
       <nav style={{ display: 'flex', gap: 2, borderBottom: '2px solid #e5e7eb', marginBottom: 24 }}>
-        {(['input', 'results', 'forest', 'funnel'] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            style={{
-              padding: '10px 20px',
-              border: 'none',
-              borderBottom: activeTab === tab ? '2px solid #2563eb' : '2px solid transparent',
-              background: 'none',
-              cursor: 'pointer',
-              fontSize: 13,
-              fontWeight: activeTab === tab ? 600 : 400,
-              color: activeTab === tab ? '#2563eb' : '#6b7280',
-              marginBottom: -2,
-            }}
-            disabled={tab !== 'input' && !result}
-          >
-            {tab === 'input' && 'Data Input'}
-            {tab === 'results' && 'Results'}
-            {tab === 'forest' && 'Forest Plot'}
-            {tab === 'funnel' && 'Funnel Plot'}
-          </button>
-        ))}
+        {(['input', 'results', 'forest', 'funnel', 'sensitivity'] as const).map((tab) => {
+          const isSensitivity = tab === 'sensitivity';
+          const disabled = tab !== 'input' && !result || (isSensitivity && studies.length < 3);
+          return (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                borderBottom: activeTab === tab ? '2px solid #2563eb' : '2px solid transparent',
+                background: 'none',
+                cursor: disabled ? 'default' : 'pointer',
+                fontSize: 13,
+                fontWeight: activeTab === tab ? 600 : 400,
+                color: disabled ? '#d1d5db' : activeTab === tab ? '#2563eb' : '#6b7280',
+                marginBottom: -2,
+              }}
+              disabled={disabled}
+            >
+              {tab === 'input' && 'Data Input'}
+              {tab === 'results' && 'Results'}
+              {tab === 'forest' && 'Forest Plot'}
+              {tab === 'funnel' && 'Funnel Plot'}
+              {tab === 'sensitivity' && 'Sensitivity'}
+            </button>
+          );
+        })}
       </nav>
 
       {/* Data Input Tab */}
@@ -204,6 +215,11 @@ export default function App() {
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <FunnelPlot result={result} />
         </div>
+      )}
+
+      {/* Sensitivity Analysis Tab */}
+      {activeTab === 'sensitivity' && result && sensitivityResults.length > 0 && (
+        <SensitivityTable results={sensitivityResults} fullResult={result} />
       )}
 
       {/* Footer */}

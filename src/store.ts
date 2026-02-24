@@ -115,7 +115,7 @@ interface UIStore {
   result: MetaAnalysisResult | null;
   eggers: EggersTest | null;
   error: string | null;
-  activeTab: 'input' | 'results' | 'forest' | 'funnel';
+  activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'sensitivity';
   setResult: (result: MetaAnalysisResult | null) => void;
   setEggers: (eggers: EggersTest | null) => void;
   setError: (error: string | null) => void;
