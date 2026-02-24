@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>心血管 Meta 分析完整指南：从 PICO 设计到亚组分析的实战方法 | MetaReview</title>
+  <meta name="description" content="心血管 Meta 分析怎么做？本文详解心血管荟萃分析全流程：MACE 复合终点处理、HR/OR/MD 效应量选择、降压降脂试验异质性分析、亚组策略与发表偏倚评估。附免费在线工具和经典案例。" />
+  <meta name="keywords" content="心血管meta分析, 心血管荟萃分析, 心血管疾病meta分析, cardiovascular meta-analysis, 冠心病meta分析, 高血压meta分析, MACE, 他汀meta分析, 降压药meta分析" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/cardiovascular-meta-analysis" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/cardiovascular-meta-analysis" />
+  <meta property="og:title" content="心血管 Meta 分析完整指南：从 PICO 设计到亚组分析的实战方法" />
+  <meta property="og:description" content="心血管荟萃分析怎么做？MACE 复合终点、HR/OR/MD 选择、异质性处理、亚组分析策略。附免费在线工具。" />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "心血管 Meta 分析完整流程：从研究设计到发表",
+    "description": "详解心血管领域 Meta 分析的全流程指南，涵盖 PICO 框架、效应量选择、MACE 复合终点处理、数据提取、异质性分析、亚组分析、发表偏倚评估和工具实战。",
+    "totalTime": "PT45M",
+    "tool": {
+      "@type": "HowToTool",
+      "name": "MetaReview 免费在线 Meta 分析工具"
+    },
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "确定心血管研究问题与 PICO 框架", "text": "使用 PICO 框架定义心血管 Meta 分析的研究问题。P 为特定心血管疾病患者（ACS、稳定性冠心病、心衰、房颤），I 为目标干预（他汀、降压药、抗凝药、PCI/CABG），C 为对照方案或安慰剂，O 为心血管终点（MACE、全因死亡、心肌梗死、卒中、心衰住院）。"},
+      {"@type": "HowToStep", "position": 2, "name": "制定文献检索策略", "text": "在 PubMed、Embase、Cochrane Library 和 ClinicalTrials.gov 中检索。使用 MeSH 主题词（如 Cardiovascular Diseases、Myocardial Infarction）结合自由词，检索 ACC、AHA、ESC 会议摘要获取最新数据。"},
+      {"@type": "HowToStep", "position": 3, "name": "选择合适的效应量", "text": "根据结局类型选择效应量：时间-事件终点（MACE、全因死亡）使用 HR，二分类终点（心肌梗死发生率、卒中发生率）使用 OR 或 RR，连续变量（血压降幅、LDL-C 变化、LVEF 变化）使用 MD。不同效应量不可混合合并。"},
+      {"@type": "HowToStep", "position": 4, "name": "提取心血管研究数据", "text": "从纳入文献中提取 HR 及 95% CI（时间-事件终点）或事件数与总数（二分类终点）。记录患者基线特征（年龄、糖尿病比例、基线 LDL-C、eGFR）、治疗方案、随访时间、复合终点定义。注意从 Kaplan-Meier 曲线间接提取 HR 的方法。"},
+      {"@type": "HowToStep", "position": 5, "name": "处理 MACE 复合终点", "text": "明确 MACE 的组成定义（心血管死亡 + 心肌梗死 + 卒中，或扩展定义加入心衰住院、血运重建）。确保纳入研究使用一致的 MACE 定义，不同定义的研究需在亚组或敏感性分析中分别处理。"},
+      {"@type": "HowToStep", "position": 6, "name": "评估异质性并执行亚组分析", "text": "使用 I²、Q 检验和 tau² 评估研究间异质性。心血管 Meta 分析常见异质性来源：药物剂量差异、一级/二级预防人群、随访时间、终点定义。按预设变量（糖尿病、年龄、基线 LDL、eGFR、性别、是否合并 PCI）进行亚组分析。"},
+      {"@type": "HowToStep", "position": 7, "name": "评估发表偏倚", "text": "绘制漏斗图并进行 Egger 检验。检索 ClinicalTrials.gov 中已完成但未发表的试验。注意心血管领域大型 RCT（mega-trial）与小型试验的不对称性，以及药企资助试验的报告偏倚问题。"},
+      {"@type": "HowToStep", "position": 8, "name": "撰写结果与讨论", "text": "按 PRISMA 2020 规范报告。结果部分包括 PRISMA 流程图、纳入研究特征表、森林图、漏斗图和亚组分析。讨论部分需结合 GRADE 框架评估证据质量，对比 ACC/AHA/ESC 指南推荐。"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "心血管meta分析如何选择效应量？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "取决于结局指标类型。时间-事件终点（MACE、全因死亡、心血管死亡）必须使用 Hazard Ratio (HR)，因为 HR 考虑了随访时间和删失数据。二分类终点（心肌梗死发生率、卒中发生率、出血事件）使用 OR 或 RR。连续变量（收缩压降幅、LDL-C 变化值、LVEF 变化）使用 MD（均数差）。不同类型的效应量不能在同一个 Meta 分析中混合合并，需要对每个终点分别进行独立分析。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "MACE作为复合终点如何处理？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MACE（主要不良心血管事件）是心血管 RCT 最常用的主要终点，但不同试验的定义可能不同。经典三点 MACE 包括心血管死亡、非致死性心肌梗死和非致死性卒中；扩展定义可能加入心衰住院、紧急血运重建、不稳定心绞痛住院。Meta 分析时必须确保纳入研究使用一致的 MACE 定义。如果定义不同，应在方法中分别处理：以最常见的定义为主要分析，不同定义作为敏感性分析。同时建议对 MACE 各组分（心血管死亡、MI、卒中）分别进行独立 Meta 分析。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "心血管meta分析的异质性来源有哪些？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "心血管 Meta 分析的异质性来源包括：（1）疾病类型差异：急性冠脉综合征（ACS）vs 稳定性冠心病 vs 心衰 vs 房颤；（2）预防阶段：一级预防（无心血管病史）vs 二级预防（已有心血管事件）；（3）药物剂量和种类差异：如不同他汀种类和剂量、不同降压药类别；（4）患者基线风险：糖尿病比例、基线 LDL-C 水平、肾功能、年龄分布；（5）随访时间差异：短期（1年内）vs 长期（5年以上）；（6）终点定义差异：MACE 组成不同；（7）试验设计差异：安慰剂对照 vs 活性对照、开放标签 vs 双盲。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "如何处理不同随访时间的研究？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "不同随访时间是心血管 Meta 分析中常见问题。处理方法：（1）对时间-事件终点使用 HR，HR 本身已考虑随访时间差异，是最佳选择；（2）如果使用 OR/RR，不同随访时间的事件率差异会影响结果，应在亚组分析中按随访时间分层（如 <2年、2-5年、>5年）；（3）进行 Meta-regression，以随访时间为协变量检验其对效应量的影响；（4）在敏感性分析中排除随访时间极短或极长的研究；（5）对于 Landmark 分析的数据，注意统一时间节点（如 1年、3年、5年）。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "心血管meta分析需要多少篇文献？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Meta 分析没有硬性的最低文献数量要求，但有几个实际考量：（1）至少需要 2 篇研究才能进行统计合并，但 2-3 篇的 Meta 分析异质性评估能力极弱；（2）漏斗图和发表偏倚检验至少需要 10 篇研究才有意义；（3）亚组分析每个亚组至少需要 2 篇，理想情况下 5 篇以上；（4）心血管领域的大型试验（mega-trial）通常样本量很大，即使只有 3-5 篇文献，合并样本量也可能超过万例。因此文献数量不是唯一标准，更重要的是总样本量和事件数是否足以回答研究问题。Cochrane 推荐在方案中预先设定最低文献数量阈值。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "降压药meta分析有什么特殊考虑？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "降压药 Meta 分析有几个独特挑战：（1）降压幅度效应：部分心血管获益来自血压降低本身而非特定药物，需区分血压依赖效应和血压独立效应；（2）药物类别多样：ACEI、ARB、CCB、噻嗪类利尿剂、beta受体阻滞剂，类间和类内均有差异；（3）联合用药：很多试验中患者同时使用多种降压药，难以分离单一药物效果；（4）背景治疗变化：随时间推移，对照组的治疗也在改善，导致新试验中两组差距缩小；（5）终点需同时关注血压降幅（连续变量，用 MD）和心血管事件（时间-事件，用 HR）；（6）J 型曲线假说：血压降得太低可能有害，需关注不同基线血压亚组的结果。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "MetaReview能做心血管相关的meta分析吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "完全可以。MetaReview 支持心血管 Meta 分析所需的全部功能：（1）效应量方面支持 HR（用于 MACE、全因死亡等时间-事件终点）、OR/RR（用于心肌梗死发生率、卒中发生率等二分类终点）、MD（用于血压降幅、LDL-C 变化等连续变量）；（2）提供固定效应和随机效应模型；（3）自动生成森林图、漏斗图；（4）支持亚组分析和逐一剔除敏感性分析；（5）自动计算 I²、Q 检验和 tau²；（6）所有计算在浏览器内完成，免费使用，无需安装软件或编写代码。"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .toc { background: white; border-radius: 12px; padding: 24px 32px; margin-bottom: 40px; border: 1px solid #e5e7eb; }
+    .toc h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .toc a:hover { text-decoration: underline; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    .faq { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .faq h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .faq h3 { font-size: 16px; color: #1e40af; margin: 16px 0 8px; }
+    .faq p { font-size: 15px; color: #4b5563; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .toc, .faq, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">打开工具</a>
+      <a href="/guides/meta-analysis-steps">Meta 分析步骤</a>
+      <a href="/guides/survival-analysis-meta">HR 生存分析</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>心血管 Meta 分析完整指南：从 PICO 设计到亚组分析的实战方法</h1>
+  <p>心血管荟萃分析的效应量选择、MACE 复合终点处理、异质性分析、亚组策略与经典案例解读。适合心内科研究生和临床研究者。</p>
+</div>
+
+<div class="container">
+
+  <div class="toc">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#intro">为什么心血管研究需要 Meta 分析</a></li>
+      <li><a href="#pico">心血管 Meta 分析的 PICO 框架</a></li>
+      <li><a href="#effect-size">效应量选择：HR、OR/RR、MD 分别用在哪里</a></li>
+      <li><a href="#data-extraction">数据提取要点</a></li>
+      <li><a href="#heterogeneity">异质性处理</a></li>
+      <li><a href="#subgroup">亚组分析策略</a></li>
+      <li><a href="#publication-bias">发表偏倚与敏感性分析</a></li>
+      <li><a href="#tool-practice">工具实战：用 MetaReview 做心血管 Meta 分析</a></li>
+      <li><a href="#classic-cases">经典案例解读</a></li>
+      <li><a href="#faq">常见问题</a></li>
+    </ol>
+  </div>
+
+  <!-- Section 1: Why cardiovascular research needs meta-analysis -->
+  <div class="section" id="intro">
+    <h2>为什么心血管研究需要 Meta 分析</h2>
+    <p>心血管疾病（cardiovascular disease, CVD）是全球第一大死因。根据世界卫生组织（WHO）数据，每年约 1790 万人死于心血管疾病，占全球总死亡人数的 32%。中国心血管疾病患病人数约 3.3 亿，其中高血压 2.45 亿、冠心病 1100 万、心力衰竭 890 万、房颤 487 万。面对如此庞大的疾病负担，循证医学证据的质量直接决定了数亿患者的治疗决策。</p>
+    <h3>心血管 RCT 的丰富生态</h3>
+    <p>心血管领域是临床试验最活跃的医学领域之一。从 20 世纪 90 年代的他汀革命（4S、LIPID、CARE）到 21 世纪的新型口服抗凝药（DOAC）、SGLT2 抑制剂和 PCSK9 抑制剂，每年都有大量高质量 RCT 发表。但单项试验往往只能回答一个特定问题：</p>
+    <ul>
+      <li><strong>样本量限制</strong> -- 虽然心血管 mega-trial 动辄上万人，但特定亚组（如合并 CKD 的糖尿病患者）的样本量仍然有限</li>
+      <li><strong>药物种类多</strong> -- 同一类药物（如 ACEI）包含多种具体药物（依那普利、雷米普利、培哚普利），效果可能略有差异</li>
+      <li><strong>终点定义不统一</strong> -- MACE 的定义在不同试验中可能包含 2、3、4 甚至 5 个组分</li>
+      <li><strong>人群异质性大</strong> -- 一级预防（健康人群）和二级预防（已有心血管事件）的获益程度截然不同</li>
+    </ul>
+    <h3>Meta 分析的独特价值</h3>
+    <p>心血管 Meta 分析能够：</p>
+    <ul>
+      <li>合并多项他汀试验数据，精确估计 LDL-C 每降低 1 mmol/L 对 MACE 的风险降低幅度</li>
+      <li>比较不同降压药类别（ACEI vs ARB vs CCB vs 利尿剂）在不同终点上的优劣</li>
+      <li>通过 Meta-regression 揭示血压降幅与心血管事件减少之间的量效关系</li>
+      <li>识别特定亚组（如糖尿病患者、老年患者、CKD 患者）的最优治疗策略</li>
+      <li>为 ACC/AHA、ESC 等权威指南提供证据等级最高的推荐依据</li>
+    </ul>
+    <div class="tip">Cholesterol Treatment Trialists' (CTT) Collaboration 的系列 Meta 分析合并了超过 17 万名受试者的个体数据，确立了"LDL-C 每降低 1 mmol/L，MACE 减少 22%"这一里程碑结论，直接奠定了现代他汀治疗的循证基础。</div>
+  </div>
+
+  <!-- Section 2: PICO framework -->
+  <div class="section" id="pico">
+    <h2>心血管 Meta 分析的 PICO 框架</h2>
+    <p>心血管领域的 PICO 框架需要特别关注人群的风险分层和终点的复合性质。与肿瘤不同，心血管疾病是慢性病，试验随访通常更长（3-5 年），预防阶段（一级 vs 二级）对结果影响巨大。</p>
+    <h3>Population（人群）</h3>
+    <p>心血管 Meta 分析中常见的目标人群：</p>
+    <table class="data-table">
+      <tr><th>人群类别</th><th>典型定义</th><th>代表试验</th></tr>
+      <tr><td>急性冠脉综合征 (ACS)</td><td>STEMI、NSTEMI、不稳定心绞痛发作后</td><td>PLATO, ATLAS ACS 2-TIMI 51</td></tr>
+      <tr><td>稳定性冠心病 (Stable CAD)</td><td>慢性冠心病，无近期 ACS 事件</td><td>COMPASS, ISCHEMIA</td></tr>
+      <tr><td>射血分数降低的心衰 (HFrEF)</td><td>LVEF &le;40%，NYHA II-IV 级</td><td>PARADIGM-HF, DAPA-HF, EMPEROR-Reduced</td></tr>
+      <tr><td>射血分数保留的心衰 (HFpEF)</td><td>LVEF &ge;50%，有心衰症状和体征</td><td>EMPEROR-Preserved, DELIVER</td></tr>
+      <tr><td>房颤 (AF)</td><td>非瓣膜性房颤，CHA2DS2-VASc &ge;2</td><td>RE-LY, ROCKET AF, ARISTOTLE, ENGAGE AF</td></tr>
+      <tr><td>高血压</td><td>收缩压 &ge;140 mmHg 或舒张压 &ge;90 mmHg</td><td>SPRINT, HOPE-3, ALLHAT</td></tr>
+      <tr><td>高脂血症（一级预防）</td><td>无心血管病史，LDL-C 升高</td><td>JUPITER, MEGA, HOPE-3</td></tr>
+      <tr><td>高脂血症（二级预防）</td><td>已有心血管事件，LDL-C 管理</td><td>4S, LIPID, PROVE IT, IMPROVE-IT</td></tr>
+    </table>
+    <div class="warn">一级预防和二级预防的人群绝对风险差异巨大。混合两类人群进行 Meta 分析可能导致误导性结论（如高估一级预防的绝对获益）。建议分别分析或在亚组分析中明确区分。</div>
+    <h3>Intervention 和 Comparison（干预与对照）</h3>
+    <p>心血管领域常见的干预类型：</p>
+    <ul>
+      <li><strong>降脂治疗</strong>：他汀（阿托伐他汀、瑞舒伐他汀）、依折麦布、PCSK9 抑制剂（依洛尤单抗、阿利西尤单抗）、贝派地酸</li>
+      <li><strong>降压治疗</strong>：ACEI、ARB、CCB、噻嗪类利尿剂、MRA、ARNI</li>
+      <li><strong>抗血小板治疗</strong>：阿司匹林、氯吡格雷、替格瑞洛、普拉格雷，单抗 vs 双抗 (DAPT)</li>
+      <li><strong>抗凝治疗</strong>：华法林、达比加群、利伐沙班、阿哌沙班、依度沙班</li>
+      <li><strong>心衰治疗</strong>：ARNI（沙库巴曲/缬沙坦）、SGLT2 抑制剂（达格列净、恩格列净）、维利西呱</li>
+      <li><strong>介入与手术</strong>：PCI vs CABG、PCI vs 药物保守治疗、TAVR vs SAVR</li>
+    </ul>
+    <h3>Outcome（结局指标）</h3>
+    <table class="data-table">
+      <tr><th>终点类型</th><th>具体指标</th><th>数据类型</th><th>效应量</th></tr>
+      <tr><td>复合终点</td><td>MACE（心血管死亡 + MI + 卒中）</td><td>时间-事件</td><td>HR</td></tr>
+      <tr><td>硬终点</td><td>全因死亡、心血管死亡</td><td>时间-事件</td><td>HR</td></tr>
+      <tr><td>单项事件</td><td>非致死性 MI、非致死性卒中</td><td>时间-事件或二分类</td><td>HR 或 OR/RR</td></tr>
+      <tr><td>住院终点</td><td>心衰住院</td><td>时间-事件</td><td>HR</td></tr>
+      <tr><td>替代终点</td><td>血压降幅 (mmHg)、LDL-C 降幅 (mmol/L)</td><td>连续变量</td><td>MD</td></tr>
+      <tr><td>功能终点</td><td>LVEF 变化 (%)、6 分钟步行距离变化</td><td>连续变量</td><td>MD</td></tr>
+      <tr><td>安全性终点</td><td>大出血 (ISTH/TIMI)、新发糖尿病、肝酶升高</td><td>二分类</td><td>OR/RR</td></tr>
+    </table>
+    <h3>PICO 示例：SGLT2 抑制剂治疗 HFrEF</h3>
+    <table class="data-table">
+      <tr><th>PICO 元素</th><th>定义</th><th>关键考量</th></tr>
+      <tr><td><strong>P</strong></td><td>LVEF &le;40% 的心衰患者，NYHA II-IV 级，已接受标准心衰治疗</td><td>是否包含糖尿病和非糖尿病患者？是否排除 eGFR < 20？</td></tr>
+      <tr><td><strong>I</strong></td><td>SGLT2 抑制剂（达格列净 10mg 或恩格列净 10mg）</td><td>不同 SGLT2i 是否作为类效应合并？</td></tr>
+      <tr><td><strong>C</strong></td><td>安慰剂 + 标准心衰治疗</td><td>标准治疗背景是否一致（ACEI/ARB/ARNI + beta 阻滞剂 + MRA）</td></tr>
+      <tr><td><strong>O</strong></td><td>主要：心血管死亡或心衰住院复合终点；次要：全因死亡、首次心衰住院、eGFR 变化</td><td>复合终点以首次事件计还是总事件计？</td></tr>
+    </table>
+    <div class="tip">在 PROSPERO 注册方案时即明确 PICO 的每个细节。心血管 Meta 分析的方案修改（protocol amendment）需要特别谨慎，因为终点定义和人群界定的变更可能被审稿人视为数据驱动的选择性报告。</div>
+  </div>
+
+  <!-- Section 3: Effect size selection -->
+  <div class="section" id="effect-size">
+    <h2>效应量选择：HR、OR/RR、MD 分别用在哪里</h2>
+    <p>心血管 Meta 分析涉及的结局指标非常多样，正确选择效应量是方法学的核心。不同于肿瘤领域以 HR（生存终点）为主，心血管 Meta 分析经常需要同时处理时间-事件数据、二分类数据和连续变量。</p>
+    <h3>HR：时间-事件终点的标准选择</h3>
+    <p>Hazard Ratio 适用于所有时间-事件终点，在心血管 Meta 分析中使用最广泛：</p>
+    <ul>
+      <li><strong>MACE</strong> -- 主要不良心血管事件，多数心血管 RCT 的主要终点</li>
+      <li><strong>全因死亡</strong> -- 最硬的终点，不受终点裁定偏倚影响</li>
+      <li><strong>心血管死亡</strong> -- 需要事件裁定委员会（adjudication committee）</li>
+      <li><strong>心衰住院</strong> -- 心衰试验的关键终点，注意首次事件 vs 复发事件</li>
+      <li><strong>首次 MI、首次卒中</strong> -- 作为 MACE 各组分的独立分析</li>
+    </ul>
+    <div class="formula">
+      HR &lt; 1 表示干预组风险更低（获益）<br>
+      HR = 0.80 意味着干预组的事件发生风险降低了 20%
+    </div>
+    <h3>OR/RR：二分类终点</h3>
+    <p>当分析的是固定时间点的事件发生率（而非时间-事件数据）时，使用 OR 或 RR：</p>
+    <ul>
+      <li><strong>MI 发生率</strong> -- 某些早期试验只报告了事件数/总数而未报告 HR</li>
+      <li><strong>卒中发生率</strong> -- 同上</li>
+      <li><strong>大出血事件</strong> -- 安全性终点，常以发生率报告</li>
+      <li><strong>新发糖尿病</strong> -- 他汀治疗的安全性关注点</li>
+      <li><strong>30 天死亡率</strong> -- 介入/手术试验的短期终点</li>
+    </ul>
+    <h3>MD：连续变量终点</h3>
+    <p>均数差（Mean Difference）用于心血管领域大量的替代终点和功能终点：</p>
+    <ul>
+      <li><strong>收缩压/舒张压降幅 (mmHg)</strong> -- 降压药 Meta 分析的核心</li>
+      <li><strong>LDL-C 降幅 (mmol/L 或 mg/dL)</strong> -- 降脂药 Meta 分析的核心</li>
+      <li><strong>LVEF 变化 (%)</strong> -- 心衰治疗的心功能评估</li>
+      <li><strong>NT-proBNP 变化</strong> -- 心衰严重程度的生物标志物</li>
+      <li><strong>6 分钟步行距离变化 (m)</strong> -- 心衰和肺动脉高压的功能评估</li>
+      <li><strong>eGFR 变化 (mL/min/1.73m&sup2;)</strong> -- 肾功能保护评估</li>
+    </ul>
+    <h3>效应量选择总结</h3>
+    <table class="data-table">
+      <tr><th>终点</th><th>首选效应量</th><th>备选效应量</th><th>说明</th></tr>
+      <tr><td>MACE</td><td>HR</td><td>--</td><td>复合时间-事件终点，必须用 HR</td></tr>
+      <tr><td>全因死亡</td><td>HR</td><td>OR/RR（短期试验）</td><td>长期试验用 HR，30 天死亡率可用 OR</td></tr>
+      <tr><td>心肌梗死</td><td>HR</td><td>OR/RR</td><td>取决于原始研究报告方式</td></tr>
+      <tr><td>卒中</td><td>HR</td><td>OR/RR</td><td>同上</td></tr>
+      <tr><td>心衰住院</td><td>HR</td><td>Rate ratio（复发事件）</td><td>首次事件用 HR，总事件用 Rate ratio</td></tr>
+      <tr><td>血压降幅</td><td>MD</td><td>--</td><td>所有研究均以 mmHg 报告，直接用 MD</td></tr>
+      <tr><td>LDL-C 降幅</td><td>MD</td><td>--</td><td>注意单位统一（mmol/L 或 mg/dL）</td></tr>
+      <tr><td>LVEF 变化</td><td>MD</td><td>--</td><td>均以百分点报告</td></tr>
+      <tr><td>大出血</td><td>HR</td><td>OR/RR</td><td>抗凝/抗血小板试验的关键安全终点</td></tr>
+    </table>
+    <div class="warn">核心原则与肿瘤 Meta 分析相同：不同效应量绝对不能混合合并。MACE 的 HR 和 MI 发生率的 OR 必须作为独立的 Meta 分析分别报告。</div>
+    <p>详细的效应量选择方法请看：<a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</a></p>
+  </div>
+
+  <!-- Section 4: Data extraction -->
+  <div class="section" id="data-extraction">
+    <h2>数据提取要点</h2>
+    <p>心血管 Meta 分析的数据提取有几个独特的挑战：复合终点的拆分与合并、长期试验中多次数据更新的选择、从 Kaplan-Meier 曲线间接提取 HR 的方法。</p>
+    <h3>从文献中直接提取 HR</h3>
+    <p>理想情况下，心血管 RCT 会直接报告 HR 和 95% CI。提取优先级：</p>
+    <ol>
+      <li><strong>最优</strong>：Cox 回归调整后的 HR 及 95% CI（adjusted HR）</li>
+      <li><strong>次选</strong>：未调整的 HR 及 95% CI</li>
+      <li><strong>再次</strong>：HR 和 p 值（可反推 SE）</li>
+      <li><strong>最后</strong>：仅有 Kaplan-Meier 曲线（需间接估算）</li>
+    </ol>
+    <div class="formula">
+      从 HR 和 CI 计算标准误：SE[log(HR)] = (log(CI<sub>upper</sub>) - log(CI<sub>lower</sub>)) / 3.92
+    </div>
+    <div class="formula">
+      从 HR 和 p 值计算标准误：SE[log(HR)] = |log(HR)| / Z<sub>p</sub>
+    </div>
+    <h3>从 Kaplan-Meier 曲线间接提取</h3>
+    <p>部分早期心血管试验（如 4S、CARE、LIPID）可能不直接报告 HR，或者你需要特定时间段的 HR。此时可以使用 Tierney (2007) 和 Parmar (1998) 的方法：</p>
+    <ol>
+      <li>使用 WebPlotDigitizer 等工具从 KM 曲线上读取各时间点的生存概率</li>
+      <li>结合每个时间区间的风险人数（number at risk），重建个体水平的时间-事件数据</li>
+      <li>用重建数据拟合 Cox 回归，获得 HR 和 95% CI</li>
+    </ol>
+    <div class="tip">心血管 RCT 通常在图表下方标注 number at risk，这对间接提取 HR 极其重要。如果 KM 曲线下没有 number at risk，提取的 HR 精度会大幅下降。</div>
+    <h3>MACE 复合终点的处理</h3>
+    <p>MACE 是心血管 Meta 分析中最重要也最复杂的终点。关键问题：</p>
+    <table class="data-table">
+      <tr><th>MACE 定义</th><th>组成</th><th>使用该定义的代表试验</th></tr>
+      <tr><td>经典三点 MACE</td><td>心血管死亡 + 非致死性 MI + 非致死性卒中</td><td>COMPASS, FOURIER</td></tr>
+      <tr><td>扩展四点 MACE</td><td>经典三点 + 紧急血运重建</td><td>IMPROVE-IT</td></tr>
+      <tr><td>心衰型复合终点</td><td>心血管死亡 + 心衰住院</td><td>PARADIGM-HF, DAPA-HF</td></tr>
+      <tr><td>全事件 MACE</td><td>经典三点 + 心衰住院 + 不稳定心绞痛</td><td>部分早期试验</td></tr>
+    </table>
+    <p>处理建议：</p>
+    <ul>
+      <li>在方案中预先确定使用哪种 MACE 定义作为主要分析</li>
+      <li>对 MACE 各组分（心血管死亡、MI、卒中）分别进行独立 Meta 分析</li>
+      <li>如果不同试验使用不同 MACE 定义，进行敏感性分析（仅纳入统一定义的研究）</li>
+      <li>在 forest plot 中标注每项研究所用的 MACE 定义</li>
+    </ul>
+    <h3>ITT vs Per-protocol vs mITT</h3>
+    <p>心血管 RCT 通常同时报告三种分析人群的结果：</p>
+    <ul>
+      <li><strong>ITT（意向性分析）</strong> -- 所有随机化患者，无论是否完成治疗。Meta 分析应首选 ITT 数据</li>
+      <li><strong>mITT（修正 ITT）</strong> -- 排除随机化后从未接受治疗的患者。部分试验仅报告 mITT</li>
+      <li><strong>Per-protocol</strong> -- 仅包含完全按方案完成治疗的患者。可作为敏感性分析</li>
+    </ul>
+    <div class="warn">心血管长期试验的停药率和交叉率通常较高（如 5 年试验停药率可达 20-30%）。坚持使用 ITT 数据是保持 Meta 分析保守性和减少偏倚的关键。</div>
+    <h3>多次数据更新的处理</h3>
+    <p>心血管大型试验经常有多次随访更新。例如 DAPA-HF 有 18.2 个月中位随访和后续延长随访的结果。处理原则：</p>
+    <ul>
+      <li>使用每项试验的<strong>最长随访</strong>数据用于主要分析</li>
+      <li>如果某项研究最新更新了数据但另一项尚未更新，在敏感性分析中检验时间差异的影响</li>
+      <li>对于有 Landmark 分析的试验（如 1 年、3 年、5 年时间点），可在特定时间点进行分层分析</li>
+    </ul>
+  </div>
+
+  <!-- Section 5: Heterogeneity -->
+  <div class="section" id="heterogeneity">
+    <h2>异质性处理</h2>
+    <p>心血管 Meta 分析的异质性来源与肿瘤领域有显著不同。由于心血管疾病谱广（冠心病、心衰、房颤、外周动脉病）、药物种类多、人群风险差异大、随访时间跨度长，I&sup2; 偏高是常态。</p>
+    <h3>心血管 Meta 分析的特殊异质性来源</h3>
+    <table class="data-table">
+      <tr><th>异质性来源</th><th>具体表现</th><th>对效应量的影响</th></tr>
+      <tr><td>药物剂量差异</td><td>阿托伐他汀 10mg vs 80mg；利伐沙班 2.5mg（COMPASS）vs 20mg（ROCKET AF）</td><td>低剂量与高剂量的疗效和安全性可能截然不同</td></tr>
+      <tr><td>一级 vs 二级预防</td><td>健康高危人群 vs 已有 MI/卒中病史</td><td>基线风险不同导致绝对风险降低幅度差异大；相对风险（HR）通常一致</td></tr>
+      <tr><td>背景治疗差异</td><td>20 世纪 90 年代试验的对照组几乎无他汀，现代试验对照组他汀使用率 >80%</td><td>现代试验的增量获益更小（因为背景治疗已经很好）</td></tr>
+      <tr><td>终点定义不一致</td><td>MACE 组成不同；大出血标准（ISTH vs TIMI vs GUSTO）不同</td><td>终点差异直接影响事件率和效应量</td></tr>
+      <tr><td>随访时间差异</td><td>短期（6 个月）vs 长期（5 年以上）</td><td>某些治疗效应随时间累积（如他汀），某些在早期最明显（如抗血小板）</td></tr>
+      <tr><td>合并症差异</td><td>糖尿病比例、CKD 比例、心衰比例</td><td>合并症影响基线风险和治疗反应</td></tr>
+      <tr><td>试验年代</td><td>1990 年代 vs 2020 年代</td><td>医疗水平进步导致对照组事件率降低，相同治疗的 NNT 增大</td></tr>
+    </table>
+    <h3>I&sup2; 的心血管语境解读</h3>
+    <p>传统 I&sup2; 阈值（25% 低、50% 中、75% 高）在心血管 Meta 分析中需要灵活解读：</p>
+    <ul>
+      <li><strong>I&sup2; = 0-30%</strong> -- 心血管领域中的理想情况，通常出现在同类药物、同类人群的高质量 RCT 合并中</li>
+      <li><strong>I&sup2; = 30-60%</strong> -- 很常见，通常因为药物种类或剂量差异，可通过亚组分析解释</li>
+      <li><strong>I&sup2; = 60-85%</strong> -- 需要警惕，可能混合了异质性过大的研究，必须深入探讨来源</li>
+      <li><strong>I&sup2; > 85%</strong> -- 通常不建议进行合并分析，改为叙述性综述或仅在亚组内合并</li>
+    </ul>
+    <h3>处理策略</h3>
+    <ol>
+      <li><strong>默认使用随机效应模型</strong> -- DerSimonian-Laird 或 REML 方法。即使 I&sup2; 较低，考虑到心血管研究的临床异质性，随机效应模型更保守</li>
+      <li><strong>预设亚组分析</strong> -- 按药物种类、剂量、人群（一级/二级预防）、基线风险分组</li>
+      <li><strong>Meta-regression</strong> -- 检验连续变量（基线 LDL-C、基线血压、平均年龄、糖尿病比例）与效应量的关系</li>
+      <li><strong>逐一剔除法</strong> -- 依次排除每项研究，观察合并效应量和 I&sup2; 的变化</li>
+      <li><strong>预测区间</strong> -- 报告预测区间（prediction interval），反映"新增一项研究时效应量的预期范围"，比仅报告 CI 更有临床意义</li>
+    </ol>
+    <div class="tip">CTT Collaboration 的他汀 Meta 分析之所以能产生如此清晰的结论，部分原因是使用了个体患者数据（IPD）Meta 分析，能够更精细地控制异质性。如果可能，IPD Meta 分析是心血管领域的黄金标准。</div>
+  </div>
+
+  <!-- Section 6: Subgroup analysis -->
+  <div class="section" id="subgroup">
+    <h2>亚组分析策略</h2>
+    <p>亚组分析是心血管 Meta 分析中最具临床转化价值的部分。它回答的是"谁获益最大？谁获益最少？谁可能受害？"这些问题直接影响个体化治疗决策和指南推荐的分级。</p>
+    <h3>心血管 Meta 分析的核心亚组变量</h3>
+    <table class="data-table">
+      <tr><th>亚组变量</th><th>分组方式</th><th>临床意义</th><th>代表性发现</th></tr>
+      <tr><td>糖尿病状态</td><td>有 vs 无</td><td>糖尿病患者心血管风险更高，获益可能不同</td><td>SGLT2i 在糖尿病和非糖尿病 HFrEF 患者中均获益（DAPA-HF）</td></tr>
+      <tr><td>年龄</td><td>&ge;65 岁 vs &lt;65 岁；或 &ge;75 岁 vs &lt;75 岁</td><td>老年患者的获益-风险平衡和出血风险</td><td>他汀在 &ge;75 岁一级预防中获益不确定</td></tr>
+      <tr><td>基线 LDL-C</td><td>&ge;2.6 vs &lt;2.6 mmol/L（或其他阈值）</td><td>LDL-C 越高，降脂治疗的绝对获益越大</td><td>CTT Meta 分析证实获益与 LDL-C 降幅成正比</td></tr>
+      <tr><td>eGFR（肾功能）</td><td>&ge;60 vs 30-59 vs &lt;30 mL/min/1.73m&sup2;</td><td>CKD 患者心血管风险极高，药物代谢可能改变</td><td>DAPA-CKD 证实 SGLT2i 在 CKD 中的心肾获益</td></tr>
+      <tr><td>性别</td><td>男性 vs 女性</td><td>女性在心血管试验中代表性不足</td><td>阿司匹林一级预防在男性减少 MI，女性减少卒中</td></tr>
+      <tr><td>既往 MI 史</td><td>有 vs 无</td><td>区分二级预防的高危和低危人群</td><td>PEGASUS-TIMI 54：既往 MI 患者长期 DAPT 获益</td></tr>
+      <tr><td>PCI 状态</td><td>已行 PCI vs 未行 PCI</td><td>PCI 后的双抗治疗时长和强度</td><td>SHORT-DAPT vs LONG-DAPT Meta 分析</td></tr>
+      <tr><td>基线血压</td><td>SBP &ge;140 vs &lt;140 mmHg</td><td>降压至更低目标的获益与风险</td><td>SPRINT：SBP &lt;120 vs &lt;140 mmHg 的强化降压获益</td></tr>
+      <tr><td>心衰类型</td><td>HFrEF vs HFmrEF vs HFpEF</td><td>不同 LVEF 范围的治疗反应截然不同</td><td>SGLT2i 在全 LVEF 范围均获益（Meta 分析证实）</td></tr>
+      <tr><td>预防阶段</td><td>一级预防 vs 二级预防</td><td>相对风险降低类似，绝对获益差异大</td><td>他汀在二级预防 NNT 约 30，一级预防 NNT 约 100-200</td></tr>
+    </table>
+    <h3>Pre-specified vs Post-hoc 亚组分析</h3>
+    <p>这是审稿人最关注的方法学问题之一：</p>
+    <ul>
+      <li><strong>Pre-specified（预设）</strong> -- 在 PROSPERO 注册方案中明确列出的亚组变量，结果可信度高</li>
+      <li><strong>Post-hoc（事后）</strong> -- 看到数据后才决定分析的亚组，可能受数据驱动偏倚影响，结果应谨慎解读</li>
+    </ul>
+    <div class="warn">一般建议预设亚组不超过 5-8 个。每增加一个亚组，假阳性风险就增加。20 个亚组分析中，即使没有真实差异，平均也有 1 个会达到 p &lt; 0.05。</div>
+    <h3>亚组间差异检验</h3>
+    <p>仅仅报告"某亚组有统计学意义，另一亚组无统计学意义"是<strong>错误的</strong>。正确做法是进行亚组间差异检验（interaction test）：</p>
+    <div class="formula">
+      Q<sub>between</sub> = Q<sub>total</sub> - Q<sub>within subgroup 1</sub> - Q<sub>within subgroup 2</sub><br>
+      如果 p<sub>interaction</sub> &lt; 0.05，才能认为亚组间差异有统计学意义
+    </div>
+    <p>经典案例：CTT 他汀 Meta 分析发现，无论基线 LDL-C 高低，他汀治疗的相对风险降低（HR）一致（p<sub>interaction</sub> = 0.7），但绝对风险降低与基线 LDL-C 成正比。这个"相对效应一致、绝对效应分层"的结论深刻影响了临床实践。</p>
+    <div class="tip">MetaReview 支持自定义亚组分析，自动计算每个亚组的合并效应量、Q-between 检验和 p<sub>interaction</sub>，并在森林图中按亚组分层展示结果。</div>
+  </div>
+
+  <!-- Section 7: Publication bias and sensitivity analysis -->
+  <div class="section" id="publication-bias">
+    <h2>发表偏倚与敏感性分析</h2>
+    <p>心血管领域的发表偏倚问题有其独特性。一方面，大型 RCT 的注册和报告规范做得比较好；另一方面，药企资助的大型试验和研究者发起的小型试验之间存在系统性差异。</p>
+    <h3>心血管领域发表偏倚的特殊关注点</h3>
+    <ul>
+      <li><strong>Mega-trial 效应</strong> -- 心血管领域的大型 RCT（如 4S、HOPE、COMPASS）样本量动辄上千甚至上万。这些试验无论结果阳性或阴性都会发表，但在漏斗图中表现为精确度极高的点，可能掩盖小型研究的发表偏倚</li>
+      <li><strong>药企资助 vs 研究者发起</strong> -- 药企资助的试验有法规要求必须报告结果（如 FDA 要求在 ClinicalTrials.gov 登记），而研究者发起的小型试验报告义务较弱</li>
+      <li><strong>阴性试验的发表延迟</strong> -- 即使最终发表，阴性结果的心血管试验从完成到发表的时间可能比阳性试验更长（publication lag）</li>
+      <li><strong>终点选择性报告</strong> -- 某些试验可能在摘要中强调阳性的次要终点（如某个 MACE 组分），而淡化阴性的主要终点</li>
+      <li><strong>多次发表</strong> -- 同一试验可能发表主要结果、亚组分析、长期随访更新等多篇论文，需避免重复纳入</li>
+    </ul>
+    <h3>评估方法</h3>
+    <table class="data-table">
+      <tr><th>方法</th><th>适用条件</th><th>心血管语境的注意事项</th></tr>
+      <tr><td>漏斗图（Funnel Plot）</td><td>纳入 &ge;10 篇研究</td><td>Mega-trial 的高精确度可能导致"倒三角形"而非标准漏斗形</td></tr>
+      <tr><td>Egger 检验</td><td>连续型效应量（HR、MD）</td><td>p &lt; 0.10 提示小样本效应，但心血管 mega-trial 可能使检验失效</td></tr>
+      <tr><td>Peters 检验</td><td>二分类效应量（OR）</td><td>比 Egger 更适合 OR 的 Meta 分析</td></tr>
+      <tr><td>Trim-and-fill 法</td><td>漏斗图不对称时</td><td>估计"缺失"研究数量，评估对合并 HR 的影响</td></tr>
+      <tr><td>Contour-enhanced funnel plot</td><td>漏斗图不对称时</td><td>区分发表偏倚（缺失在非显著区域）和其他小样本效应</td></tr>
+    </table>
+    <h3>敏感性分析策略</h3>
+    <p>心血管 Meta 分析常用的敏感性分析：</p>
+    <ol>
+      <li><strong>逐一剔除法</strong> -- 每次排除一项研究，观察合并效应量的变化。如果排除某项研究后结论翻转，需在讨论中重点说明</li>
+      <li><strong>按研究质量分层</strong> -- 仅纳入 RoB 2.0 评估为"低偏倚风险"的研究</li>
+      <li><strong>排除非双盲试验</strong> -- 某些心血管试验（如 PCI vs CABG）无法盲法，排除后检验结论是否稳健</li>
+      <li><strong>仅纳入 mega-trial</strong> -- 排除样本量 &lt;1000 的小型研究，看结论是否一致</li>
+      <li><strong>统一终点定义</strong> -- 仅纳入使用经典三点 MACE 定义的研究</li>
+      <li><strong>固定效应 vs 随机效应</strong> -- 两种模型结果对比，差异大说明异质性影响显著</li>
+      <li><strong>排除特定年代的试验</strong> -- 如排除 2000 年前的试验（背景治疗差异太大）</li>
+    </ol>
+    <div class="tip">MetaReview 自动生成漏斗图和逐一剔除敏感性分析。漏斗图可帮助直观判断发表偏倚，敏感性分析可验证结论的稳健性。</div>
+  </div>
+
+  <!-- Section 8: Tool practice -->
+  <div class="section" id="tool-practice">
+    <h2>工具实战：用 MetaReview 做心血管 Meta 分析</h2>
+    <p>以"他汀类药物二级预防降低 MACE 风险"为例，演示在 MetaReview 中完成一次完整的心血管 Meta 分析的全过程。</p>
+    <h3>第 1 步：准备数据</h3>
+    <p>从文献中提取以下 5 项经典他汀二级预防 RCT 的数据：</p>
+    <table class="data-table">
+      <tr><th>研究</th><th>药物</th><th>样本量</th><th>HR (MACE)</th><th>95% CI</th><th>中位随访</th></tr>
+      <tr><td>4S (1994)</td><td>辛伐他汀 20-40mg</td><td>4444</td><td>0.66</td><td>0.58 - 0.75</td><td>5.4 年</td></tr>
+      <tr><td>CARE (1996)</td><td>普伐他汀 40mg</td><td>4159</td><td>0.76</td><td>0.64 - 0.91</td><td>5.0 年</td></tr>
+      <tr><td>LIPID (1998)</td><td>普伐他汀 40mg</td><td>9014</td><td>0.76</td><td>0.65 - 0.88</td><td>6.1 年</td></tr>
+      <tr><td>HPS (2002)</td><td>辛伐他汀 40mg</td><td>20536</td><td>0.76</td><td>0.72 - 0.81</td><td>5.0 年</td></tr>
+      <tr><td>TNT (2005)</td><td>阿托伐他汀 80mg vs 10mg</td><td>10001</td><td>0.78</td><td>0.69 - 0.89</td><td>4.9 年</td></tr>
+    </table>
+    <h3>第 2 步：打开 MetaReview 并输入数据</h3>
+    <ol>
+      <li>访问 MetaReview 主页，效应量类型选择 <strong>Hazard Ratio</strong></li>
+      <li>逐行输入：Study（研究名称+年份）、HR、CI Lower、CI Upper</li>
+      <li>MetaReview 自动完成 log(HR) 变换和标准误计算</li>
+    </ol>
+    <h3>第 3 步：选择模型并运行分析</h3>
+    <ol>
+      <li>选择<strong>随机效应模型</strong>（虽然这些试验使用不同他汀和剂量，存在药物间异质性）</li>
+      <li>点击 <strong>Run Meta-Analysis</strong></li>
+      <li>查看合并 HR、95% CI、p 值和异质性统计量（I&sup2;、Q、&tau;&sup2;）</li>
+    </ol>
+    <p>预期结果：合并 HR 约 0.75 (95% CI: 0.71-0.80)，表明他汀二级预防将 MACE 风险降低约 25%。I&sup2; 可能在 20-40% 左右（因不同他汀和剂量导致的中-低度异质性）。</p>
+    <h3>第 4 步：生成森林图和漏斗图</h3>
+    <ol>
+      <li>MetaReview 自动生成<strong>森林图</strong>，展示每项研究的 HR 和 95% CI 以及合并效应</li>
+      <li>切换到<strong>漏斗图</strong>视图，检查对称性</li>
+      <li>查看<strong>逐一剔除</strong>敏感性分析，验证没有单项研究对结论产生过度影响</li>
+    </ol>
+    <h3>第 5 步：亚组分析</h3>
+    <p>如果你在数据中标注了亚组信息（如高强度 vs 中等强度他汀），MetaReview 可以：</p>
+    <ul>
+      <li>按亚组分别计算合并效应量</li>
+      <li>生成分层森林图</li>
+      <li>计算 Q-between 检验的 p 值</li>
+    </ul>
+    <div class="tip">整个流程从数据输入到森林图生成只需 5-10 分钟。MetaReview 的所有计算在浏览器本地完成，数据不会上传至服务器，保护你的未发表数据安全。</div>
+  </div>
+
+  <!-- Section 9: Classic cases -->
+  <div class="section" id="classic-cases">
+    <h2>经典案例解读</h2>
+    <p>以下是心血管领域几项具有里程碑意义的临床试验，它们经常出现在 Meta 分析中，理解其设计和结果对做好心血管 Meta 分析至关重要。</p>
+
+    <h3>案例 1：IMPROVE-IT -- 依折麦布联合辛伐他汀 vs 辛伐他汀</h3>
+    <p><strong>试验背景</strong>：IMPROVE-IT (2015) 是首个证明在他汀基础上加用非他汀降脂药可进一步降低 MACE 的大型 RCT，纳入 18,144 例 ACS 后患者。</p>
+    <ul>
+      <li><strong>主要终点</strong>：心血管死亡 + MI + 不稳定心绞痛住院 + 冠状动脉血运重建 + 卒中（扩展复合终点）</li>
+      <li><strong>核心结果</strong>：HR = 0.936 (95% CI: 0.89-0.99, p = 0.016)</li>
+      <li><strong>LDL-C 降幅</strong>：联合组 53.7 mg/dL vs 辛伐他汀组 69.5 mg/dL</li>
+      <li><strong>中位随访</strong>：6 年</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：IMPROVE-IT 的效应量较小（HR 0.94），与后来的 PCSK9 抑制剂试验（FOURIER HR 0.85、ODYSSEY OUTCOMES HR 0.85）合并分析，可以验证"LDL-C 降低越多获益越大"的假说。注意不同试验使用的 MACE 定义不同（IMPROVE-IT 用 5 组分，FOURIER 用 3 组分），Meta 分析时需统一。</p>
+
+    <h3>案例 2：PARADIGM-HF -- 沙库巴曲/缬沙坦 vs 依那普利</h3>
+    <p><strong>试验背景</strong>：PARADIGM-HF (2014) 开创了 ARNI 治疗心衰的新时代，纳入 8,442 例 HFrEF 患者（LVEF &le;40%，后修正为 &le;35%）。</p>
+    <ul>
+      <li><strong>主要终点</strong>：心血管死亡或心衰住院复合终点</li>
+      <li><strong>核心结果</strong>：HR = 0.80 (95% CI: 0.73-0.87, p < 0.001)</li>
+      <li><strong>心血管死亡</strong>：HR = 0.80 (95% CI: 0.71-0.89)</li>
+      <li><strong>首次心衰住院</strong>：HR = 0.79 (95% CI: 0.71-0.89)</li>
+      <li><strong>全因死亡</strong>：HR = 0.84 (95% CI: 0.76-0.93)</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：PARADIGM-HF 因提前终止（疗效过于显著的中期分析）而存在潜在的效应量高估偏倚。将其与后续的 PARAGON-HF（HFpEF，HR 0.87, 95% CI: 0.75-1.01）和真实世界研究合并，可以评估 ARNI 在全 LVEF 范围心衰中的效果。</p>
+
+    <h3>案例 3：COMPASS -- 利伐沙班+阿司匹林 vs 阿司匹林</h3>
+    <p><strong>试验背景</strong>：COMPASS (2017) 探索了低剂量抗凝+抗血小板在稳定性动脉粥样硬化性心血管疾病中的价值，纳入 27,395 例患者。</p>
+    <ul>
+      <li><strong>主要终点</strong>：心血管死亡 + MI + 卒中（经典三点 MACE）</li>
+      <li><strong>核心结果</strong>：利伐沙班 2.5mg bid + 阿司匹林 vs 阿司匹林：HR = 0.76 (95% CI: 0.66-0.86, p < 0.001)</li>
+      <li><strong>大出血</strong>：HR = 1.70 (95% CI: 1.40-2.05) -- 出血显著增加</li>
+      <li><strong>净获益终点</strong>：HR = 0.80 (95% CI: 0.70-0.91)</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：COMPASS 是"血栓双通路抑制"策略的核心试验。与 ATLAS ACS 2-TIMI 51（ACS 人群）和 VOYAGER PAD（外周动脉病人群）合并分析，可评估该策略在不同动脉粥样硬化疾病谱中的一致性。但必须同时分析出血终点，权衡获益与风险。</p>
+
+    <h3>案例 4：DAPA-HF -- 达格列净治疗 HFrEF</h3>
+    <p><strong>试验背景</strong>：DAPA-HF (2019) 首次证明 SGLT2 抑制剂在非糖尿病心衰患者中同样获益，纳入 4,744 例 HFrEF 患者。</p>
+    <ul>
+      <li><strong>主要终点</strong>：心衰恶化（住院或急诊静脉利尿剂使用）或心血管死亡</li>
+      <li><strong>核心结果</strong>：HR = 0.74 (95% CI: 0.65-0.85, p < 0.001)</li>
+      <li><strong>糖尿病亚组</strong>：HR = 0.75 (95% CI: 0.63-0.90)</li>
+      <li><strong>非糖尿病亚组</strong>：HR = 0.73 (95% CI: 0.60-0.88)</li>
+      <li><strong>p<sub>interaction</sub></strong> = 0.80（无交互作用，说明获益不受糖尿病状态影响）</li>
+    </ul>
+    <p><strong>Meta 分析价值</strong>：DAPA-HF 与 EMPEROR-Reduced（恩格列净，HR = 0.75）合并分析已由多篇 Meta 分析完成，结论一致：SGLT2i 作为类效应降低 HFrEF 复合终点约 25%。进一步与 DELIVER（达格列净 HFpEF）和 EMPEROR-Preserved 合并，证实 SGLT2i 在全 LVEF 范围均获益。</p>
+
+    <h3>案例 5：他汀里程碑试验群 -- 4S、LIPID、CARE</h3>
+    <p><strong>试验背景</strong>：这三项试验构成了他汀循证医学的基石。</p>
+    <table class="data-table">
+      <tr><th>试验</th><th>年份</th><th>样本量</th><th>人群</th><th>主要结果</th></tr>
+      <tr><td>4S</td><td>1994</td><td>4,444</td><td>高胆固醇冠心病患者</td><td>全因死亡 RR = 0.70 (p = 0.0003)；首次证明他汀降低死亡率</td></tr>
+      <tr><td>CARE</td><td>1996</td><td>4,159</td><td>MI 后中等胆固醇患者</td><td>冠脉事件 RR = 0.76 (p = 0.003)；扩展他汀适用人群</td></tr>
+      <tr><td>LIPID</td><td>1998</td><td>9,014</td><td>冠心病或不稳定心绞痛</td><td>冠脉死亡 RR = 0.76 (p < 0.001)；确认广泛冠心病人群获益</td></tr>
+    </table>
+    <p><strong>Meta 分析价值</strong>：CTT Collaboration 将这些试验与后来的大型他汀试验（HPS、ASCOT-LLA、JUPITER 等）合并，使用个体患者数据，得出了"LDL-C 每降低 1 mmol/L，MACE 减少约 22%"的经典结论。这是心血管 Meta 分析影响临床实践的最佳范例。</p>
+    <div class="warn">引用经典试验时注意：部分早期试验（如 4S）报告的是 RR 而非 HR。Meta 分析中不应将 RR 和 HR 混合合并。如果所有试验都可以获得 HR 数据，统一使用 HR；如果部分试验仅有 RR，需在方法中说明并在敏感性分析中评估影响。</div>
+  </div>
+
+  <div class="cta">
+    <h2>开始你的心血管 Meta 分析</h2>
+    <p>MetaReview 支持 HR、OR、RR、MD 等全部效应量，从数据输入到森林图只需 5 分钟。免费、无需安装、无需编程。</p>
+    <a href="/">打开 MetaReview</a>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:18px;color:#1e40af;margin:0 0 8px">获取更新通知</h3>
+    <p style="font-size:14px;color:#64748b;margin:0 0 16px">留下邮箱，第一时间获取新功能通知和 Meta 分析技巧。</p>
+    <form id="email-form" style="display:flex;gap:8px;max-width:400px;margin:0 auto">
+      <input id="email-input" type="email" placeholder="输入邮箱地址" required style="flex:1;padding:10px 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;outline:none;">
+      <button type="submit" style="background:#1e40af;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;white-space:nowrap;">订阅</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:8px 12px;border-radius:6px;font-size:14px;"></div>
+    <p style="font-size:12px;color:#94a3b8;margin:8px 0 0">我们不会发送垃圾邮件，随时可退订。</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='提交中...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-cardiovascular',lang:'zh'})})
+    .then(r=>r.json()).then(d=>{msg.style.display='block';if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'你已经订阅过了！':'订阅成功！我们会在有新功能时通知你。';document.getElementById('email-form').style.display='none';}else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='请输入有效的邮箱地址。';btn.textContent='订阅';btn.disabled=false;}}).catch(()=>{msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='提交失败，请稍后重试。';btn.textContent='订阅';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="faq" id="faq">
+    <h2>常见问题</h2>
+
+    <h3>心血管 Meta 分析如何选择效应量？</h3>
+    <p>取决于结局指标类型。时间-事件终点（MACE、全因死亡、心血管死亡）必须使用 Hazard Ratio (HR)，因为 HR 考虑了随访时间和删失数据。二分类终点（心肌梗死发生率、卒中发生率、出血事件）使用 OR 或 RR。连续变量（收缩压降幅、LDL-C 变化值、LVEF 变化）使用 MD（均数差）。不同类型的效应量不能在同一个 Meta 分析中混合合并，需要对每个终点分别进行独立分析。</p>
+
+    <h3>MACE 作为复合终点如何处理？</h3>
+    <p>MACE 是心血管 RCT 最常用的主要终点，但不同试验的定义可能不同。经典三点 MACE 包括心血管死亡、非致死性心肌梗死和非致死性卒中；扩展定义可能加入心衰住院、紧急血运重建。Meta 分析时必须确保纳入研究使用一致的 MACE 定义，不同定义作为敏感性分析分别处理。同时建议对 MACE 各组分分别进行独立 Meta 分析。</p>
+
+    <h3>心血管 Meta 分析的异质性来源有哪些？</h3>
+    <p>主要来源包括：（1）疾病类型差异（ACS vs 稳定冠心病 vs 心衰 vs 房颤）；（2）预防阶段（一级 vs 二级预防）；（3）药物剂量和种类差异；（4）患者基线风险（糖尿病比例、LDL-C 水平、肾功能）；（5）随访时间差异；（6）终点定义差异（MACE 组成不同）；（7）试验年代和背景治疗水平差异。I&sup2; 在 30-60% 的范围在心血管 Meta 分析中很常见。</p>
+
+    <h3>如何处理不同随访时间的研究？</h3>
+    <p>对时间-事件终点使用 HR 是最佳选择，因为 HR 本身已考虑了随访时间差异。如果使用 OR/RR，应在亚组分析中按随访时间分层。还可以进行 Meta-regression，以随访时间为协变量检验其影响。在敏感性分析中排除随访时间极端值的研究也是常用方法。</p>
+
+    <h3>心血管 Meta 分析需要多少篇文献？</h3>
+    <p>没有硬性的最低数量要求，但有实际考量：至少需要 2 篇才能合并，漏斗图需要 10 篇以上，亚组分析每组理想 5 篇以上。心血管领域的 mega-trial 通常样本量很大，即使只有 3-5 篇文献，合并样本量也可能超过万例。因此总样本量和事件数比文献篇数更重要。</p>
+
+    <h3>降压药 Meta 分析有什么特殊考虑？</h3>
+    <p>降压药 Meta 分析有独特挑战：（1）需区分血压依赖效应和血压独立效应；（2）药物类别多样（ACEI、ARB、CCB、利尿剂、beta 受体阻滞剂），类间和类内均有差异；（3）联合用药问题难以分离单一药物效果；（4）背景治疗随时间改善导致新试验中两组差距缩小；（5）需同时关注血压降幅（MD）和心血管事件（HR）；（6）J 型曲线假说要求关注不同基线血压亚组的结果。</p>
+
+    <h3>MetaReview 能做心血管相关的 Meta 分析吗？</h3>
+    <p>完全可以。MetaReview 支持心血管 Meta 分析所需的全部功能：HR（MACE、死亡等时间-事件终点）、OR/RR（MI 发生率、出血事件等二分类终点）、MD（血压降幅、LDL-C 变化等连续变量）。提供固定效应和随机效应模型，自动生成森林图和漏斗图，支持亚组分析和敏感性分析。免费使用，无需安装，无需编程。</p>
+  </div>
+
+  <div class="related">
+    <h2>相关指南</h2>
+    <ul>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤：从研究问题到发表的全流程指南</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图怎么画？在线生成森林图完全指南（免费工具）</a></li>
+      <li><a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 流程图：在线制作模板与填写指南</a></li>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析：HR 的提取、计算与解读指南</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta 分析软件对比：MetaReview vs RevMan vs R vs Stata</a></li>
+      <li><a href="/guides/tumor-meta-analysis">肿瘤 Meta 分析完整指南</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> — 免费在线 Meta 分析工具</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

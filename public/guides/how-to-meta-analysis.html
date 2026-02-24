@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Do a Meta-Analysis: Complete Step-by-Step Tutorial (2026) | MetaReview</title>
+  <meta name="description" content="Learn how to do a meta-analysis from start to finish. This step-by-step tutorial covers PICO, literature search, data extraction, effect sizes, forest plots, heterogeneity, publication bias, and PRISMA reporting. Free online tool included." />
+  <meta name="keywords" content="how to do meta-analysis, meta-analysis tutorial, free meta-analysis tool, meta-analysis step by step, systematic review meta-analysis, forest plot generator free, meta-analysis guide, meta-analysis for beginners, PRISMA meta-analysis" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/how-to-meta-analysis" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/how-to-meta-analysis" />
+  <meta property="og:title" content="How to Do a Meta-Analysis: Complete Step-by-Step Tutorial (2026)" />
+  <meta property="og:description" content="A practical 9-step guide to conducting a meta-analysis, from defining your research question to publishing results. Includes free online tool." />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Do a Meta-Analysis: Complete Step-by-Step Tutorial",
+    "description": "A comprehensive 9-step tutorial on conducting a meta-analysis, covering research question formulation, literature search, study selection, data extraction, effect size calculation, statistical analysis, publication bias assessment, sensitivity analysis, and PRISMA reporting.",
+    "totalTime": "PT45M",
+    "tool": {
+      "@type": "HowToTool",
+      "name": "MetaReview Free Online Meta-Analysis Tool"
+    },
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "Define Your Research Question Using the PICO Framework", "text": "Use the PICO framework (Population, Intervention, Comparator, Outcome) to formulate a focused, answerable research question. A well-defined PICO question determines your search strategy, inclusion criteria, and effect size choice."},
+      {"@type": "HowToStep", "position": 2, "name": "Develop a Comprehensive Literature Search Strategy", "text": "Search at least three databases (PubMed, Embase, Cochrane Library) using MeSH terms and free-text keywords combined with Boolean operators (AND, OR, NOT). Document every search string for reproducibility."},
+      {"@type": "HowToStep", "position": 3, "name": "Screen and Select Studies", "text": "Apply predefined inclusion and exclusion criteria in two rounds: title/abstract screening followed by full-text review. Use two independent reviewers and calculate Cohen's kappa for inter-rater agreement. Follow PRISMA 2020 flow diagram."},
+      {"@type": "HowToStep", "position": 4, "name": "Extract Data from Included Studies", "text": "Design a standardized data extraction form to collect study characteristics, effect size data (events/totals for binary; means/SDs/sample sizes for continuous), and quality assessment information. Use double extraction to minimize errors."},
+      {"@type": "HowToStep", "position": 5, "name": "Choose the Right Effect Size Measure", "text": "Select the appropriate effect size: Odds Ratio (OR) or Risk Ratio (RR) for binary outcomes, Mean Difference (MD) or Standardized Mean Difference (SMD) for continuous outcomes, or Hazard Ratio (HR) for time-to-event data."},
+      {"@type": "HowToStep", "position": 6, "name": "Run the Statistical Analysis", "text": "Choose between fixed-effect and random-effects models. Calculate the pooled effect size with 95% confidence interval. Assess heterogeneity using I-squared, Cochran's Q test, and tau-squared. Generate a forest plot to visualize results."},
+      {"@type": "HowToStep", "position": 7, "name": "Assess Publication Bias", "text": "Create a funnel plot to visually inspect asymmetry. Use Egger's regression test or Begg's rank correlation test for quantitative assessment. Apply trim-and-fill method if bias is detected."},
+      {"@type": "HowToStep", "position": 8, "name": "Perform Sensitivity Analysis", "text": "Conduct leave-one-out analysis to check if any single study disproportionately influences the pooled result. Perform cumulative meta-analysis and influence diagnostics to verify robustness."},
+      {"@type": "HowToStep", "position": 9, "name": "Report Results Following PRISMA 2020 Guidelines", "text": "Write up your methods and results following the PRISMA 2020 checklist. Report the search process, study characteristics, pooled effect sizes with confidence intervals, heterogeneity statistics, subgroup analyses, and publication bias assessment."}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the difference between a systematic review and a meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A systematic review is the overall process of systematically searching, screening, and critically appraising all relevant studies on a topic. A meta-analysis is the statistical component that quantitatively combines the results of multiple studies into a single pooled estimate. You can conduct a systematic review without a meta-analysis (narrative synthesis), but a meta-analysis should always be conducted within the framework of a systematic review."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many studies do I need for a meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Technically, you can perform a meta-analysis with as few as 2 studies. However, most methodologists recommend at least 5 studies for meaningful heterogeneity assessment, and 10 or more studies for reliable publication bias testing (e.g., funnel plot, Egger's test). With fewer than 5 studies, the pooled estimate may be unstable and reviewers may question the value of statistical pooling."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What software can I use for meta-analysis for free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MetaReview is a free, browser-based meta-analysis tool that requires no installation or coding. It supports OR, RR, MD, and SMD effect sizes, fixed and random-effects models, forest plots, funnel plots, subgroup analysis, and sensitivity analysis. Other free options include R packages (meta, metafor) which require programming knowledge. RevMan is free for Cochrane authors but requires installation and a Cochrane account."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I interpret a forest plot?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "In a forest plot, each horizontal line represents one study. The square on the line is the point estimate (effect size), and the line extends to show the 95% confidence interval. The size of the square reflects the study's weight in the analysis. The diamond at the bottom represents the pooled (combined) effect size. A vertical line of no effect (OR/RR = 1 or MD/SMD = 0) helps determine statistical significance: if the confidence interval crosses this line, the result is not statistically significant."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does I-squared heterogeneity mean?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "I-squared (I²) quantifies the percentage of total variation across studies that is due to true heterogeneity rather than chance. Interpretation: I² = 0-25% indicates low heterogeneity, 25-50% moderate, 50-75% substantial, and above 75% considerable heterogeneity. High I² values suggest the studies are measuring different underlying effects, which may require subgroup analysis or meta-regression to investigate sources of heterogeneity."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I do a meta-analysis without knowing statistics or coding?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Tools like MetaReview are designed specifically for researchers without programming or advanced statistics backgrounds. You enter your data (events/totals or means/SDs/sample sizes), choose your effect size and model, and the tool handles all calculations, generates forest plots, funnel plots, heterogeneity statistics, and even an auto-generated results paragraph. Understanding the concepts is still important, but the computational burden is eliminated."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long does it take to complete a meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A full meta-analysis typically takes 3 to 12 months from protocol registration to manuscript submission. The most time-consuming phases are literature searching (2-4 weeks), screening (2-8 weeks depending on volume), and data extraction (2-6 weeks). The statistical analysis itself can take as little as one day using tools like MetaReview. Writing the manuscript usually takes 2-4 weeks. Timelines vary widely based on topic breadth, team size, and reviewer feedback."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the PRISMA checklist?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "PRISMA (Preferred Reporting Items for Systematic Reviews and Meta-Analyses) is a 27-item checklist and flow diagram that guides transparent reporting of systematic reviews. The PRISMA 2020 update includes items for title, abstract, introduction, methods (eligibility, search strategy, selection, data extraction, effect measures, synthesis), results (study selection, characteristics, risk of bias, synthesis results), and discussion. Most journals require PRISMA compliance for systematic review and meta-analysis submissions."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .toc { background: white; border-radius: 12px; padding: 24px 32px; margin-bottom: 40px; border: 1px solid #e5e7eb; }
+    .toc h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .toc a:hover { text-decoration: underline; }
+    .step { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .step-number { display: inline-block; background: #1e40af; color: white; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-weight: 700; font-size: 14px; margin-right: 12px; }
+    .step h2 { display: inline; font-size: 20px; color: #111827; vertical-align: middle; }
+    .step h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .step p, .step li { font-size: 15px; color: #4b5563; }
+    .step ul, .step ol { padding-left: 20px; margin: 8px 0; }
+    .step li { margin-bottom: 4px; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    .faq { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .faq h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .faq h3 { font-size: 16px; color: #1e40af; margin: 16px 0 8px; }
+    .faq p { font-size: 15px; color: #4b5563; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .step, .toc, .faq, .related, .section { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">Open Tool</a>
+      <a href="/guides/meta-analysis-steps">Guides</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>How to Do a Meta-Analysis: Complete Step-by-Step Tutorial</h1>
+  <p>A practical 9-step guide to conducting a meta-analysis, from defining your research question to publishing your results. No coding required.</p>
+</div>
+
+<div class="container">
+
+  <!-- What is Meta-Analysis -->
+  <div class="section" id="intro">
+    <h2>What Is a Meta-Analysis?</h2>
+    <p>A <strong>meta-analysis</strong> is a statistical method that combines the quantitative results of multiple independent studies addressing the same research question into a single pooled estimate. It sits at the top of the <strong>evidence hierarchy</strong> in evidence-based medicine, above individual randomized controlled trials (RCTs), cohort studies, and expert opinions.</p>
+    <p style="margin-top:12px">Meta-analysis is not the same as a systematic review. A <strong>systematic review</strong> is the broader research process of identifying, evaluating, and synthesizing all relevant evidence on a topic. A <strong>meta-analysis</strong> is the statistical technique used within a systematic review to quantitatively combine results. You can have a systematic review without a meta-analysis (a narrative synthesis), but you should never perform a meta-analysis without a rigorous systematic review underpinning it.</p>
+    <h3>When Should You Do a Meta-Analysis?</h3>
+    <ul>
+      <li>Multiple studies have examined the same question with similar designs and comparable outcome measures</li>
+      <li>Individual studies have small sample sizes or conflicting results, and pooling would increase statistical power</li>
+      <li>You want to estimate a more precise overall effect size across studies</li>
+      <li>You need to explore sources of variation (heterogeneity) between studies through subgroup analysis</li>
+    </ul>
+    <div class="warn"><strong>When NOT to do a meta-analysis:</strong> If the included studies measure fundamentally different constructs (comparing apples to oranges), use different outcome definitions that cannot be reconciled, or show extreme heterogeneity (I&sup2; &gt; 90%) with no identifiable explanation, a narrative synthesis is more appropriate than forcing a numerical pooling.</div>
+    <h3>The Evidence Hierarchy</h3>
+    <table class="data-table">
+      <tr><th>Level</th><th>Evidence Type</th><th>Strength</th></tr>
+      <tr><td>1</td><td>Systematic reviews and meta-analyses of RCTs</td><td>Highest</td></tr>
+      <tr><td>2</td><td>Individual randomized controlled trials</td><td>High</td></tr>
+      <tr><td>3</td><td>Cohort studies</td><td>Moderate</td></tr>
+      <tr><td>4</td><td>Case-control studies</td><td>Moderate-Low</td></tr>
+      <tr><td>5</td><td>Case series / Case reports</td><td>Low</td></tr>
+      <tr><td>6</td><td>Expert opinion / Editorials</td><td>Lowest</td></tr>
+    </table>
+    <div class="tip"><strong>Key takeaway:</strong> A well-conducted meta-analysis provides the highest level of evidence because it synthesizes all available data, increases statistical power, improves precision of effect estimates, and can resolve conflicting findings across individual studies.</div>
+  </div>
+
+  <!-- Table of Contents -->
+  <div class="toc">
+    <h2>Table of Contents: 9 Steps to a Complete Meta-Analysis</h2>
+    <ol>
+      <li><a href="#step1">Define Your Research Question (PICO Framework)</a></li>
+      <li><a href="#step2">Develop a Literature Search Strategy</a></li>
+      <li><a href="#step3">Study Selection and Screening</a></li>
+      <li><a href="#step4">Data Extraction</a></li>
+      <li><a href="#step5">Choose the Right Effect Size</a></li>
+      <li><a href="#step6">Statistical Analysis (Models, Heterogeneity, Forest Plots)</a></li>
+      <li><a href="#step7">Assess Publication Bias</a></li>
+      <li><a href="#step8">Sensitivity Analysis</a></li>
+      <li><a href="#step9">Report Results Following PRISMA 2020</a></li>
+      <li><a href="#tools">Free Tools for Meta-Analysis</a></li>
+      <li><a href="#mistakes">Common Mistakes to Avoid</a></li>
+      <li><a href="#faq">Frequently Asked Questions</a></li>
+    </ol>
+  </div>
+
+  <!-- Step 1: PICO -->
+  <div class="step" id="step1">
+    <span class="step-number">1</span>
+    <h2>Define Your Research Question (PICO Framework)</h2>
+    <p style="margin-top:16px">Every meta-analysis begins with a clearly formulated research question. The <strong>PICO framework</strong> is the gold standard for structuring clinical questions:</p>
+    <table class="data-table">
+      <tr><th>Element</th><th>Meaning</th><th>Example</th></tr>
+      <tr><td><strong>P</strong> (Population)</td><td>Who are the patients or participants?</td><td>Adults with type 2 diabetes mellitus</td></tr>
+      <tr><td><strong>I</strong> (Intervention)</td><td>What treatment or exposure is being studied?</td><td>GLP-1 receptor agonists (semaglutide, liraglutide)</td></tr>
+      <tr><td><strong>C</strong> (Comparator)</td><td>What is the control or alternative?</td><td>Placebo or standard care</td></tr>
+      <tr><td><strong>O</strong> (Outcome)</td><td>What outcome are you measuring?</td><td>Change in HbA1c, body weight, adverse events</td></tr>
+    </table>
+    <div class="tip"><strong>Example PICO question:</strong> "In adults with type 2 diabetes (P), does treatment with GLP-1 receptor agonists (I) compared to placebo (C) lead to greater reduction in HbA1c (O)?"</div>
+    <h3>Setting Inclusion and Exclusion Criteria</h3>
+    <p>Your PICO question directly determines your eligibility criteria. Before searching the literature, define these precisely:</p>
+    <ul>
+      <li><strong>Study design:</strong> RCTs only? Include observational studies?</li>
+      <li><strong>Population specifics:</strong> Age range, disease severity, comorbidities</li>
+      <li><strong>Intervention details:</strong> Dose range, duration, route of administration</li>
+      <li><strong>Outcome measurement:</strong> How was the outcome measured? Minimum follow-up duration?</li>
+      <li><strong>Language:</strong> English only, or all languages?</li>
+      <li><strong>Publication date:</strong> Any time restrictions?</li>
+    </ul>
+    <h3>Register Your Protocol</h3>
+    <p>Before starting your search, register your protocol on <strong>PROSPERO</strong> (International Prospective Register of Systematic Reviews). Registration demonstrates that your review was planned before results were known, reducing the risk of outcome reporting bias. PROSPERO registration is free and increasingly required by journals.</p>
+    <div class="warn"><strong>Important:</strong> PROSPERO registration must be completed before data extraction begins. If you register after analysis, it provides no protection against reporting bias, and reviewers will note this.</div>
+  </div>
+
+  <!-- Step 2: Literature Search -->
+  <div class="step" id="step2">
+    <span class="step-number">2</span>
+    <h2>Develop a Literature Search Strategy</h2>
+    <p style="margin-top:16px">A comprehensive, reproducible search strategy is the backbone of any meta-analysis. The goal is <strong>high sensitivity</strong> (recall) -- it is better to retrieve too many irrelevant articles than to miss relevant ones.</p>
+    <h3>Which Databases to Search</h3>
+    <p>At minimum, search these three databases:</p>
+    <ul>
+      <li><strong>PubMed / MEDLINE</strong> -- The largest biomedical literature database, indexing over 36 million citations. Essential for any health-related meta-analysis.</li>
+      <li><strong>Embase</strong> -- Stronger coverage of pharmacology, toxicology, and European literature. Approximately 40% of Embase content is unique (not in PubMed).</li>
+      <li><strong>Cochrane Central Register of Controlled Trials (CENTRAL)</strong> -- The most comprehensive source of reports of RCTs.</li>
+    </ul>
+    <p>Depending on your topic, also consider: Web of Science, Scopus, PsycINFO (psychology), CINAHL (nursing), ClinicalTrials.gov (unpublished trial data), and conference proceedings.</p>
+    <h3>Building Your Search String</h3>
+    <p>Translate each PICO element into search terms. Combine synonyms with <strong>OR</strong> and PICO elements with <strong>AND</strong>:</p>
+    <div class="tip">
+      <strong>Example PubMed search:</strong><br/>
+      <code>("diabetes mellitus, type 2"[MeSH] OR "type 2 diabetes" OR "T2DM") AND ("GLP-1 receptor agonists"[MeSH] OR "glucagon-like peptide-1" OR "semaglutide" OR "liraglutide" OR "dulaglutide") AND ("randomized controlled trial"[pt] OR "controlled clinical trial"[pt])</code>
+    </div>
+    <h3>Search Tips for Better Results</h3>
+    <ul>
+      <li>Use both <strong>MeSH terms</strong> (controlled vocabulary) and <strong>free-text keywords</strong> to maximize recall</li>
+      <li>Include truncation (e.g., diabet*) to capture word variations</li>
+      <li>Do NOT use overly restrictive outcome terms in your search -- these cause missed studies</li>
+      <li>Search reference lists of included studies and relevant reviews (backward citation searching)</li>
+      <li>Search citing articles of key studies (forward citation searching via Google Scholar or Scopus)</li>
+    </ul>
+    <h3>Document Everything</h3>
+    <p>Record the exact search string, database, date of search, and number of results for each database. PRISMA 2020 requires this level of transparency, and reviewers will ask for it.</p>
+    <div class="tip"><strong>MetaReview tip:</strong> MetaReview has a built-in PubMed search that lets you search by keywords, date range, article type, and language directly within the tool. You can send search results straight to your screening pipeline.</div>
+  </div>
+
+  <!-- Step 3: Study Selection -->
+  <div class="step" id="step3">
+    <span class="step-number">3</span>
+    <h2>Study Selection and Screening</h2>
+    <p style="margin-top:16px">Following the <strong>PRISMA 2020 flow diagram</strong>, study selection proceeds in distinct phases:</p>
+    <h3>Phase 1: Deduplication</h3>
+    <p>After searching multiple databases, you will have duplicate records. Use reference management software (Zotero, EndNote, or MetaReview's built-in deduplication) to identify and remove duplicates. Typically, 20-40% of combined results are duplicates.</p>
+    <h3>Phase 2: Title and Abstract Screening</h3>
+    <p>Rapidly screen each unique record based on its title and abstract against your inclusion criteria. At this stage, be <strong>inclusive</strong> -- if in doubt, keep it for full-text review. Two independent reviewers should screen all records separately.</p>
+    <h3>Phase 3: Full-Text Review</h3>
+    <p>Retrieve the full text of all potentially eligible articles. Read each one carefully against your complete inclusion/exclusion criteria. Record the specific reason for excluding each article (PRISMA 2020 requirement).</p>
+    <h3>Inter-Rater Agreement</h3>
+    <p>Calculate <strong>Cohen's kappa</strong> coefficient to quantify agreement between the two reviewers:</p>
+    <table class="data-table">
+      <tr><th>Kappa Value</th><th>Level of Agreement</th></tr>
+      <tr><td>&lt; 0.20</td><td>Poor</td></tr>
+      <tr><td>0.21 - 0.40</td><td>Fair</td></tr>
+      <tr><td>0.41 - 0.60</td><td>Moderate</td></tr>
+      <tr><td>0.61 - 0.80</td><td>Substantial</td></tr>
+      <tr><td>0.81 - 1.00</td><td>Almost perfect</td></tr>
+    </table>
+    <p>Disagreements should be resolved through discussion or by consulting a third reviewer. Aim for kappa &ge; 0.80.</p>
+    <div class="tip"><strong>MetaReview tip:</strong> MetaReview offers AI-powered screening using PICO keyword matching and large language model (LLM) deep screening. It can screen hundreds of abstracts in minutes, providing inclusion/exclusion recommendations with confidence scores -- dramatically reducing screening time while maintaining quality.</div>
+  </div>
+
+  <!-- Step 4: Data Extraction -->
+  <div class="step" id="step4">
+    <span class="step-number">4</span>
+    <h2>Data Extraction</h2>
+    <p style="margin-top:16px">Data extraction is where you systematically pull the quantitative and qualitative information needed from each included study. Accuracy here is critical -- errors in data extraction propagate directly into your meta-analysis results.</p>
+    <h3>What to Extract</h3>
+    <p>Your extraction form should capture:</p>
+    <ul>
+      <li><strong>Study identifiers:</strong> First author, publication year, journal, country</li>
+      <li><strong>Study characteristics:</strong> Study design (RCT, cohort, case-control), single/multi-center, funding source</li>
+      <li><strong>Population:</strong> Sample size, age (mean/median), sex distribution, disease severity, inclusion criteria used</li>
+      <li><strong>Intervention details:</strong> Drug name, dose, route, duration, comparison treatment details</li>
+      <li><strong>Outcome data:</strong> The numerical results needed to calculate effect sizes (see table below)</li>
+      <li><strong>Quality assessment data:</strong> Information needed for risk of bias evaluation</li>
+    </ul>
+    <table class="data-table">
+      <tr><th>Outcome Type</th><th>Data to Extract</th><th>Example</th></tr>
+      <tr><td>Binary (dichotomous)</td><td>Events and total N, for both intervention and control groups</td><td>Deaths: 15/200 (treatment) vs 30/198 (control)</td></tr>
+      <tr><td>Continuous</td><td>Mean, standard deviation (SD), and N for both groups</td><td>HbA1c change: -1.2 (SD 0.8, n=150) vs -0.4 (SD 0.7, n=148)</td></tr>
+      <tr><td>Time-to-event (survival)</td><td>Hazard ratio (HR), 95% CI, or data to reconstruct them</td><td>HR = 0.72 (95% CI: 0.58-0.89)</td></tr>
+    </table>
+    <h3>Double Extraction</h3>
+    <p>Two reviewers should independently extract data from every study. After extraction, compare the results and resolve any discrepancies. This catches transcription errors, misread tables, and misinterpreted outcome definitions. Studies have shown that single-reviewer extraction has an error rate of 10-30%.</p>
+    <h3>Handling Missing Data</h3>
+    <ul>
+      <li>Contact the original study authors (allow 2-4 weeks for a response)</li>
+      <li>Calculate SD from confidence intervals, p-values, or interquartile ranges using established formulas (see Cochrane Handbook Chapter 6)</li>
+      <li>If SE is reported instead of SD: SD = SE &times; &radic;n</li>
+      <li>If only median and IQR are reported: use the Wan et al. (2014) method to estimate mean and SD</li>
+    </ul>
+    <div class="warn"><strong>Warning:</strong> Never fabricate or impute data without documenting the method used. If critical effect size data is truly unavailable and cannot be calculated, the study may need to be excluded from the quantitative synthesis (but should still be described narratively).</div>
+    <div class="tip"><strong>MetaReview tip:</strong> MetaReview's PDF data extraction feature can automatically extract effect size data (events, means, SDs, sample sizes) from uploaded research papers, reducing manual entry and potential transcription errors.</div>
+  </div>
+
+  <!-- Step 5: Effect Sizes -->
+  <div class="step" id="step5">
+    <span class="step-number">5</span>
+    <h2>Choose the Right Effect Size</h2>
+    <p style="margin-top:16px">The effect size measure you choose determines how results are combined and interpreted. Choosing the wrong effect size is one of the most common mistakes in meta-analysis. Here is a decision framework:</p>
+    <h3>Decision Tree</h3>
+    <p><strong>Is your outcome binary (yes/no) or continuous (numerical)?</strong></p>
+    <ul>
+      <li><strong>Binary outcome</strong> (e.g., dead/alive, cured/not cured, event/no event):
+        <ul>
+          <li>Cohort study or RCT &rarr; <strong>Risk Ratio (RR)</strong></li>
+          <li>Case-control study &rarr; <strong>Odds Ratio (OR)</strong></li>
+          <li>Rare events (&lt;10% incidence) &rarr; OR and RR are approximately equal</li>
+        </ul>
+      </li>
+      <li><strong>Continuous outcome</strong> (e.g., blood pressure, pain score, weight):
+        <ul>
+          <li>All studies use the same scale/unit &rarr; <strong>Mean Difference (MD)</strong></li>
+          <li>Studies use different scales measuring the same concept &rarr; <strong>Standardized Mean Difference (SMD)</strong></li>
+        </ul>
+      </li>
+      <li><strong>Time-to-event outcome</strong> (e.g., overall survival, progression-free survival):
+        <ul>
+          <li>Use <strong>Hazard Ratio (HR)</strong></li>
+        </ul>
+      </li>
+    </ul>
+    <h3>Effect Size Comparison Table</h3>
+    <table class="data-table">
+      <tr><th>Effect Size</th><th>Data Type</th><th>When to Use</th><th>Null Value</th><th>Interpretation Example</th></tr>
+      <tr><td><strong>OR</strong> (Odds Ratio)</td><td>Binary</td><td>Case-control studies; logistic regression outputs</td><td>1.0</td><td>OR = 2.5: The odds of the event are 2.5 times higher in the intervention group</td></tr>
+      <tr><td><strong>RR</strong> (Risk Ratio)</td><td>Binary</td><td>RCTs and cohort studies (preferred over OR)</td><td>1.0</td><td>RR = 0.70: 30% relative risk reduction in the intervention group</td></tr>
+      <tr><td><strong>MD</strong> (Mean Difference)</td><td>Continuous</td><td>Same outcome scale across all studies</td><td>0</td><td>MD = -5.3 mmHg: Blood pressure is 5.3 mmHg lower in the intervention group</td></tr>
+      <tr><td><strong>SMD</strong> (Standardized Mean Difference)</td><td>Continuous</td><td>Different scales measuring the same construct</td><td>0</td><td>SMD = -0.50: A medium effect favoring the intervention (Cohen's conventions)</td></tr>
+      <tr><td><strong>HR</strong> (Hazard Ratio)</td><td>Time-to-event</td><td>Survival analysis, Cox regression data</td><td>1.0</td><td>HR = 0.65: 35% reduction in the instantaneous hazard of the event</td></tr>
+    </table>
+    <div class="warn"><strong>Common pitfall:</strong> Do not mix different effect size types in the same meta-analysis. If some studies report OR and others report RR, you must either convert them to a common metric (possible under certain conditions) or choose one type and recalculate from raw data where available.</div>
+    <p style="margin-top:12px">For a deeper dive into effect size selection, including formulas and conversion methods, see our dedicated guide: <a href="/guides/effect-size-selection" style="color:#1e40af;">Choosing Effect Sizes: OR, RR, MD, SMD Guide</a>.</p>
+  </div>
+
+  <!-- Step 6: Statistical Analysis -->
+  <div class="step" id="step6">
+    <span class="step-number">6</span>
+    <h2>Statistical Analysis</h2>
+    <p style="margin-top:16px">This is the computational core of your meta-analysis. Three key decisions must be made: the analytical model, heterogeneity assessment, and how to visualize results.</p>
+    <h3>Fixed-Effect vs. Random-Effects Model</h3>
+    <table class="data-table">
+      <tr><th>Feature</th><th>Fixed-Effect Model</th><th>Random-Effects Model</th></tr>
+      <tr><td>Assumption</td><td>All studies estimate the same single true effect</td><td>Each study estimates its own true effect; these effects follow a distribution</td></tr>
+      <tr><td>Source of variation</td><td>Within-study sampling error only</td><td>Within-study error + between-study variance (&tau;&sup2;)</td></tr>
+      <tr><td>Weighting</td><td>Based on study precision (inverse variance)</td><td>Adjusted weights that account for between-study heterogeneity</td></tr>
+      <tr><td>Confidence intervals</td><td>Narrower (can be falsely precise if heterogeneity exists)</td><td>Wider (more conservative, typically more realistic)</td></tr>
+      <tr><td>When to use</td><td>Studies are clinically and methodologically homogeneous; I&sup2; &lt; 25%</td><td>Studies differ in populations, settings, or methods (most real-world scenarios)</td></tr>
+    </table>
+    <div class="tip"><strong>Practical advice:</strong> The random-effects model (DerSimonian-Laird method) is the default choice for most meta-analyses because studies in practice almost always differ in their populations, settings, and methods. Use the fixed-effect model only when you have strong reason to believe all studies are estimating exactly the same underlying effect.</div>
+    <h3>Understanding Heterogeneity</h3>
+    <p>Heterogeneity refers to variability in study results beyond what is expected from sampling error alone. Three key statistics quantify it:</p>
+    <table class="data-table">
+      <tr><th>Statistic</th><th>What It Measures</th><th>Interpretation</th></tr>
+      <tr><td><strong>I&sup2;</strong></td><td>Percentage of total variability due to true heterogeneity</td><td>0-25% low, 25-50% moderate, 50-75% substantial, &gt;75% considerable</td></tr>
+      <tr><td><strong>Cochran's Q</strong></td><td>Whether observed differences in results are compatible with chance alone</td><td>p &lt; 0.10 suggests significant heterogeneity (uses a liberal threshold because the test has low power)</td></tr>
+      <tr><td><strong>&tau;&sup2;</strong> (tau-squared)</td><td>Absolute between-study variance</td><td>Expressed in the same units as the effect size squared; larger values mean more heterogeneity</td></tr>
+    </table>
+    <h3>Reading a Forest Plot</h3>
+    <p>The forest plot is the signature visualization of a meta-analysis. Here is how to read one:</p>
+    <ul>
+      <li><strong>Each row</strong> represents one study, labeled with author and year</li>
+      <li><strong>The square</strong> on each row is the point estimate (effect size) for that study</li>
+      <li><strong>The horizontal line</strong> through the square is the 95% confidence interval</li>
+      <li><strong>Square size</strong> reflects the study's weight in the pooled analysis (larger = more weight)</li>
+      <li><strong>The diamond</strong> at the bottom is the pooled effect estimate; its width shows the 95% CI</li>
+      <li><strong>The vertical dashed line</strong> is the line of no effect (1.0 for OR/RR/HR, 0 for MD/SMD)</li>
+      <li>If a study's CI crosses the line of no effect, that individual study's result is not statistically significant</li>
+    </ul>
+    <h3>Subgroup Analysis</h3>
+    <p>When heterogeneity is substantial (I&sup2; &gt; 50%), subgroup analysis can help identify sources. Divide studies into groups based on <strong>pre-specified</strong> characteristics:</p>
+    <ul>
+      <li>Drug dosage (low vs. high)</li>
+      <li>Study design (RCT vs. observational)</li>
+      <li>Geographic region (Asia vs. Europe vs. North America)</li>
+      <li>Risk of bias (low vs. high)</li>
+      <li>Follow-up duration (short-term vs. long-term)</li>
+    </ul>
+    <p>Use the Q-between test (interaction test) to determine if the effect truly differs between subgroups (p &lt; 0.05).</p>
+    <div class="warn"><strong>Caution:</strong> Subgroup analyses should be <strong>pre-specified in your protocol</strong>, not generated after seeing the data. Post-hoc subgroup analyses are exploratory and should be labeled as such. Too many subgroup analyses increase the risk of false-positive findings.</div>
+    <div class="tip"><strong>MetaReview tip:</strong> MetaReview supports all four effect sizes (OR, RR, MD, SMD), both fixed-effect and random-effects models, and automatically calculates I&sup2;, Q test, and &tau;&sup2;. It generates publication-quality forest plots, subgroup forest plots, and funnel plots -- all without writing a single line of code.</div>
+  </div>
+
+  <!-- Step 7: Publication Bias -->
+  <div class="step" id="step7">
+    <span class="step-number">7</span>
+    <h2>Assess Publication Bias</h2>
+    <p style="margin-top:16px"><strong>Publication bias</strong> occurs because studies with positive or statistically significant results are more likely to be published than those with null or negative findings. This means the available literature may overestimate the true effect, and your meta-analysis could inherit that bias.</p>
+    <h3>Funnel Plot</h3>
+    <p>A funnel plot graphs each study's effect size (x-axis) against its precision, typically standard error (y-axis, inverted). In the absence of publication bias:</p>
+    <ul>
+      <li>Studies scatter <strong>symmetrically</strong> around the pooled effect estimate</li>
+      <li>Small studies (low precision, bottom of plot) show greater spread</li>
+      <li>Large studies (high precision, top of plot) cluster tightly near the pooled estimate</li>
+    </ul>
+    <p><strong>Asymmetry</strong> in the funnel plot -- typically a gap in the bottom-right or bottom-left corner -- suggests that small studies with unfavorable results may be missing.</p>
+    <h3>Statistical Tests for Publication Bias</h3>
+    <table class="data-table">
+      <tr><th>Test</th><th>Method</th><th>When to Use</th><th>Significance Threshold</th></tr>
+      <tr><td><strong>Egger's test</strong></td><td>Linear regression of effect size on standard error</td><td>Continuous outcomes (MD, SMD); works well with &ge;10 studies</td><td>p &lt; 0.10</td></tr>
+      <tr><td><strong>Begg's test</strong></td><td>Rank correlation between effect size and variance</td><td>Binary outcomes (OR, RR); less powerful than Egger's</td><td>p &lt; 0.10</td></tr>
+      <tr><td><strong>Peter's test</strong></td><td>Regression of effect size on inverse of total sample size</td><td>Binary outcomes; less affected by mathematical coupling than Egger's</td><td>p &lt; 0.10</td></tr>
+    </table>
+    <h3>Trim-and-Fill Method</h3>
+    <p>If publication bias is detected, the <strong>trim-and-fill</strong> method provides an adjusted estimate. It works by:</p>
+    <ol>
+      <li>Identifying asymmetrically unmatched studies on the funnel plot</li>
+      <li>"Trimming" them and recalculating the pooled effect</li>
+      <li>"Filling" in the hypothetically missing studies on the opposite side</li>
+      <li>Recalculating the pooled estimate with the augmented dataset</li>
+    </ol>
+    <p>The adjusted estimate shows what the pooled effect might be if publication bias were absent. A large shift from the original estimate is concerning.</p>
+    <div class="warn"><strong>Limitation:</strong> Funnel plot asymmetry can be caused by factors other than publication bias, including genuine heterogeneity, methodological differences between small and large studies, or chance. Always interpret publication bias tests alongside clinical and methodological context. Formal tests require at least 10 studies to have adequate power.</div>
+  </div>
+
+  <!-- Step 8: Sensitivity Analysis -->
+  <div class="step" id="step8">
+    <span class="step-number">8</span>
+    <h2>Sensitivity Analysis</h2>
+    <p style="margin-top:16px">Sensitivity analysis tests the <strong>robustness</strong> of your meta-analysis results. The question it answers: "Would the conclusions change if we made different analytical decisions?"</p>
+    <h3>Leave-One-Out Analysis</h3>
+    <p>The most common sensitivity analysis method. Procedure:</p>
+    <ol>
+      <li>Remove one study from the meta-analysis</li>
+      <li>Recalculate the pooled effect with the remaining studies</li>
+      <li>Repeat for every study</li>
+      <li>Compare all results to the original pooled estimate</li>
+    </ol>
+    <p>If removing any single study causes the pooled effect to change direction (e.g., from significant to non-significant, or from favoring intervention to favoring control), that study is <strong>influential</strong> and must be discussed explicitly.</p>
+    <h3>Other Sensitivity Analyses</h3>
+    <ul>
+      <li><strong>Excluding high risk-of-bias studies:</strong> Rerun the analysis with only low/moderate risk-of-bias studies. If results are consistent, conclusions are more robust.</li>
+      <li><strong>Model comparison:</strong> Compare fixed-effect and random-effects results. If they give substantially different conclusions, heterogeneity is driving the results.</li>
+      <li><strong>Cumulative meta-analysis:</strong> Add studies chronologically and observe how the pooled estimate evolves over time. Useful for identifying when the evidence stabilized.</li>
+      <li><strong>Influence diagnostics:</strong> Quantify each study's influence on the pooled estimate using statistics like Cook's distance, DFBETAS, or hat values (available in R's metafor package).</li>
+      <li><strong>Excluding outliers:</strong> If any study has a point estimate far from the pooled value (e.g., residual z-score &gt; 2), rerun the analysis without it.</li>
+    </ul>
+    <div class="tip"><strong>MetaReview tip:</strong> MetaReview includes built-in leave-one-out sensitivity analysis that automatically highlights any study whose removal causes a directional change in the pooled result -- making it easy to spot influential studies at a glance.</div>
+  </div>
+
+  <!-- Step 9: PRISMA Reporting -->
+  <div class="step" id="step9">
+    <span class="step-number">9</span>
+    <h2>Report Results Following PRISMA 2020</h2>
+    <p style="margin-top:16px">The <strong>PRISMA 2020</strong> (Preferred Reporting Items for Systematic Reviews and Meta-Analyses) statement provides a 27-item checklist for transparent reporting. Most medical journals require PRISMA compliance.</p>
+    <h3>Key Sections of a Meta-Analysis Manuscript</h3>
+    <ol>
+      <li><strong>Introduction:</strong> Rationale, objectives, PICO question</li>
+      <li><strong>Methods:</strong> Protocol registration, eligibility criteria, databases searched, search strategy, screening process, data extraction methods, effect size and model choices, heterogeneity assessment approach, sensitivity and subgroup analyses planned</li>
+      <li><strong>Results:</strong>
+        <ul>
+          <li>PRISMA flow diagram (identification, screening, eligibility, included)</li>
+          <li>Characteristics of included studies (Table 1)</li>
+          <li>Risk of bias assessment</li>
+          <li>Pooled effect size (95% CI), p-value</li>
+          <li>Heterogeneity statistics (I&sup2;, Q, &tau;&sup2;)</li>
+          <li>Forest plot (main analysis)</li>
+          <li>Subgroup analyses with forest plots</li>
+          <li>Sensitivity analysis results</li>
+          <li>Publication bias (funnel plot + Egger's test)</li>
+        </ul>
+      </li>
+      <li><strong>Discussion:</strong> Summary of evidence, comparison with existing literature, strengths and limitations, implications for practice and research</li>
+    </ol>
+    <h3>Writing the Results Paragraph: Template</h3>
+    <p>Here is a standard template for reporting your primary meta-analysis result:</p>
+    <div class="tip">
+      "A total of <em>k</em> studies involving <em>n</em> participants were included in the meta-analysis. Using a random-effects model, [intervention] was associated with a significantly [higher/lower] [outcome] compared to [comparator] (OR/RR/MD = X.XX, 95% CI: X.XX to X.XX, <em>p</em> = X.XXX). Substantial heterogeneity was observed across studies (I&sup2; = XX%, Q = XX.XX, <em>p</em> = X.XXX, &tau;&sup2; = X.XX). Visual inspection of the funnel plot and Egger's regression test (<em>p</em> = X.XX) suggested no significant publication bias."
+    </div>
+    <h3>PRISMA 2020 Checklist Highlights</h3>
+    <table class="data-table">
+      <tr><th>Section</th><th>Key Items to Report</th></tr>
+      <tr><td>Title</td><td>Identify the report as a systematic review, meta-analysis, or both</td></tr>
+      <tr><td>Registration</td><td>Registration number and registry name (e.g., PROSPERO CRD42025xxxxx)</td></tr>
+      <tr><td>Search strategy</td><td>Full search strings for all databases (typically in a supplementary file)</td></tr>
+      <tr><td>Study selection</td><td>PRISMA flow diagram with numbers at each stage</td></tr>
+      <tr><td>Effect measures</td><td>Specify effect measure (OR, RR, MD, SMD, HR) and why it was chosen</td></tr>
+      <tr><td>Synthesis methods</td><td>Model (fixed/random), software used, method for pooling</td></tr>
+      <tr><td>Certainty assessment</td><td>GRADE framework for overall quality of evidence (optional but recommended)</td></tr>
+    </table>
+    <p>For a complete PRISMA 2020 flow diagram guide, see: <a href="/guides/prisma-flow-diagram" style="color:#1e40af;">PRISMA 2020 Flow Diagram Guide</a>.</p>
+    <div class="tip"><strong>MetaReview tip:</strong> MetaReview automatically generates a publication-ready results paragraph in English covering main analysis, subgroup results, and sensitivity analysis conclusions -- saving significant writing time.</div>
+  </div>
+
+  <!-- Free Tools Section -->
+  <div class="section" id="tools">
+    <h2>Free Tools for Meta-Analysis</h2>
+    <p>Choosing the right software can make or break your meta-analysis experience. Here is an honest comparison of the main options available today:</p>
+    <table class="data-table">
+      <tr><th>Feature</th><th>MetaReview</th><th>RevMan (Cochrane)</th><th>R (meta/metafor)</th><th>Stata</th><th>Covidence</th></tr>
+      <tr><td><strong>Price</strong></td><td>Free</td><td>Free (Cochrane authors) / Paid</td><td>Free</td><td>Paid ($$$)</td><td>Paid ($$)</td></tr>
+      <tr><td><strong>Installation</strong></td><td>None (browser-based)</td><td>Desktop download required</td><td>Install R + packages</td><td>Desktop license</td><td>None (browser-based)</td></tr>
+      <tr><td><strong>Coding required</strong></td><td>No</td><td>No</td><td>Yes (R scripts)</td><td>Yes (do-files)</td><td>No</td></tr>
+      <tr><td><strong>Effect sizes</strong></td><td>OR, RR, MD, SMD</td><td>OR, RR, MD, SMD</td><td>All types + custom</td><td>All types + custom</td><td>No statistical analysis</td></tr>
+      <tr><td><strong>Forest plot</strong></td><td>Yes (SVG, publication-quality)</td><td>Yes</td><td>Yes (customizable)</td><td>Yes (customizable)</td><td>No</td></tr>
+      <tr><td><strong>Funnel plot</strong></td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+      <tr><td><strong>Subgroup analysis</strong></td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+      <tr><td><strong>Sensitivity analysis</strong></td><td>Leave-one-out</td><td>Limited</td><td>Full suite</td><td>Full suite</td><td>No</td></tr>
+      <tr><td><strong>Literature search</strong></td><td>Built-in PubMed search</td><td>Cochrane Library</td><td>No</td><td>No</td><td>Import only</td></tr>
+      <tr><td><strong>AI screening</strong></td><td>Yes (LLM-powered)</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+      <tr><td><strong>PDF data extraction</strong></td><td>Yes (AI-powered)</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+      <tr><td><strong>Auto-generated results text</strong></td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+      <tr><td><strong>Best for</strong></td><td>Researchers who want an all-in-one free tool</td><td>Cochrane review authors</td><td>Statisticians who want full control</td><td>Biostatisticians with Stata access</td><td>Screening and collaboration only</td></tr>
+    </table>
+    <div class="tip"><strong>Our recommendation:</strong> If you want to go from research question to forest plot without installing software, writing code, or paying for a license, <strong>MetaReview is the best free option available</strong>. It covers the entire meta-analysis workflow in one browser tab: literature search, AI-powered screening, PDF data extraction, statistical analysis, forest plot generation, and auto-generated results text.</div>
+    <p style="margin-top:12px">For a detailed feature-by-feature comparison, see: <a href="/guides/meta-analysis-software-comparison" style="color:#1e40af;">Meta-Analysis Software Comparison</a>.</p>
+  </div>
+
+  <!-- Common Mistakes -->
+  <div class="section" id="mistakes">
+    <h2>Common Mistakes to Avoid</h2>
+    <p>After reviewing thousands of published meta-analyses and their peer review feedback, these are the most frequent errors that lead to rejection or revision requests:</p>
+    <h3>1. Mixing Incompatible Effect Sizes</h3>
+    <p>Combining OR from one study with RR from another without proper conversion produces meaningless pooled estimates. Always convert to a common metric or recalculate from raw data.</p>
+    <h3>2. Ignoring Heterogeneity</h3>
+    <p>Reporting a pooled effect with I&sup2; = 85% and no attempt to explore or explain the heterogeneity is a red flag for reviewers. High heterogeneity demands subgroup analysis, meta-regression, or a narrative approach.</p>
+    <h3>3. Cherry-Picking Studies</h3>
+    <p>Excluding studies without pre-specified, transparent criteria is scientific misconduct. Every exclusion must be documented with a clear reason. This is why protocol registration on PROSPERO matters.</p>
+    <h3>4. Not Registering Your Protocol</h3>
+    <p>Without prospective registration, reviewers cannot verify that your methods, outcomes, and analyses were not changed after seeing the results. PROSPERO registration takes 30 minutes and prevents months of reviewer questions.</p>
+    <h3>5. Using Fixed-Effect Model When Random-Effects Is Appropriate</h3>
+    <p>If studies come from different populations, settings, and time periods, a fixed-effect model will underestimate the uncertainty. When in doubt, use random-effects.</p>
+    <h3>6. Insufficient Database Coverage</h3>
+    <p>Searching only PubMed is not sufficient. Cochrane recommends at least three databases. Missing Embase alone can mean missing 20-30% of relevant studies.</p>
+    <h3>7. No Sensitivity Analysis</h3>
+    <p>Failing to perform and report sensitivity analysis (at minimum, leave-one-out) leaves your conclusions unverified. Reviewers expect to see evidence that results are robust.</p>
+    <h3>8. Post-Hoc Subgroup Analyses Presented as Confirmatory</h3>
+    <p>Subgroup analyses not specified in the protocol should be explicitly labeled as exploratory. Treating data-driven subgroups as definitive findings is misleading.</p>
+    <h3>9. Ignoring Publication Bias With Fewer Than 10 Studies</h3>
+    <p>Formal tests (Egger's, Begg's) lack statistical power with fewer than 10 studies. Acknowledge this limitation rather than claiming "no publication bias detected" based on an underpowered test.</p>
+    <h3>10. Extracting Unadjusted Instead of Adjusted Estimates</h3>
+    <p>For observational studies, always prefer the most adjusted (multivariable) estimates. Unadjusted estimates may be confounded and produce biased pooled results.</p>
+    <div class="warn"><strong>Bottom line:</strong> Most of these mistakes are preventable with careful planning, protocol registration, and adherence to PRISMA 2020 guidelines. A well-designed protocol written before any data collection begins is the single best safeguard against all of these errors.</div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <h2>Start Your Meta-Analysis Now</h2>
+    <p>MetaReview is a free online tool. Go from data entry to a publication-quality forest plot in under 5 minutes. No installation, no coding, no cost.</p>
+    <a href="/">Open MetaReview - It's Free</a>
+  </div>
+
+  <!-- Email Subscription -->
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">Stay Updated</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">Get notified about new features and meta-analysis tips.</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="Enter your email" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Subscribe</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">No spam. Unsubscribe anytime.</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='Submitting...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-english-howto',lang:'en'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?"You're already subscribed!":'Subscribed! We\'ll notify you about new features.';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Please enter a valid email address.';btn.textContent='Subscribe';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Submission failed. Please try again later.';btn.textContent='Subscribe';btn.disabled=false;});
+  });
+  </script>
+
+  <!-- FAQ Section -->
+  <div class="faq" id="faq">
+    <h2>Frequently Asked Questions</h2>
+
+    <h3>What is the difference between a systematic review and a meta-analysis?</h3>
+    <p>A systematic review is the entire process of systematically identifying, evaluating, and synthesizing all relevant research on a topic. It follows a structured protocol with explicit inclusion/exclusion criteria. A meta-analysis is specifically the statistical method used within a systematic review to quantitatively pool results from multiple studies into a single effect estimate. You can conduct a systematic review without a meta-analysis (presenting a narrative synthesis), but a meta-analysis should always be embedded within a systematic review framework. Think of systematic review as the research method and meta-analysis as the statistical technique.</p>
+
+    <h3>How many studies do I need for a meta-analysis?</h3>
+    <p>There is no absolute minimum, but practical considerations matter. With 2 studies, you can technically compute a pooled estimate, but the result will be driven almost entirely by sample size differences and provides limited insight. With 5 or more studies, heterogeneity statistics (I&sup2;, Q) become more meaningful. With 10 or more studies, you can reliably perform publication bias tests (Egger's, Begg's) and funnel plot analysis. Most reviewers consider 5 studies a reasonable minimum for a credible meta-analysis, and will accept fewer only if the topic is narrow and the studies are high-quality.</p>
+
+    <h3>What software can I use for meta-analysis for free?</h3>
+    <p>MetaReview is a completely free, browser-based meta-analysis tool that requires no installation, no account, and no coding knowledge. It supports OR, RR, MD, and SMD effect sizes, fixed and random-effects models, forest plots, funnel plots, subgroup analysis, leave-one-out sensitivity analysis, and auto-generated results paragraphs. Other free options include the R statistical language with the "meta" and "metafor" packages, which are powerful but require programming skills. RevMan is free for Cochrane review authors but requires desktop installation. OpenMeta-Analyst is another free option but is no longer actively maintained.</p>
+
+    <h3>How do I interpret a forest plot?</h3>
+    <p>A forest plot displays each study as a row. The square represents the study's effect estimate (e.g., OR, RR, or MD), with the square size proportional to the study's weight. The horizontal line through the square is the 95% confidence interval. The diamond at the bottom represents the pooled (combined) effect. A vertical reference line shows the null effect (1.0 for ratio measures like OR/RR, or 0 for difference measures like MD/SMD). If a study's confidence interval crosses this null line, that study alone did not find a statistically significant effect. If the diamond does not touch the null line, the pooled result is statistically significant.</p>
+
+    <h3>What does I-squared heterogeneity mean?</h3>
+    <p>I&sup2; tells you what percentage of the observed variation across study results is due to genuine differences between studies (true heterogeneity) rather than random sampling variation. An I&sup2; of 0% means all variation is due to chance; an I&sup2; of 75% means three-quarters of the observed variability reflects true differences in underlying effects. The Cochrane Handbook provides rough benchmarks: 0-40% might not be important, 30-60% may represent moderate heterogeneity, 50-90% may represent substantial heterogeneity, and 75-100% indicates considerable heterogeneity. When I&sup2; is high, explore sources through subgroup analysis or meta-regression rather than simply reporting the pooled estimate.</p>
+
+    <h3>Can I do a meta-analysis without knowing statistics or coding?</h3>
+    <p>Yes. Point-and-click tools like MetaReview are designed for researchers who do not have programming or advanced biostatistics training. You enter your extracted data (event counts, sample sizes, means, standard deviations), select your effect size type and model, and the tool computes everything: pooled estimates, confidence intervals, heterogeneity statistics, forest plots, funnel plots, and sensitivity analyses. That said, understanding what these statistics mean and how to interpret them is essential for writing a defensible manuscript. We recommend reading the relevant chapters of the Cochrane Handbook for Systematic Reviews even if you use a no-code tool.</p>
+
+    <h3>How long does it take to complete a meta-analysis?</h3>
+    <p>A realistic timeline for a focused meta-analysis is 3 to 12 months from protocol registration to manuscript submission. Protocol development and PROSPERO registration takes 1-2 weeks. The literature search typically takes 1-3 weeks. Screening can take 2-8 weeks depending on volume (tools like MetaReview's AI screening can compress this significantly). Data extraction takes 2-6 weeks for 15-30 studies. Quality assessment takes 1-2 weeks. Statistical analysis and figure generation can be done in 1-3 days using the right tools. Writing the manuscript takes 2-4 weeks. Peer review and revisions add another 2-6 months. The most common bottleneck is screening and data extraction, which together account for roughly half of the total time.</p>
+
+    <h3>What is the PRISMA checklist?</h3>
+    <p>PRISMA stands for Preferred Reporting Items for Systematic Reviews and Meta-Analyses. The PRISMA 2020 update consists of a 27-item checklist covering everything that should be reported in a systematic review or meta-analysis: title, abstract, rationale, objectives, protocol registration, eligibility criteria, information sources, search strategy, selection process, data extraction, effect measures, synthesis methods, risk of bias, results of syntheses, reporting biases, certainty of evidence, and conclusions. It also includes a standardized flow diagram template. Most biomedical journals require authors to submit a completed PRISMA checklist alongside their manuscript. The checklist is freely available at prisma-statement.org.</p>
+  </div>
+
+  <!-- Related Guides -->
+  <div class="related">
+    <h2>Related Guides</h2>
+    <ul>
+      <li><a href="/guides/meta-analysis-steps">Complete Meta-Analysis Step-by-Step Guide (Chinese)</a></li>
+      <li><a href="/guides/forest-plot-generator">Free Online Forest Plot Generator</a></li>
+      <li><a href="/guides/effect-size-selection">Choosing Effect Sizes: OR, RR, MD, SMD Guide</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 Flow Diagram Guide</a></li>
+      <li><a href="/guides/survival-analysis-meta">Survival Data Meta-Analysis: HR Guide</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta-Analysis Software Comparison</a></li>
+      <li><a href="/guides/tumor-meta-analysis">Oncology Meta-Analysis Guide</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">Cardiovascular Meta-Analysis Guide</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> — Free Online Meta-Analysis Tool</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
