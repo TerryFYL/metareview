@@ -210,6 +210,7 @@ export default function App() {
           studies={studies}
           onStudiesChange={setStudies}
           onSwitchToInput={() => setActiveTab('input')}
+          onPRISMAUpdate={(n) => setPRISMA({ ...prisma, dbRecords: String(n) })}
         />
       )}
 

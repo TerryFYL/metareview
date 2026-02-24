@@ -19,12 +19,38 @@ interface Props {
   studies: Study[];
   onStudiesChange: (studies: Study[]) => void;
   onSwitchToInput: () => void;
+  onPRISMAUpdate?: (dbRecords: number) => void;
 }
 
 const PAGE_SIZE = 20;
+const HISTORY_KEY = 'metareview-search-history';
+const MAX_HISTORY = 10;
 
-export default function LiteratureSearch({ lang, measure, studies, onStudiesChange, onSwitchToInput }: Props) {
+const ARTICLE_TYPES = [
+  { value: '', labelKey: 'search.articleTypeAll' },
+  { value: 'Randomized Controlled Trial', labelKey: 'search.articleTypeRCT' },
+  { value: 'Meta-Analysis', labelKey: 'search.articleTypeMeta' },
+  { value: 'Systematic Review', labelKey: 'search.articleTypeSR' },
+  { value: 'Clinical Trial', labelKey: 'search.articleTypeCT' },
+];
+
+const LANG_FILTERS = [
+  { value: '', labelKey: 'search.langAll' },
+  { value: 'english', labelKey: 'search.langEn' },
+  { value: 'chinese', labelKey: 'search.langZh' },
+];
+
+function loadHistory(): string[] {
+  try {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+  } catch {
+    return [];
+  }
+}
+
+export default function LiteratureSearch({ lang, measure, studies, onStudiesChange, onSwitchToInput, onPRISMAUpdate }: Props) {
   const [query, setQuery] = useState('');
+  const [activeQuery, setActiveQuery] = useState('');
   const [results, setResults] = useState<PubMedArticle[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(0);
@@ -34,6 +60,48 @@ export default function LiteratureSearch({ lang, measure, studies, onStudiesChan
   const [expandedPmid, setExpandedPmid] = useState<string | null>(null);
   const [abstracts, setAbstracts] = useState<Record<string, string>>({});
   const [importedCount, setImportedCount] = useState(0);
+  const [prismaNotice, setPrismaNotice] = useState(false);
+
+  // Search history
+  const [history, setHistory] = useState<string[]>(loadHistory);
+
+  // Advanced search
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [articleType, setArticleType] = useState('');
+  const [langFilter, setLangFilter] = useState('');
+
+  const buildFullQuery = useCallback((baseQuery: string): string => {
+    const parts = [baseQuery.trim()];
+    if (dateFrom || dateTo) {
+      const from = dateFrom || '1900';
+      const to = dateTo || '3000';
+      parts.push(`${from}:${to}[dp]`);
+    }
+    if (articleType) {
+      parts.push(`"${articleType}"[pt]`);
+    }
+    if (langFilter) {
+      parts.push(`${langFilter}[la]`);
+    }
+    return parts.join(' AND ');
+  }, [dateFrom, dateTo, articleType, langFilter]);
+
+  const addToHistory = useCallback((q: string) => {
+    const trimmed = q.trim();
+    if (!trimmed) return;
+    setHistory((prev) => {
+      const updated = [trimmed, ...prev.filter(h => h !== trimmed)].slice(0, MAX_HISTORY);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+
+  const clearHistory = useCallback(() => {
+    setHistory([]);
+    localStorage.removeItem(HISTORY_KEY);
+  }, []);
 
   const search = useCallback(async (searchQuery: string, retstart: number) => {
     if (!searchQuery.trim()) return;
@@ -41,7 +109,6 @@ export default function LiteratureSearch({ lang, measure, studies, onStudiesChan
     setError(null);
 
     try {
-      // Step 1: esearch to get PMIDs
       const searchUrl = `/api/pubmed/esearch.fcgi?db=pubmed&term=${encodeURIComponent(searchQuery)}&retmode=json&retmax=${PAGE_SIZE}&retstart=${retstart}&sort=relevance`;
       const searchRes = await fetch(searchUrl);
       if (!searchRes.ok) throw new Error(`PubMed search failed (${searchRes.status})`);
@@ -57,7 +124,6 @@ export default function LiteratureSearch({ lang, measure, studies, onStudiesChan
         return;
       }
 
-      // Step 2: esummary to get article metadata
       const summaryUrl = `/api/pubmed/esummary.fcgi?db=pubmed&id=${idList.join(',')}&retmode=json`;
       const summaryRes = await fetch(summaryUrl);
       if (!summaryRes.ok) throw new Error(`PubMed summary failed (${summaryRes.status})`);
@@ -86,15 +152,28 @@ export default function LiteratureSearch({ lang, measure, studies, onStudiesChan
   }, [lang]);
 
   const handleSearch = useCallback(() => {
+    if (!query.trim()) return;
     setPage(0);
     setSelected(new Set());
-    search(query, 0);
-  }, [query, search]);
+    const fullQuery = buildFullQuery(query);
+    setActiveQuery(fullQuery);
+    addToHistory(query.trim());
+    search(fullQuery, 0);
+  }, [query, search, buildFullQuery, addToHistory]);
+
+  const handleHistoryClick = useCallback((historyQuery: string) => {
+    setQuery(historyQuery);
+    setPage(0);
+    setSelected(new Set());
+    const fullQuery = buildFullQuery(historyQuery);
+    setActiveQuery(fullQuery);
+    search(fullQuery, 0);
+  }, [search, buildFullQuery]);
 
   const handlePageChange = useCallback((newPage: number) => {
     setPage(newPage);
-    search(query, newPage * PAGE_SIZE);
-  }, [query, search]);
+    search(activeQuery, newPage * PAGE_SIZE);
+  }, [activeQuery, search]);
 
   const toggleSelect = useCallback((pmid: string) => {
     setSelected((prev) => {
@@ -141,7 +220,6 @@ export default function LiteratureSearch({ lang, measure, studies, onStudiesChan
       const year = yearMatch ? parseInt(yearMatch[0], 10) : undefined;
       const name = year ? `${firstAuthor} ${year}` : firstAuthor;
 
-      // Check if study already exists
       const exists = studies.some(
         (s) => s.name === name || s.name.includes(article.pmid)
       );
@@ -163,10 +241,16 @@ export default function LiteratureSearch({ lang, measure, studies, onStudiesChan
       onStudiesChange([...studies, ...newStudies]);
       setImportedCount(newStudies.length);
       setSelected(new Set());
-      // Auto-clear message after 3s
       setTimeout(() => setImportedCount(0), 3000);
+
+      // Auto-update PRISMA flowchart
+      if (onPRISMAUpdate && totalCount > 0) {
+        onPRISMAUpdate(totalCount);
+        setPrismaNotice(true);
+        setTimeout(() => setPrismaNotice(false), 3000);
+      }
     }
-  }, [results, selected, studies, measure, onStudiesChange]);
+  }, [results, selected, studies, measure, onStudiesChange, onPRISMAUpdate, totalCount]);
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
   const hasResults = results.length > 0;
@@ -202,18 +286,117 @@ export default function LiteratureSearch({ lang, measure, studies, onStudiesChan
           </button>
         </div>
 
-        {/* Search tips */}
-        <details style={{ marginTop: 8 }}>
-          <summary style={{ fontSize: 12, color: '#9ca3af', cursor: 'pointer' }}>
-            {t('search.tips', lang)}
-          </summary>
-          <div style={{ fontSize: 12, color: '#6b7280', marginTop: 6, padding: '8px 12px', background: '#f9fafb', borderRadius: 6 }}>
-            <div style={{ marginBottom: 4 }}>{t('search.tip1', lang)}</div>
-            <div style={{ marginBottom: 4 }}>{t('search.tip2', lang)}</div>
-            <div>{t('search.tip3', lang)}</div>
+        {/* Advanced search toggle + tips */}
+        <div style={{ display: 'flex', gap: 12, marginTop: 8, alignItems: 'center' }}>
+          <button
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            style={{ fontSize: 12, color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+          >
+            {t('search.advanced', lang)} {showAdvanced ? '\u25B2' : '\u25BC'}
+          </button>
+          <details style={{ flex: 1 }}>
+            <summary style={{ fontSize: 12, color: '#9ca3af', cursor: 'pointer' }}>
+              {t('search.tips', lang)}
+            </summary>
+            <div style={{ fontSize: 12, color: '#6b7280', marginTop: 6, padding: '8px 12px', background: '#f9fafb', borderRadius: 6 }}>
+              <div style={{ marginBottom: 4 }}>{t('search.tip1', lang)}</div>
+              <div style={{ marginBottom: 4 }}>{t('search.tip2', lang)}</div>
+              <div>{t('search.tip3', lang)}</div>
+            </div>
+          </details>
+        </div>
+
+        {/* Advanced search form */}
+        {showAdvanced && (
+          <div style={{
+            marginTop: 8,
+            padding: '12px 16px',
+            background: '#f9fafb',
+            borderRadius: 8,
+            border: '1px solid #e5e7eb',
+            display: 'flex',
+            gap: 16,
+            flexWrap: 'wrap',
+            alignItems: 'flex-end',
+          }}>
+            {/* Date range */}
+            <div style={{ minWidth: 160 }}>
+              <label style={filterLabelStyle}>{t('search.dateRange', lang)}</label>
+              <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+                <input
+                  type="number"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  placeholder="2000"
+                  min="1900"
+                  max="2030"
+                  style={yearInputStyle}
+                />
+                <span style={{ color: '#9ca3af', fontSize: 12 }}>-</span>
+                <input
+                  type="number"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  placeholder="2025"
+                  min="1900"
+                  max="2030"
+                  style={yearInputStyle}
+                />
+              </div>
+            </div>
+
+            {/* Article type */}
+            <div style={{ minWidth: 140 }}>
+              <label style={filterLabelStyle}>{t('search.articleType', lang)}</label>
+              <select
+                value={articleType}
+                onChange={(e) => setArticleType(e.target.value)}
+                style={filterSelectStyle}
+              >
+                {ARTICLE_TYPES.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{t(opt.labelKey, lang)}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Language */}
+            <div style={{ minWidth: 120 }}>
+              <label style={filterLabelStyle}>{t('search.language', lang)}</label>
+              <select
+                value={langFilter}
+                onChange={(e) => setLangFilter(e.target.value)}
+                style={filterSelectStyle}
+              >
+                {LANG_FILTERS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{t(opt.labelKey, lang)}</option>
+                ))}
+              </select>
+            </div>
           </div>
-        </details>
+        )}
       </section>
+
+      {/* Search history */}
+      {history.length > 0 && (
+        <div style={{ marginBottom: 16, display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+          <span style={{ fontSize: 12, color: '#9ca3af', flexShrink: 0 }}>
+            {t('search.history', lang)}:
+          </span>
+          {history.map((h, i) => (
+            <button
+              key={i}
+              onClick={() => handleHistoryClick(h)}
+              style={chipStyle}
+              title={h}
+            >
+              {h.length > 30 ? h.slice(0, 30) + '...' : h}
+            </button>
+          ))}
+          <button onClick={clearHistory} style={clearBtnStyle}>
+            {t('search.clearHistory', lang)}
+          </button>
+        </div>
+      )}
 
       {/* Error */}
       {error && (
@@ -230,6 +413,13 @@ export default function LiteratureSearch({ lang, measure, studies, onStudiesChan
           <button onClick={onSwitchToInput} style={{ color: '#2563eb', background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', fontSize: 13 }}>
             {t('search.goToInput', lang)}
           </button>
+        </div>
+      )}
+
+      {/* PRISMA auto-update notice */}
+      {prismaNotice && (
+        <div style={{ padding: '10px 16px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 6, color: '#2563eb', fontSize: 13, marginBottom: 16 }}>
+          {t('search.prismaUpdated', lang).replace('{n}', totalCount.toLocaleString())}
         </div>
       )}
 
@@ -409,4 +599,55 @@ const pageBtnStyle: React.CSSProperties = {
   borderRadius: 6,
   fontSize: 12,
   cursor: 'pointer',
+};
+
+const filterLabelStyle: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  color: '#6b7280',
+  display: 'block',
+  marginBottom: 4,
+};
+
+const filterSelectStyle: React.CSSProperties = {
+  padding: '6px 10px',
+  border: '1px solid #d1d5db',
+  borderRadius: 6,
+  fontSize: 12,
+  outline: 'none',
+  background: '#fff',
+  width: '100%',
+};
+
+const yearInputStyle: React.CSSProperties = {
+  padding: '6px 8px',
+  border: '1px solid #d1d5db',
+  borderRadius: 6,
+  fontSize: 12,
+  outline: 'none',
+  width: 70,
+  boxSizing: 'border-box',
+};
+
+const chipStyle: React.CSSProperties = {
+  padding: '3px 10px',
+  background: '#f3f4f6',
+  color: '#374151',
+  border: '1px solid #e5e7eb',
+  borderRadius: 12,
+  fontSize: 11,
+  cursor: 'pointer',
+  maxWidth: 200,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+};
+
+const clearBtnStyle: React.CSSProperties = {
+  fontSize: 11,
+  color: '#9ca3af',
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  padding: '2px 4px',
 };
