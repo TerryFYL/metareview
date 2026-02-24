@@ -41,6 +41,10 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
   const [results, setResults] = useState<ExtractionResult[]>([]);
   const [extractError, setExtractError] = useState<string | null>(null);
 
+  // Inline editing state: maps result index to edited data object
+  const [editedValues, setEditedValues] = useState<Record<number, Record<string, unknown>>>({});
+  const [editingIdx, setEditingIdx] = useState<string | null>(null);
+
   const abortRef = useRef<AbortController | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -150,22 +154,49 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
     setPdfError(null);
     setResults([]);
     setExtractError(null);
+    setEditedValues({});
+    setEditingIdx(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
   }, []);
 
-  // Add extracted data to study table
+  /** Get effective data for a result, merging in any user edits */
+  const getEffectiveData = useCallback((idx: number): ExtractionResult['data'] => {
+    const original = results[idx]?.data;
+    const edits = editedValues[idx];
+    if (!edits) return original;
+    return { ...original, ...edits } as ExtractionResult['data'];
+  }, [results, editedValues]);
+
+  /** Update a single field for a result */
+  const updateExtractedField = useCallback((resultIdx: number, field: string, value: string) => {
+    const numVal = parseFloat(value);
+    setEditedValues(prev => ({
+      ...prev,
+      [resultIdx]: {
+        ...prev[resultIdx],
+        [field]: isNaN(numVal) ? value : numVal,
+      },
+    }));
+  }, []);
+
+  // Add extracted data to study table (uses edited values when available)
   const addToStudies = useCallback(() => {
-    // Collect extracted data
-    const sampleResult = results.find(r => r.queryType === 'sample_sizes');
+    // Build effective results with edits merged in
+    const effectiveResults = results.map((r, i) => ({
+      ...r,
+      data: getEffectiveData(i),
+    }));
+
+    const sampleResult = effectiveResults.find(r => r.queryType === 'sample_sizes');
     const sizes = sampleResult?.data as SampleSizesResult | undefined;
-    const outcomes = results.filter(r => r.queryType === 'effect_size');
+    const outcomes = effectiveResults.filter(r => r.queryType === 'effect_size');
 
     const newStudies: Study[] = [];
     for (const outcome of outcomes) {
       const outcomeName = outcome.outcome || 'Outcome';
 
       if (studyType === 'binary') {
-        const eventsResult = results.find(
+        const eventsResult = effectiveResults.find(
           r => r.queryType === 'events' && r.outcome === outcome.outcome
         );
         const events = eventsResult?.data as EventsResult | undefined;
@@ -184,7 +215,7 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
           });
         }
       } else {
-        const contResult = results.find(
+        const contResult = effectiveResults.find(
           r => r.queryType === 'continuous' && r.outcome === outcome.outcome
         );
         const cont = contResult?.data as ContinuousResult | undefined;
@@ -213,7 +244,7 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
       trackFeature('extract_add_study');
       onSwitchToInput();
     }
-  }, [results, studyType, fileName, studies, onStudiesChange, onSwitchToInput]);
+  }, [results, editedValues, getEffectiveData, studyType, fileName, studies, onStudiesChange, onSwitchToInput]);
 
   const hasExtractableData = results.some(
     r => (r.queryType === 'effect_size' || r.queryType === 'events' || r.queryType === 'continuous')
@@ -379,6 +410,9 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
             </button>
           </div>
 
+          <p style={{ fontSize: 11, color: '#6b7280', marginBottom: 8 }}>
+            {t('extract.editHint', lang)}
+          </p>
           <div style={{ overflowX: 'auto' }}>
             <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 13, minWidth: 600 }}>
               <thead>
@@ -391,21 +425,81 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
                 </tr>
               </thead>
               <tbody>
-                {results.filter(r => r.queryType !== 'outcomes').map((r, i) => (
-                  <tr key={i} style={{ background: i % 2 ? '#f9fafb' : '#fff' }}>
-                    <td style={tdStyle}>{formatQueryType(r.queryType, lang)}</td>
-                    <td style={tdStyle}>{r.outcome || '—'}</td>
-                    <td style={{ ...tdStyle, fontFamily: 'monospace' }}>{formatValue(r)}</td>
-                    <td style={tdStyle}>
-                      <span style={confidenceBadgeStyle(r.confidence)}>
-                        {t(`extract.confidence.${r.confidence}`, lang)}
-                      </span>
-                    </td>
-                    <td style={{ ...tdStyle, fontSize: 11, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {(r.data as { source_quote?: string }).source_quote || '—'}
-                    </td>
-                  </tr>
-                ))}
+                {results.filter(r => r.queryType !== 'outcomes').map((r, i) => {
+                  const effectiveData = getEffectiveData(i) as unknown as Record<string, unknown>;
+                  const isEdited = !!editedValues[i];
+                  const editableFields = getEditableFields(r);
+                  return (
+                    <tr key={i} style={{ background: i % 2 ? '#f9fafb' : '#fff' }}>
+                      <td style={tdStyle}>{formatQueryType(r.queryType, lang)}</td>
+                      <td style={tdStyle}>{r.outcome || '—'}</td>
+                      <td style={{ ...tdStyle, fontFamily: 'monospace', minWidth: 160 }}>
+                        {r.error ? `${r.error}` : editableFields.length > 0 ? (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            {editableFields.map(field => {
+                              const cellKey = `${i}-${field.key}`;
+                              const val = effectiveData[field.key];
+                              const isEditingThis = editingIdx === cellKey;
+                              return (
+                                <div key={field.key} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                  <span style={{ fontSize: 10, color: '#9ca3af', minWidth: 20 }}>{field.label}:</span>
+                                  {isEditingThis ? (
+                                    <input
+                                      type="number"
+                                      step="any"
+                                      defaultValue={val != null ? String(val) : ''}
+                                      autoFocus
+                                      onBlur={(e) => {
+                                        setEditingIdx(null);
+                                        if (e.target.value !== String(val)) {
+                                          updateExtractedField(i, field.key, e.target.value);
+                                        }
+                                      }}
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === 'Escape') {
+                                          (e.target as HTMLInputElement).blur();
+                                        }
+                                      }}
+                                      style={inlineEditInputStyle}
+                                    />
+                                  ) : (
+                                    <span
+                                      onClick={() => setEditingIdx(cellKey)}
+                                      style={{
+                                        cursor: 'pointer',
+                                        padding: '1px 4px',
+                                        borderRadius: 3,
+                                        border: '1px solid transparent',
+                                        transition: 'border-color 0.15s',
+                                      }}
+                                      onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#d1d5db')}
+                                      onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'transparent')}
+                                    >
+                                      {val != null ? String(val) : '—'}
+                                    </span>
+                                  )}
+                                </div>
+                              );
+                            })}
+                            {isEdited && (
+                              <span style={{ fontSize: 10, color: '#2563eb', fontStyle: 'italic' }}>
+                                {t('extract.edited', lang)}
+                              </span>
+                            )}
+                          </div>
+                        ) : formatValue(r)}
+                      </td>
+                      <td style={tdStyle}>
+                        <span style={confidenceBadgeStyle(r.confidence)}>
+                          {t(`extract.confidence.${r.confidence}`, lang)}
+                        </span>
+                      </td>
+                      <td style={{ ...tdStyle, fontSize: 11, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {(r.data as { source_quote?: string }).source_quote || '—'}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -423,6 +517,25 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
       )}
     </div>
   );
+}
+
+/** Get editable numeric fields for a result type */
+function getEditableFields(r: ExtractionResult): Array<{ key: string; label: string }> {
+  switch (r.queryType) {
+    case 'effect_size':
+      return [{ key: 'value', label: 'Val' }, { key: 'ci_lower', label: 'CI-' }, { key: 'ci_upper', label: 'CI+' }];
+    case 'sample_sizes':
+      return [{ key: 'treatment_n', label: 'T' }, { key: 'control_n', label: 'C' }];
+    case 'events':
+      return [{ key: 'treatment_events', label: 'T' }, { key: 'control_events', label: 'C' }];
+    case 'continuous':
+      return [
+        { key: 'treatment_mean', label: 'T\u0304' }, { key: 'treatment_sd', label: 'SD-T' },
+        { key: 'control_mean', label: 'C\u0304' }, { key: 'control_sd', label: 'SD-C' },
+      ];
+    default:
+      return [];
+  }
 }
 
 function formatQueryType(qt: string, lang: string): string {
@@ -576,4 +689,15 @@ const tdStyle: React.CSSProperties = {
   padding: '8px 10px',
   borderBottom: '1px solid #f3f4f6',
   fontSize: 13,
+};
+
+const inlineEditInputStyle: React.CSSProperties = {
+  width: 70,
+  padding: '2px 4px',
+  border: '1px solid #2563eb',
+  borderRadius: 3,
+  fontSize: 12,
+  fontFamily: 'monospace',
+  outline: 'none',
+  background: '#eff6ff',
 };

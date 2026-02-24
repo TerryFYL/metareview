@@ -50,6 +50,9 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
         </table>
       </div>
 
+      {/* Clinical Interpretation */}
+      <EffectInterpretation effect={result.effect} ciLower={result.ciLower} ciUpper={result.ciUpper} pValue={result.pValue} measure={measure} lang={lang} />
+
       {/* Heterogeneity */}
       <div style={cardStyle}>
         <div style={cardTitleStyle}>{t('results.heterogeneity', lang)}</div>
@@ -223,6 +226,91 @@ function MethodsParagraph({ result, eggers, subgroupResult, sensitivityResults, 
       </div>
       <p style={{ fontSize: 13, lineHeight: 1.7, color: '#374151' }}>
         {methodsText}
+      </p>
+    </div>
+  );
+}
+
+function EffectInterpretation({ effect, ciLower, ciUpper, pValue, measure, lang }: {
+  effect: number; ciLower: number; ciUpper: number; pValue: number; measure: string; lang: Lang;
+}) {
+  const isRatio = measure === 'OR' || measure === 'RR' || measure === 'HR';
+  const nullVal = isRatio ? 1 : 0;
+
+  // Direction
+  let dirKey: string;
+  let dirColor: string;
+  if (isRatio) {
+    if (Math.abs(effect - 1) < 0.0001) { dirKey = 'interp.ratio.null'; dirColor = '#6b7280'; }
+    else if (effect < 1) { dirKey = 'interp.ratio.favor.treatment'; dirColor = '#16a34a'; }
+    else { dirKey = 'interp.ratio.favor.control'; dirColor = '#dc2626'; }
+  } else {
+    if (Math.abs(effect) < 0.0001) { dirKey = 'interp.diff.null'; dirColor = '#6b7280'; }
+    else if (effect < 0) { dirKey = 'interp.diff.favor.treatment'; dirColor = '#16a34a'; }
+    else { dirKey = 'interp.diff.favor.control'; dirColor = '#dc2626'; }
+  }
+
+  // Magnitude
+  let magText: string;
+  let magColor: string;
+  if (isRatio) {
+    const logEffect = Math.abs(Math.log(effect));
+    if (logEffect < 0.223) { magText = t('interp.ratio.small', lang); magColor = '#16a34a'; } // ~OR 1.25
+    else if (logEffect < 0.693) { magText = t('interp.ratio.moderate', lang); magColor = '#ca8a04'; } // ~OR 2.0
+    else { magText = t('interp.ratio.large', lang); magColor = '#dc2626'; }
+  } else if (measure === 'SMD') {
+    const absD = Math.abs(effect);
+    if (absD < 0.5) { magText = t('interp.smd.small', lang); magColor = '#16a34a'; }
+    else if (absD < 0.8) { magText = t('interp.smd.medium', lang); magColor = '#ca8a04'; }
+    else { magText = t('interp.smd.large', lang); magColor = '#dc2626'; }
+  } else {
+    // MD — no universal threshold, skip magnitude
+    magText = '';
+    magColor = '#6b7280';
+  }
+
+  // CI crosses null?
+  const ciCrossesNull = isRatio
+    ? (ciLower <= nullVal && ciUpper >= nullVal)
+    : (ciLower <= nullVal && ciUpper >= nullVal);
+
+  const isSig = pValue < 0.05;
+
+  return (
+    <div style={{ ...cardStyle, background: '#fefce8', borderColor: '#fde68a' }}>
+      <div style={cardTitleStyle}>{t('interp.title', lang)}</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {/* Direction */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 12, color: '#6b7280', minWidth: 70 }}>{t('interp.direction', lang)}:</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: dirColor }}>
+            {t(dirKey, lang).replace('{measure}', measure)}
+          </span>
+        </div>
+        {/* Magnitude */}
+        {magText && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 12, color: '#6b7280', minWidth: 70 }}>{t('interp.magnitude', lang)}:</span>
+            <span style={{ fontSize: 13, fontWeight: 500, color: magColor }}>{magText}</span>
+          </div>
+        )}
+        {/* Statistical significance */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 12, color: '#6b7280', minWidth: 70 }}>{t('interp.significance', lang)}:</span>
+          <span style={{ fontSize: 13, fontWeight: 500, color: isSig ? '#16a34a' : '#9ca3af' }}>
+            {isSig ? t('interp.sig.yes', lang) : t('interp.sig.no', lang)}
+          </span>
+        </div>
+        {/* CI interpretation */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 12, color: '#6b7280', minWidth: 70 }}>95% CI:</span>
+          <span style={{ fontSize: 13, color: ciCrossesNull ? '#dc2626' : '#16a34a' }}>
+            {ciCrossesNull ? t('interp.ciCross', lang) : t('interp.ciNoCross', lang)}
+          </span>
+        </div>
+      </div>
+      <p style={{ fontSize: 11, color: '#92400e', marginTop: 8, fontStyle: 'italic' }}>
+        {t('interp.note', lang)}
       </p>
     </div>
   );

@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import type { Study, EffectMeasure, BinaryData, ContinuousData, HRData } from '../lib/types';
 import { exportCSV, importCSV } from '../lib/csv';
 import { t, type Lang } from '../lib/i18n';
+import { trackFeature } from '../lib/analytics';
 
 interface DataTableProps {
   studies: Study[];
@@ -84,6 +85,7 @@ function getCellIssue(study: Study, key: string, measure: EffectMeasure): CellIs
 
 export default function DataTable({ studies, measure, onStudiesChange, lang }: DataTableProps) {
   const [editingCell, setEditingCell] = useState<string | null>(null);
+  const [pasteToast, setPasteToast] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const tableRef = useRef<HTMLTableElement>(null);
 
@@ -113,6 +115,79 @@ export default function DataTable({ studies, measure, onStudiesChange, lang }: D
     reader.readAsText(file);
     e.target.value = '';
   };
+
+  /** Handle paste from Excel / Google Sheets (tab-separated) */
+  const handlePaste = useCallback((e: React.ClipboardEvent) => {
+    const text = e.clipboardData.getData('text/plain');
+    if (!text) return;
+
+    // Detect tab-separated (Excel/Sheets paste) — at least one tab per line
+    const lines = text.split(/\r?\n/).filter(l => l.trim());
+    if (lines.length === 0) return;
+    const hasTabs = lines.some(l => l.includes('\t'));
+    if (!hasTabs) return; // Not spreadsheet data, let normal paste happen
+
+    e.preventDefault(); // Take over paste
+
+    const dataColCount = isHR(measure) ? 3 : isBinary(measure) ? 4 : 6;
+
+    // Parse lines into studies
+    const parsed: Study[] = [];
+    for (const line of lines) {
+      const cells = line.split('\t').map(c => c.trim());
+      // Skip header-like rows (first cell matches a known header)
+      const firstLower = cells[0]?.toLowerCase() || '';
+      if (firstLower === 'study' || firstLower === '研究' || firstLower === 'name') continue;
+
+      // Determine column mapping: name, [year], [subgroup], ...data...
+      // Minimum: just data columns; maximum: name + year + subgroup + data
+      let name = '';
+      let year: number | undefined;
+      let subgroup: string | undefined;
+      let dataStart = 0;
+
+      if (cells.length >= dataColCount + 3) {
+        // name + year + subgroup + data
+        name = cells[0] || '';
+        year = parseInt(cells[1]) || undefined;
+        subgroup = cells[2] || undefined;
+        dataStart = 3;
+      } else if (cells.length >= dataColCount + 2) {
+        // name + year + data
+        name = cells[0] || '';
+        year = parseInt(cells[1]) || undefined;
+        dataStart = 2;
+      } else if (cells.length >= dataColCount + 1) {
+        // name + data
+        name = cells[0] || '';
+        dataStart = 1;
+      } else if (cells.length >= dataColCount) {
+        // just data
+        dataStart = 0;
+      } else {
+        continue; // Not enough columns
+      }
+
+      const nums = cells.slice(dataStart).map(c => parseFloat(c) || 0);
+      const id = Math.random().toString(36).slice(2, 9);
+
+      if (isHR(measure)) {
+        parsed.push({ id, name: name || `Study ${studies.length + parsed.length + 1}`, year, subgroup, data: { hr: nums[0], ciLower: nums[1], ciUpper: nums[2] } as HRData });
+      } else if (isBinary(measure)) {
+        parsed.push({ id, name: name || `Study ${studies.length + parsed.length + 1}`, year, subgroup, data: { events1: nums[0], total1: nums[1], events2: nums[2], total2: nums[3] } as BinaryData });
+      } else {
+        parsed.push({ id, name: name || `Study ${studies.length + parsed.length + 1}`, year, subgroup, data: { mean1: nums[0], sd1: nums[1], n1: nums[2], mean2: nums[3], sd2: nums[4], n2: nums[5] } as ContinuousData });
+      }
+    }
+
+    if (parsed.length > 0) {
+      onStudiesChange([...studies, ...parsed]);
+      trackFeature('paste_import');
+      const msg = t('table.pasteHint', lang).replace('{n}', String(parsed.length));
+      setPasteToast(msg);
+      setTimeout(() => setPasteToast(null), 3000);
+    }
+  }, [studies, measure, onStudiesChange, lang]);
 
   const addStudy = () => {
     const newStudy = isHR(measure) ? emptyHRStudy() : isBinary(measure) ? emptyBinaryStudy() : emptyContinuousStudy();
@@ -264,7 +339,10 @@ export default function DataTable({ studies, measure, onStudiesChange, lang }: D
   };
 
   return (
-    <div>
+    <div onPaste={handlePaste}>
+      {pasteToast && (
+        <div style={toastStyle}>{pasteToast}</div>
+      )}
       <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
         <table ref={tableRef} style={{ borderCollapse: 'collapse', width: '100%', fontSize: 13, minWidth: 520 }}>
           <thead>
@@ -353,7 +431,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang }: D
         />
         {studies.length > 0 && (
           <span style={{ fontSize: 11, color: '#9ca3af', marginLeft: 'auto' }}>
-            {t('table.navHint', lang)}
+            {t('table.navHint', lang)} · {t('table.pasteTip', lang)}
           </span>
         )}
       </div>
@@ -424,4 +502,15 @@ const deleteBtnStyle: React.CSSProperties = {
   fontSize: 18,
   padding: '2px 6px',
   borderRadius: 4,
+};
+
+const toastStyle: React.CSSProperties = {
+  padding: '8px 14px',
+  background: '#f0fdf4',
+  border: '1px solid #bbf7d0',
+  borderRadius: 6,
+  fontSize: 12,
+  color: '#16a34a',
+  marginBottom: 8,
+  fontWeight: 500,
 };
