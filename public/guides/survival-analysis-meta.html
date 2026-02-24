@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>生存数据 Meta 分析：HR 的提取、计算与解读指南 | MetaReview</title>
+  <meta name="description" content="生存分析 Meta 分析完整指南：如何从论文中提取 Hazard Ratio (HR)，HR 的 log 变换与标准误计算，Forest Plot 解读，以及使用 MetaReview 完成 HR Meta 分析的分步教程。" />
+  <meta name="keywords" content="hazard ratio meta分析, 生存分析meta分析, HR forest plot, 风险比, Cox回归meta分析, survival analysis meta-analysis, HR提取, kaplan meier meta分析" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/survival-analysis-meta" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/survival-analysis-meta" />
+  <meta property="og:title" content="生存数据 Meta 分析：HR 的提取、计算与解读指南" />
+  <meta property="og:description" content="从论文中提取 HR，理解 log 变换，正确解读 Forest Plot。HR Meta 分析一站式指南。" />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:site_name" content="MetaReview" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "HR meta分析用什么软件？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MetaReview 是免费的在线 HR Meta 分析工具，输入 HR 和 95% CI 即可自动完成 log 变换、合并效应量、生成森林图和漏斗图。也可以使用 R 的 meta/metafor 包、Stata 的 metan 命令、RevMan 等桌面软件。MetaReview 的优势是无需编程，结果实时呈现。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "论文没报HR只有KM曲线怎么办？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "参考 Tierney 等人 2007 年发表在 BMC Medical Research Methodology 的方法（Practical methods for incorporating summary time-to-event data into meta-analysis）。该方法可以从 Kaplan-Meier 曲线上读取各时间点的生存概率，结合风险人数表，间接估算 HR 及其方差。需要使用专门的数字化工具（如 WebPlotDigitizer）从图上提取坐标数据。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "HR<1和>1分别说明什么？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "HR < 1 表示干预组（实验组）的事件发生速率低于对照组，即干预降低了事件风险，对干预有利。例如 HR = 0.70 意味着干预组在任意时间点的事件发生率是对照组的 70%，即风险降低了 30%。HR > 1 则表示干预组事件发生速率高于对照组，干预增加了风险。HR = 1 表示两组无差异。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "可以把HR和OR放在同一个meta分析里吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "不可以。HR 来源于生存分析（Cox 回归），考虑了时间因素和删失数据；OR 来源于 Logistic 回归或四格表，只考虑固定时间点的事件发生与否。两者的统计含义不同，数学基础不同，不能混合合并。同一个 Meta 分析中必须统一使用同一种效应量。如果部分研究报告 HR、部分报告 OR，需要分别做亚组分析或只纳入报告同一种效应量的研究。"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .decision-tree { background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; overflow-x: auto; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">打开工具</a>
+      <a href="/guides/meta-analysis-steps">Meta 分析步骤</a>
+      <a href="/guides/effect-size-selection">效应量选择</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>生存数据 Meta 分析：HR 的提取、计算与解读指南</h1>
+  <p>从 Kaplan-Meier 曲线到 Forest Plot，手把手教你完成 Hazard Ratio Meta 分析。</p>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <h2>什么是 HR Meta 分析</h2>
+    <p>在医学研究中，许多临床结局都是"时间-事件"型数据：患者从治疗开始到疾病进展、死亡或其他终点事件发生的时间。这类数据被称为<strong>生存数据（survival data）</strong>，分析方法统称为<strong>生存分析（survival analysis）</strong>。</p>
+    <p>当多项研究都报告了同一干预对生存结局的影响时，我们需要用 Meta 分析将它们合并起来，得到一个更精确的总体估计。生存数据 Meta 分析的核心效应量是 <strong>Hazard Ratio（HR，风险比）</strong>。</p>
+    <h3>HR 的定义</h3>
+    <p>HR 是两组之间瞬时事件发生率（hazard rate）的比值。它来自 Cox 比例风险回归模型，考虑了随访时间和删失（censoring）。HR = 0.70 意味着在任意时间点，干预组的事件发生速率是对照组的 70%，即干预降低了 30% 的风险。</p>
+    <h3>什么时候需要 HR Meta 分析</h3>
+    <ul>
+      <li><strong>肿瘤学</strong> — 总生存期（OS）、无进展生存期（PFS）、无病生存期（DFS）是最常见的终点。几乎所有肿瘤 RCT 都报告 HR。</li>
+      <li><strong>心血管疾病</strong> — 主要不良心血管事件（MACE）的发生时间、心衰住院或死亡的复合终点。</li>
+      <li><strong>感染性疾病</strong> — 至病毒学治愈的时间、至感染复发的时间。</li>
+      <li><strong>器官移植</strong> — 移植物存活时间、至排异反应发生时间。</li>
+      <li><strong>慢性病管理</strong> — 糖尿病肾病进展时间、COPD 急性加重间隔时间。</li>
+    </ul>
+    <h3>HR vs RR：不要混淆</h3>
+    <p>HR 和 RR 都叫"风险比"，但它们完全不同：</p>
+    <table class="data-table">
+      <tr><th>特征</th><th>HR（Hazard Ratio）</th><th>RR（Risk Ratio）</th></tr>
+      <tr><td>数据来源</td><td>Cox 比例风险回归 / 生存分析</td><td>四格表 / 累积发病率</td></tr>
+      <tr><td>是否考虑时间</td><td>是，考虑事件发生的时间点</td><td>否，只看固定时间点的累积事件数</td></tr>
+      <tr><td>处理删失数据</td><td>是，能正确处理失访和删失</td><td>否，删失患者通常被排除或简单处理</td></tr>
+      <tr><td>无效值</td><td>1</td><td>1</td></tr>
+      <tr><td>典型场景</td><td>肿瘤 OS/PFS，心血管 MACE</td><td>RCT 中的二分类结局（治愈率、死亡率）</td></tr>
+    </table>
+    <div class="warn">关键区别：HR 基于整个随访期间的事件率，RR 基于固定时间点的累积事件率。两者不能在同一个 Meta 分析中混用。如果你的纳入研究有的报告 HR、有的报告 RR，必须分开分析。</div>
+  </div>
+
+  <div class="section">
+    <h2>如何从论文中提取 HR 数据</h2>
+    <p>提取 HR 数据是生存分析 Meta 分析中最关键也最容易出错的步骤。根据论文报告的完整程度，提取方式分为三种场景。</p>
+
+    <h3>场景一：论文直接报告 HR + 95% CI（最常见、最简单）</h3>
+    <p>这是最理想的情况。大多数高质量 RCT 和队列研究都会在文中或表格中直接报告 Cox 回归的 HR 及其 95% CI。</p>
+    <p>示例：论文报告 "HR = 0.72, 95% CI: 0.58-0.90"。你只需要记录这三个数字：</p>
+    <ul>
+      <li>HR = 0.72</li>
+      <li>CI Lower = 0.58</li>
+      <li>CI Upper = 0.90</li>
+    </ul>
+    <p>MetaReview 会自动完成后续的 log 变换和标准误计算。</p>
+    <div class="tip">提取位置优先级：正文结果部分 > Table（通常在 multivariable analysis 表中）> Figure 图注 > Supplementary material。如果多个模型都报告了 HR，优先选择<strong>调整后的（adjusted）</strong>HR，因为它控制了混杂因素。</div>
+
+    <h3>场景二：论文报告 HR + p 值（无 CI）</h3>
+    <p>有些较早期的论文或会议摘要只报告了 HR 和 p 值，没有 95% CI。此时可以通过 p 值反推标准误。</p>
+    <p>方法：</p>
+    <ol>
+      <li>从 p 值查找对应的 z 值（例如 p = 0.05 对应 z = 1.96，p = 0.01 对应 z = 2.576）</li>
+      <li>计算 log(HR) 的标准误：SE = |log(HR)| / z</li>
+      <li>再反推 95% CI：CI = exp(log(HR) &plusmn; 1.96 &times; SE)</li>
+    </ol>
+    <div class="formula">
+      SE[log(HR)] = |log(HR)| / z<br>
+      其中 z = 正态分布分位数，对应论文报告的 p 值
+    </div>
+    <p>示例：论文报告 HR = 0.65, p = 0.003。</p>
+    <ol>
+      <li>p = 0.003（双侧）对应 z = 2.968</li>
+      <li>log(0.65) = -0.431</li>
+      <li>SE = |-0.431| / 2.968 = 0.145</li>
+      <li>95% CI = exp(-0.431 &plusmn; 1.96 &times; 0.145) = exp(-0.715, -0.147) = (0.489, 0.863)</li>
+    </ol>
+    <div class="warn">注意：如果论文只报告 "p < 0.05" 这种模糊表述，直接用 z = 1.96 会高估标准误（低估精确度）。这是保守估计，可以接受但不理想。最好联系原作者获取精确数据。</div>
+
+    <h3>场景三：论文只有 Kaplan-Meier 曲线（无 HR 报告）</h3>
+    <p>这是最困难的情况。一些老文献或阴性结果的研究可能只展示了 KM 曲线，没有报告 HR。</p>
+    <p>此时需要使用 <strong>Tierney 等人（2007）</strong>的方法从 KM 曲线间接估算 HR。核心步骤：</p>
+    <ol>
+      <li>使用数字化工具（如 WebPlotDigitizer）从 KM 曲线图上提取各时间点的生存概率坐标</li>
+      <li>结合论文中报告的各时间点风险人数（number at risk，通常在 KM 图下方）</li>
+      <li>根据提取的数据重建每个时间段的事件数和删失数</li>
+      <li>使用这些重建的 IPD（individual patient data）近似数据估算 HR</li>
+    </ol>
+    <p>参考文献：Tierney JF, Stewart LA, Ghersi D, Burdett S, Sydes MR. Practical methods for incorporating summary time-to-event data into meta-analysis. <em>Trials</em>. 2007;8:16.</p>
+    <div class="tip">Tierney 方法有配套的 Excel 计算工具，可在论文附录中下载。如果 KM 曲线下方没有风险人数表，估算的精度会大幅降低。在纳入排除标准中，可以考虑将"无法提取 HR"作为排除理由。</div>
+
+    <h3>数据提取表模板</h3>
+    <p>建议使用以下标准化表格记录提取的数据：</p>
+    <table class="data-table">
+      <tr><th>提取字段</th><th>说明</th><th>示例</th></tr>
+      <tr><td>第一作者</td><td>研究的第一作者姓名</td><td>Wang</td></tr>
+      <tr><td>发表年份</td><td>论文发表年份</td><td>2023</td></tr>
+      <tr><td>研究设计</td><td>RCT / 队列 / 其他</td><td>RCT</td></tr>
+      <tr><td>干预组</td><td>实验组的干预措施</td><td>免疫治疗 + 化疗</td></tr>
+      <tr><td>对照组</td><td>对照组的处理</td><td>化疗</td></tr>
+      <tr><td>结局指标</td><td>OS / PFS / DFS 等</td><td>OS</td></tr>
+      <tr><td>HR</td><td>风险比</td><td>0.72</td></tr>
+      <tr><td>95% CI 下限</td><td>置信区间下界</td><td>0.58</td></tr>
+      <tr><td>95% CI 上限</td><td>置信区间上界</td><td>0.90</td></tr>
+      <tr><td>HR 类型</td><td>调整 / 未调整</td><td>Adjusted</td></tr>
+      <tr><td>数据来源</td><td>直接报告 / p值推算 / KM提取</td><td>直接报告</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>HR 的统计原理</h2>
+    <p>理解 HR Meta 分析的统计基础，有助于正确执行分析和识别错误。核心要点是：<strong>HR 的合并不是在原始尺度上进行的，而是在 log 尺度上</strong>。</p>
+
+    <h3>为什么要做 log 变换</h3>
+    <p>HR 的取值范围是 (0, +&infin;)，分布是右偏的。例如 HR = 0.5（风险减半）和 HR = 2.0（风险翻倍）虽然效应大小相等但方向相反，在原始尺度上到无效值 1 的距离却不同（0.5 vs 1.0）。</p>
+    <p>经过 log 变换后：</p>
+    <ul>
+      <li>log(0.5) = -0.693，log(2.0) = 0.693 -- 到零点的距离相等</li>
+      <li>log(1.0) = 0 -- 无效值变为 0，便于统计检验</li>
+      <li>log(HR) 近似服从正态分布 -- 满足 Meta 分析所需的统计假设</li>
+    </ul>
+    <div class="formula">
+      log 变换：y<sub>i</sub> = log(HR<sub>i</sub>)
+    </div>
+
+    <h3>标准误的计算</h3>
+    <p>已知 HR 和 95% CI 时，标准误的计算公式为：</p>
+    <div class="formula">
+      SE[log(HR)] = (log(CI<sub>upper</sub>) - log(CI<sub>lower</sub>)) / 3.92
+    </div>
+    <p>其中 3.92 = 2 &times; 1.96，因为 95% CI = log(HR) &plusmn; 1.96 &times; SE，所以 CI 宽度 = 2 &times; 1.96 &times; SE。</p>
+    <p>示例：HR = 0.72, 95% CI (0.58, 0.90)</p>
+    <ol>
+      <li>log(HR) = log(0.72) = -0.329</li>
+      <li>log(0.90) = -0.105</li>
+      <li>log(0.58) = -0.545</li>
+      <li>SE = (-0.105 - (-0.545)) / 3.92 = 0.440 / 3.92 = 0.112</li>
+    </ol>
+
+    <h3>逆方差加权合并</h3>
+    <p>Meta 分析使用<strong>逆方差加权法（inverse-variance method）</strong>在 log 尺度上合并各研究的 log(HR)：</p>
+    <div class="formula">
+      权重 w<sub>i</sub> = 1 / SE<sub>i</sub>&sup2;<br><br>
+      合并 log(HR) = &sum;(w<sub>i</sub> &times; log(HR<sub>i</sub>)) / &sum;w<sub>i</sub>
+    </div>
+    <p>SE 越小的研究（通常样本量越大、事件数越多），权重越大。合并完成后，将合并的 log(HR) 及其 CI 通过 exp() 函数反变换回 HR 尺度：</p>
+    <div class="formula">
+      合并 HR = exp(合并 log(HR))<br>
+      合并 95% CI = exp(合并 log(HR) &plusmn; 1.96 &times; SE<sub>pooled</sub>)
+    </div>
+    <div class="tip">MetaReview 会自动完成以上所有计算。你只需输入原始的 HR 和 95% CI，工具在后台执行 log 变换、标准误计算、逆方差加权和反变换。</div>
+
+    <h3>固定效应 vs 随机效应</h3>
+    <p>与其他类型的 Meta 分析一样，HR Meta 分析也需要选择合并模型：</p>
+    <ul>
+      <li><strong>固定效应模型（Fixed-effect）</strong>：假设所有研究估计的是同一个真实 HR。适用于研究间高度同质的情况。</li>
+      <li><strong>随机效应模型（Random-effects）</strong>：假设各研究的真实 HR 存在差异，合并的是 HR 的平均值。适用于研究间存在异质性的情况，也是更常用的选择。</li>
+    </ul>
+    <p>判断依据是异质性检验结果：I&sup2; > 50% 或 Q 检验 p < 0.10 时，推荐使用随机效应模型。</p>
+  </div>
+
+  <div class="section">
+    <h2>Forest Plot 解读</h2>
+    <p>Forest Plot（森林图）是 Meta 分析最核心的可视化输出。HR 的森林图与 OR/RR 的森林图在结构上相同，但解读细节有所不同。</p>
+
+    <h3>基本结构</h3>
+    <table class="data-table">
+      <tr><th>元素</th><th>含义</th></tr>
+      <tr><td>每行一个方块</td><td>一项纳入研究的 HR 点估计。方块大小 = 该研究的权重（SE 越小，方块越大）。</td></tr>
+      <tr><td>方块两侧的横线</td><td>该研究 HR 的 95% 置信区间。横线越短 = 估计越精确。</td></tr>
+      <tr><td>垂直虚线（x = 1）</td><td>无效线（null line）。HR = 1 表示两组无差异。注意：HR 的无效值是 1，不是 0。</td></tr>
+      <tr><td>底部菱形</td><td>合并（pooled）HR。菱形中心 = 合并 HR 点估计，菱形宽度 = 合并 95% CI。</td></tr>
+    </table>
+
+    <h3>方向解读</h3>
+    <p>HR 森林图通常使用 log 尺度的 x 轴。关键判断：</p>
+    <ul>
+      <li><strong>HR < 1（无效线左侧）</strong>：干预组事件发生率低于对照组 = <strong>干预有利</strong>（favours treatment）</li>
+      <li><strong>HR > 1（无效线右侧）</strong>：干预组事件发生率高于对照组 = <strong>对照有利</strong>（favours control）</li>
+      <li><strong>CI 跨过无效线 1</strong>：该研究的结果无统计学意义（p > 0.05）</li>
+      <li><strong>菱形完全在无效线一侧</strong>：合并结果有统计学意义</li>
+    </ul>
+    <div class="decision-tree">
+解读示例：
+
+Study A:  ----[====]----          HR = 0.65 (0.48, 0.88)
+          CI 完全在左侧 → 显著有利于干预组
+
+Study B:        -----[==]-----|  HR = 0.89 (0.71, 1.12)
+          CI 跨过无效线 1 → 无统计学意义
+
+Study C:  --[======]---          HR = 0.58 (0.39, 0.86)
+          方块大 → 该研究权重高
+
+Pooled:         <====>           HR = 0.71 (0.59, 0.85)
+          菱形在左侧 → 合并结果显著有利于干预
+    </div>
+    <div class="tip">发表时需要在森林图下方标注方向：左侧标注"Favours treatment"，右侧标注"Favours control"。这是 Cochrane 手册推荐的标准做法，也是审稿人经常检查的细节。</div>
+
+    <h3>异质性指标</h3>
+    <p>森林图下方通常显示异质性统计量：</p>
+    <ul>
+      <li><strong>I&sup2;</strong>：异质性占总变异的百分比。I&sup2; = 0% 表示无异质性，> 50% 表示中高度异质性，> 75% 表示高度异质性。</li>
+      <li><strong>Q 检验 p 值</strong>：p < 0.10 提示存在显著异质性（注意阈值是 0.10 而非 0.05，因为 Q 检验统计效力低）。</li>
+      <li><strong>&tau;&sup2;</strong>：研究间方差的估计值（随机效应模型）。</li>
+    </ul>
+    <div class="warn">如果 I&sup2; 很高（> 75%），合并的 HR 可能没有实际意义。此时应优先进行亚组分析或 meta-regression，找出异质性来源（如不同肿瘤类型、不同治疗方案、不同随访时长等）。</div>
+  </div>
+
+  <div class="section">
+    <h2>在 MetaReview 中进行 HR Meta 分析</h2>
+    <p>MetaReview 支持 Hazard Ratio 作为效应量类型，以下是分步操作教程。</p>
+
+    <h3>第一步：选择效应量类型</h3>
+    <p>打开 MetaReview，在页面顶部的效应量下拉菜单（Effect Measure）中选择 <strong>"Hazard Ratio"</strong>。选择后，数据输入区域会自动切换为 HR 专用格式。</p>
+
+    <h3>第二步：输入研究基本信息</h3>
+    <p>在每一行中填入：</p>
+    <ul>
+      <li><strong>Study</strong>：研究名称，通常是"第一作者 + 年份"，例如 "Wang 2023"</li>
+      <li><strong>Year</strong>：发表年份，用于排序和亚组分析</li>
+    </ul>
+
+    <h3>第三步：输入 HR 和置信区间</h3>
+    <p>在对应列中填入：</p>
+    <ul>
+      <li><strong>HR</strong>：Hazard Ratio 的点估计值，例如 0.72</li>
+      <li><strong>CI Lower</strong>：95% 置信区间下限，例如 0.58</li>
+      <li><strong>CI Upper</strong>：95% 置信区间上限，例如 0.90</li>
+    </ul>
+    <p>MetaReview 会在后台自动完成 log(HR) 变换和 SE 计算，你无需手动计算。</p>
+
+    <h3>第四步：运行 Meta 分析</h3>
+    <p>输入所有研究数据后，点击 <strong>"Run Meta-Analysis"</strong> 按钮（或按 Enter 键）。系统会在几秒内完成计算。</p>
+
+    <h3>第五步：查看分析结果</h3>
+    <p>结果页面包含以下内容：</p>
+    <ol>
+      <li><strong>森林图（Forest Plot）</strong> — 显示每项研究的 HR、95% CI、权重和合并结果。x 轴使用 log 尺度，无效线在 HR = 1 处。</li>
+      <li><strong>漏斗图（Funnel Plot）</strong> — 用于评估发表偏倚。对称的漏斗形状提示无明显偏倚，不对称提示可能存在小样本效应或发表偏倚。</li>
+      <li><strong>敏感性分析（Leave-one-out）</strong> — 逐一剔除每项研究后重新计算合并 HR，检查结果是否稳健。如果剔除某项研究后合并 HR 发生显著变化，说明该研究对结果影响较大。</li>
+      <li><strong>异质性统计量</strong> — I&sup2;、Q 检验 p 值、&tau;&sup2; 等。</li>
+    </ol>
+
+    <h3>键盘快捷操作</h3>
+    <p>提高数据录入效率的技巧：</p>
+    <ul>
+      <li><strong>Tab 键</strong>：在输入框之间快速跳转</li>
+      <li><strong>Enter 键</strong>：添加新研究行或运行分析</li>
+      <li>输入完一项研究的数据后，按 Tab 跳到下一个字段，比用鼠标点击更快</li>
+    </ul>
+    <div class="tip">批量录入技巧：先在 Excel 中整理好所有研究数据（Study、Year、HR、CI Lower、CI Upper），然后逐行复制粘贴到 MetaReview 中。MetaReview 支持在输入框中直接粘贴数值。</div>
+  </div>
+
+  <div class="section">
+    <h2>常见问题与陷阱</h2>
+    <p>以下是 HR Meta 分析中最常见的错误和注意事项，避开这些陷阱能大幅提升你论文被接收的概率。</p>
+
+    <h3>陷阱一：混用 HR 和 OR/RR</h3>
+    <p>这是最严重的方法学错误。HR 来自生存分析（Cox 回归），考虑了时间维度和删失；OR 来自 Logistic 回归，RR 来自四格表，都只看固定时间点的累积事件。三者的数学基础完全不同，不能在同一个 Meta 分析中合并。</p>
+    <p><strong>正确做法</strong>：在纳入排除标准中明确要求"研究必须报告 HR 或可从原始数据计算 HR"。对只报告 OR 的研究，单独列表讨论或排除。</p>
+
+    <h3>陷阱二：调整 HR vs 未调整 HR</h3>
+    <p>同一篇论文可能同时报告了未调整（unadjusted / univariate）HR 和调整后（adjusted / multivariable）HR。两者可能差别很大。</p>
+    <ul>
+      <li><strong>未调整 HR</strong>：只考虑干预和结局的关系，不控制其他变量。通常来自 log-rank 检验或单因素 Cox 回归。</li>
+      <li><strong>调整 HR</strong>：控制了年龄、性别、分期等混杂因素后的效应。来自多因素 Cox 回归。</li>
+    </ul>
+    <p><strong>正确做法</strong>：在 Meta 分析方案中预先规定统一提取哪种 HR。推荐优先使用<strong>调整后的 HR</strong>，因为它更接近真实效应。重要的是所有纳入研究必须保持一致。如果确实无法统一，应在敏感性分析中探讨两种 HR 的差异。</p>
+
+    <h3>陷阱三：忽视比例风险假设</h3>
+    <p>Cox 回归模型的核心假设是<strong>比例风险假设（proportional hazards assumption）</strong>：两组的风险比在整个随访期间保持恒定。如果这个假设不成立（例如两组的 KM 曲线交叉），HR 就不能准确描述两组的差异。</p>
+    <p><strong>检查方法</strong>：</p>
+    <ul>
+      <li>查看原始论文的 KM 曲线是否交叉</li>
+      <li>查看论文是否报告了 Schoenfeld 残差检验</li>
+      <li>如果 KM 曲线在早期分离、后期交叉，说明干预的效果随时间变化，单一 HR 无法完整描述</li>
+    </ul>
+    <p><strong>正确做法</strong>：在讨论部分提及比例风险假设的局限性。如果多项研究的 KM 曲线都出现交叉，可以考虑使用限制性均值生存时间（RMST）作为替代效应量。</p>
+
+    <h3>陷阱四：亚组 HR 的提取与使用</h3>
+    <p>论文通常在森林图形式的亚组分析中报告按肿瘤类型、年龄组、PD-L1 表达水平等分层的 HR。</p>
+    <ul>
+      <li>如果你的 Meta 分析关注的是总体效应，应提取<strong>总体（overall）HR</strong>，而非某个亚组的 HR</li>
+      <li>如果你的 Meta 分析本身就是针对某个亚组（如"PD-L1 高表达人群的免疫治疗效果"），则应提取对应亚组的 HR</li>
+      <li>不要把同一研究的多个亚组 HR 当作独立研究纳入，这会导致信息重复使用和统计偏差</li>
+    </ul>
+
+    <h3>陷阱五：忽略随访时间差异</h3>
+    <p>不同研究的中位随访时间可能差异很大（如 12 个月 vs 60 个月）。短随访可能低估长期效应，长随访可能受到交叉治疗（crossover）影响。</p>
+    <p><strong>正确做法</strong>：在数据提取中记录各研究的中位随访时间，在 meta-regression 中探讨随访时长是否是异质性来源。</p>
+
+    <h3>陷阱六：发表偏倚的影响</h3>
+    <p>阳性结果（HR 显著 < 1）更容易发表，阴性结果可能留在文件柜里。这对 HR Meta 分析的影响尤其需要关注，因为肿瘤领域的注册研究比例虽然越来越高，但较早期的研究仍可能存在此问题。</p>
+    <p><strong>正确做法</strong>：</p>
+    <ul>
+      <li>检索 ClinicalTrials.gov 等注册平台，寻找已完成但未发表的研究</li>
+      <li>在漏斗图中检查是否对称</li>
+      <li>使用 Egger 检验或 Begg 检验定量评估发表偏倚</li>
+      <li>MetaReview 自动生成漏斗图，帮助你直观判断</li>
+    </ul>
+  </div>
+
+  <div class="cta">
+    <h2>立即开始 HR Meta 分析</h2>
+    <p>输入 HR 和 95% CI，MetaReview 自动完成 log 变换、合并计算、森林图和漏斗图。免费、无需编程。</p>
+    <a href="/">打开 MetaReview</a>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">获取更新通知</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">留下邮箱，第一时间获取新功能通知和 Meta 分析技巧。</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="输入邮箱地址" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">订阅</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">我们不会发送垃圾邮件，随时可退订。</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='提交中...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-survival',lang:'zh'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'你已经订阅过了！':'订阅成功！我们会在有新功能时通知你。';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='请输入有效的邮箱地址。';btn.textContent='订阅';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='提交失败，请稍后重试。';btn.textContent='订阅';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="related">
+    <h2>相关指南</h2>
+    <ul>
+      <li><a href="/guides/effect-size-selection">OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</a></li>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤：从研究问题到发表的全流程指南</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图怎么画？在线生成森林图完全指南（免费工具）</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 流程图：在线制作模板与填写指南</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> — 免费在线 Meta 分析工具</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -3,6 +3,7 @@ import { useProjectStore, useUIStore } from './store';
 import HeroSection from './components/HeroSection';
 import PICOForm from './components/PICOForm';
 import DataTable from './components/DataTable';
+import EffectMeasureGuide from './components/EffectMeasureGuide';
 import ForestPlot from './components/ForestPlot';
 import FunnelPlot from './components/FunnelPlot';
 import ResultsSummary from './components/ResultsSummary';
@@ -293,6 +294,7 @@ export default function App() {
           {/* Settings */}
           <section style={sectionStyle}>
             <h2 style={h2Style}>{t('input.settings', lang)}</h2>
+            <EffectMeasureGuide lang={lang} currentMeasure={measure} onSelectMeasure={setMeasure} />
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               <div style={{ flex: '1 1 260px', minWidth: 0 }}>
                 <label style={labelStyle}>{t('input.measure', lang)}</label>

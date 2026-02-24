@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南 | MetaReview</title>
-  <meta name="description" content="Meta 分析效应量选择指南：OR 比值比、RR 风险比、MD 均数差、SMD 标准化均数差的区别、公式、适用场景和常见选择错误。附决策流程图。" />
-  <meta name="keywords" content="OR RR MD SMD区别, meta分析效应量怎么选, 比值比风险比区别, 效应量选择, odds ratio risk ratio, 均数差标准化均数差, meta-analysis effect size" />
+  <title>OR、RR、HR、MD、SMD 怎么选？Meta 分析效应量完整指南 | MetaReview</title>
+  <meta name="description" content="Meta 分析效应量选择指南：OR 比值比、RR 风险比、HR 风险比（Hazard Ratio）、MD 均数差、SMD 标准化均数差的区别、公式、适用场景和常见选择错误。附决策流程图。" />
+  <meta name="keywords" content="OR RR HR MD SMD区别, meta分析效应量怎么选, 比值比风险比区别, hazard ratio 风险比, 效应量选择, odds ratio risk ratio, 均数差标准化均数差, meta-analysis effect size, 生存分析" />
   <meta name="author" content="MetaReview" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/effect-size-selection" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/effect-size-selection" />
-  <meta property="og:title" content="OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南" />
-  <meta property="og:description" content="一张决策图搞懂 Meta 分析效应量选择。OR/RR/MD/SMD 的区别、公式和常见陷阱。" />
+  <meta property="og:title" content="OR、RR、HR、MD、SMD 怎么选？Meta 分析效应量完整指南" />
+  <meta property="og:description" content="一张决策图搞懂 Meta 分析效应量选择。OR/RR/HR/MD/SMD 的区别、公式和常见陷阱。" />
   <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
   <meta property="og:locale" content="zh_CN" />
   <meta property="og:site_name" content="MetaReview" />
@@ -62,6 +62,22 @@
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "推荐用 RR。死亡率是一个前瞻性指标（从暴露到结局），RR 的临床解释更直观：RR=0.7 意味着干预组死亡风险降低 30%。OR=0.7 的解释则是干预组的死亡比值是对照组的 0.7 倍，不太直观。只有在病例对照研究中才必须用 OR。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "HR（Hazard Ratio）什么时候用？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "HR 用于生存分析、时间到事件数据。当研究报告的是 Kaplan-Meier 生存曲线、Cox 比例风险回归结果时，使用 HR 作为效应量。常见于肿瘤学（总生存期 OS、无进展生存期 PFS）、心血管研究（心血管事件发生时间）、感染病学（治愈时间）等领域。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "HR 和 RR 有什么区别？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "HR 和 RR 都是比值，但含义不同。RR 比较两组在固定时间点的累积事件概率，HR 比较两组在任意时间点的瞬时事件发生速率。HR 可以处理不等长随访和删失数据（如失访或研究结束时未发生事件），RR 不能。如果数据来自 Cox 回归或生存分析，用 HR；如果是 2×2 频率表（事件数/总数），用 RR。"
         }
       }
     ]
@@ -124,7 +140,7 @@
 </div>
 
 <div class="hero">
-  <h1>OR、RR、MD、SMD 怎么选？Meta 分析效应量完整指南</h1>
+  <h1>OR、RR、HR、MD、SMD 怎么选？Meta 分析效应量完整指南</h1>
   <p>一张决策图搞懂效应量选择。告别选择困难，避开常见陷阱。</p>
 </div>
 
@@ -144,6 +160,10 @@
 │   └── RCT 或队列研究？
 │       └── → 用 <strong>RR（风险比）</strong>
 │           （如果事件率 < 10%，OR ≈ RR，两者均可）
+│
+├── 生存数据（时间到事件、Kaplan-Meier、Cox 回归）
+│   └── → 用 <strong>HR（风险比）</strong>
+│         输入论文报告的 HR 和 95% CI
 │
 └── 连续性（均值、评分、测量值）
     │
@@ -205,6 +225,38 @@
   </div>
 
   <div class="section">
+    <h2>HR 风险比（Hazard Ratio）</h2>
+    <h3>定义</h3>
+    <p>HR 比较两组的事件发生速率（hazard rate）。用于生存分析、时间到事件分析。</p>
+    <div class="formula">
+      HR = hazard(干预组) / hazard(对照组)
+    </div>
+    <h3>适用场景</h3>
+    <ul>
+      <li><strong>生存分析</strong> — 癌症生存率、心血管事件时间、疾病复发等</li>
+      <li><strong>Cox 比例风险回归</strong> — 论文报告 HR + 95% CI</li>
+      <li>Kaplan-Meier 曲线配合 log-rank 检验</li>
+    </ul>
+    <h3>解读</h3>
+    <table class="data-table">
+      <tr><th>HR 值</th><th>含义</th></tr>
+      <tr><td>HR = 1</td><td>两组无差异</td></tr>
+      <tr><td>HR &lt; 1</td><td>干预组事件发生速率低（如死亡更慢 &rarr; 干预有保护作用）</td></tr>
+      <tr><td>HR &gt; 1</td><td>干预组事件发生速率高（干预有害或风险因素）</td></tr>
+    </table>
+    <h3>Meta 分析中如何输入 HR 数据</h3>
+    <p>大多数论文直接报告 HR 和 95% 置信区间。在 MetaReview 中：</p>
+    <ol>
+      <li>选择效应量类型为 "Hazard Ratio"</li>
+      <li>输入论文报告的 HR 值（原始尺度，非 log 值）</li>
+      <li>输入 95% CI 下限和上限</li>
+      <li>系统自动完成 log 变换和 SE 计算</li>
+    </ol>
+    <div class="tip">HR 的 Meta 分析在内部使用 log(HR) 进行计算，因为 log(HR) 近似服从正态分布。但你只需输入原始 HR 和 CI，MetaReview 会自动处理转换。</div>
+    <div class="warn">HR 和 OR/RR 虽然都是比值型效应量，但数据来源完全不同（生存数据 vs 2&times;2 表格），不能在同一个 Meta 分析中混合使用。</div>
+  </div>
+
+  <div class="section">
     <h2>MD 均数差（Mean Difference）</h2>
     <h3>定义</h3>
     <p>MD 是两组均值的直接差值，保留原始单位。</p>
@@ -245,15 +297,15 @@
   </div>
 
   <div class="section">
-    <h2>四种效应量对比总表</h2>
+    <h2>五种效应量对比总表</h2>
     <table class="data-table">
-      <tr><th>特征</th><th>OR</th><th>RR</th><th>MD</th><th>SMD</th></tr>
-      <tr><td>数据类型</td><td>二分类</td><td>二分类</td><td>连续性</td><td>连续性</td></tr>
-      <tr><td>无效值</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
-      <tr><td>保留原始单位</td><td>否</td><td>否</td><td>是</td><td>否</td></tr>
-      <tr><td>临床可解释性</td><td>中</td><td>高</td><td>高</td><td>低</td></tr>
-      <tr><td>推荐研究设计</td><td>病例对照</td><td>RCT/队列</td><td>量表统一</td><td>量表不同</td></tr>
-      <tr><td>统计特性</td><td>对称性好</td><td>有方向限制</td><td>正态近似好</td><td>正态近似好</td></tr>
+      <tr><th>特征</th><th>OR</th><th>RR</th><th>HR</th><th>MD</th><th>SMD</th></tr>
+      <tr><td>数据类型</td><td>二分类</td><td>二分类</td><td>生存数据</td><td>连续性</td><td>连续性</td></tr>
+      <tr><td>无效值</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+      <tr><td>保留原始单位</td><td>否</td><td>否</td><td>否</td><td>是</td><td>否</td></tr>
+      <tr><td>临床可解释性</td><td>中</td><td>高</td><td>高</td><td>高</td><td>低</td></tr>
+      <tr><td>推荐研究设计</td><td>病例对照</td><td>RCT/队列</td><td>Cox回归/KM</td><td>量表统一</td><td>量表不同</td></tr>
+      <tr><td>统计特性</td><td>对称性好</td><td>有方向限制</td><td>比例风险假设</td><td>正态近似好</td><td>正态近似好</td></tr>
     </table>
   </div>
 
@@ -269,11 +321,11 @@
 
   <div class="section">
     <h2>在 MetaReview 中切换效应量</h2>
-    <p>MetaReview 支持一键切换四种效应量：</p>
+    <p>MetaReview 支持一键切换五种效应量：</p>
     <ol>
       <li>在"数据提取"页面输入原始数据</li>
       <li>切换到"分析结果"页面</li>
-      <li>在顶部下拉菜单选择效应量类型（OR / RR / MD / SMD）</li>
+      <li>在顶部下拉菜单选择效应量类型（OR / RR / HR / MD / SMD）</li>
       <li>所有统计量、森林图、漏斗图实时更新</li>
     </ol>
     <div class="tip">建议先用最适合你研究设计的效应量做主分析，然后在敏感性分析中换一种效应量验证结果是否一致。例如主分析用 RR，敏感性分析用 OR，如果结论一致则更可靠。</div>
@@ -281,7 +333,7 @@
 
   <div class="cta">
     <h2>用 MetaReview 计算效应量</h2>
-    <p>支持 OR/RR/MD/SMD 一键切换，自动计算合并效应量和异质性。免费、无需编程。</p>
+    <p>支持 OR/RR/HR/MD/SMD 一键切换，自动计算合并效应量和异质性。免费、无需编程。</p>
     <a href="/">打开 MetaReview</a>
   </div>
 
@@ -317,6 +369,7 @@
       <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤：从研究问题到发表的全流程指南</a></li>
       <li><a href="/guides/forest-plot-generator">森林图怎么画？在线生成森林图完全指南（免费工具）</a></li>
       <li><a href="/guides/prisma-flow-diagram">PRISMA 2020 流程图：在线制作模板与填写指南</a></li>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析：HR 的提取、计算与解读指南</a></li>
     </ul>
   </div>
 
