@@ -1,5 +1,5 @@
 // MetaReview Statistical Engine — Public API
-export { metaAnalysis, sensitivityAnalysis, subgroupAnalysis } from './meta-analysis';
+export { metaAnalysis, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis } from './meta-analysis';
 export {
   calculateEffectSize,
   toOriginalScale,

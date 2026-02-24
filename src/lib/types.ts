@@ -128,6 +128,26 @@ export interface MetaAnalysisResult {
   heterogeneity: Heterogeneity;
 }
 
+/** Cumulative meta-analysis result (one row per progressive pooling) */
+export interface CumulativeResult {
+  /** Study added at this step */
+  addedStudy: string;
+  /** Number of studies pooled so far */
+  studyCount: number;
+  /** Publication year of added study */
+  year?: number;
+  /** Pooled effect on original scale */
+  effect: number;
+  /** 95% CI lower */
+  ciLower: number;
+  /** 95% CI upper */
+  ciUpper: number;
+  /** I-squared (%) */
+  I2: number;
+  /** P-value for overall effect */
+  pValue: number;
+}
+
 /** Sensitivity analysis result (leave-one-out) */
 export interface SensitivityResult {
   /** Study left out */

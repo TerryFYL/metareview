@@ -778,6 +778,36 @@ const translations = {
   'tour.startTour.zh': '新手引导',
   'tour.startTour.en': 'Tour',
 
+  // Data Completeness Validation
+  'input.emptyDataRow.zh': '研究 "{name}" 的数据全部为 0，请填写效应量数据后再运行分析。',
+  'input.emptyDataRow.en': 'Study "{name}" has all-zero data. Please fill in effect size values before running analysis.',
+
+  // Cumulative Meta-Analysis Tab
+  'tab.cumulative.zh': '累积分析',
+  'tab.cumulative.en': 'Cumulative',
+  'cumulative.title.zh': '累积 Meta 分析',
+  'cumulative.title.en': 'Cumulative Meta-Analysis',
+  'cumulative.desc.zh': '按发表年份排序，逐步纳入研究并计算合并效应量，观察效应量随时间的稳定性趋势。',
+  'cumulative.desc.en': 'Studies sorted by publication year, progressively pooled to observe how the effect estimate stabilizes over time.',
+  'cumulative.addedStudy.zh': '新增研究',
+  'cumulative.addedStudy.en': 'Study Added',
+  'cumulative.pooledEffect.zh': '合并效应量',
+  'cumulative.pooledEffect.en': 'Pooled Effect',
+  'cumulative.heterogeneity.zh': '异质性',
+  'cumulative.heterogeneity.en': 'Heterogeneity',
+  'cumulative.noYear.zh': '部分研究缺少年份信息，将排列在末尾。',
+  'cumulative.noYear.en': 'Some studies have no year — they are placed at the end.',
+  'cumulative.stable.zh': '效应量在最后 {n} 步中保持稳定（变化 < 10%），结果较为稳健。',
+  'cumulative.stable.en': 'The effect estimate remained stable over the last {n} steps (< 10% change), suggesting a robust result.',
+  'cumulative.unstable.zh': '效应量在最后几步中仍有明显波动，结果可能不够稳健。',
+  'cumulative.unstable.en': 'The effect estimate still fluctuated notably in recent steps, suggesting the result may not be fully stable.',
+  'cumulative.downloadSVG.zh': '下载 SVG',
+  'cumulative.downloadSVG.en': 'Download SVG',
+
+  // Report PRISMA Summary
+  'report.section.prisma.zh': 'PRISMA 流程摘要',
+  'report.section.prisma.en': 'PRISMA Flow Summary',
+
   // Footer
   'footer.text.zh': 'MetaReview — 开源免费的医学研究 Meta 分析平台',
   'footer.text.en': 'MetaReview — Open-source meta-analysis platform for medical research',

@@ -225,7 +225,7 @@ interface UIStore {
   result: MetaAnalysisResult | null;
   eggers: EggersTest | null;
   error: string | null;
-  activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'sensitivity' | 'subgroup' | 'prisma' | 'search' | 'extract';
+  activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'cumulative' | 'sensitivity' | 'subgroup' | 'prisma' | 'search' | 'extract';
   plotSettings: PlotSettings;
   setLang: (lang: Lang) => void;
   setHeroSeen: (seen: boolean) => void;

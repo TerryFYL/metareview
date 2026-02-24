@@ -4,7 +4,7 @@
 import type {
   Study, StudyEffect, MetaAnalysisResult,
   EffectMeasure, ModelType, Heterogeneity,
-  SubgroupAnalysisResult,
+  SubgroupAnalysisResult, CumulativeResult,
 } from '../types';
 import {
   calculateEffectSize, toOriginalScale, calculateCI,
@@ -212,6 +212,57 @@ export function subgroupAnalysis(
     test: { Q: Qbetween, df, pValue },
     overall,
   };
+}
+
+/** Cumulative meta-analysis: progressively pool studies sorted by year */
+export function cumulativeMetaAnalysis(
+  studies: Study[],
+  measure: EffectMeasure,
+  model: ModelType = 'random'
+): CumulativeResult[] {
+  if (studies.length < 2) return [];
+
+  // Sort by year (ascending), studies without year go last, then by name
+  const sorted = [...studies].sort((a, b) => {
+    const aYear = a.year ?? 9999;
+    const bYear = b.year ?? 9999;
+    if (aYear !== bYear) return aYear - bYear;
+    return a.name.localeCompare(b.name);
+  });
+
+  const results: CumulativeResult[] = [];
+  for (let i = 1; i <= sorted.length; i++) {
+    const subset = sorted.slice(0, i);
+    if (i === 1) {
+      // Single study — compute effect but no pooling
+      const rawEffects = computeStudyEffects(subset, measure);
+      const e = rawEffects[0];
+      const ci = calculateCI(e.yi, e.sei, measure);
+      results.push({
+        addedStudy: sorted[0].name,
+        studyCount: 1,
+        year: sorted[0].year,
+        effect: e.effect,
+        ciLower: ci.lower,
+        ciUpper: ci.upper,
+        I2: 0,
+        pValue: 1,
+      });
+      continue;
+    }
+    const res = metaAnalysis(subset, measure, model);
+    results.push({
+      addedStudy: sorted[i - 1].name,
+      studyCount: i,
+      year: sorted[i - 1].year,
+      effect: res.effect,
+      ciLower: res.ciLower,
+      ciUpper: res.ciUpper,
+      I2: res.heterogeneity.I2,
+      pValue: res.pValue,
+    });
+  }
+  return results;
 }
 
 /** Leave-one-out sensitivity analysis */

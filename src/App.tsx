@@ -11,7 +11,8 @@ import SensitivityTable from './components/SensitivityTable';
 import PRISMAFlow from './components/PRISMAFlow';
 import LiteratureSearch from './components/LiteratureSearch';
 import OnboardingTour from './components/OnboardingTour';
-import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, isBinaryData, isContinuousData, isHRData } from './lib/statistics';
+import CumulativeMeta from './components/CumulativeMeta';
+import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, isBinaryData, isContinuousData, isHRData } from './lib/statistics';
 import { generateReportHTML, type ReportSections } from './lib/report-export';
 import { generateReportDOCX } from './lib/report-docx';
 import { t, type Lang } from './lib/i18n';
@@ -29,7 +30,7 @@ const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'SMD', label: "Hedges' g (SMD)", desc: 'Continuous, different scales' },
 ];
 
-const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'sensitivity', 'subgroup', 'prisma'] as const;
+const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'cumulative', 'sensitivity', 'subgroup', 'prisma'] as const;
 
 function ForestPlotControls({ lang, onDownloadSVG }: { lang: Lang; onDownloadSVG: () => void }) {
   const { plotSettings, setPlotSettings } = useUIStore();
@@ -262,6 +263,10 @@ export default function App() {
       }
       if (isBinaryData(s.data)) {
         const d = s.data as BinaryData;
+        // Check for all-zero data (e.g., RIS import stubs)
+        if (d.events1 === 0 && d.total1 === 0 && d.events2 === 0 && d.total2 === 0) {
+          return t('input.emptyDataRow', lang).replace('{name}', name);
+        }
         if (d.total1 <= 0 || d.total2 <= 0) {
           return t('input.invalidBinaryTotal', lang).replace('{name}', name);
         }
@@ -270,6 +275,10 @@ export default function App() {
         }
       } else if (isContinuousData(s.data)) {
         const d = s.data as ContinuousData;
+        // Check for all-zero data (e.g., RIS import stubs)
+        if (d.mean1 === 0 && d.sd1 === 0 && d.n1 === 0 && d.mean2 === 0 && d.sd2 === 0 && d.n2 === 0) {
+          return t('input.emptyDataRow', lang).replace('{name}', name);
+        }
         if (d.n1 <= 0 || d.n2 <= 0) {
           return t('input.invalidContinuousN', lang).replace('{name}', name);
         }
@@ -278,6 +287,10 @@ export default function App() {
         }
       } else if (isHRData(s.data)) {
         const d = s.data as HRData;
+        // Check for all-zero data (e.g., RIS import stubs)
+        if (d.hr === 0 && d.ciLower === 0 && d.ciUpper === 0) {
+          return t('input.emptyDataRow', lang).replace('{name}', name);
+        }
         if (d.hr <= 0) {
           return t('input.invalidHR', lang).replace('{name}', name);
         }
@@ -326,6 +339,11 @@ export default function App() {
     return sensitivityAnalysis(studies, measure, model);
   }, [result, studies, measure, model]);
 
+  const cumulativeResults = useMemo(() => {
+    if (!result || studies.length < 2) return [];
+    return cumulativeMetaAnalysis(studies, measure, model);
+  }, [result, studies, measure, model]);
+
   const downloadSVG = useCallback(() => {
     const svg = document.querySelector('.forest-plot-container svg');
     if (!svg) return;
@@ -356,13 +374,14 @@ export default function App() {
       sensitivityResults,
       forestSvg,
       funnelSvg,
+      prisma,
       sections,
     });
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
     setTimeout(() => URL.revokeObjectURL(url), 10000);
-  }, [result, title, pico, eggers, subgroupResult, sensitivityResults]);
+  }, [result, title, pico, prisma, eggers, subgroupResult, sensitivityResults]);
 
   const exportDOCX = useCallback(async (sections?: ReportSections) => {
     if (!result) return;
@@ -373,6 +392,7 @@ export default function App() {
       eggers,
       subgroupResult,
       sensitivityResults,
+      prisma,
       sections,
     });
     const url = URL.createObjectURL(blob);
@@ -381,7 +401,7 @@ export default function App() {
     a.download = `${title || 'metareview-report'}.docx`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 10000);
-  }, [result, title, pico, eggers, subgroupResult, sensitivityResults]);
+  }, [result, title, pico, prisma, eggers, subgroupResult, sensitivityResults]);
 
   // Show hero for new visitors
   if (!heroSeen) {
@@ -442,10 +462,12 @@ export default function App() {
           const isAlwaysEnabled = tab === 'prisma' || tab === 'search' || tab === 'input' || tab === 'extract';
           const isSubgroup = tab === 'subgroup';
           const isSensitivity = tab === 'sensitivity';
+          const isCumulative = tab === 'cumulative';
           const disabled = !isAlwaysEnabled && (
             !result
             || (isSensitivity && studies.length < 3)
             || (isSubgroup && !subgroupResult)
+            || (isCumulative && studies.length < 2)
           );
           return (
             <button
@@ -596,6 +618,11 @@ export default function App() {
             <FunnelPlot result={result} />
           </div>
         </div>
+      )}
+
+      {/* Cumulative Meta-Analysis Tab */}
+      {activeTab === 'cumulative' && result && cumulativeResults.length > 0 && (
+        <CumulativeMeta results={cumulativeResults} measure={measure} lang={lang} />
       )}
 
       {/* Sensitivity Analysis Tab */}

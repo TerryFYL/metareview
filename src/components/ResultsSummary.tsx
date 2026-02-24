@@ -30,7 +30,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     const allOn = Object.values(sections).every(v => v);
     const newVal = !allOn;
     setSections({
-      pico: newVal, overall: newVal, interpretation: newVal, studyTable: newVal,
+      pico: newVal, prisma: newVal, overall: newVal, interpretation: newVal, studyTable: newVal,
       eggers: newVal, plots: newVal, subgroup: newVal, sensitivity: newVal,
       methods: newVal, narrative: newVal,
     });
@@ -52,6 +52,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
 
   const sectionKeys: { key: keyof ReportSections; labelKey: string }[] = [
     { key: 'pico', labelKey: 'report.section.pico' },
+    { key: 'prisma', labelKey: 'report.section.prisma' },
     { key: 'overall', labelKey: 'report.section.overall' },
     { key: 'interpretation', labelKey: 'report.section.interpretation' },
     { key: 'studyTable', labelKey: 'report.section.studyTable' },
