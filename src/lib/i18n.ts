@@ -640,6 +640,42 @@ const translations = {
   'interp.note.zh': '注：临床意义需结合具体研究背景综合判断，统计学显著性 ≠ 临床重要性。',
   'interp.note.en': 'Note: Clinical significance depends on context. Statistical significance ≠ clinical importance.',
 
+  // Undo/Redo
+  'table.undo.zh': '\u21a9 撤销',
+  'table.undo.en': '\u21a9 Undo',
+  'table.redo.zh': '重做 \u21aa',
+  'table.redo.en': 'Redo \u21aa',
+
+  // DOCX Export
+  'results.exportDOCX.zh': '导出 Word',
+  'results.exportDOCX.en': 'Export DOCX',
+
+  // Forest Plot Settings
+  'forest.settings.zh': '图表设置',
+  'forest.settings.en': 'Plot Settings',
+  'forest.hideSettings.zh': '收起设置',
+  'forest.hideSettings.en': 'Hide Settings',
+  'forest.colorScheme.zh': '配色方案',
+  'forest.colorScheme.en': 'Color Scheme',
+  'forest.colorDefault.zh': '默认（蓝红）',
+  'forest.colorDefault.en': 'Default (Blue/Red)',
+  'forest.colorBW.zh': '黑白（打印友好）',
+  'forest.colorBW.en': 'Black & White (Print)',
+  'forest.colorBlind.zh': '色盲友好',
+  'forest.colorBlind.en': 'Colorblind Safe',
+  'forest.fontSize.zh': '字号',
+  'forest.fontSize.en': 'Font Size',
+  'forest.showWeights.zh': '显示权重',
+  'forest.showWeights.en': 'Show Weights',
+  'forest.customTitle.zh': '自定义标题',
+  'forest.customTitle.en': 'Custom Title',
+  'forest.customTitlePlaceholder.zh': '留空使用分析标题',
+  'forest.customTitlePlaceholder.en': 'Leave empty to use analysis title',
+  'forest.leftLabel.zh': '左侧标签',
+  'forest.leftLabel.en': 'Left Label',
+  'forest.rightLabel.zh': '右侧标签',
+  'forest.rightLabel.en': 'Right Label',
+
   // Footer
   'footer.text.zh': 'MetaReview — 开源免费的医学研究 Meta 分析平台',
   'footer.text.en': 'MetaReview — Open-source meta-analysis platform for medical research',

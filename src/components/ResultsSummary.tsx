@@ -10,9 +10,10 @@ interface ResultsSummaryProps {
   sensitivityResults: SensitivityResult[];
   lang: Lang;
   onExportReport?: () => void;
+  onExportDOCX?: () => void;
 }
 
-export default function ResultsSummary({ result, eggers, subgroupResult, sensitivityResults, lang, onExportReport }: ResultsSummaryProps) {
+export default function ResultsSummary({ result, eggers, subgroupResult, sensitivityResults, lang, onExportReport, onExportDOCX }: ResultsSummaryProps) {
   const { measure, model, heterogeneity: het } = result;
   const k = result.studies.length;
 
@@ -27,11 +28,18 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
         <h3 style={{ fontSize: 15, fontWeight: 600, color: '#111827', margin: 0 }}>
           {t('results.title', lang)}
         </h3>
-        {onExportReport && (
-          <button onClick={onExportReport} style={exportBtnStyle}>
-            {t('results.exportReport', lang)}
-          </button>
-        )}
+        <div style={{ display: 'flex', gap: 6 }}>
+          {onExportReport && (
+            <button onClick={onExportReport} style={exportBtnStyle}>
+              {t('results.exportReport', lang)}
+            </button>
+          )}
+          {onExportDOCX && (
+            <button onClick={onExportDOCX} style={docxBtnStyle}>
+              {t('results.exportDOCX', lang)}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Overall effect */}
@@ -379,6 +387,17 @@ const copyBtnStyle: React.CSSProperties = {
 const exportBtnStyle: React.CSSProperties = {
   padding: '7px 16px',
   background: '#2563eb',
+  color: '#fff',
+  border: 'none',
+  borderRadius: 6,
+  fontSize: 12,
+  fontWeight: 600,
+  cursor: 'pointer',
+};
+
+const docxBtnStyle: React.CSSProperties = {
+  padding: '7px 16px',
+  background: '#16a34a',
   color: '#fff',
   border: 'none',
   borderRadius: 6,

@@ -20,6 +20,8 @@ function studiesCompatible(studies: Study[], newMeasure: EffectMeasure): boolean
   return false;
 }
 
+const MAX_HISTORY = 50;
+
 interface ProjectStore {
   // Project data (persisted)
   title: string;
@@ -28,6 +30,10 @@ interface ProjectStore {
   model: ModelType;
   studies: Study[];
   prisma: PRISMAData;
+
+  // Undo/redo history (not persisted)
+  _history: Study[][];
+  _historyIndex: number;
 
   // Actions
   setTitle: (title: string) => void;
@@ -38,6 +44,10 @@ interface ProjectStore {
   setPRISMA: (prisma: PRISMAData) => void;
   reset: () => void;
   loadDemo: () => void;
+  undo: () => void;
+  redo: () => void;
+  canUndo: () => boolean;
+  canRedo: () => boolean;
 }
 
 const emptyPICO: PICO = {
@@ -49,23 +59,56 @@ const emptyPICO: PICO = {
 
 export const useProjectStore = create<ProjectStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       title: '',
       pico: emptyPICO,
       measure: 'OR' as EffectMeasure,
       model: 'random' as ModelType,
       studies: [],
       prisma: emptyPRISMA,
+      _history: [[]] as Study[][],
+      _historyIndex: 0,
 
       setTitle: (title) => set({ title }),
       setPICO: (pico) => set({ pico }),
-      setMeasure: (measure) => set((state) => ({
-        measure,
-        studies: studiesCompatible(state.studies, measure) ? state.studies : [],
-      })),
+      setMeasure: (measure) => set((state) => {
+        const compatible = studiesCompatible(state.studies, measure);
+        const newStudies = compatible ? state.studies : [];
+        if (!compatible) {
+          // Push cleared studies to history
+          const newHistory = state._history.slice(0, state._historyIndex + 1);
+          newHistory.push(newStudies);
+          if (newHistory.length > MAX_HISTORY) newHistory.shift();
+          return { measure, studies: newStudies, _history: newHistory, _historyIndex: newHistory.length - 1 };
+        }
+        return { measure };
+      }),
       setModel: (model) => set({ model }),
-      setStudies: (studies) => set({ studies }),
+      setStudies: (studies) => set((state) => {
+        const newHistory = state._history.slice(0, state._historyIndex + 1);
+        newHistory.push(studies);
+        if (newHistory.length > MAX_HISTORY) newHistory.shift();
+        return { studies, _history: newHistory, _historyIndex: newHistory.length - 1 };
+      }),
       setPRISMA: (prisma) => set({ prisma }),
+      undo: () => set((state) => {
+        if (state._historyIndex <= 0) return {};
+        const newIndex = state._historyIndex - 1;
+        return { studies: state._history[newIndex], _historyIndex: newIndex };
+      }),
+      redo: () => set((state) => {
+        if (state._historyIndex >= state._history.length - 1) return {};
+        const newIndex = state._historyIndex + 1;
+        return { studies: state._history[newIndex], _historyIndex: newIndex };
+      }),
+      canUndo: () => {
+        const state = get();
+        return state._historyIndex > 0;
+      },
+      canRedo: () => {
+        const state = get();
+        return state._historyIndex < state._history.length - 1;
+      },
       reset: () =>
         set({
           title: '',
@@ -74,6 +117,8 @@ export const useProjectStore = create<ProjectStore>()(
           model: 'random',
           studies: [],
           prisma: emptyPRISMA,
+          _history: [[]],
+          _historyIndex: 0,
         }),
       loadDemo: () =>
         set({
@@ -139,11 +184,40 @@ export const useProjectStore = create<ProjectStore>()(
           ],
         }),
     }),
-    { name: 'metareview-project' }
+    {
+      name: 'metareview-project',
+      partialize: (state) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { _history, _historyIndex, ...rest } = state;
+        return rest;
+      },
+    }
   )
 );
 
 // UI store (lang is persisted, rest is not)
+export type ColorScheme = 'default' | 'bw' | 'colorblind';
+
+export interface PlotSettings {
+  colorScheme: ColorScheme;
+  fontSize: number;
+  showWeights: boolean;
+  customTitle: string;
+  customXLabel: string;
+  favoursLeftLabel: string;
+  favoursRightLabel: string;
+}
+
+const defaultPlotSettings: PlotSettings = {
+  colorScheme: 'default',
+  fontSize: 11,
+  showWeights: true,
+  customTitle: '',
+  customXLabel: '',
+  favoursLeftLabel: '',
+  favoursRightLabel: '',
+};
+
 interface UIStore {
   lang: Lang;
   heroSeen: boolean;
@@ -151,12 +225,14 @@ interface UIStore {
   eggers: EggersTest | null;
   error: string | null;
   activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'sensitivity' | 'subgroup' | 'prisma' | 'search' | 'extract';
+  plotSettings: PlotSettings;
   setLang: (lang: Lang) => void;
   setHeroSeen: (seen: boolean) => void;
   setResult: (result: MetaAnalysisResult | null) => void;
   setEggers: (eggers: EggersTest | null) => void;
   setError: (error: string | null) => void;
   setActiveTab: (tab: UIStore['activeTab']) => void;
+  setPlotSettings: (settings: Partial<PlotSettings>) => void;
 }
 
 export const useUIStore = create<UIStore>()(
@@ -168,16 +244,20 @@ export const useUIStore = create<UIStore>()(
       eggers: null,
       error: null,
       activeTab: 'input',
+      plotSettings: defaultPlotSettings,
       setLang: (lang) => set({ lang }),
       setHeroSeen: (heroSeen) => set({ heroSeen }),
       setResult: (result) => set({ result }),
       setEggers: (eggers) => set({ eggers }),
       setError: (error) => set({ error }),
       setActiveTab: (activeTab) => set({ activeTab }),
+      setPlotSettings: (settings) => set((state) => ({
+        plotSettings: { ...state.plotSettings, ...settings },
+      })),
     }),
     {
       name: 'metareview-ui',
-      partialize: (state) => ({ lang: state.lang, heroSeen: state.heroSeen }),
+      partialize: (state) => ({ lang: state.lang, heroSeen: state.heroSeen, plotSettings: state.plotSettings }),
     }
   )
 );

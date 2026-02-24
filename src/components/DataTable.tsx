@@ -9,6 +9,10 @@ interface DataTableProps {
   measure: EffectMeasure;
   onStudiesChange: (studies: Study[]) => void;
   lang: Lang;
+  onUndo?: () => void;
+  onRedo?: () => void;
+  canUndo?: boolean;
+  canRedo?: boolean;
 }
 
 function generateId() {
@@ -83,7 +87,7 @@ function getCellIssue(study: Study, key: string, measure: EffectMeasure): CellIs
   return null;
 }
 
-export default function DataTable({ studies, measure, onStudiesChange, lang }: DataTableProps) {
+export default function DataTable({ studies, measure, onStudiesChange, lang, onUndo, onRedo, canUndo, canRedo }: DataTableProps) {
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [pasteToast, setPasteToast] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -416,6 +420,16 @@ export default function DataTable({ studies, measure, onStudiesChange, lang }: D
         <button onClick={addStudy} style={addBtnStyle}>
           {t('table.addStudy', lang)}
         </button>
+        {onUndo && (
+          <button onClick={onUndo} style={{ ...undoBtnStyle, opacity: canUndo ? 1 : 0.4 }} disabled={!canUndo} title={t('table.undo', lang)}>
+            {t('table.undo', lang)}
+          </button>
+        )}
+        {onRedo && (
+          <button onClick={onRedo} style={{ ...undoBtnStyle, opacity: canRedo ? 1 : 0.4 }} disabled={!canRedo} title={t('table.redo', lang)}>
+            {t('table.redo', lang)}
+          </button>
+        )}
         <button onClick={handleExportCSV} style={csvBtnStyle} disabled={studies.length === 0}>
           {t('table.exportCSV', lang)}
         </button>
@@ -502,6 +516,16 @@ const deleteBtnStyle: React.CSSProperties = {
   fontSize: 18,
   padding: '2px 6px',
   borderRadius: 4,
+};
+
+const undoBtnStyle: React.CSSProperties = {
+  padding: '7px 10px',
+  background: '#fff',
+  border: '1px solid #d1d5db',
+  borderRadius: 6,
+  cursor: 'pointer',
+  fontSize: 12,
+  color: '#374151',
 };
 
 const toastStyle: React.CSSProperties = {

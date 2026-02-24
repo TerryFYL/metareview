@@ -12,7 +12,8 @@ import PRISMAFlow from './components/PRISMAFlow';
 import LiteratureSearch from './components/LiteratureSearch';
 import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, isBinaryData, isContinuousData, isHRData } from './lib/statistics';
 import { generateReportHTML } from './lib/report-export';
-import { t } from './lib/i18n';
+import { generateReportDOCX } from './lib/report-docx';
+import { t, type Lang } from './lib/i18n';
 import { trackPageView, trackTabSwitch } from './lib/analytics';
 import type { EffectMeasure, ModelType, Study, BinaryData, ContinuousData, HRData, SubgroupAnalysisResult } from './lib/types';
 
@@ -29,6 +30,105 @@ const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
 
 const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'sensitivity', 'subgroup', 'prisma'] as const;
 
+function ForestPlotControls({ lang, onDownloadSVG }: { lang: Lang; onDownloadSVG: () => void }) {
+  const { plotSettings, setPlotSettings } = useUIStore();
+  const [showSettings, setShowSettings] = useState(false);
+
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6 }}>
+        <button onClick={() => setShowSettings(!showSettings)} style={secondaryBtnStyle}>
+          {showSettings ? t('forest.hideSettings', lang) : t('forest.settings', lang)}
+        </button>
+        <button onClick={onDownloadSVG} style={secondaryBtnStyle}>
+          {t('forest.download', lang)}
+        </button>
+      </div>
+      {showSettings && (
+        <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 8, padding: '14px 18px', marginTop: 10 }}>
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+            {/* Color Scheme */}
+            <div style={{ flex: '0 0 auto' }}>
+              <label style={settingsLabelStyle}>{t('forest.colorScheme', lang)}</label>
+              <select
+                value={plotSettings.colorScheme}
+                onChange={(e) => setPlotSettings({ colorScheme: e.target.value as 'default' | 'bw' | 'colorblind' })}
+                style={settingsSelectStyle}
+              >
+                <option value="default">{t('forest.colorDefault', lang)}</option>
+                <option value="bw">{t('forest.colorBW', lang)}</option>
+                <option value="colorblind">{t('forest.colorBlind', lang)}</option>
+              </select>
+            </div>
+            {/* Font Size */}
+            <div style={{ flex: '0 0 auto' }}>
+              <label style={settingsLabelStyle}>{t('forest.fontSize', lang)}</label>
+              <select
+                value={plotSettings.fontSize}
+                onChange={(e) => setPlotSettings({ fontSize: Number(e.target.value) })}
+                style={settingsSelectStyle}
+              >
+                {[9, 10, 11, 12, 13, 14].map(s => (
+                  <option key={s} value={s}>{s}pt</option>
+                ))}
+              </select>
+            </div>
+            {/* Show Weights */}
+            <div style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <input
+                type="checkbox"
+                checked={plotSettings.showWeights}
+                onChange={(e) => setPlotSettings({ showWeights: e.target.checked })}
+                id="show-weights"
+              />
+              <label htmlFor="show-weights" style={{ fontSize: 12, color: '#374151' }}>
+                {t('forest.showWeights', lang)}
+              </label>
+            </div>
+          </div>
+          {/* Custom Labels */}
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 10 }}>
+            <div style={{ flex: '1 1 200px' }}>
+              <label style={settingsLabelStyle}>{t('forest.customTitle', lang)}</label>
+              <input
+                type="text"
+                value={plotSettings.customTitle}
+                onChange={(e) => setPlotSettings({ customTitle: e.target.value })}
+                placeholder={t('forest.customTitlePlaceholder', lang)}
+                style={settingsInputStyle}
+              />
+            </div>
+            <div style={{ flex: '1 1 160px' }}>
+              <label style={settingsLabelStyle}>{t('forest.leftLabel', lang)}</label>
+              <input
+                type="text"
+                value={plotSettings.favoursLeftLabel}
+                onChange={(e) => setPlotSettings({ favoursLeftLabel: e.target.value })}
+                placeholder={t('forest.favoursTreatment', lang)}
+                style={settingsInputStyle}
+              />
+            </div>
+            <div style={{ flex: '1 1 160px' }}>
+              <label style={settingsLabelStyle}>{t('forest.rightLabel', lang)}</label>
+              <input
+                type="text"
+                value={plotSettings.favoursRightLabel}
+                onChange={(e) => setPlotSettings({ favoursRightLabel: e.target.value })}
+                placeholder={t('forest.favoursControl', lang)}
+                style={settingsInputStyle}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const settingsLabelStyle: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: '#6b7280', display: 'block', marginBottom: 3 };
+const settingsSelectStyle: React.CSSProperties = { padding: '5px 8px', border: '1px solid #d1d5db', borderRadius: 4, fontSize: 12, background: '#fff' };
+const settingsInputStyle: React.CSSProperties = { width: '100%', padding: '5px 8px', border: '1px solid #d1d5db', borderRadius: 4, fontSize: 12, boxSizing: 'border-box' as const };
+
 export default function App() {
   const {
     title, pico, measure, model, studies, prisma,
@@ -41,6 +141,23 @@ export default function App() {
   } = useUIStore();
 
   const [subgroupResult, setSubgroupResult] = useState<SubgroupAnalysisResult | null>(null);
+
+  const { undo, redo, canUndo, canRedo } = useProjectStore();
+
+  // Global undo/redo keyboard shortcut
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) {
+        if (canUndo()) { e.preventDefault(); undo(); }
+      } else if ((e.metaKey || e.ctrlKey) && e.key === 'z' && e.shiftKey) {
+        if (canRedo()) { e.preventDefault(); redo(); }
+      } else if ((e.metaKey || e.ctrlKey) && e.key === 'y') {
+        if (canRedo()) { e.preventDefault(); redo(); }
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [undo, redo, canUndo, canRedo]);
 
   // Track page view on mount
   useEffect(() => { trackPageView(); }, []);
@@ -155,6 +272,24 @@ export default function App() {
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }, [result, title, pico, eggers, subgroupResult, sensitivityResults]);
+
+  const exportDOCX = useCallback(async () => {
+    if (!result) return;
+    const blob = await generateReportDOCX({
+      title,
+      pico,
+      result,
+      eggers,
+      subgroupResult,
+      sensitivityResults,
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${title || 'metareview-report'}.docx`;
+    a.click();
     setTimeout(() => URL.revokeObjectURL(url), 10000);
   }, [result, title, pico, eggers, subgroupResult, sensitivityResults]);
 
@@ -327,7 +462,7 @@ export default function App() {
           {/* Data Table */}
           <section style={sectionStyle}>
             <h2 style={h2Style}>{t('input.studyData', lang)}</h2>
-            <DataTable studies={studies} measure={measure} onStudiesChange={setStudies} lang={lang} />
+            <DataTable studies={studies} measure={measure} onStudiesChange={setStudies} lang={lang} onUndo={undo} onRedo={redo} canUndo={canUndo()} canRedo={canRedo()} />
           </section>
 
           {/* Error */}
@@ -346,17 +481,13 @@ export default function App() {
 
       {/* Results Tab */}
       {activeTab === 'results' && result && (
-        <ResultsSummary result={result} eggers={eggers} subgroupResult={subgroupResult} sensitivityResults={sensitivityResults} lang={lang} onExportReport={exportReport} />
+        <ResultsSummary result={result} eggers={eggers} subgroupResult={subgroupResult} sensitivityResults={sensitivityResults} lang={lang} onExportReport={exportReport} onExportDOCX={exportDOCX} />
       )}
 
       {/* Forest Plot Tab */}
       {activeTab === 'forest' && result && (
         <div>
-          <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'flex-end' }}>
-            <button onClick={downloadSVG} style={secondaryBtnStyle}>
-              {t('forest.download', lang)}
-            </button>
-          </div>
+          <ForestPlotControls lang={lang} onDownloadSVG={downloadSVG} />
           <div className="forest-plot-container">
             <ForestPlot result={result} subgroupResult={subgroupResult} title={title || 'Forest Plot'} lang={lang} />
           </div>
