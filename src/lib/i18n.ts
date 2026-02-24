@@ -248,6 +248,10 @@ const translations = {
   'tab.subgroup.zh': '亚组分析',
   'tab.subgroup.en': 'Subgroup',
 
+  // Report Export
+  'results.exportReport.zh': '导出分析报告',
+  'results.exportReport.en': 'Export Report',
+
   // Footer
   'footer.text.zh': 'MetaReview — 开源免费的医学研究 Meta 分析平台',
   'footer.text.en': 'MetaReview — Open-source meta-analysis platform for medical research',

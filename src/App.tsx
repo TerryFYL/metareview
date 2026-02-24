@@ -8,6 +8,7 @@ import ResultsSummary from './components/ResultsSummary';
 import SensitivityTable from './components/SensitivityTable';
 import PRISMAFlow from './components/PRISMAFlow';
 import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, isBinaryData, isContinuousData } from './lib/statistics';
+import { generateReportHTML } from './lib/report-export';
 import { t } from './lib/i18n';
 import type { EffectMeasure, ModelType, Study, BinaryData, ContinuousData, SubgroupAnalysisResult } from './lib/types';
 
@@ -111,6 +112,29 @@ export default function App() {
     a.click();
     URL.revokeObjectURL(url);
   }, [title]);
+
+  const exportReport = useCallback(() => {
+    if (!result) return;
+    const serializer = new XMLSerializer();
+    const forestEl = document.querySelector('.forest-plot-container svg');
+    const funnelEl = document.querySelector('.funnel-plot-container svg');
+    const forestSvg = forestEl ? serializer.serializeToString(forestEl) : null;
+    const funnelSvg = funnelEl ? serializer.serializeToString(funnelEl) : null;
+    const html = generateReportHTML({
+      title,
+      pico,
+      result,
+      eggers,
+      subgroupResult,
+      sensitivityResults,
+      forestSvg,
+      funnelSvg,
+    });
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }, [result, title, pico, eggers, subgroupResult, sensitivityResults]);
 
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
@@ -252,7 +276,7 @@ export default function App() {
 
       {/* Results Tab */}
       {activeTab === 'results' && result && (
-        <ResultsSummary result={result} eggers={eggers} lang={lang} />
+        <ResultsSummary result={result} eggers={eggers} subgroupResult={subgroupResult} sensitivityResults={sensitivityResults} lang={lang} onExportReport={exportReport} />
       )}
 
       {/* Forest Plot Tab */}
@@ -271,7 +295,7 @@ export default function App() {
 
       {/* Funnel Plot Tab */}
       {activeTab === 'funnel' && result && (
-        <div style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
+        <div className="funnel-plot-container" style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
           <FunnelPlot result={result} />
         </div>
       )}
