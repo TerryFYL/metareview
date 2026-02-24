@@ -14,3 +14,8 @@ id = "df6a655d47264d55990dab25bd827a47"
 [[kv_namespaces]]
 binding = "EMAILS"
 id = "e62004326fdd4f3dad927a487d9a3d57"
+
+# KV namespace for shareable analysis links
+[[kv_namespaces]]
+binding = "SHARES"
+id = "7c0613f635c344819ee5212534c3b2dc"

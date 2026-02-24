@@ -26,6 +26,11 @@ export default defineConfig({
         target: 'http://localhost:8788',
         changeOrigin: true,
       },
+      // Shareable links
+      '/api/share': {
+        target: 'http://localhost:8788',
+        changeOrigin: true,
+      },
     },
   },
 })

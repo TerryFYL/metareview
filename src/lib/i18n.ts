@@ -1234,6 +1234,24 @@ const translations = {
   'a11y.networkGraph.zh': '网络 Meta 分析图',
   'a11y.networkGraph.en': 'Network meta-analysis graph',
 
+  // Share
+  'share.button.zh': '分享分析',
+  'share.button.en': 'Share',
+  'share.copying.zh': '生成链接中...',
+  'share.copying.en': 'Generating link...',
+  'share.copied.zh': '链接已复制！',
+  'share.copied.en': 'Link copied!',
+  'share.failed.zh': '分享失败，请重试',
+  'share.failed.en': 'Share failed, please retry',
+  'share.banner.zh': '只读模式 — 这是一个分享的分析结果',
+  'share.banner.en': 'Read-only — This is a shared analysis',
+  'share.openOwn.zh': '创建自己的分析',
+  'share.openOwn.en': 'Create your own',
+  'share.loading.zh': '正在加载分享的分析...',
+  'share.loading.en': 'Loading shared analysis...',
+  'share.notFound.zh': '分享链接已过期或不存在',
+  'share.notFound.en': 'Share link expired or not found',
+
   // Footer
   'footer.text.zh': 'MetaReview — 开源免费的医学研究 Meta 分析平台',
   'footer.text.en': 'MetaReview — Open-source meta-analysis platform for medical research',

@@ -267,6 +267,87 @@ export default function App() {
   const [showContours, setShowContours] = useState(false);
   const [showEggersLine, setShowEggersLine] = useState(false);
 
+  // Shareable links state
+  const [readOnly, setReadOnly] = useState(false);
+  const [shareLoading, setShareLoading] = useState(false);
+  const [shareStatus, setShareStatus] = useState<'idle' | 'sharing' | 'copied' | 'error'>('idle');
+
+  // Load shared analysis from URL parameter ?s=<id>
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const shareId = params.get('s');
+    if (!shareId || !/^[a-f0-9]{8}$/.test(shareId)) return;
+
+    setShareLoading(true);
+    setHeroSeen(true);
+
+    fetch(`/api/share/${shareId}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Not found');
+        return res.json();
+      })
+      .then((data: Record<string, unknown>) => {
+        // Load project data into store
+        if (data.title) setTitle(data.title as string);
+        if (data.pico) setPICO(data.pico as typeof pico);
+        if (data.measure) setMeasure(data.measure as EffectMeasure);
+        if (data.model) setModel(data.model as ModelType);
+        if (data.studies && Array.isArray(data.studies)) setStudies(data.studies as Study[]);
+        if (data.prisma) setPRISMA(data.prisma as typeof prisma);
+
+        setReadOnly(true);
+        setShareLoading(false);
+        // Auto-run analysis after data is loaded (triggered by next render cycle)
+      })
+      .catch(() => {
+        setShareLoading(false);
+        setError(t('share.notFound', lang));
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Auto-run analysis when loaded from share
+  useEffect(() => {
+    if (readOnly && studies.length >= 2 && !result) {
+      try {
+        const res = metaAnalysis(studies, measure, model);
+        setResult(res);
+        setEggers(eggersTest(res.studies));
+        setBeggs(beggsTest(res.studies));
+        setMetaRegression(runMetaRegression(studies, measure, model));
+        setTrimFillResult(trimAndFill(res.studies, res.summary, isLogScale(res.measure)));
+        const hasSubgroups = studies.some((s) => s.subgroup?.trim());
+        if (hasSubgroups) setSubgroupResult(subgroupAnalysis(studies, measure, model));
+        setActiveTab('results');
+      } catch {
+        setError(t('input.analysisFailed', lang));
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [readOnly, studies.length]);
+
+  // Share handler
+  const handleShare = useCallback(async () => {
+    setShareStatus('sharing');
+    try {
+      const shareData = { title, pico, measure, model, studies, prisma };
+      const res = await fetch('/api/share/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(shareData),
+      });
+      if (!res.ok) throw new Error('Failed');
+      const { id } = await res.json() as { id: string };
+      const shareUrl = `${window.location.origin}/?s=${id}`;
+      await navigator.clipboard.writeText(shareUrl);
+      setShareStatus('copied');
+      setTimeout(() => setShareStatus('idle'), 3000);
+    } catch {
+      setShareStatus('error');
+      setTimeout(() => setShareStatus('idle'), 3000);
+    }
+  }, [title, pico, measure, model, studies, prisma]);
+
   // Defer hidden renderer mounting until browser is idle (avoids blocking initial result render)
   const [hiddenReady, setHiddenReady] = useState(false);
   useEffect(() => {
@@ -574,6 +655,18 @@ export default function App() {
     setTimeout(() => URL.revokeObjectURL(url), 10000);
   }, [result, studies, measure, model, eggers, beggs, trimFillResult, metaRegression, subgroupResult, sensitivityResults, cumulativeResults, title]);
 
+  // Show loading screen while fetching shared analysis
+  if (shareLoading) {
+    return (
+      <div style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+        <div style={{ textAlign: 'center', color: '#6b7280' }}>
+          <div style={{ fontSize: 32, marginBottom: 12 }}>MetaReview</div>
+          <div style={{ fontSize: 14 }}>{t('share.loading', lang)}</div>
+        </div>
+      </div>
+    );
+  }
+
   // Show hero for new visitors
   if (!heroSeen) {
     return (
@@ -597,6 +690,32 @@ export default function App() {
 
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
+      {/* Read-only banner for shared analyses */}
+      {readOnly && (
+        <div style={{
+          padding: '10px 16px',
+          background: '#eff6ff',
+          border: '1px solid #bfdbfe',
+          borderRadius: 8,
+          marginBottom: 16,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 8,
+        }}>
+          <span style={{ fontSize: 13, color: '#1e40af', fontWeight: 500 }}>
+            {t('share.banner', lang)}
+          </span>
+          <a
+            href="/"
+            style={{ fontSize: 12, color: '#2563eb', textDecoration: 'underline', fontWeight: 500 }}
+          >
+            {t('share.openOwn', lang)}
+          </a>
+        </div>
+      )}
+
       {/* Header */}
       <header style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
         <div style={{ minWidth: 0 }}>
@@ -615,15 +734,36 @@ export default function App() {
           >
             {lang === 'zh' ? 'EN' : '中文'}
           </button>
-          <button onClick={() => setTourSeen(false)} style={secondaryBtnStyle} title={t('tour.startTour', lang)}>
-            {t('tour.startTour', lang)}
-          </button>
-          <button onClick={loadDemo} style={secondaryBtnStyle}>
-            {t('header.loadDemo', lang)}
-          </button>
-          <button onClick={reset} style={secondaryBtnStyle}>
-            {t('header.newAnalysis', lang)}
-          </button>
+          {!readOnly && (
+            <>
+              <button onClick={() => setTourSeen(false)} style={secondaryBtnStyle} title={t('tour.startTour', lang)}>
+                {t('tour.startTour', lang)}
+              </button>
+              <button onClick={loadDemo} style={secondaryBtnStyle}>
+                {t('header.loadDemo', lang)}
+              </button>
+              <button onClick={reset} style={secondaryBtnStyle}>
+                {t('header.newAnalysis', lang)}
+              </button>
+            </>
+          )}
+          {result && studies.length >= 2 && !readOnly && (
+            <button
+              onClick={handleShare}
+              disabled={shareStatus === 'sharing'}
+              style={{
+                ...secondaryBtnStyle,
+                background: shareStatus === 'copied' ? '#dcfce7' : shareStatus === 'error' ? '#fef2f2' : '#f3f4f6',
+                color: shareStatus === 'copied' ? '#16a34a' : shareStatus === 'error' ? '#dc2626' : '#374151',
+                borderColor: shareStatus === 'copied' ? '#bbf7d0' : shareStatus === 'error' ? '#fecaca' : '#d1d5db',
+              }}
+            >
+              {shareStatus === 'sharing' ? t('share.copying', lang)
+                : shareStatus === 'copied' ? t('share.copied', lang)
+                : shareStatus === 'error' ? t('share.failed', lang)
+                : t('share.button', lang)}
+            </button>
+          )}
         </div>
       </header>
 
@@ -635,7 +775,8 @@ export default function App() {
         onKeyDown={(e) => {
           if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
             e.preventDefault();
-            const enabledTabs = TAB_KEYS.filter((tab) => {
+            const visibleTabs = readOnly ? TAB_KEYS.filter(t => t !== 'search' && t !== 'extract') : TAB_KEYS;
+            const enabledTabs = visibleTabs.filter((tab) => {
               const isAlwaysEnabled = tab === 'prisma' || tab === 'search' || tab === 'input' || tab === 'extract';
               if (isAlwaysEnabled) return true;
               if (!result) return false;
@@ -660,7 +801,7 @@ export default function App() {
           }
         }}
       >
-        {TAB_KEYS.map((tab) => {
+        {TAB_KEYS.filter(tab => !(readOnly && (tab === 'search' || tab === 'extract'))).map((tab) => {
           const isAlwaysEnabled = tab === 'prisma' || tab === 'search' || tab === 'input' || tab === 'extract';
           const isSubgroup = tab === 'subgroup';
           const isSensitivity = tab === 'sensitivity';
@@ -808,10 +949,12 @@ export default function App() {
             </div>
           )}
 
-          {/* Run button */}
-          <button data-tour="run-analysis" onClick={runAnalysis} style={primaryBtnStyle} disabled={studies.length < 2}>
-            {t('input.runAnalysis', lang)}
-          </button>
+          {/* Run button (hidden in readOnly mode) */}
+          {!readOnly && (
+            <button data-tour="run-analysis" onClick={runAnalysis} style={primaryBtnStyle} disabled={studies.length < 2}>
+              {t('input.runAnalysis', lang)}
+            </button>
+          )}
         </div>
       )}
 
