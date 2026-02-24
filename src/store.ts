@@ -1,9 +1,23 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Study, EffectMeasure, ModelType, PICO, MetaAnalysisResult, EggersTest } from './lib/types';
+import { isBinaryData, isContinuousData, isGenericData } from './lib/statistics/effect-size';
 import type { Lang } from './lib/i18n';
 import type { PRISMAData } from './components/PRISMAFlow';
 import { emptyPRISMA } from './components/PRISMAFlow';
+
+const BINARY_MEASURES: EffectMeasure[] = ['OR', 'RR'];
+const CONTINUOUS_MEASURES: EffectMeasure[] = ['MD', 'SMD'];
+
+/** Check if studies are compatible with the new measure */
+function studiesCompatible(studies: Study[], newMeasure: EffectMeasure): boolean {
+  if (studies.length === 0) return true;
+  const first = studies[0].data;
+  if (isGenericData(first)) return true;
+  if (isBinaryData(first)) return BINARY_MEASURES.includes(newMeasure);
+  if (isContinuousData(first)) return CONTINUOUS_MEASURES.includes(newMeasure);
+  return false;
+}
 
 interface ProjectStore {
   // Project data (persisted)
@@ -44,7 +58,10 @@ export const useProjectStore = create<ProjectStore>()(
 
       setTitle: (title) => set({ title }),
       setPICO: (pico) => set({ pico }),
-      setMeasure: (measure) => set({ measure, studies: [] }),
+      setMeasure: (measure) => set((state) => ({
+        measure,
+        studies: studiesCompatible(state.studies, measure) ? state.studies : [],
+      })),
       setModel: (model) => set({ model }),
       setStudies: (studies) => set({ studies }),
       setPRISMA: (prisma) => set({ prisma }),

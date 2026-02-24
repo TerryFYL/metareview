@@ -93,7 +93,7 @@ export function chiSquaredCdf(x: number, df: number): number {
 
 /** Chi-squared p-value (upper tail) */
 export function chiSquaredPValue(x: number, df: number): number {
-  return 1 - chiSquaredCdf(x, df);
+  return Math.max(0, 1 - chiSquaredCdf(x, df));
 }
 
 /** t-distribution CDF using incomplete beta function */
@@ -161,22 +161,26 @@ function gammaPSeries(a: number, x: number, lnA: number): number {
 }
 
 function gammaPContinuedFraction(a: number, x: number, lnA: number): number {
-  let f = 1e-30;
-  let c = f;
-  let d = 0;
+  // Legendre continued fraction for Q(a,x) = Gamma(a,x)/Gamma(a)
+  // Q(a,x) = e^{-x} * x^a / Gamma(a) * CF
+  // CF = 1/(x+1-a- 1*(1-a)/(x+3-a- 2*(2-a)/(x+5-a- ...)))
+  // Using modified Lentz's method
+  let b = x + 1 - a;
+  let c = 1e30;
+  let d = 1 / b;
+  let f = d;
 
-  for (let i = 1; i < 200; i++) {
-    const an = i % 2 === 1 ? ((i + 1) / 2 - a) : i / 2;
-    const bn = x + i - (i % 2 === 1 ? 0 : a - 1);
-
-    d = bn + an * d;
+  for (let i = 1; i <= 200; i++) {
+    const an = -i * (i - a);
+    b += 2;
+    d = an * d + b;
     if (Math.abs(d) < 1e-30) d = 1e-30;
-    c = bn + an / c;
+    c = b + an / c;
     if (Math.abs(c) < 1e-30) c = 1e-30;
     d = 1 / d;
-    const delta = c * d;
+    const delta = d * c;
     f *= delta;
-    if (Math.abs(delta - 1) < 1e-14) break;
+    if (Math.abs(delta - 1) < 1e-10) break;
   }
 
   return f * Math.exp(-x + a * Math.log(x) - lnA);

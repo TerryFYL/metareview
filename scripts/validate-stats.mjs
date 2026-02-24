@@ -77,20 +77,22 @@ function gammaPSeries(a, x, lnA) {
 }
 
 function gammaPContinuedFraction(a, x, lnA) {
-  let f = 1e-30;
-  let c = f;
-  let d = 0;
-  for (let i = 1; i < 200; i++) {
-    const an = i % 2 === 1 ? ((i + 1) / 2 - a) : i / 2;
-    const bn = x + i - (i % 2 === 1 ? 0 : a - 1);
-    d = bn + an * d;
+  // Legendre continued fraction for Q(a,x) via modified Lentz's method
+  let b = x + 1 - a;
+  let c = 1e30;
+  let d = 1 / b;
+  let f = d;
+  for (let i = 1; i <= 200; i++) {
+    const an = -i * (i - a);
+    b += 2;
+    d = an * d + b;
     if (Math.abs(d) < 1e-30) d = 1e-30;
-    c = bn + an / c;
+    c = b + an / c;
     if (Math.abs(c) < 1e-30) c = 1e-30;
     d = 1 / d;
-    const delta = c * d;
+    const delta = d * c;
     f *= delta;
-    if (Math.abs(delta - 1) < 1e-14) break;
+    if (Math.abs(delta - 1) < 1e-10) break;
   }
   return f * Math.exp(-x + a * Math.log(x) - lnA);
 }
@@ -101,7 +103,7 @@ function chiSquaredCdf(x, df) {
 }
 
 function chiSquaredPValue(x, df) {
-  return 1 - chiSquaredCdf(x, df);
+  return Math.max(0, 1 - chiSquaredCdf(x, df));
 }
 
 function incompleteBeta(x, a, b) {
