@@ -1,5 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useProjectStore, useUIStore } from './store';
+import HeroSection from './components/HeroSection';
 import PICOForm from './components/PICOForm';
 import DataTable from './components/DataTable';
 import ForestPlot from './components/ForestPlot';
@@ -33,8 +34,8 @@ export default function App() {
   } = useProjectStore();
 
   const {
-    lang, result, eggers, error, activeTab,
-    setLang, setResult, setEggers, setError, setActiveTab,
+    lang, heroSeen, result, eggers, error, activeTab,
+    setLang, setHeroSeen, setResult, setEggers, setError, setActiveTab,
   } = useUIStore();
 
   const [subgroupResult, setSubgroupResult] = useState<SubgroupAnalysisResult | null>(null);
@@ -146,6 +147,27 @@ export default function App() {
     window.open(url, '_blank');
     setTimeout(() => URL.revokeObjectURL(url), 10000);
   }, [result, title, pico, eggers, subgroupResult, sensitivityResults]);
+
+  // Show hero for new visitors
+  if (!heroSeen) {
+    return (
+      <div style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
+        <HeroSection
+          lang={lang}
+          onGetStarted={() => {
+            setHeroSeen(true);
+            setActiveTab('search');
+          }}
+          onLoadDemo={() => {
+            setHeroSeen(true);
+            loadDemo();
+            setActiveTab('input');
+          }}
+          onSwitchLang={() => setLang(lang === 'zh' ? 'en' : 'zh')}
+        />
+      </div>
+    );
+  }
 
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>

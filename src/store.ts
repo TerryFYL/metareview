@@ -128,11 +128,13 @@ export const useProjectStore = create<ProjectStore>()(
 // UI store (lang is persisted, rest is not)
 interface UIStore {
   lang: Lang;
+  heroSeen: boolean;
   result: MetaAnalysisResult | null;
   eggers: EggersTest | null;
   error: string | null;
   activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'sensitivity' | 'subgroup' | 'prisma' | 'search' | 'extract';
   setLang: (lang: Lang) => void;
+  setHeroSeen: (seen: boolean) => void;
   setResult: (result: MetaAnalysisResult | null) => void;
   setEggers: (eggers: EggersTest | null) => void;
   setError: (error: string | null) => void;
@@ -143,11 +145,13 @@ export const useUIStore = create<UIStore>()(
   persist(
     (set) => ({
       lang: 'zh',
+      heroSeen: false,
       result: null,
       eggers: null,
       error: null,
       activeTab: 'input',
       setLang: (lang) => set({ lang }),
+      setHeroSeen: (heroSeen) => set({ heroSeen }),
       setResult: (result) => set({ result }),
       setEggers: (eggers) => set({ eggers }),
       setError: (error) => set({ error }),
@@ -155,7 +159,7 @@ export const useUIStore = create<UIStore>()(
     }),
     {
       name: 'metareview-ui',
-      partialize: (state) => ({ lang: state.lang }),
+      partialize: (state) => ({ lang: state.lang, heroSeen: state.heroSeen }),
     }
   )
 );
