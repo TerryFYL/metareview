@@ -20,6 +20,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
   const { measure, model, heterogeneity: het } = result;
   const k = result.studies.length;
   const beggs = useUIStore((s) => s.beggs);
+  const metaRegression = useUIStore((s) => s.metaRegression);
   const [showSections, setShowSections] = useState(false);
   const [sections, setSections] = useState<ReportSections>({ ...defaultReportSections });
 
@@ -33,7 +34,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     setSections({
       pico: newVal, prisma: newVal, overall: newVal, interpretation: newVal, studyTable: newVal,
       eggers: newVal, beggs: newVal, plots: newVal, galbraith: newVal, subgroup: newVal, sensitivity: newVal,
-      methods: newVal, narrative: newVal,
+      metaReg: newVal, baujat: newVal, influence: newVal, loo: newVal, network: newVal, grade: newVal, doseResponse: newVal, methods: newVal, narrative: newVal,
     });
   };
 
@@ -63,6 +64,13 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     { key: 'galbraith', labelKey: 'report.section.galbraith' },
     { key: 'subgroup', labelKey: 'report.section.subgroup' },
     { key: 'sensitivity', labelKey: 'report.section.sensitivity' },
+    { key: 'metaReg', labelKey: 'report.section.metaRegression' },
+    { key: 'baujat', labelKey: 'report.section.baujat' },
+    { key: 'influence', labelKey: 'report.section.influence' },
+    { key: 'loo', labelKey: 'report.section.loo' },
+    { key: 'network', labelKey: 'report.section.network' },
+    { key: 'grade', labelKey: 'report.section.grade' },
+    { key: 'doseResponse', labelKey: 'report.section.doseResponse' },
     { key: 'methods', labelKey: 'report.section.methods' },
     { key: 'narrative', labelKey: 'report.section.narrative' },
   ];
@@ -128,8 +136,21 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
             <Row label="95% CI" value={`[${result.ciLower.toFixed(4)}, ${result.ciUpper.toFixed(4)}]`} />
             <Row label="Z" value={result.z.toFixed(4)} />
             <Row label="P-value" value={formatP(result.pValue)} highlight={result.pValue < 0.05} />
+            {result.predictionInterval && (
+              <Row label={t('results.predictionInterval', lang)} value={`[${result.predictionInterval.lower.toFixed(4)}, ${result.predictionInterval.upper.toFixed(4)}]`} />
+            )}
           </tbody>
         </table>
+        {result.predictionInterval && (
+          <p style={{ fontSize: 11, color: '#6b7280', marginTop: 6, fontStyle: 'italic' }}>
+            {t('results.piNote', lang)}
+          </p>
+        )}
+        {!result.predictionInterval && model === 'random' && k >= 3 ? null : !result.predictionInterval && (
+          <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 6, fontStyle: 'italic' }}>
+            {t('results.piNotAvailable', lang)}
+          </p>
+        )}
       </div>
 
       {/* Clinical Interpretation */}
@@ -192,6 +213,28 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
         </div>
       )}
 
+      {/* Meta-Regression */}
+      {metaRegression && (
+        <div style={cardStyle}>
+          <div style={cardTitleStyle}>{t('metaReg.title', lang)}</div>
+          <table style={tableStyle}>
+            <tbody>
+              <Row label={t('metaReg.covariate', lang)} value={`${metaRegression.covariate} (k = ${metaRegression.k})`} />
+              <Row label={t('metaReg.coefficient', lang)} value={`${metaRegression.coefficient.toFixed(4)} (SE = ${metaRegression.se.toFixed(4)})`} />
+              <Row label="Z" value={metaRegression.z.toFixed(4)} />
+              <Row label="P-value" value={formatP(metaRegression.pValue)} highlight={metaRegression.pValue < 0.05} />
+              <Row label={t('metaReg.intercept', lang)} value={metaRegression.intercept.toFixed(4)} />
+              <Row label={t('metaReg.qModel', lang)} value={`${metaRegression.QModel.toFixed(2)} (p = ${formatP(metaRegression.QModelP)})`} highlight={metaRegression.QModelP < 0.05} />
+              <Row label={t('metaReg.qResidual', lang)} value={`${metaRegression.QResidual.toFixed(2)} (df = ${metaRegression.QResidualDf}, p = ${formatP(metaRegression.QResidualP)})`} />
+              <Row label={t('metaReg.r2', lang)} value={`${(metaRegression.R2 * 100).toFixed(1)}%`} />
+            </tbody>
+          </table>
+          <p style={{ fontSize: 12, color: metaRegression.pValue < 0.05 ? '#dc2626' : '#16a34a', marginTop: 8, fontWeight: 500 }}>
+            {metaRegression.pValue < 0.05 ? t('metaReg.significant', lang) : t('metaReg.notSignificant', lang)}
+          </p>
+        </div>
+      )}
+
       {/* Methods paragraph (for manuscript) */}
       <MethodsParagraph result={result} eggers={eggers} subgroupResult={subgroupResult} sensitivityResults={sensitivityResults} lang={lang} />
 
@@ -204,6 +247,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
             model === 'random' ? 'DerSimonian-Laird' : 'inverse variance'
           } method. The pooled {measure} was {result.effect.toFixed(2)} (95% CI: {result.ciLower.toFixed(2)}&ndash;{result.ciUpper.toFixed(2)}; Z = {result.z.toFixed(2)}, P {result.pValue < 0.001 ? '< 0.001' : `= ${result.pValue.toFixed(3)}`}), {result.pValue < 0.05 ? 'indicating a statistically significant effect' : 'showing no statistically significant effect'}.
           Heterogeneity was {het.I2 < 25 ? 'low' : het.I2 < 50 ? 'moderate' : het.I2 < 75 ? 'substantial' : 'considerable'} (I{'\u00B2'} = {het.I2.toFixed(1)}%, Q = {het.Q.toFixed(2)}, df = {het.df}, P {het.pValue < 0.001 ? '< 0.001' : `= ${het.pValue.toFixed(3)}`}; {'\u03C4\u00B2'} = {het.tau2.toFixed(4)}).
+          {result.predictionInterval ? ` The 95% prediction interval was ${result.predictionInterval.lower.toFixed(2)}\u2013${result.predictionInterval.upper.toFixed(2)}, indicating the range of effects expected in a new study (Riley et al., 2011).` : ''}
           {eggers ? ` Egger's regression test ${eggers.pValue < 0.05 ? 'indicated significant' : 'did not indicate'} funnel plot asymmetry (intercept = ${eggers.intercept.toFixed(2)}, P = ${formatP(eggers.pValue)}).` : ''}
           {sensitivityResults.length > 0 && (() => {
             const influential = sensitivityResults.filter(r => {

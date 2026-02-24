@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import type { MetaAnalysisResult } from '../lib/types';
+import type { MetaAnalysisResult, EggersTest } from '../lib/types';
 import { funnelPlotData } from '../lib/statistics';
 import type { TrimAndFillResult } from '../lib/statistics';
 import { t, type Lang } from '../lib/i18n';
@@ -13,14 +13,16 @@ interface FunnelPlotProps {
   height?: number;
   trimFillResult?: TrimAndFillResult | null;
   showContours?: boolean;
+  eggers?: EggersTest | null;
+  showEggersLine?: boolean;
 }
 
 const MARGIN = { top: 30, right: 30, bottom: 50, left: 60 };
 
-const FUNNEL_COLORS: Record<ColorScheme, { point: string; summary: string; funnel: string; funnelStroke: string; imputed: string; contour01: string; contour05: string; contour10: string }> = {
-  default: { point: '#2563eb', summary: '#dc2626', funnel: '#f3f4f6', funnelStroke: '#d1d5db', imputed: '#f97316', contour01: '#dbeafe', contour05: '#e0f2fe', contour10: '#f0f9ff' },
-  bw: { point: '#333333', summary: '#000000', funnel: '#f5f5f5', funnelStroke: '#999999', imputed: '#888888', contour01: '#d4d4d4', contour05: '#e5e5e5', contour10: '#f0f0f0' },
-  colorblind: { point: '#0072B2', summary: '#D55E00', funnel: '#f0f4f8', funnelStroke: '#a0aec0', imputed: '#CC79A7', contour01: '#c7d2fe', contour05: '#ddd6fe', contour10: '#ede9fe' },
+const FUNNEL_COLORS: Record<ColorScheme, { point: string; summary: string; funnel: string; funnelStroke: string; imputed: string; contour01: string; contour05: string; contour10: string; eggersLine: string }> = {
+  default: { point: '#2563eb', summary: '#dc2626', funnel: '#f3f4f6', funnelStroke: '#d1d5db', imputed: '#f97316', contour01: '#dbeafe', contour05: '#e0f2fe', contour10: '#f0f9ff', eggersLine: '#7c3aed' },
+  bw: { point: '#333333', summary: '#000000', funnel: '#f5f5f5', funnelStroke: '#999999', imputed: '#888888', contour01: '#d4d4d4', contour05: '#e5e5e5', contour10: '#f0f0f0', eggersLine: '#555555' },
+  colorblind: { point: '#0072B2', summary: '#D55E00', funnel: '#f0f4f8', funnelStroke: '#a0aec0', imputed: '#CC79A7', contour01: '#c7d2fe', contour05: '#ddd6fe', contour10: '#ede9fe', eggersLine: '#009E73' },
 };
 
 export default function FunnelPlot({
@@ -30,6 +32,8 @@ export default function FunnelPlot({
   height = 400,
   trimFillResult,
   showContours = false,
+  eggers,
+  showEggersLine = false,
 }: FunnelPlotProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const plotSettings = useUIStore((s) => s.plotSettings);
@@ -184,6 +188,42 @@ export default function FunnelPlot({
         .attr('stroke', colors.imputed)
         .attr('stroke-width', 1)
         .attr('stroke-dasharray', '4,4');
+
+      // Adjusted symmetry funnel boundaries (corrected 95% CI funnel)
+      const adjSummary = trimFillResult.adjustedSummary;
+      const adjFunnelSE = d3.range(0, maxSE * 1.1, maxSE / 50);
+      // Left boundary
+      g.append('path')
+        .datum(adjFunnelSE.map(se => [xScale(adjSummary - 1.96 * se), yScale(se)] as [number, number]))
+        .attr('d', d3.line())
+        .attr('fill', 'none')
+        .attr('stroke', colors.imputed)
+        .attr('stroke-width', 1)
+        .attr('stroke-dasharray', '6,4')
+        .attr('opacity', 0.5);
+      // Right boundary
+      g.append('path')
+        .datum(adjFunnelSE.map(se => [xScale(adjSummary + 1.96 * se), yScale(se)] as [number, number]))
+        .attr('d', d3.line())
+        .attr('fill', 'none')
+        .attr('stroke', colors.imputed)
+        .attr('stroke-width', 1)
+        .attr('stroke-dasharray', '6,4')
+        .attr('opacity', 0.5);
+    }
+
+    // Egger's regression line overlay
+    if (showEggersLine && eggers) {
+      const seSteps = d3.range(0, maxSE * 1.1, maxSE / 50);
+      // In funnel plot space: x = slope + intercept * SE
+      g.append('path')
+        .datum(seSteps.map(se => [xScale(eggers.slope + eggers.intercept * se), yScale(se)] as [number, number]))
+        .attr('d', d3.line())
+        .attr('fill', 'none')
+        .attr('stroke', colors.eggersLine)
+        .attr('stroke-width', 1.5)
+        .attr('stroke-dasharray', '5,3')
+        .attr('opacity', 0.8);
     }
 
     // X axis
@@ -227,7 +267,7 @@ export default function FunnelPlot({
       .attr('font-weight', 'bold')
       .attr('fill', '#333')
       .text(plotSettings.customTitle || 'Funnel Plot');
-  }, [result, width, height, plotSettings, trimFillResult, showContours]);
+  }, [result, width, height, plotSettings, trimFillResult, showContours, eggers, showEggersLine]);
 
   return (
     <svg

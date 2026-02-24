@@ -85,6 +85,8 @@ export default function ForestPlot({
   const width = propWidth || containerWidth;
   const hasSubgroups = subgroupResult && subgroupResult.subgroups.length > 1;
 
+  const hasPredictionInterval = !!result.predictionInterval;
+
   // Calculate total rows needed
   let totalRows: number;
   if (hasSubgroups) {
@@ -92,9 +94,15 @@ export default function ForestPlot({
     totalRows = subgroupResult.subgroups.reduce(
       (sum, sg) => sum + 1 + sg.result.studies.length + 1, 0
     ) + 2; // overall + spacing
+    // Extra row for subgroup test annotation
+    totalRows += 1;
+    // Extra row for effect difference when significant
+    if (subgroupResult.test.pValue < 0.05) totalRows += 1;
   } else {
     totalRows = result.studies.length + 2;
   }
+  // Add row for prediction interval if available
+  if (hasPredictionInterval) totalRows += 1;
 
   const height = MARGIN.top + totalRows * ROW_HEIGHT + MARGIN.bottom;
   const plotWidth = width - MARGIN.left - MARGIN.right;
@@ -133,6 +141,10 @@ export default function ForestPlot({
       for (const sg of subgroupResult.subgroups) {
         allValues.push(sg.result.ciLower, sg.result.ciUpper);
       }
+    }
+    // Include prediction interval bounds in scale
+    if (result.predictionInterval) {
+      allValues.push(result.predictionInterval.lower, result.predictionInterval.upper);
     }
     const nullValue = useLog ? 1 : 0;
     allValues.push(nullValue);
@@ -410,21 +422,96 @@ export default function ForestPlot({
     const overallLabel = `${lang === 'zh' ? '总计' : 'Overall'} (${result.model === 'random' ? 'Random' : 'Fixed'}, I\u00B2=${result.heterogeneity.I2.toFixed(0)}%)`;
     drawDiamond(result, overallY, overallLabel, colors.overall);
 
+    // Prediction interval (dashed diamond below overall)
+    if (result.predictionInterval) {
+      const pi = result.predictionInterval;
+      const piY = overallY + ROW_HEIGHT;
+      const piLeft = xScale(pi.lower);
+      const piRight = xScale(pi.upper);
+      const piCenter = xScale(result.effect);
+      const piDH = DIAMOND_HEIGHT * 0.8;
+
+      // Dashed diamond outline (no fill)
+      g.append('polygon')
+        .attr('points', [
+          `${piLeft},${piY}`, `${piCenter},${piY - piDH / 2}`,
+          `${piRight},${piY}`, `${piCenter},${piY + piDH / 2}`,
+        ].join(' '))
+        .attr('fill', 'none')
+        .attr('stroke', colors.overall)
+        .attr('stroke-width', 1.5)
+        .attr('stroke-dasharray', '4,3')
+        .attr('opacity', 0.7);
+
+      // Label
+      g.append('text')
+        .attr('x', -MARGIN.left + 10).attr('y', piY + 4)
+        .attr('font-size', fs - 1).attr('fill', '#666')
+        .attr('font-style', 'italic')
+        .text(lang === 'zh' ? '95% 预测区间' : '95% Prediction Interval');
+
+      // PI value text
+      g.append('text')
+        .attr('x', plotWidth + 10).attr('y', piY + 4)
+        .attr('font-size', fs - 1).attr('fill', '#666')
+        .attr('font-family', 'monospace')
+        .attr('font-style', 'italic')
+        .text(`[${pi.lower.toFixed(2)}, ${pi.upper.toFixed(2)}]`);
+
+      currentRow++;
+    }
+
     // Subgroup test annotation
     if (hasSubgroups) {
-      const testY = overallY + ROW_HEIGHT;
+      const testY = (hasPredictionInterval ? overallY + ROW_HEIGHT * 2 : overallY + ROW_HEIGHT);
       const pStr = subgroupResult.test.pValue < 0.001
         ? '< 0.001'
         : subgroupResult.test.pValue.toFixed(3);
+      const isSgSig = subgroupResult.test.pValue < 0.05;
+
+      // Background highlight when Q-between is significant
+      if (isSgSig) {
+        g.append('rect')
+          .attr('x', -MARGIN.left + 4)
+          .attr('y', testY - ROW_HEIGHT / 2 + 2)
+          .attr('width', plotWidth + MARGIN.left + MARGIN.right - 8)
+          .attr('height', (subgroupResult.subgroups.length >= 2 ? ROW_HEIGHT * 2 : ROW_HEIGHT) - 4)
+          .attr('rx', 4)
+          .attr('fill', colors.overall === '#dc2626' ? '#fef2f2' : colors.overall === '#000000' ? '#f5f5f5' : '#fff1e6')
+          .attr('stroke', colors.overall === '#dc2626' ? '#fecaca' : colors.overall === '#000000' ? '#d4d4d4' : '#fed7aa')
+          .attr('stroke-width', 1);
+      }
+
       g.append('text')
         .attr('x', -MARGIN.left + 10)
         .attr('y', testY + 4)
         .attr('font-size', fs - 1)
-        .attr('fill', subgroupResult.test.pValue < 0.05 ? colors.overall : '#666')
+        .attr('fill', isSgSig ? colors.overall : '#666')
         .attr('font-style', 'italic')
+        .attr('font-weight', isSgSig ? 'bold' : 'normal')
         .text(
           `${t('subgroup.testTitle', lang)}: Q=${subgroupResult.test.Q.toFixed(2)}, df=${subgroupResult.test.df}, p=${pStr}`
         );
+
+      // Show inter-subgroup effect difference when significant
+      if (isSgSig && subgroupResult.subgroups.length >= 2) {
+        const effects = subgroupResult.subgroups.map(s => s.result.effect);
+        const maxE = Math.max(...effects);
+        const minE = Math.min(...effects);
+        const diff = Math.abs(maxE - minE);
+        const maxSg = subgroupResult.subgroups.find(s => s.result.effect === maxE);
+        const minSg = subgroupResult.subgroups.find(s => s.result.effect === minE);
+
+        g.append('text')
+          .attr('x', -MARGIN.left + 10)
+          .attr('y', testY + ROW_HEIGHT - 4)
+          .attr('font-size', fs - 2)
+          .attr('fill', '#666')
+          .attr('font-style', 'italic')
+          .text(
+            `\u0394 ${result.measure}: ${diff.toFixed(2)} (${(minSg?.name || '').slice(0, 15)} vs ${(maxSg?.name || '').slice(0, 15)})`
+          );
+      }
     }
 
     // X axis
@@ -456,7 +543,7 @@ export default function ForestPlot({
       .attr('x', xScale(nullValue) + 20).attr('y', labelY)
       .attr('text-anchor', 'start').attr('font-size', fs - 2).attr('fill', '#999')
       .text(rightLabel);
-  }, [result, subgroupResult, width, title, lang, plotWidth, hasSubgroups, plotSettings, showTooltip, hideTooltip, colors]);
+  }, [result, subgroupResult, width, title, lang, plotWidth, hasSubgroups, hasPredictionInterval, plotSettings, showTooltip, hideTooltip, colors]);
 
   return (
     <div ref={containerRef} style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>

@@ -1,6 +1,6 @@
-// Publication bias assessment: Funnel plot data, Galbraith plot data, L'Abbé plot data, Egger's regression test, and Trim-and-Fill
+// Publication bias assessment: Funnel plot data, Galbraith plot data, L'Abbé plot data, Baujat plot, Egger's regression test, and Trim-and-Fill
 
-import type { StudyEffect, EggersTest, BeggsTest, FunnelPoint } from '../types';
+import type { StudyEffect, EggersTest, BeggsTest, FunnelPoint, BaujatPoint, BaujatData } from '../types';
 import { tToP, normalQuantile, zToP } from './distributions';
 
 /** L'Abbé plot data point (binary outcomes only) */
@@ -84,6 +84,53 @@ export function galbraithPlotData(studies: StudyEffect[], summaryEffect: number)
   };
 }
 
+/** Generate Baujat plot data (Baujat et al., 2002)
+ *  X-axis: each study's contribution to overall Q (heterogeneity)
+ *  Y-axis: squared standardized influence on pooled effect when removed
+ *  @param studies - Computed study effects from meta-analysis
+ *  @param summaryEffect - Pooled summary on log-scale
+ *  @param tau2 - Between-study variance (0 for fixed effects)
+ */
+export function baujatPlotData(
+  studies: StudyEffect[],
+  summaryEffect: number,
+  tau2: number,
+): BaujatData | null {
+  const k = studies.length;
+  if (k < 3) return null;
+
+  // Compute weights (random effects: 1/(vi + tau2))
+  const weights = studies.map((s) => 1 / (s.vi + tau2));
+  const W = weights.reduce((a, b) => a + b, 0);
+
+  const points: BaujatPoint[] = studies.map((s, i) => {
+    // Q_i: individual contribution to Cochran's Q
+    const contribution = weights[i] * (s.yi - summaryEffect) ** 2;
+
+    // Leave-one-out pooled estimate
+    const W_minus_i = W - weights[i];
+    const theta_minus_i = (W * summaryEffect - weights[i] * s.yi) / W_minus_i;
+
+    // Squared standardized shift: (θ̂ - θ̂_{-i})² × W
+    const influence = (summaryEffect - theta_minus_i) ** 2 * W;
+
+    return {
+      name: s.name,
+      contribution,
+      influence,
+    };
+  });
+
+  const totalContrib = points.reduce((s, p) => s + p.contribution, 0);
+  const totalInfluence = points.reduce((s, p) => s + p.influence, 0);
+
+  return {
+    points,
+    meanContribution: totalContrib / k,
+    meanInfluence: totalInfluence / k,
+  };
+}
+
 /** Generate funnel plot data points */
 export function funnelPlotData(studies: StudyEffect[]): FunnelPoint[] {
   return studies.map((s) => ({
@@ -138,6 +185,7 @@ export function eggersTest(studies: StudyEffect[]): EggersTest | null {
 
   return {
     intercept,
+    slope,
     se: seIntercept,
     tValue,
     pValue,

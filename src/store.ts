@@ -231,7 +231,7 @@ interface UIStore {
   beggs: BeggsTest | null;
   metaRegression: MetaRegressionResult | null;
   error: string | null;
-  activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'galbraith' | 'labbe' | 'cumulative' | 'sensitivity' | 'subgroup' | 'metareg' | 'prisma' | 'search' | 'extract';
+  activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'galbraith' | 'labbe' | 'baujat' | 'cumulative' | 'sensitivity' | 'influence' | 'subgroup' | 'metareg' | 'grade' | 'prisma' | 'search' | 'extract' | 'loo' | 'network' | 'doseresponse';
   plotSettings: PlotSettings;
   setLang: (lang: Lang) => void;
   setHeroSeen: (seen: boolean) => void;

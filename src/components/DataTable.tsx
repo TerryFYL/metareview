@@ -54,7 +54,7 @@ type CellIssue = 'error' | 'warning' | null;
 
 /** Check if a cell value has a data quality issue */
 function getCellIssue(study: Study, key: string, measure: EffectMeasure): CellIssue {
-  if (key === 'name' || key === 'year' || key === 'subgroup') return null;
+  if (key === 'name' || key === 'year' || key === 'subgroup' || key === 'dose') return null;
   const data = study.data as unknown as Record<string, number>;
   const val = data[key];
 
@@ -242,6 +242,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
         if (field === 'name') return { ...s, name: value };
         if (field === 'year') return { ...s, year: value ? parseInt(value) : undefined };
         if (field === 'subgroup') return { ...s, subgroup: value || undefined };
+        if (field === 'dose') return { ...s, dose: value ? parseFloat(value) : undefined };
         const numVal = parseFloat(value) || 0;
         return { ...s, data: { ...s.data, [field]: numVal } };
       })
@@ -336,11 +337,14 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
     }
   }, [navigateCell]);
 
+  const doseCol = { key: 'dose', label: t('table.dose', lang), type: 'number' as const, width: '75px' };
+
   const columns = isHR(measure)
     ? [
         { key: 'name', label: t('table.study', lang), type: 'text' as const, width: '140px' },
         { key: 'year', label: t('table.year', lang), type: 'number' as const, width: '65px' },
         { key: 'subgroup', label: t('table.subgroup', lang), type: 'text' as const, width: '100px' },
+        doseCol,
         { key: 'hr', label: t('table.hr', lang), type: 'number' as const, width: '85px' },
         { key: 'ciLower', label: t('table.ciLower', lang), type: 'number' as const, width: '85px' },
         { key: 'ciUpper', label: t('table.ciUpper', lang), type: 'number' as const, width: '85px' },
@@ -350,6 +354,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
         { key: 'name', label: t('table.study', lang), type: 'text' as const, width: '140px' },
         { key: 'year', label: t('table.year', lang), type: 'number' as const, width: '65px' },
         { key: 'subgroup', label: t('table.subgroup', lang), type: 'text' as const, width: '100px' },
+        doseCol,
         { key: 'events1', label: t('table.eventsT', lang), type: 'number' as const, width: '80px' },
         { key: 'total1', label: t('table.totalT', lang), type: 'number' as const, width: '80px' },
         { key: 'events2', label: t('table.eventsC', lang), type: 'number' as const, width: '80px' },
@@ -359,6 +364,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
         { key: 'name', label: t('table.study', lang), type: 'text' as const, width: '140px' },
         { key: 'year', label: t('table.year', lang), type: 'number' as const, width: '65px' },
         { key: 'subgroup', label: t('table.subgroup', lang), type: 'text' as const, width: '100px' },
+        doseCol,
         { key: 'mean1', label: t('table.meanT', lang), type: 'number' as const, width: '80px' },
         { key: 'sd1', label: t('table.sdT', lang), type: 'number' as const, width: '75px' },
         { key: 'n1', label: t('table.nT', lang), type: 'number' as const, width: '65px' },
@@ -371,6 +377,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
     if (key === 'name') return study.name;
     if (key === 'year') return study.year?.toString() || '';
     if (key === 'subgroup') return study.subgroup || '';
+    if (key === 'dose') return study.dose != null ? study.dose.toString() : '';
     const val = (study.data as unknown as Record<string, number>)[key];
     return val?.toString() || '0';
   };

@@ -14,8 +14,14 @@ import OnboardingTour from './components/OnboardingTour';
 import CumulativeMeta from './components/CumulativeMeta';
 import GalbraithPlot from './components/GalbraithPlot';
 import LabbePlot from './components/LabbePlot';
+import BaujatPlot from './components/BaujatPlot';
+import InfluenceDiagnostics from './components/InfluenceDiagnostics';
+import GradeAssessment from './components/GradeAssessment';
 import MetaRegressionPlot from './components/MetaRegressionPlot';
-import { metaAnalysis, eggersTest, beggsTest, metaRegression as runMetaRegression, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, isBinaryData, isContinuousData, isHRData, trimAndFill, isLogScale } from './lib/statistics';
+import LeaveOneOutPlot from './components/LeaveOneOutPlot';
+import NetworkGraph from './components/NetworkGraph';
+import DoseResponsePlot from './components/DoseResponsePlot';
+import { metaAnalysis, eggersTest, beggsTest, metaRegression as runMetaRegression, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, isBinaryData, isContinuousData, isHRData, trimAndFill, isLogScale, influenceDiagnostics as computeInfluence, gradeAssessment as computeGrade, doseResponseAnalysis } from './lib/statistics';
 import type { TrimAndFillResult } from './lib/statistics';
 import { generateReportHTML, type ReportSections } from './lib/report-export';
 import { generateReportDOCX } from './lib/report-docx';
@@ -34,7 +40,7 @@ const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'SMD', label: "Hedges' g (SMD)", desc: 'Continuous, different scales' },
 ];
 
-const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'galbraith', 'labbe', 'cumulative', 'sensitivity', 'subgroup', 'metareg', 'prisma'] as const;
+const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'galbraith', 'labbe', 'baujat', 'cumulative', 'sensitivity', 'influence', 'loo', 'network', 'doseresponse', 'subgroup', 'metareg', 'grade', 'prisma'] as const;
 
 function ForestPlotControls({ lang, onDownloadSVG, onDownloadPNG }: { lang: Lang; onDownloadSVG: () => void; onDownloadPNG: () => void }) {
   const { plotSettings, setPlotSettings } = useUIStore();
@@ -257,6 +263,7 @@ export default function App() {
   const [trimFillResult, setTrimFillResult] = useState<TrimAndFillResult | null>(null);
   const [showTrimFill, setShowTrimFill] = useState(false);
   const [showContours, setShowContours] = useState(false);
+  const [showEggersLine, setShowEggersLine] = useState(false);
 
   const { undo, redo, canUndo, canRedo } = useProjectStore();
 
@@ -435,11 +442,22 @@ export default function App() {
     const forestEl = document.querySelector('.forest-plot-container svg');
     const funnelEl = document.querySelector('.funnel-plot-container svg');
     const galbraithEl = document.querySelector('.galbraith-plot-container svg');
+    const baujatEl = document.querySelector('.baujat-plot-container svg');
     const metaRegEl = document.querySelector('.metareg-plot-container svg');
+    const looEl = document.querySelector('.loo-plot-container svg');
+    const networkEl = document.querySelector('.network-graph-container svg');
+    const doseResponseEl = document.querySelector('.dose-response-container svg');
     const forestSvg = forestEl ? serializer.serializeToString(forestEl) : null;
     const funnelSvg = funnelEl ? serializer.serializeToString(funnelEl) : null;
     const galbraithSvg = galbraithEl ? serializer.serializeToString(galbraithEl) : null;
+    const baujatSvg = baujatEl ? serializer.serializeToString(baujatEl) : null;
     const metaRegSvg = metaRegEl ? serializer.serializeToString(metaRegEl) : null;
+    const looSvg = looEl ? serializer.serializeToString(looEl) : null;
+    const networkSvg = networkEl ? serializer.serializeToString(networkEl) : null;
+    const doseResponseSvg = doseResponseEl ? serializer.serializeToString(doseResponseEl) : null;
+    const influenceData = studies.length >= 3 ? computeInfluence(studies, measure, model) : [];
+    const gradeData = result ? computeGrade({ result, eggers, beggs, trimFill: trimFillResult }) : null;
+    const drData = doseResponseAnalysis(result.studies, studies.map(s => s.dose ?? NaN), studies.map(s => s.name));
     const html = generateReportHTML({
       title,
       pico,
@@ -451,9 +469,16 @@ export default function App() {
       forestSvg,
       funnelSvg,
       galbraithSvg,
+      baujatSvg,
+      looSvg,
+      networkSvg,
       trimFillResult,
       metaRegression,
       metaRegSvg,
+      influenceDiagnostics: influenceData,
+      gradeAssessment: gradeData,
+      doseResponseResult: drData,
+      doseResponseSvg,
       prisma,
       sections,
     });
@@ -461,10 +486,13 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
     setTimeout(() => URL.revokeObjectURL(url), 10000);
-  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression]);
+  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, measure, model, studies]);
 
   const exportDOCX = useCallback(async (sections?: ReportSections) => {
     if (!result) return;
+    const influenceData = studies.length >= 3 ? computeInfluence(studies, measure, model) : [];
+    const gradeData = result ? computeGrade({ result, eggers, beggs, trimFill: trimFillResult }) : null;
+    const drData = doseResponseAnalysis(result.studies, studies.map(s => s.dose ?? NaN), studies.map(s => s.name));
     const blob = await generateReportDOCX({
       title,
       pico,
@@ -475,6 +503,9 @@ export default function App() {
       sensitivityResults,
       trimFillResult,
       metaRegression,
+      influenceDiagnostics: influenceData,
+      gradeAssessment: gradeData,
+      doseResponseResult: drData,
       prisma,
       sections,
     });
@@ -552,10 +583,13 @@ export default function App() {
               if (isAlwaysEnabled) return true;
               if (!result) return false;
               if (tab === 'sensitivity' && studies.length < 3) return false;
+              if (tab === 'influence' && studies.length < 3) return false;
+              if (tab === 'loo' && studies.length < 3) return false;
               if (tab === 'subgroup' && !subgroupResult) return false;
               if (tab === 'cumulative' && studies.length < 2) return false;
               if (tab === 'metareg' && !metaRegression) return false;
               if (tab === 'labbe' && measure !== 'OR' && measure !== 'RR') return false;
+              if (tab === 'doseresponse' && studies.filter(s => s.dose != null && !isNaN(s.dose!)).length < 3) return false;
               return true;
             });
             const idx = enabledTabs.indexOf(activeTab as typeof enabledTabs[number]);
@@ -573,17 +607,23 @@ export default function App() {
           const isAlwaysEnabled = tab === 'prisma' || tab === 'search' || tab === 'input' || tab === 'extract';
           const isSubgroup = tab === 'subgroup';
           const isSensitivity = tab === 'sensitivity';
+          const isInfluence = tab === 'influence';
+          const isLoo = tab === 'loo';
           const isCumulative = tab === 'cumulative';
           const isMetaReg = tab === 'metareg';
           const isLabbe = tab === 'labbe';
+          const isDoseResponse = tab === 'doseresponse';
           const isBinaryMeasure = measure === 'OR' || measure === 'RR';
           const disabled = !isAlwaysEnabled && (
             !result
             || (isSensitivity && studies.length < 3)
+            || (isInfluence && studies.length < 3)
+            || (isLoo && studies.length < 3)
             || (isSubgroup && !subgroupResult)
             || (isCumulative && studies.length < 2)
             || (isMetaReg && !metaRegression)
             || (isLabbe && !isBinaryMeasure)
+            || (isDoseResponse && studies.filter(s => s.dose != null && !isNaN(s.dose!)).length < 3)
           );
           return (
             <button
@@ -743,11 +783,15 @@ export default function App() {
             </label>
             <label style={{ fontSize: 12, color: '#374151', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
               <input type="checkbox" checked={showContours} onChange={(e) => setShowContours(e.target.checked)} />
-              {t('funnel.showContours', lang)}
+              {t('funnel.contours', lang)}
+            </label>
+            <label style={{ fontSize: 12, color: '#374151', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <input type="checkbox" checked={showEggersLine} onChange={(e) => setShowEggersLine(e.target.checked)} disabled={!eggers} />
+              {t('funnel.eggersLine', lang)}
             </label>
           </div>
           <div className="funnel-plot-container" style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
-            <FunnelPlot result={result} lang={lang} trimFillResult={showTrimFill ? trimFillResult : undefined} showContours={showContours} />
+            <FunnelPlot result={result} lang={lang} trimFillResult={showTrimFill ? trimFillResult : undefined} showContours={showContours} eggers={showEggersLine ? eggers : undefined} showEggersLine={showEggersLine} />
           </div>
           {/* Trim-and-Fill results */}
           {showTrimFill && trimFillResult && (
@@ -800,6 +844,13 @@ export default function App() {
         <LabbePlot studies={studies} lang={lang} />
       )}
 
+      {/* Baujat Plot Tab */}
+      {activeTab === 'baujat' && result && (
+        <div className="baujat-plot-container">
+          <BaujatPlot result={result} lang={lang} />
+        </div>
+      )}
+
       {/* Cumulative Meta-Analysis Tab */}
       {activeTab === 'cumulative' && result && cumulativeResults.length > 0 && (
         <CumulativeMeta results={cumulativeResults} measure={measure} lang={lang} />
@@ -808,6 +859,37 @@ export default function App() {
       {/* Sensitivity Analysis Tab */}
       {activeTab === 'sensitivity' && result && sensitivityResults.length > 0 && (
         <SensitivityTable results={sensitivityResults} fullResult={result} lang={lang} />
+      )}
+
+      {/* Influence Diagnostics Tab */}
+      {activeTab === 'influence' && result && studies.length >= 3 && (
+        <InfluenceDiagnostics studies={studies} result={result} measure={measure} model={model} lang={lang} />
+      )}
+
+      {/* Leave-One-Out Cross-Validation Tab */}
+      {activeTab === 'loo' && result && studies.length >= 3 && sensitivityResults.length > 0 && (
+        <div className="loo-plot-container">
+          <LeaveOneOutPlot result={result} sensitivityResults={sensitivityResults} lang={lang} />
+        </div>
+      )}
+
+      {/* Network Graph Tab */}
+      {activeTab === 'network' && result && (
+        <div className="network-graph-container">
+          <NetworkGraph studies={studies} lang={lang} />
+        </div>
+      )}
+
+      {/* Dose-Response Tab */}
+      {activeTab === 'doseresponse' && result && (
+        <div className="dose-response-container">
+          <DoseResponsePlot
+            result={result}
+            doses={studies.map(s => s.dose ?? NaN)}
+            names={studies.map(s => s.name)}
+            lang={lang}
+          />
+        </div>
       )}
 
       {/* Subgroup Analysis Tab */}
@@ -882,6 +964,11 @@ export default function App() {
         <div className="metareg-plot-container">
           <MetaRegressionPlot metaRegression={metaRegression} lang={lang} />
         </div>
+      )}
+
+      {/* GRADE Assessment Tab */}
+      {activeTab === 'grade' && result && (
+        <GradeAssessment result={result} eggers={eggers} beggs={beggs} trimFillResult={trimFillResult} lang={lang} />
       )}
 
       {/* PRISMA Flow Tab */}

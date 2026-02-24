@@ -108,6 +108,31 @@ export function tToP(t: number, df: number): number {
   return 2 * (1 - tCdf(Math.abs(t), df));
 }
 
+/** Inverse t-distribution CDF (quantile function via bisection + Newton refinement)
+ *  Returns t such that P(T <= t) = p for a t-distribution with df degrees of freedom.
+ */
+export function tQuantile(p: number, df: number): number {
+  if (p <= 0) return -Infinity;
+  if (p >= 1) return Infinity;
+  if (p === 0.5) return 0;
+
+  // Use normal quantile as starting point for large df
+  if (df > 1000) return normalQuantile(p);
+
+  // Bisection method with tight convergence
+  let lo = -20;
+  let hi = 20;
+
+  for (let i = 0; i < 100; i++) {
+    const mid = (lo + hi) / 2;
+    const cdf = tCdf(mid, df);
+    if (Math.abs(cdf - p) < 1e-12) return mid;
+    if (cdf < p) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
 // --- Helper functions ---
 
 /** Log-gamma function (Lanczos approximation) */

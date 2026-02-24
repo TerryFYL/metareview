@@ -5,12 +5,12 @@ import type {
   Study, StudyEffect, MetaAnalysisResult,
   EffectMeasure, ModelType, Heterogeneity,
   SubgroupAnalysisResult, CumulativeResult,
-  MetaRegressionResult,
+  MetaRegressionResult, PredictionInterval,
 } from '../types';
 import {
   calculateEffectSize, toOriginalScale, calculateCI,
 } from './effect-size';
-import { zToP, chiSquaredPValue } from './distributions';
+import { zToP, chiSquaredPValue, tQuantile } from './distributions';
 
 /** Compute per-study effects from raw data */
 function computeStudyEffects(
@@ -143,6 +143,24 @@ export function metaAnalysis(
   const z = result.summary / result.se;
   const pValue = zToP(z);
 
+  // Prediction interval (Riley et al., 2011)
+  // PI = θ̂ ± t_{k-2, 0.975} × √(SE² + τ²)
+  let predictionInterval: PredictionInterval | null = null;
+  const k = studies.length;
+  if (k >= 3 && model === 'random') {
+    const tCrit = tQuantile(0.975, k - 2);
+    const piSE = Math.sqrt(result.se * result.se + het.tau2);
+    const piLowerRaw = result.summary - tCrit * piSE;
+    const piUpperRaw = result.summary + tCrit * piSE;
+    const useLog = measure === 'OR' || measure === 'RR' || measure === 'HR';
+    predictionInterval = {
+      lowerRaw: piLowerRaw,
+      upperRaw: piUpperRaw,
+      lower: useLog ? Math.exp(piLowerRaw) : piLowerRaw,
+      upper: useLog ? Math.exp(piUpperRaw) : piUpperRaw,
+    };
+  }
+
   return {
     summary: result.summary,
     se: result.se,
@@ -155,6 +173,7 @@ export function metaAnalysis(
     measure,
     studies: studyEffects,
     heterogeneity: het,
+    predictionInterval,
   };
 }
 
@@ -354,6 +373,75 @@ export function metaRegression(
     k,
     points,
   };
+}
+
+/** Influence diagnostics for each study (Viechtbauer & Cheung, 2010)
+ *  Computes hat values, studentized residuals, Cook's distance, DFFITS,
+ *  covariance ratio, and leave-one-out statistics for every study.
+ */
+export function influenceDiagnostics(
+  studies: Study[],
+  measure: EffectMeasure,
+  model: ModelType = 'random'
+): import('../types').InfluenceDiagnostic[] {
+  if (studies.length < 3) return [];
+
+  const fullResult = metaAnalysis(studies, measure, model);
+  const tau2 = fullResult.heterogeneity.tau2;
+  const theta = fullResult.summary;
+
+  // Weights for the chosen model
+  const weights = fullResult.studies.map((s) =>
+    model === 'random' ? 1 / (s.vi + tau2) : 1 / s.vi
+  );
+  const W = weights.reduce((a, b) => a + b, 0);
+  const totalWeight = fullResult.studies.reduce(
+    (sum, s) => sum + (model === 'random' ? s.weightRandom : s.weightFixed), 0
+  );
+
+  return studies.map((study, i) => {
+    const se = fullResult.studies[i];
+
+    // Hat value (leverage)
+    const h_i = weights[i] / W;
+
+    // Residual
+    const e_i = se.yi - theta;
+
+    // Variance of residual: (1/w_i - 1/W) = (1 - h_i)/w_i
+    const varResid = (1 - h_i) / weights[i];
+    const seResid = Math.sqrt(Math.max(varResid, 1e-15));
+
+    // Internally studentized residual
+    const rstudent = e_i / seResid;
+
+    // Cook's distance (univariate: p=1)
+    const cooksDistance = rstudent * rstudent * h_i / (1 - h_i);
+
+    // DFFITS
+    const dffits = rstudent * Math.sqrt(h_i / (1 - h_i));
+
+    // Covariance ratio: var(θ̂_{-i}) / var(θ̂) = W / (W - w_i) = 1/(1-h_i)
+    const covRatio = 1 / (1 - h_i);
+
+    // Leave-one-out
+    const subset = [...studies.slice(0, i), ...studies.slice(i + 1)];
+    const looResult = metaAnalysis(subset, measure, model);
+
+    return {
+      name: study.name,
+      year: study.year,
+      effect: se.effect,
+      weight: (model === 'random' ? se.weightRandom : se.weightFixed) / totalWeight * 100,
+      hat: h_i,
+      rstudent,
+      cooksDistance,
+      dffits,
+      covRatio,
+      leaveOneOutEffect: looResult.effect,
+      leaveOneOutI2: looResult.heterogeneity.I2,
+    };
+  });
 }
 
 /** Leave-one-out sensitivity analysis */

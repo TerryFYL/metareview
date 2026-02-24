@@ -58,6 +58,8 @@ export interface Study {
   name: string;
   year?: number;
   subgroup?: string;
+  /** Dose level for dose-response analysis (optional) */
+  dose?: number;
   data: BinaryData | ContinuousData | GenericData | HRData;
 }
 
@@ -126,6 +128,8 @@ export interface MetaAnalysisResult {
   studies: StudyEffect[];
   /** Heterogeneity stats */
   heterogeneity: Heterogeneity;
+  /** Prediction interval (Riley et al., 2011) — null if k < 3 */
+  predictionInterval: PredictionInterval | null;
 }
 
 /** Cumulative meta-analysis result (one row per progressive pooling) */
@@ -162,6 +166,8 @@ export interface SensitivityResult {
 /** Egger's regression test result */
 export interface EggersTest {
   intercept: number;
+  /** Regression slope (≈ pooled effect estimate in Galbraith space) */
+  slope: number;
   se: number;
   tValue: number;
   pValue: number;
@@ -245,6 +251,113 @@ export interface FunnelPoint {
   x: number; // effect size
   y: number; // SE (inverted axis)
   name: string;
+}
+
+/** Baujat plot data point */
+export interface BaujatPoint {
+  name: string;
+  /** Study's individual contribution to overall Q statistic */
+  contribution: number;
+  /** Squared standardized influence on pooled effect when study is removed */
+  influence: number;
+}
+
+/** Baujat plot data */
+export interface BaujatData {
+  points: BaujatPoint[];
+  /** Mean contribution for quadrant threshold */
+  meanContribution: number;
+  /** Mean influence for quadrant threshold */
+  meanInfluence: number;
+}
+
+/** Influence diagnostics for a single study */
+export interface InfluenceDiagnostic {
+  name: string;
+  year?: number;
+  /** Effect on original scale */
+  effect: number;
+  /** Weight (%) in current model */
+  weight: number;
+  /** Hat value (leverage) */
+  hat: number;
+  /** Internally studentized residual */
+  rstudent: number;
+  /** Cook's distance */
+  cooksDistance: number;
+  /** DFFITS */
+  dffits: number;
+  /** Covariance ratio */
+  covRatio: number;
+  /** Leave-one-out pooled effect (original scale) */
+  leaveOneOutEffect: number;
+  /** Leave-one-out I² */
+  leaveOneOutI2: number;
+}
+
+/** GRADE evidence quality level */
+export type GradeLevel = 'high' | 'moderate' | 'low' | 'very_low';
+
+/** GRADE factor concern level */
+export type GradeConcern = 'no_concern' | 'serious' | 'very_serious';
+
+/** Individual GRADE factor assessment */
+export interface GradeFactor {
+  level: GradeConcern;
+  downgrade: 0 | -1 | -2;
+  auto: boolean;
+  reasoning: string;
+}
+
+/** GRADE evidence quality assessment */
+export interface GradeAssessment {
+  overall: GradeLevel;
+  score: number;
+  factors: {
+    riskOfBias: GradeFactor;
+    inconsistency: GradeFactor;
+    indirectness: GradeFactor;
+    imprecision: GradeFactor;
+    publicationBias: GradeFactor;
+  };
+}
+
+/** Prediction interval (Riley et al., 2011) */
+export interface PredictionInterval {
+  /** Lower bound on original scale */
+  lower: number;
+  /** Upper bound on original scale */
+  upper: number;
+  /** Lower bound on log/raw scale */
+  lowerRaw: number;
+  /** Upper bound on log/raw scale */
+  upperRaw: number;
+}
+
+/** Dose-response analysis result */
+export interface DoseResponseResult {
+  /** Model type */
+  modelType: 'linear' | 'quadratic';
+  /** Linear coefficient (slope) */
+  beta1: number;
+  /** Quadratic coefficient (for quadratic model) */
+  beta2: number;
+  /** Intercept */
+  intercept: number;
+  /** P-value for linear term */
+  pLinear: number;
+  /** P-value for quadratic term (quadratic model only) */
+  pQuadratic: number;
+  /** P-value for overall model */
+  pModel: number;
+  /** R² analog */
+  R2: number;
+  /** Number of dose levels */
+  k: number;
+  /** Per-study data points for scatter plot */
+  points: { name: string; dose: number; effect: number; weight: number; sei: number }[];
+  /** Fitted curve points for smooth rendering */
+  curve: { dose: number; effect: number; ciLower: number; ciUpper: number }[];
 }
 
 /** PICO-based screening score */

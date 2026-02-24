@@ -14,7 +14,7 @@ import {
   ShadingType,
   convertInchesToTwip,
 } from 'docx';
-import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult } from './types';
+import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult } from './types';
 import type { PRISMAData } from '../components/PRISMAFlow';
 import type { ReportSections } from './report-export';
 import { defaultReportSections } from './report-export';
@@ -30,6 +30,9 @@ interface ReportData {
   sensitivityResults: SensitivityResult[];
   trimFillResult?: TrimAndFillResult | null;
   metaRegression?: MetaRegressionResult | null;
+  influenceDiagnostics?: InfluenceDiagnostic[];
+  gradeAssessment?: GradeAssessment | null;
+  doseResponseResult?: DoseResponseResult | null;
   prisma?: PRISMAData;
   sections?: ReportSections;
 }
@@ -88,23 +91,29 @@ function picoTable(pico: PICO): Table | null {
 
 function overallEffectTable(r: MetaAnalysisResult): Table {
   const het = r.heterogeneity;
+  const rows: [string, string, boolean?][] = [
+    ['Model', r.model === 'random' ? 'Random Effects (DerSimonian-Laird)' : 'Fixed Effects (Inverse Variance)'],
+    ['Effect measure', r.measure],
+    ['Number of studies', r.studies.length.toString()],
+    [`Pooled ${r.measure}`, r.effect.toFixed(4)],
+    ['95% CI', `[${r.ciLower.toFixed(4)}, ${r.ciUpper.toFixed(4)}]`],
+    ['Z', r.z.toFixed(4)],
+    ['P-value', formatP(r.pValue), r.pValue < 0.05],
+  ];
+  if (r.predictionInterval) {
+    rows.push(['95% Prediction Interval', `[${r.predictionInterval.lower.toFixed(4)}, ${r.predictionInterval.upper.toFixed(4)}]`]);
+  }
+  rows.push(
+    ["Cochran's Q", `${het.Q.toFixed(2)} (df = ${het.df})`],
+    ['P-value (Q)', formatP(het.pValue), het.pValue < 0.1],
+    ['I\u00B2', `${het.I2.toFixed(1)}%`, het.I2 > 50],
+    ['\u03C4\u00B2', het.tau2.toFixed(4)],
+    ['\u03C4', het.tau.toFixed(4)],
+    ['H\u00B2', het.H2.toFixed(2)],
+  );
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
-    rows: makeLabelValueRows([
-      ['Model', r.model === 'random' ? 'Random Effects (DerSimonian-Laird)' : 'Fixed Effects (Inverse Variance)'],
-      ['Effect measure', r.measure],
-      ['Number of studies', r.studies.length.toString()],
-      [`Pooled ${r.measure}`, r.effect.toFixed(4)],
-      ['95% CI', `[${r.ciLower.toFixed(4)}, ${r.ciUpper.toFixed(4)}]`],
-      ['Z', r.z.toFixed(4)],
-      ['P-value', formatP(r.pValue), r.pValue < 0.05],
-      ["Cochran's Q", `${het.Q.toFixed(2)} (df = ${het.df})`],
-      ['P-value (Q)', formatP(het.pValue), het.pValue < 0.1],
-      ['I\u00B2', `${het.I2.toFixed(1)}%`, het.I2 > 50],
-      ['\u03C4\u00B2', het.tau2.toFixed(4)],
-      ['\u03C4', het.tau.toFixed(4)],
-      ['H\u00B2', het.H2.toFixed(2)],
-    ]),
+    rows: makeLabelValueRows(rows),
   });
 }
 
@@ -289,16 +298,24 @@ function sensitivityTable(results: SensitivityResult[], full: MetaAnalysisResult
   });
 }
 
-function narrativeText(r: MetaAnalysisResult, eggers: EggersTest | null, sg: SubgroupAnalysisResult | null, sensitivity: SensitivityResult[], beggs?: BeggsTest | null, metaReg?: MetaRegressionResult | null): string {
+function narrativeText(r: MetaAnalysisResult, eggers: EggersTest | null, sg: SubgroupAnalysisResult | null, sensitivity: SensitivityResult[], beggs?: BeggsTest | null, metaReg?: MetaRegressionResult | null, grade?: GradeAssessment | null, doseResponse?: DoseResponseResult | null, trimFill?: TrimAndFillResult | null, influenceData?: InfluenceDiagnostic[]): string {
   const het = r.heterogeneity;
   const k = r.studies.length;
   let text = `A ${r.model === 'random' ? 'random-effects' : 'fixed-effect'} meta-analysis of ${k} studies was performed using the ${r.model === 'random' ? 'DerSimonian-Laird' : 'inverse variance'} method. The pooled ${r.measure} was ${r.effect.toFixed(2)} (95% CI: ${r.ciLower.toFixed(2)}\u2013${r.ciUpper.toFixed(2)}; Z = ${r.z.toFixed(2)}, P ${r.pValue < 0.001 ? '< 0.001' : `= ${r.pValue.toFixed(3)}`}), ${r.pValue < 0.05 ? 'indicating a statistically significant effect' : 'showing no statistically significant effect'}. `;
   text += `Heterogeneity was ${het.I2 < 25 ? 'low' : het.I2 < 50 ? 'moderate' : het.I2 < 75 ? 'substantial' : 'considerable'} (I\u00B2 = ${het.I2.toFixed(1)}%, Q = ${het.Q.toFixed(2)}, df = ${het.df}, P ${het.pValue < 0.001 ? '< 0.001' : `= ${het.pValue.toFixed(3)}`}; \u03C4\u00B2 = ${het.tau2.toFixed(4)}).`;
+  if (r.predictionInterval) {
+    text += ` The 95% prediction interval was ${r.predictionInterval.lower.toFixed(2)}\u2013${r.predictionInterval.upper.toFixed(2)}, indicating the range of true effects expected in a new study (Riley et al., 2011).`;
+  }
   if (eggers) {
     text += ` Egger's regression test ${eggers.pValue < 0.05 ? 'indicated significant' : 'did not indicate'} funnel plot asymmetry (intercept = ${eggers.intercept.toFixed(2)}, P = ${formatP(eggers.pValue)}).`;
   }
   if (beggs) {
     text += ` Begg's rank correlation test ${beggs.pValue < 0.05 ? 'revealed significant' : 'showed no significant'} evidence of publication bias (Kendall's \u03C4 = ${beggs.tau.toFixed(3)}, P = ${formatP(beggs.pValue)}).`;
+  }
+  if (trimFill && trimFill.k0 > 0) {
+    text += ` Trim-and-Fill analysis (Duval & Tweedie, 2000) estimated ${trimFill.k0} missing ${trimFill.k0 === 1 ? 'study' : 'studies'} on the ${trimFill.side} side; the adjusted ${r.measure} was ${trimFill.adjustedEffect.toFixed(2)} (95% CI: ${trimFill.adjustedCILower.toFixed(2)}\u2013${trimFill.adjustedCIUpper.toFixed(2)}).`;
+  } else if (trimFill && trimFill.k0 === 0) {
+    text += ` Trim-and-Fill analysis detected no funnel plot asymmetry requiring imputation.`;
   }
   if (sensitivity.length > 0) {
     const isRatio = r.measure === 'OR' || r.measure === 'RR' || r.measure === 'HR';
@@ -312,6 +329,16 @@ function narrativeText(r: MetaAnalysisResult, eggers: EggersTest | null, sg: Sub
       ? ` Leave-one-out sensitivity analysis showed that the pooled estimate was robust; no single study substantially altered the overall result.`
       : ` Leave-one-out sensitivity analysis identified ${influential.length} influential ${influential.length === 1 ? 'study' : 'studies'} (${influential.map(s => s.omittedStudy).join(', ')}) whose removal altered the direction or statistical significance of the pooled estimate.`;
   }
+  if (influenceData && influenceData.length > 0) {
+    const cooksThreshold = 4 / influenceData.length;
+    const hatThreshold = 2 / influenceData.length;
+    const flagged = influenceData.filter(d => d.cooksDistance > cooksThreshold || d.hat > hatThreshold || Math.abs(d.rstudent) > 2);
+    if (flagged.length > 0) {
+      text += ` Influence diagnostics (Viechtbauer & Cheung, 2010) flagged ${flagged.length} ${flagged.length === 1 ? 'study' : 'studies'} (${flagged.map(d => d.name).join(', ')}) as potentially influential based on Cook's distance (> ${cooksThreshold.toFixed(3)}), leverage (> ${hatThreshold.toFixed(3)}), or studentized residuals (> 2).`;
+    } else {
+      text += ` Influence diagnostics revealed no individually influential studies.`;
+    }
+  }
   if (sg && sg.subgroups.length > 1) {
     const sgEffects = sg.subgroups.map(s =>
       `${s.name || 'Ungrouped'} (${r.measure} = ${s.result.effect.toFixed(2)}, 95% CI: ${s.result.ciLower.toFixed(2)}\u2013${s.result.ciUpper.toFixed(2)}, k = ${s.result.studies.length})`
@@ -321,6 +348,20 @@ function narrativeText(r: MetaAnalysisResult, eggers: EggersTest | null, sg: Sub
   }
   if (metaReg) {
     text += ` Meta-regression analysis using ${metaReg.covariate} as the covariate (k = ${metaReg.k}) ${metaReg.pValue < 0.05 ? 'identified a significant moderating effect' : 'did not identify a significant moderating effect'} (coefficient = ${metaReg.coefficient.toFixed(4)}, P = ${formatP(metaReg.pValue)}; R\u00B2 = ${(metaReg.R2 * 100).toFixed(1)}%).`;
+  }
+  if (grade) {
+    const levelLabels: Record<string, string> = { high: 'high', moderate: 'moderate', low: 'low', very_low: 'very low' };
+    const downgradedDomains = Object.entries(grade.factors)
+      .filter(([, f]) => f.downgrade < 0)
+      .map(([key]) => ({ riskOfBias: 'risk of bias', inconsistency: 'inconsistency', indirectness: 'indirectness', imprecision: 'imprecision', publicationBias: 'publication bias' }[key] || key));
+    text += ` The overall quality of evidence was rated as ${levelLabels[grade.overall]} using the GRADE framework (score: ${grade.score}/4)`;
+    if (downgradedDomains.length > 0) {
+      text += `, downgraded for ${downgradedDomains.join(' and ')}`;
+    }
+    text += `.`;
+  }
+  if (doseResponse) {
+    text += ` Dose-response meta-analysis of ${doseResponse.k} dose levels using weighted ${doseResponse.modelType} regression ${doseResponse.pLinear < 0.05 ? 'revealed a significant' : 'did not reveal a significant'} dose-response relationship (\u03B2\u2081 = ${doseResponse.beta1.toFixed(4)}, P = ${formatP(doseResponse.pLinear)}; R\u00B2 = ${(doseResponse.R2 * 100).toFixed(1)}%).`;
   }
   return text;
 }
@@ -347,8 +388,105 @@ function prismaSummaryTable(prisma: PRISMAData): Table | null {
   });
 }
 
+function influenceDiagnosticsTable(diagnostics: InfluenceDiagnostic[], measure: string): Table {
+  const k = diagnostics.length;
+  const cooksThreshold = 4 / k;
+  return new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: [
+      new TableRow({
+        children: [
+          makeHeaderCell('Study'),
+          makeHeaderCell(measure),
+          makeHeaderCell('Weight'),
+          makeHeaderCell('Hat'),
+          makeHeaderCell('Rstudent'),
+          makeHeaderCell("Cook's D"),
+          makeHeaderCell('DFFITS'),
+          makeHeaderCell('CovRatio'),
+          makeHeaderCell(`LOO ${measure}`),
+          makeHeaderCell('LOO I\u00B2'),
+        ],
+      }),
+      ...diagnostics.map(d => {
+        const isInfluential = d.cooksDistance > cooksThreshold;
+        return new TableRow({
+          children: [
+            makeCell(`${d.name}${d.year ? ` (${d.year})` : ''}${isInfluential ? ' *' : ''}`, { bold: isInfluential }),
+            makeCell(d.effect.toFixed(4)),
+            makeCell(`${d.weight.toFixed(1)}%`),
+            makeCell(d.hat.toFixed(4)),
+            makeCell(d.rstudent.toFixed(3), { color: Math.abs(d.rstudent) > 2 ? 'CC0000' : undefined }),
+            makeCell(d.cooksDistance.toFixed(4), { color: d.cooksDistance > cooksThreshold ? 'CC0000' : undefined }),
+            makeCell(d.dffits.toFixed(4), { color: Math.abs(d.dffits) > 1 ? 'CC0000' : undefined }),
+            makeCell(d.covRatio.toFixed(4)),
+            makeCell(d.leaveOneOutEffect.toFixed(4)),
+            makeCell(`${d.leaveOneOutI2.toFixed(1)}%`),
+          ],
+        });
+      }),
+    ],
+  });
+}
+
+function gradeAssessmentTable(grade: GradeAssessment): Table {
+  const levelLabels: Record<string, string> = { high: 'HIGH', moderate: 'MODERATE', low: 'LOW', very_low: 'VERY LOW' };
+  const concernLabels: Record<string, string> = { no_concern: 'No concern', serious: 'Serious', very_serious: 'Very serious' };
+  const domainLabels: Record<string, string> = {
+    riskOfBias: 'Risk of Bias', inconsistency: 'Inconsistency', indirectness: 'Indirectness',
+    imprecision: 'Imprecision', publicationBias: 'Publication Bias',
+  };
+
+  return new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: [
+      new TableRow({
+        children: [makeHeaderCell('Domain'), makeHeaderCell('Assessment'), makeHeaderCell('Downgrade'), makeHeaderCell('Reasoning')],
+      }),
+      ...Object.entries(grade.factors).map(([key, f]) =>
+        new TableRow({
+          children: [
+            makeCell(`${domainLabels[key] || key}${f.auto ? ' (Auto)' : ''}`, { bold: true }),
+            makeCell(concernLabels[f.level], { color: f.level === 'very_serious' ? 'CC0000' : f.level === 'serious' ? 'CC6600' : '228B22' }),
+            makeCell(f.downgrade.toString(), { bold: true, color: f.downgrade < 0 ? 'CC0000' : '228B22' }),
+            makeCell(f.reasoning),
+          ],
+        })
+      ),
+      new TableRow({
+        children: [
+          makeCell('OVERALL', { bold: true }),
+          makeCell(levelLabels[grade.overall], { bold: true }),
+          makeCell(`Score: ${grade.score}/4`, { bold: true }),
+          makeCell(''),
+        ],
+      }),
+    ],
+  });
+}
+
+function doseResponseResultTable(dr: DoseResponseResult): Table {
+  const rows: [string, string, boolean?][] = [
+    ['Model', `Weighted ${dr.modelType === 'linear' ? 'Linear' : 'Quadratic Polynomial'} Regression (WLS)`],
+    ['Dose levels (k)', dr.k.toString()],
+    ['Intercept', dr.intercept.toFixed(4)],
+    ['\u03B2\u2081 (linear)', `${dr.beta1.toFixed(4)} (P = ${formatP(dr.pLinear)})`, dr.pLinear < 0.05],
+  ];
+  if (dr.modelType === 'quadratic') {
+    rows.push(['\u03B2\u2082 (quadratic)', `${dr.beta2.toFixed(4)} (P = ${formatP(dr.pQuadratic)})`, dr.pQuadratic < 0.05]);
+  }
+  rows.push(
+    ['P-value (model)', formatP(dr.pModel), dr.pModel < 0.05],
+    ['R\u00B2', `${(dr.R2 * 100).toFixed(1)}%`],
+  );
+  return new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: makeLabelValueRows(rows),
+  });
+}
+
 export async function generateReportDOCX(data: ReportData): Promise<Blob> {
-  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, prisma } = data;
+  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, influenceDiagnostics: influenceData, gradeAssessment: gradeData, doseResponseResult: drData, prisma } = data;
   const s = data.sections || defaultReportSections;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -398,6 +536,18 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
       new Paragraph({ text: 'Overall Effect & Heterogeneity', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
       overallEffectTable(result),
     );
+    if (result.predictionInterval) {
+      children.push(new Paragraph({
+        children: [new TextRun({
+          text: 'Prediction interval indicates the range of true effects expected in a new study (Riley et al., 2011). It incorporates both sampling error and between-study heterogeneity (\u03C4\u00B2).',
+          italics: true,
+          size: 18,
+          color: '666666',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 100 },
+      }));
+    }
   }
 
   // Clinical Interpretation
@@ -524,6 +674,149 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
     );
   }
 
+  // Baujat Plot (text summary)
+  if (s.baujat) {
+    const { baujatPlotData } = await import('./statistics/publication-bias');
+    const bData = baujatPlotData(result.studies, result.summary, result.heterogeneity.tau2);
+    if (bData) {
+      const influential = bData.points.filter(p => p.contribution > bData.meanContribution && p.influence > bData.meanInfluence);
+      children.push(
+        new Paragraph({ text: 'Baujat Plot (Contribution\u2013Influence)', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+        new Paragraph({
+          children: [new TextRun({
+            text: influential.length > 0
+              ? `${influential.length} study(ies) in the upper-right quadrant (high contribution to heterogeneity and high influence on pooled effect): ${influential.map(p => p.name).join(', ')}.`
+              : 'No studies showed both high contribution to heterogeneity and high influence on the pooled effect.',
+            size: 20,
+            color: influential.length > 0 ? 'CC6600' : '228B22',
+            font: 'Times New Roman',
+          })],
+        }),
+        new Paragraph({
+          children: [new TextRun({
+            text: 'Note: For the graphical Baujat plot, export the HTML report or download SVG from MetaReview.',
+            italics: true,
+            size: 18,
+            color: '666666',
+            font: 'Times New Roman',
+          })],
+          spacing: { before: 100 },
+        }),
+      );
+    }
+  }
+
+  // Influence Diagnostics
+  if (s.influence && influenceData && influenceData.length > 0) {
+    const k = influenceData.length;
+    const cooksThreshold = 4 / k;
+    const hatThreshold = 2 / k;
+    const cooksInfluential = influenceData.filter(d => d.cooksDistance > cooksThreshold);
+    const hatInfluential = influenceData.filter(d => d.hat > hatThreshold);
+    const rstudentOutliers = influenceData.filter(d => Math.abs(d.rstudent) > 2);
+    const dffitsInfluential = influenceData.filter(d => Math.abs(d.dffits) > 1);
+    const anyFlagged = cooksInfluential.length > 0 || hatInfluential.length > 0 || rstudentOutliers.length > 0 || dffitsInfluential.length > 0;
+    children.push(
+      new Paragraph({ text: 'Influence Diagnostics', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      new Paragraph({
+        children: [new TextRun({
+          text: `Viechtbauer & Cheung (2010). Thresholds: Cook's D > ${cooksThreshold.toFixed(3)}, hat > ${hatThreshold.toFixed(3)}, |rstudent| > 2, |DFFITS| > 1.`,
+          italics: true,
+          size: 18,
+          color: '666666',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 50 },
+      }),
+      influenceDiagnosticsTable(influenceData, result.measure),
+    );
+    if (anyFlagged) {
+      const parts: string[] = [];
+      if (cooksInfluential.length > 0) parts.push(`Cook's distance flagged ${cooksInfluential.map(d => d.name).join(', ')}`);
+      if (hatInfluential.length > 0) parts.push(`high leverage in ${hatInfluential.map(d => d.name).join(', ')}`);
+      if (rstudentOutliers.length > 0) parts.push(`studentized residuals exceeded \u00B12 for ${rstudentOutliers.map(d => d.name).join(', ')}`);
+      if (dffitsInfluential.length > 0) parts.push(`|DFFITS| > 1 for ${dffitsInfluential.map(d => d.name).join(', ')}`);
+      children.push(new Paragraph({
+        children: [new TextRun({
+          text: `Influential studies detected: ${parts.join('; ')}. Consider conducting sensitivity analyses excluding these studies to assess robustness of the pooled estimate.`,
+          bold: true,
+          size: 20,
+          color: 'CC6600',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 100 },
+      }));
+    } else {
+      children.push(new Paragraph({
+        children: [new TextRun({
+          text: 'No influential studies detected. All diagnostic measures are within acceptable thresholds.',
+          size: 20,
+          color: '228B22',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 100 },
+      }));
+    }
+  }
+
+  // GRADE Evidence Quality Assessment
+  if (s.grade && gradeData) {
+    const levelLabels: Record<string, string> = { high: 'HIGH', moderate: 'MODERATE', low: 'LOW', very_low: 'VERY LOW' };
+    children.push(
+      new Paragraph({ text: 'GRADE Evidence Quality Assessment', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      new Paragraph({
+        children: [new TextRun({
+          text: `Overall Quality: ${levelLabels[gradeData.overall]} (Score: ${gradeData.score}/4)`,
+          bold: true,
+          size: 24,
+          font: 'Times New Roman',
+        })],
+        spacing: { after: 200 },
+      }),
+      gradeAssessmentTable(gradeData),
+      new Paragraph({
+        children: [new TextRun({
+          text: 'Note: Risk of bias and indirectness require manual assessment. Auto-assessed factors can be overridden in the GRADE tab.',
+          italics: true,
+          size: 18,
+          color: '666666',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 100 },
+      }),
+    );
+  }
+
+  // Dose-Response Analysis
+  if (s.doseResponse && drData) {
+    children.push(
+      new Paragraph({ text: 'Dose-Response Meta-Analysis', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      doseResponseResultTable(drData),
+      new Paragraph({
+        children: [new TextRun({
+          text: drData.pLinear < 0.05
+            ? `A significant ${drData.modelType} dose-response relationship was detected (P = ${formatP(drData.pLinear)}).`
+            : `No significant dose-response relationship was detected (P = ${formatP(drData.pLinear)}).`,
+          italics: true,
+          size: 20,
+          color: drData.pLinear < 0.05 ? 'CC0000' : '228B22',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 100 },
+      }),
+      new Paragraph({
+        children: [new TextRun({
+          text: 'Note: For the graphical dose-response plot, export the HTML report or download SVG from MetaReview.',
+          italics: true,
+          size: 18,
+          color: '666666',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 100 },
+      }),
+    );
+  }
+
   // Subgroup Analysis
   if (s.subgroup && subgroupResult && subgroupResult.subgroups.length > 1) {
     children.push(
@@ -555,7 +848,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
       new Paragraph({ text: 'Narrative Summary', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
       new Paragraph({
         children: [new TextRun({
-          text: narrativeText(result, eggers, subgroupResult, sensitivityResults, beggs, metaRegression),
+          text: narrativeText(result, eggers, subgroupResult, sensitivityResults, beggs, metaRegression, gradeData, drData, trimFillResult, influenceData),
           size: 22,
           font: 'Times New Roman',
         })],
