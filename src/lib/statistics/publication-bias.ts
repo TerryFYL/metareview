@@ -1,7 +1,7 @@
 // Publication bias assessment: Funnel plot data, Galbraith plot data, Egger's regression test, and Trim-and-Fill
 
-import type { StudyEffect, EggersTest, FunnelPoint } from '../types';
-import { tToP, normalQuantile } from './distributions';
+import type { StudyEffect, EggersTest, BeggsTest, FunnelPoint } from '../types';
+import { tToP, normalQuantile, zToP } from './distributions';
 
 export interface GalbraithPoint {
   name: string;
@@ -101,6 +101,43 @@ export function eggersTest(studies: StudyEffect[]): EggersTest | null {
     pValue,
     df,
   };
+}
+
+/** Begg's adjusted rank correlation test for funnel plot asymmetry
+ *  Tests the correlation between effect estimates and their variances
+ *  using Kendall's tau (Begg & Mazumdar, 1994)
+ */
+export function beggsTest(studies: StudyEffect[]): BeggsTest | null {
+  const k = studies.length;
+  if (k < 3) return null;
+
+  // Use standardized effect (yi) and variance (vi) for rank correlation
+  const yi = studies.map((s) => s.yi);
+  const vi = studies.map((s) => s.vi);
+
+  // Compute Kendall's tau between yi and vi
+  let concordant = 0;
+  let discordant = 0;
+  for (let i = 0; i < k; i++) {
+    for (let j = i + 1; j < k; j++) {
+      const yDiff = yi[j] - yi[i];
+      const vDiff = vi[j] - vi[i];
+      const product = yDiff * vDiff;
+      if (product > 0) concordant++;
+      else if (product < 0) discordant++;
+      // ties (product === 0) are ignored
+    }
+  }
+
+  const n0 = k * (k - 1) / 2;
+  const tau = (concordant - discordant) / n0;
+
+  // Variance of tau under H0 (no ties adjustment)
+  const variance = (2 * (2 * k + 5)) / (9 * k * (k - 1));
+  const z = tau / Math.sqrt(variance);
+  const pValue = zToP(z);
+
+  return { tau, z, pValue, k };
 }
 
 /** Trim-and-Fill result for publication bias correction (Duval & Tweedie, 2000) */

@@ -13,7 +13,7 @@ import LiteratureSearch from './components/LiteratureSearch';
 import OnboardingTour from './components/OnboardingTour';
 import CumulativeMeta from './components/CumulativeMeta';
 import GalbraithPlot from './components/GalbraithPlot';
-import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, isBinaryData, isContinuousData, isHRData, trimAndFill, isLogScale } from './lib/statistics';
+import { metaAnalysis, eggersTest, beggsTest, metaRegression, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, isBinaryData, isContinuousData, isHRData, trimAndFill, isLogScale } from './lib/statistics';
 import type { TrimAndFillResult } from './lib/statistics';
 import { generateReportHTML, type ReportSections } from './lib/report-export';
 import { generateReportDOCX } from './lib/report-docx';
@@ -91,6 +91,23 @@ function ForestPlotControls({ lang, onDownloadSVG, onDownloadPNG }: { lang: Lang
               <label htmlFor="show-weights" style={{ fontSize: 12, color: '#374151' }}>
                 {t('forest.showWeights', lang)}
               </label>
+            </div>
+          </div>
+          {/* Sort */}
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 8 }}>
+            <div style={{ flex: '0 0 auto' }}>
+              <label style={settingsLabelStyle}>{t('forest.sortBy', lang)}</label>
+              <select
+                value={plotSettings.forestSortBy}
+                onChange={(e) => setPlotSettings({ forestSortBy: e.target.value as 'default' | 'effect' | 'year' | 'weight' | 'name' })}
+                style={settingsSelectStyle}
+              >
+                <option value="default">{t('forest.sort.default', lang)}</option>
+                <option value="effect">{t('forest.sort.effect', lang)}</option>
+                <option value="year">{t('forest.sort.year', lang)}</option>
+                <option value="weight">{t('forest.sort.weight', lang)}</option>
+                <option value="name">{t('forest.sort.name', lang)}</option>
+              </select>
             </div>
           </div>
           {/* Custom Labels */}
@@ -230,8 +247,8 @@ export default function App() {
   } = useProjectStore();
 
   const {
-    lang, heroSeen, tourSeen, result, eggers, error, activeTab,
-    setLang, setHeroSeen, setTourSeen, setResult, setEggers, setError, setActiveTab,
+    lang, heroSeen, tourSeen, result, eggers, beggs, error, activeTab,
+    setLang, setHeroSeen, setTourSeen, setResult, setEggers, setBeggs, setMetaRegression, setError, setActiveTab,
   } = useUIStore();
 
   const [subgroupResult, setSubgroupResult] = useState<SubgroupAnalysisResult | null>(null);
@@ -324,6 +341,9 @@ export default function App() {
       const res = metaAnalysis(studies, measure, model);
       setResult(res);
       setEggers(eggersTest(res.studies));
+      setBeggs(beggsTest(res.studies));
+      // Meta-regression
+      setMetaRegression(metaRegression(studies, measure, model));
       // Trim-and-Fill: publication bias correction
       setTrimFillResult(trimAndFill(res.studies, res.summary, isLogScale(res.measure)));
       // Subgroup analysis: only if at least one study has a subgroup defined
@@ -339,10 +359,12 @@ export default function App() {
       setError(e instanceof Error ? e.message : t('input.analysisFailed', lang));
       setResult(null);
       setEggers(null);
+      setBeggs(null);
+      setMetaRegression(null);
       setSubgroupResult(null);
       setTrimFillResult(null);
     }
-  }, [studies, measure, model, lang, validateStudies, setResult, setEggers, setError, setActiveTab]);
+  }, [studies, measure, model, lang, validateStudies, setResult, setEggers, setBeggs, setMetaRegression, setError, setActiveTab]);
 
   const sensitivityResults = useMemo(() => {
     if (!result || studies.length < 3) return [];
@@ -418,6 +440,7 @@ export default function App() {
       pico,
       result,
       eggers,
+      beggs,
       subgroupResult,
       sensitivityResults,
       forestSvg,
@@ -431,7 +454,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
     setTimeout(() => URL.revokeObjectURL(url), 10000);
-  }, [result, title, pico, prisma, eggers, subgroupResult, sensitivityResults, trimFillResult]);
+  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult]);
 
   const exportDOCX = useCallback(async (sections?: ReportSections) => {
     if (!result) return;
@@ -440,6 +463,7 @@ export default function App() {
       pico,
       result,
       eggers,
+      beggs,
       subgroupResult,
       sensitivityResults,
       trimFillResult,
@@ -452,7 +476,7 @@ export default function App() {
     a.download = `${title || 'metareview-report'}.docx`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 10000);
-  }, [result, title, pico, prisma, eggers, subgroupResult, sensitivityResults, trimFillResult]);
+  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult]);
 
   // Show hero for new visitors
   if (!heroSeen) {

@@ -1,5 +1,5 @@
 // MetaReview Statistical Engine — Public API
-export { metaAnalysis, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis } from './meta-analysis';
+export { metaAnalysis, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, metaRegression } from './meta-analysis';
 export {
   calculateEffectSize,
   toOriginalScale,
@@ -15,7 +15,7 @@ export {
   isGenericData,
   logHazardRatio,
 } from './effect-size';
-export { funnelPlotData, eggersTest, galbraithPlotData, trimAndFill } from './publication-bias';
+export { funnelPlotData, eggersTest, beggsTest, galbraithPlotData, trimAndFill } from './publication-bias';
 export type { GalbraithPoint, GalbraithData, TrimAndFillResult } from './publication-bias';
 export {
   normalCdf,

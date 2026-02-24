@@ -168,6 +168,50 @@ export interface EggersTest {
   df: number;
 }
 
+/** Begg's rank correlation test result (Begg & Mazumdar, 1994) */
+export interface BeggsTest {
+  /** Kendall's tau statistic */
+  tau: number;
+  /** Z-score for the test */
+  z: number;
+  /** Two-tailed P-value */
+  pValue: number;
+  /** Number of studies */
+  k: number;
+}
+
+/** Meta-regression result (WLS) */
+export interface MetaRegressionResult {
+  /** Regression coefficient (slope) */
+  coefficient: number;
+  /** SE of coefficient */
+  se: number;
+  /** Z-value for coefficient */
+  z: number;
+  /** P-value for coefficient */
+  pValue: number;
+  /** Intercept */
+  intercept: number;
+  /** Covariate name */
+  covariate: string;
+  /** Q_model statistic */
+  QModel: number;
+  /** Q_model P-value */
+  QModelP: number;
+  /** Q_residual */
+  QResidual: number;
+  /** Q_residual df */
+  QResidualDf: number;
+  /** Q_residual P-value */
+  QResidualP: number;
+  /** R² analog (proportion of heterogeneity explained) */
+  R2: number;
+  /** Number of studies with covariate data */
+  k: number;
+  /** Per-study data for scatter plot */
+  points: { name: string; x: number; y: number; weight: number }[];
+}
+
 /** Subgroup analysis result */
 export interface SubgroupResult {
   /** Subgroup name */

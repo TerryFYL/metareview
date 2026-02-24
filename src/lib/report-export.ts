@@ -1,5 +1,5 @@
 // Report export — generates a printable HTML report
-import type { MetaAnalysisResult, EggersTest, SubgroupAnalysisResult, SensitivityResult, PICO } from './types';
+import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO } from './types';
 import type { PRISMAData } from '../components/PRISMAFlow';
 import type { TrimAndFillResult } from './statistics/publication-bias';
 
@@ -10,6 +10,7 @@ export interface ReportSections {
   interpretation: boolean;
   studyTable: boolean;
   eggers: boolean;
+  beggs: boolean;
   plots: boolean;
   galbraith: boolean;
   subgroup: boolean;
@@ -25,6 +26,7 @@ export const defaultReportSections: ReportSections = {
   interpretation: true,
   studyTable: true,
   eggers: true,
+  beggs: true,
   plots: true,
   galbraith: true,
   subgroup: true,
@@ -38,6 +40,7 @@ interface ReportData {
   pico: PICO;
   result: MetaAnalysisResult;
   eggers: EggersTest | null;
+  beggs?: BeggsTest | null;
   subgroupResult: SubgroupAnalysisResult | null;
   sensitivityResults: SensitivityResult[];
   forestSvg: string | null;
@@ -180,6 +183,20 @@ function eggersSection(eggers: EggersTest): string {
       </tbody>
     </table>
     <p class="note">${eggers.pValue < 0.05 ? 'Significant asymmetry detected — potential publication bias.' : 'No significant funnel plot asymmetry detected.'}</p>`;
+}
+
+function beggsSection(beggs: BeggsTest): string {
+  return `
+    <h2>Publication Bias (Begg's Test)</h2>
+    <table class="data-table">
+      <tbody>
+        <tr><td class="label">Kendall's &tau;</td><td>${beggs.tau.toFixed(4)}</td></tr>
+        <tr><td class="label">Z</td><td>${beggs.z.toFixed(4)}</td></tr>
+        <tr><td class="label">P-value</td><td class="${beggs.pValue < 0.05 ? 'sig' : ''}">${formatP(beggs.pValue)}</td></tr>
+        <tr><td class="label">k</td><td>${beggs.k}</td></tr>
+      </tbody>
+    </table>
+    <p class="note">${beggs.pValue < 0.05 ? 'Significant rank correlation detected &mdash; potential publication bias.' : 'No significant rank correlation detected (no evidence of publication bias).'}</p>`;
 }
 
 function subgroupSection(sg: SubgroupAnalysisResult, measure: string): string {
@@ -352,7 +369,7 @@ function trimFillSection(tf: TrimAndFillResult, measure: string): string {
 }
 
 export function generateReportHTML(data: ReportData): string {
-  const { title, pico, result, eggers, subgroupResult, sensitivityResults, forestSvg, funnelSvg, galbraithSvg, trimFillResult, prisma } = data;
+  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, forestSvg, funnelSvg, galbraithSvg, trimFillResult, prisma } = data;
   const s = data.sections || defaultReportSections;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -408,6 +425,7 @@ export function generateReportHTML(data: ReportData): string {
   ${s.interpretation ? interpretationSection(result) : ''}
   ${s.studyTable ? studyTable(result) : ''}
   ${s.eggers && eggers ? eggersSection(eggers) : ''}
+  ${s.beggs && beggs ? beggsSection(beggs) : ''}
   ${s.plots && forestSvg ? `<div class="figure">${forestSvg}<p class="figure-caption">Figure 1. Forest plot</p></div>` : ''}
   ${s.plots && funnelSvg ? `<div class="figure">${funnelSvg}<p class="figure-caption">Figure 2. Funnel plot</p></div>` : ''}
   ${s.eggers && trimFillResult ? trimFillSection(trimFillResult, result.measure) : ''}

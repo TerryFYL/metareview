@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Study, EffectMeasure, ModelType, PICO, MetaAnalysisResult, EggersTest } from './lib/types';
+import type { Study, EffectMeasure, ModelType, PICO, MetaAnalysisResult, EggersTest, BeggsTest, MetaRegressionResult } from './lib/types';
 import { isBinaryData, isContinuousData, isGenericData, isHRData } from './lib/statistics/effect-size';
 import type { Lang } from './lib/i18n';
 import type { PRISMAData } from './components/PRISMAFlow';
@@ -198,6 +198,8 @@ export const useProjectStore = create<ProjectStore>()(
 // UI store (lang is persisted, rest is not)
 export type ColorScheme = 'default' | 'bw' | 'colorblind';
 
+export type ForestSortBy = 'default' | 'effect' | 'year' | 'weight' | 'name';
+
 export interface PlotSettings {
   colorScheme: ColorScheme;
   fontSize: number;
@@ -206,6 +208,7 @@ export interface PlotSettings {
   customXLabel: string;
   favoursLeftLabel: string;
   favoursRightLabel: string;
+  forestSortBy: ForestSortBy;
 }
 
 const defaultPlotSettings: PlotSettings = {
@@ -216,6 +219,7 @@ const defaultPlotSettings: PlotSettings = {
   customXLabel: '',
   favoursLeftLabel: '',
   favoursRightLabel: '',
+  forestSortBy: 'default',
 };
 
 interface UIStore {
@@ -224,6 +228,8 @@ interface UIStore {
   tourSeen: boolean;
   result: MetaAnalysisResult | null;
   eggers: EggersTest | null;
+  beggs: BeggsTest | null;
+  metaRegression: MetaRegressionResult | null;
   error: string | null;
   activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'galbraith' | 'cumulative' | 'sensitivity' | 'subgroup' | 'prisma' | 'search' | 'extract';
   plotSettings: PlotSettings;
@@ -232,6 +238,8 @@ interface UIStore {
   setTourSeen: (seen: boolean) => void;
   setResult: (result: MetaAnalysisResult | null) => void;
   setEggers: (eggers: EggersTest | null) => void;
+  setBeggs: (beggs: BeggsTest | null) => void;
+  setMetaRegression: (metaReg: MetaRegressionResult | null) => void;
   setError: (error: string | null) => void;
   setActiveTab: (tab: UIStore['activeTab']) => void;
   setPlotSettings: (settings: Partial<PlotSettings>) => void;
@@ -245,6 +253,8 @@ export const useUIStore = create<UIStore>()(
       tourSeen: false,
       result: null,
       eggers: null,
+      beggs: null,
+      metaRegression: null,
       error: null,
       activeTab: 'input',
       plotSettings: defaultPlotSettings,
@@ -253,6 +263,8 @@ export const useUIStore = create<UIStore>()(
       setTourSeen: (tourSeen) => set({ tourSeen }),
       setResult: (result) => set({ result }),
       setEggers: (eggers) => set({ eggers }),
+      setBeggs: (beggs) => set({ beggs }),
+      setMetaRegression: (metaRegression) => set({ metaRegression }),
       setError: (error) => set({ error }),
       setActiveTab: (activeTab) => set({ activeTab }),
       setPlotSettings: (settings) => set((state) => ({

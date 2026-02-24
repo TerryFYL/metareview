@@ -3,7 +3,36 @@ import * as d3 from 'd3';
 import type { MetaAnalysisResult, SubgroupAnalysisResult } from '../lib/types';
 import { isLogScale } from '../lib/statistics';
 import { t, type Lang } from '../lib/i18n';
-import { useUIStore, type ColorScheme } from '../store';
+import { useUIStore, type ColorScheme, type ForestSortBy } from '../store';
+
+/** Sort studies based on user-selected sort order */
+function sortStudies<T extends { effect: number; year?: number; name: string; weightRandom: number; weightFixed: number }>(
+  studies: T[],
+  sortBy: ForestSortBy,
+  model: string,
+): T[] {
+  if (sortBy === 'default') return studies;
+  const sorted = [...studies];
+  switch (sortBy) {
+    case 'effect':
+      sorted.sort((a, b) => a.effect - b.effect);
+      break;
+    case 'year':
+      sorted.sort((a, b) => (a.year ?? 9999) - (b.year ?? 9999));
+      break;
+    case 'weight': {
+      const getW = model === 'random'
+        ? (s: T) => s.weightRandom
+        : (s: T) => s.weightFixed;
+      sorted.sort((a, b) => getW(b) - getW(a));
+      break;
+    }
+    case 'name':
+      sorted.sort((a, b) => a.name.localeCompare(b.name));
+      break;
+  }
+  return sorted;
+}
 
 interface ForestPlotProps {
   result: MetaAnalysisResult;
@@ -319,8 +348,9 @@ export default function ForestPlot({
           .text(sg.name || (lang === 'zh' ? '未分组' : 'Ungrouped'));
         currentRow++;
 
-        // Studies in this subgroup — map to overall study effects for consistent weights
-        for (const sgStudy of sg.result.studies) {
+        // Studies in this subgroup — sort + map to overall study effects for consistent weights
+        const sortedSgStudies = sortStudies(sg.result.studies, plotSettings.forestSortBy, result.model);
+        for (const sgStudy of sortedSgStudies) {
           const overallStudy = result.studies.find((s) => s.id === sgStudy.id);
           const y = currentRow * ROW_HEIGHT + ROW_HEIGHT / 2;
           drawStudyRow(overallStudy || sgStudy, y, result.model, true);
@@ -351,7 +381,8 @@ export default function ForestPlot({
 
     } else {
       // === NORMAL MODE (no subgroups) ===
-      for (const study of result.studies) {
+      const sortedStudies = sortStudies(result.studies, plotSettings.forestSortBy, result.model);
+      for (const study of sortedStudies) {
         const y = currentRow * ROW_HEIGHT + ROW_HEIGHT / 2;
         drawStudyRow(study, y, result.model);
         currentRow++;

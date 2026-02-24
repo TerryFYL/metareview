@@ -5,6 +5,7 @@ import type {
   Study, StudyEffect, MetaAnalysisResult,
   EffectMeasure, ModelType, Heterogeneity,
   SubgroupAnalysisResult, CumulativeResult,
+  MetaRegressionResult,
 } from '../types';
 import {
   calculateEffectSize, toOriginalScale, calculateCI,
@@ -263,6 +264,96 @@ export function cumulativeMetaAnalysis(
     });
   }
   return results;
+}
+
+/** Meta-regression using weighted least squares (WLS)
+ *  Tests whether a continuous covariate (e.g., publication year) moderates the effect size
+ *  Uses weights = 1/(vi + tau²) for random-effects meta-regression
+ */
+export function metaRegression(
+  studies: Study[],
+  measure: EffectMeasure,
+  model: ModelType = 'random',
+  covariate: 'year' = 'year'
+): MetaRegressionResult | null {
+  // Filter studies that have the covariate
+  const validStudies = studies.filter((s) => s.year != null);
+  if (validStudies.length < 3) return null;
+
+  const rawEffects = computeStudyEffects(validStudies, measure);
+  const k = rawEffects.length;
+
+  // Get tau² from unrestricted model
+  const fixed = fixedEffects(rawEffects);
+  const het = computeHeterogeneity(rawEffects, fixed.summary);
+  const tau2 = model === 'random' ? het.tau2 : 0;
+
+  // Build WLS regression: yi = β₀ + β₁ * xi
+  const x = validStudies.map((s) => s.year!);
+  const y = rawEffects.map((e) => e.yi);
+  const w = rawEffects.map((e) => 1 / (e.vi + tau2));
+
+  const sumW = w.reduce((a, b) => a + b, 0);
+  const sumWX = w.reduce((s, wi, i) => s + wi * x[i], 0);
+  const sumWY = w.reduce((s, wi, i) => s + wi * y[i], 0);
+  const sumWXX = w.reduce((s, wi, i) => s + wi * x[i] * x[i], 0);
+  const sumWXY = w.reduce((s, wi, i) => s + wi * x[i] * y[i], 0);
+
+  const meanX = sumWX / sumW;
+  const meanY = sumWY / sumW;
+
+  const Sxx = sumWXX - sumW * meanX * meanX;
+  if (Math.abs(Sxx) < 1e-10) return null; // No variation in covariate
+
+  const Sxy = sumWXY - sumW * meanX * meanY;
+  const slope = Sxy / Sxx;
+  const intercept = meanY - slope * meanX;
+
+  // SE of slope
+  const seSlope = Math.sqrt(1 / Sxx);
+  const zSlope = slope / seSlope;
+  const pSlope = zToP(zSlope);
+
+  // Q_model: improvement in fit from adding covariate
+  const QModel = slope * slope * Sxx;
+  const QModelP = chiSquaredPValue(QModel, 1);
+
+  // Q_residual: remaining heterogeneity after regression
+  const QResidual = w.reduce((s, wi, i) => {
+    const predicted = intercept + slope * x[i];
+    return s + wi * (y[i] - predicted) ** 2;
+  }, 0);
+  const QResidualDf = k - 2;
+  const QResidualP = QResidualDf > 0 ? chiSquaredPValue(QResidual, QResidualDf) : 1;
+
+  // R² analog: proportion of total heterogeneity explained
+  const QTotal = het.Q;
+  const R2 = QTotal > 0 ? Math.max(0, Math.min(1, (QTotal - QResidual) / QTotal)) : 0;
+
+  // Build scatter plot points (original scale for display)
+  const points = validStudies.map((s, i) => ({
+    name: s.name,
+    x: s.year!,
+    y: toOriginalScale(rawEffects[i].yi, measure),
+    weight: w[i],
+  }));
+
+  return {
+    coefficient: slope,
+    se: seSlope,
+    z: zSlope,
+    pValue: pSlope,
+    intercept,
+    covariate,
+    QModel,
+    QModelP,
+    QResidual,
+    QResidualDf,
+    QResidualP,
+    R2,
+    k,
+    points,
+  };
 }
 
 /** Leave-one-out sensitivity analysis */

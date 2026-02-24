@@ -14,7 +14,7 @@ import {
   ShadingType,
   convertInchesToTwip,
 } from 'docx';
-import type { MetaAnalysisResult, EggersTest, SubgroupAnalysisResult, SensitivityResult, PICO } from './types';
+import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO } from './types';
 import type { PRISMAData } from '../components/PRISMAFlow';
 import type { ReportSections } from './report-export';
 import { defaultReportSections } from './report-export';
@@ -25,6 +25,7 @@ interface ReportData {
   pico: PICO;
   result: MetaAnalysisResult;
   eggers: EggersTest | null;
+  beggs?: BeggsTest | null;
   subgroupResult: SubgroupAnalysisResult | null;
   sensitivityResults: SensitivityResult[];
   trimFillResult?: TrimAndFillResult | null;
@@ -194,6 +195,18 @@ function eggersTable(eggers: EggersTest): Table {
   });
 }
 
+function beggsTable(beggs: BeggsTest): Table {
+  return new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: makeLabelValueRows([
+      ["Kendall's \u03C4", beggs.tau.toFixed(4)],
+      ['Z', beggs.z.toFixed(4)],
+      ['P-value', formatP(beggs.pValue), beggs.pValue < 0.05],
+      ['k', beggs.k.toString()],
+    ]),
+  });
+}
+
 function subgroupTable(sg: SubgroupAnalysisResult, measure: string): Table {
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -312,7 +325,7 @@ function prismaSummaryTable(prisma: PRISMAData): Table | null {
 }
 
 export async function generateReportDOCX(data: ReportData): Promise<Blob> {
-  const { title, pico, result, eggers, subgroupResult, sensitivityResults, trimFillResult, prisma } = data;
+  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, prisma } = data;
   const s = data.sections || defaultReportSections;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -390,6 +403,26 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
           text: eggers.pValue < 0.05
             ? 'Significant asymmetry detected \u2014 potential publication bias.'
             : 'No significant funnel plot asymmetry detected.',
+          italics: true,
+          size: 20,
+          color: '666666',
+          font: 'Times New Roman',
+        })],
+        spacing: { before: 100 },
+      }),
+    );
+  }
+
+  // Begg's Test
+  if (s.beggs && beggs) {
+    children.push(
+      new Paragraph({ text: "Publication Bias (Begg's Rank Correlation)", heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      beggsTable(beggs),
+      new Paragraph({
+        children: [new TextRun({
+          text: beggs.pValue < 0.05
+            ? 'Significant rank correlation detected \u2014 potential publication bias.'
+            : 'No significant rank correlation detected.',
           italics: true,
           size: 20,
           color: '666666',

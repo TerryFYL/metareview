@@ -3,7 +3,7 @@ import type { MetaAnalysisResult, EggersTest, SubgroupAnalysisResult, Sensitivit
 import type { ReportSections } from '../lib/report-export';
 import { defaultReportSections } from '../lib/report-export';
 import { t, type Lang } from '../lib/i18n';
-import { useProjectStore } from '../store';
+import { useProjectStore, useUIStore } from '../store';
 import { trackFeature } from '../lib/analytics';
 
 interface ResultsSummaryProps {
@@ -19,6 +19,7 @@ interface ResultsSummaryProps {
 export default function ResultsSummary({ result, eggers, subgroupResult, sensitivityResults, lang, onExportReport, onExportDOCX }: ResultsSummaryProps) {
   const { measure, model, heterogeneity: het } = result;
   const k = result.studies.length;
+  const beggs = useUIStore((s) => s.beggs);
   const [showSections, setShowSections] = useState(false);
   const [sections, setSections] = useState<ReportSections>({ ...defaultReportSections });
 
@@ -31,7 +32,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     const newVal = !allOn;
     setSections({
       pico: newVal, prisma: newVal, overall: newVal, interpretation: newVal, studyTable: newVal,
-      eggers: newVal, plots: newVal, galbraith: newVal, subgroup: newVal, sensitivity: newVal,
+      eggers: newVal, beggs: newVal, plots: newVal, galbraith: newVal, subgroup: newVal, sensitivity: newVal,
       methods: newVal, narrative: newVal,
     });
   };
@@ -57,6 +58,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     { key: 'interpretation', labelKey: 'report.section.interpretation' },
     { key: 'studyTable', labelKey: 'report.section.studyTable' },
     { key: 'eggers', labelKey: 'report.section.eggers' },
+    { key: 'beggs', labelKey: 'report.section.beggs' },
     { key: 'plots', labelKey: 'report.section.plots' },
     { key: 'galbraith', labelKey: 'report.section.galbraith' },
     { key: 'subgroup', labelKey: 'report.section.subgroup' },
@@ -166,6 +168,26 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
             {eggers.pValue < 0.05
               ? t('results.asymmetryDetected', lang)
               : t('results.noAsymmetry', lang)}
+          </p>
+        </div>
+      )}
+
+      {/* Begg's test */}
+      {beggs && (
+        <div style={cardStyle}>
+          <div style={cardTitleStyle}>{t('results.beggs', lang)}</div>
+          <table style={tableStyle}>
+            <tbody>
+              <Row label="Kendall's \u03C4" value={beggs.tau.toFixed(4)} />
+              <Row label="Z" value={beggs.z.toFixed(4)} />
+              <Row label="P-value" value={formatP(beggs.pValue)} highlight={beggs.pValue < 0.05} />
+              <Row label="k" value={beggs.k.toString()} />
+            </tbody>
+          </table>
+          <p style={{ fontSize: 12, color: '#6b7280', marginTop: 8 }}>
+            {beggs.pValue < 0.05
+              ? t('results.beggsAsymmetry', lang)
+              : t('results.beggsNoAsymmetry', lang)}
           </p>
         </div>
       )}
