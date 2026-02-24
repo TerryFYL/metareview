@@ -1,5 +1,5 @@
 // Report export — generates a printable HTML report
-import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult } from './types';
+import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult, CumulativeResult } from './types';
 import type { PRISMAData } from '../components/PRISMAFlow';
 import type { TrimAndFillResult } from './statistics/publication-bias';
 
@@ -21,6 +21,7 @@ export interface ReportSections {
   loo: boolean;
   network: boolean;
   grade: boolean;
+  cumulative: boolean;
   doseResponse: boolean;
   methods: boolean;
   narrative: boolean;
@@ -44,6 +45,7 @@ export const defaultReportSections: ReportSections = {
   loo: true,
   network: true,
   grade: true,
+  cumulative: true,
   doseResponse: true,
   methods: true,
   narrative: true,
@@ -70,6 +72,8 @@ interface ReportData {
   gradeAssessment?: GradeAssessment | null;
   doseResponseResult?: DoseResponseResult | null;
   doseResponseSvg?: string | null;
+  cumulativeResults?: CumulativeResult[];
+  cumulativeSvg?: string | null;
   prisma?: PRISMAData;
   sections?: ReportSections;
 }
@@ -549,8 +553,49 @@ function doseResponseSection(dr: DoseResponseResult): string {
     <p class="note">${dr.pLinear < 0.05 ? `A significant ${dr.modelType} dose-response relationship was detected (P ${formatP(dr.pLinear)}).` : `No significant dose-response relationship was detected (P = ${formatP(dr.pLinear)}).`}${dr.modelType === 'quadratic' && dr.pQuadratic < 0.05 ? ' The quadratic term was significant, suggesting a non-linear trend.' : ''}</p>`;
 }
 
+function cumulativeSection(results: CumulativeResult[], measure: string): string {
+  if (results.length === 0) return '';
+  const isRatio = measure === 'OR' || measure === 'RR' || measure === 'HR';
+  const fmt = (v: number) => isRatio ? v.toFixed(2) : v.toFixed(3);
+  // Stability assessment
+  let stabilityNote = '';
+  if (results.length >= 4) {
+    const last3 = results.slice(-3);
+    const baseline = last3[0].effect;
+    if (baseline !== 0) {
+      const stable = last3.every(r => Math.abs((r.effect - baseline) / baseline) < 0.1);
+      stabilityNote = stable
+        ? '<div class="callout callout-green"><strong>Stability:</strong> The pooled estimate remained stable over the last 3 steps (&lt; 10% change), suggesting a robust result.</div>'
+        : '<div class="callout callout-red"><strong>Stability:</strong> The pooled estimate still fluctuated notably in recent steps, suggesting the result may not yet be fully stable.</div>';
+    }
+  }
+  // Trend description
+  const first = results[0];
+  const last = results[results.length - 1];
+  const trendText = `The cumulative meta-analysis progressed from ${first.studyCount} to ${last.studyCount} studies. The initial pooled ${measure} was ${fmt(first.effect)} (95% CI: ${fmt(first.ciLower)}&ndash;${fmt(first.ciUpper)}) and the final estimate was ${fmt(last.effect)} (95% CI: ${fmt(last.ciLower)}&ndash;${fmt(last.ciUpper)}; I&sup2; = ${last.I2.toFixed(1)}%).`;
+
+  return `
+    <h2>Cumulative Meta-Analysis</h2>
+    <p class="note">${trendText}</p>
+    ${stabilityNote}
+    <table class="full-table">
+      <thead>
+        <tr><th>Study Added</th><th>k</th><th>${measure} [95% CI]</th><th>I&sup2;</th><th>P</th></tr>
+      </thead>
+      <tbody>
+        ${results.map((r, i) => `<tr${i === results.length - 1 ? ' class="overall-row"' : ''}>
+          <td>${esc(r.addedStudy)}${r.year ? ` (${r.year})` : ''}</td>
+          <td>${r.studyCount}</td>
+          <td>${fmt(r.effect)} [${fmt(r.ciLower)}, ${fmt(r.ciUpper)}]</td>
+          <td>${r.I2.toFixed(1)}%</td>
+          <td class="${r.pValue < 0.05 ? 'sig' : ''}">${formatP(r.pValue)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
 export function generateReportHTML(data: ReportData): string {
-  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, forestSvg, funnelSvg, galbraithSvg, baujatSvg, looSvg, networkSvg, trimFillResult, metaRegression, metaRegSvg, influenceDiagnostics: influenceData, gradeAssessment: gradeData, doseResponseResult: drData, doseResponseSvg: drSvg, prisma } = data;
+  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, forestSvg, funnelSvg, galbraithSvg, baujatSvg, looSvg, networkSvg, trimFillResult, metaRegression, metaRegSvg, influenceDiagnostics: influenceData, gradeAssessment: gradeData, doseResponseResult: drData, doseResponseSvg: drSvg, cumulativeResults: cumResults, cumulativeSvg: cumSvg, prisma } = data;
   const s = data.sections || defaultReportSections;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -621,6 +666,8 @@ export function generateReportHTML(data: ReportData): string {
   ${s.network && networkSvg ? `<div class="figure">${networkSvg}<p class="figure-caption">Figure ${[forestSvg, funnelSvg, galbraithSvg, metaRegSvg, baujatSvg, looSvg].filter(Boolean).length + 1}. Network meta-analysis graph</p></div>` : ''}
   ${s.doseResponse && drData ? doseResponseSection(drData) : ''}
   ${s.doseResponse && drSvg ? `<div class="figure">${drSvg}<p class="figure-caption">Figure ${[forestSvg, funnelSvg, galbraithSvg, metaRegSvg, baujatSvg, looSvg, networkSvg].filter(Boolean).length + 1}. Dose-response plot</p></div>` : ''}
+  ${s.cumulative && cumResults && cumResults.length > 0 ? cumulativeSection(cumResults, result.measure) : ''}
+  ${s.cumulative && cumSvg ? `<div class="figure">${cumSvg}<p class="figure-caption">Figure ${[forestSvg, funnelSvg, galbraithSvg, metaRegSvg, baujatSvg, looSvg, networkSvg, drSvg].filter(Boolean).length + 1}. Cumulative meta-analysis forest plot</p></div>` : ''}
   ${s.sensitivity ? sensitivitySection(sensitivityResults, result) : ''}
   ${s.methods ? methodsSection(result, pico, eggers, subgroupResult, sensitivityResults) : ''}
   ${s.narrative ? narrativeSection(result, eggers, subgroupResult, sensitivityResults, beggs, metaRegression, gradeData, drData, trimFillResult, influenceData) : ''}

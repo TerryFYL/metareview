@@ -27,6 +27,7 @@ import { generateReportHTML, type ReportSections } from './lib/report-export';
 import { generateReportDOCX } from './lib/report-docx';
 import { t, type Lang } from './lib/i18n';
 import { trackPageView, trackTabSwitch } from './lib/analytics';
+import { exportJSON } from './lib/csv';
 import type { EffectMeasure, ModelType, Study, BinaryData, ContinuousData, HRData, SubgroupAnalysisResult } from './lib/types';
 
 // Lazy-load extraction component (pdfjs-dist is ~700KB)
@@ -447,6 +448,7 @@ export default function App() {
     const looEl = document.querySelector('.loo-plot-container svg');
     const networkEl = document.querySelector('.network-graph-container svg');
     const doseResponseEl = document.querySelector('.dose-response-container svg');
+    const cumulativeEl = document.querySelector('.cumulative-plot-container svg');
     const forestSvg = forestEl ? serializer.serializeToString(forestEl) : null;
     const funnelSvg = funnelEl ? serializer.serializeToString(funnelEl) : null;
     const galbraithSvg = galbraithEl ? serializer.serializeToString(galbraithEl) : null;
@@ -455,6 +457,7 @@ export default function App() {
     const looSvg = looEl ? serializer.serializeToString(looEl) : null;
     const networkSvg = networkEl ? serializer.serializeToString(networkEl) : null;
     const doseResponseSvg = doseResponseEl ? serializer.serializeToString(doseResponseEl) : null;
+    const cumulativeSvg = cumulativeEl ? serializer.serializeToString(cumulativeEl) : null;
     const influenceData = studies.length >= 3 ? computeInfluence(studies, measure, model) : [];
     const gradeData = result ? computeGrade({ result, eggers, beggs, trimFill: trimFillResult }) : null;
     const drData = doseResponseAnalysis(result.studies, studies.map(s => s.dose ?? NaN), studies.map(s => s.name));
@@ -479,6 +482,8 @@ export default function App() {
       gradeAssessment: gradeData,
       doseResponseResult: drData,
       doseResponseSvg,
+      cumulativeResults,
+      cumulativeSvg,
       prisma,
       sections,
     });
@@ -486,7 +491,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
     setTimeout(() => URL.revokeObjectURL(url), 10000);
-  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, measure, model, studies]);
+  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, measure, model, studies, cumulativeResults]);
 
   const exportDOCX = useCallback(async (sections?: ReportSections) => {
     if (!result) return;
@@ -506,6 +511,7 @@ export default function App() {
       influenceDiagnostics: influenceData,
       gradeAssessment: gradeData,
       doseResponseResult: drData,
+      cumulativeResults,
       prisma,
       sections,
     });
@@ -515,7 +521,37 @@ export default function App() {
     a.download = `${title || 'metareview-report'}.docx`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 10000);
-  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression]);
+  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, cumulativeResults, measure, model, studies]);
+
+  const exportJSONHandler = useCallback(() => {
+    if (!result) return;
+    const influenceData = studies.length >= 3 ? computeInfluence(studies, measure, model) : [];
+    const gradeData = computeGrade({ result, eggers, beggs, trimFill: trimFillResult });
+    const drData = doseResponseAnalysis(result.studies, studies.map(s => s.dose ?? NaN), studies.map(s => s.name));
+    const json = exportJSON({
+      studies,
+      measure,
+      model,
+      result,
+      eggers,
+      beggs,
+      trimFill: trimFillResult,
+      metaRegression,
+      influenceDiagnostics: influenceData,
+      gradeAssessment: gradeData,
+      doseResponse: drData,
+      subgroupResult,
+      sensitivityResults,
+      cumulativeResults,
+    });
+    const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${title || 'metareview-data'}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }, [result, studies, measure, model, eggers, beggs, trimFillResult, metaRegression, subgroupResult, sensitivityResults, cumulativeResults, title]);
 
   // Show hero for new visitors
   if (!heroSeen) {
@@ -758,7 +794,7 @@ export default function App() {
 
       {/* Results Tab */}
       {activeTab === 'results' && result && (
-        <ResultsSummary result={result} eggers={eggers} subgroupResult={subgroupResult} sensitivityResults={sensitivityResults} lang={lang} onExportReport={exportReport} onExportDOCX={exportDOCX} />
+        <ResultsSummary result={result} eggers={eggers} subgroupResult={subgroupResult} sensitivityResults={sensitivityResults} lang={lang} onExportReport={exportReport} onExportDOCX={exportDOCX} onExportJSON={exportJSONHandler} />
       )}
 
       {/* Forest Plot Tab */}

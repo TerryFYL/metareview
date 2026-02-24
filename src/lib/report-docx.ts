@@ -14,7 +14,7 @@ import {
   ShadingType,
   convertInchesToTwip,
 } from 'docx';
-import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult } from './types';
+import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult, CumulativeResult } from './types';
 import type { PRISMAData } from '../components/PRISMAFlow';
 import type { ReportSections } from './report-export';
 import { defaultReportSections } from './report-export';
@@ -33,6 +33,7 @@ interface ReportData {
   influenceDiagnostics?: InfluenceDiagnostic[];
   gradeAssessment?: GradeAssessment | null;
   doseResponseResult?: DoseResponseResult | null;
+  cumulativeResults?: CumulativeResult[];
   prisma?: PRISMAData;
   sections?: ReportSections;
 }
@@ -486,7 +487,7 @@ function doseResponseResultTable(dr: DoseResponseResult): Table {
 }
 
 export async function generateReportDOCX(data: ReportData): Promise<Blob> {
-  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, influenceDiagnostics: influenceData, gradeAssessment: gradeData, doseResponseResult: drData, prisma } = data;
+  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, influenceDiagnostics: influenceData, gradeAssessment: gradeData, doseResponseResult: drData, cumulativeResults: cumResults, prisma } = data;
   const s = data.sections || defaultReportSections;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -643,7 +644,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
       }),
       new Paragraph({
         children: [new TextRun({
-          text: 'Note: For the graphical Galbraith plot, export the HTML report or download SVG from MetaReview.',
+          text: `The Galbraith plot displays standardized effect sizes (z = y/se) against precision (1/se). ${gData.outliers.length > 0 ? `Studies outside the \u00B12 confidence band are potential sources of heterogeneity and may warrant further investigation through sensitivity analysis.` : 'All studies fall within the expected confidence band, consistent with the observed heterogeneity statistics.'}`,
           italics: true,
           size: 18,
           color: '666666',
@@ -694,7 +695,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
         }),
         new Paragraph({
           children: [new TextRun({
-            text: 'Note: For the graphical Baujat plot, export the HTML report or download SVG from MetaReview.',
+            text: `The Baujat plot maps each study's contribution to overall heterogeneity (x-axis) against its influence on the pooled estimate (y-axis). ${influential.length > 0 ? 'Studies in the upper-right quadrant contribute disproportionately to both heterogeneity and the pooled effect, and should be examined in sensitivity analyses.' : 'No studies showed disproportionate influence on both heterogeneity and the pooled effect.'}`,
             italics: true,
             size: 18,
             color: '666666',
@@ -806,7 +807,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
       }),
       new Paragraph({
         children: [new TextRun({
-          text: 'Note: For the graphical dose-response plot, export the HTML report or download SVG from MetaReview.',
+          text: `Dose-response analysis used weighted ${drData.modelType} regression across ${drData.k} dose levels. ${drData.pLinear < 0.05 ? `The model explained ${(drData.R2 * 100).toFixed(1)}% of the variance.` : `The model did not reach statistical significance (R\u00B2 = ${(drData.R2 * 100).toFixed(1)}%).`}`,
           italics: true,
           size: 18,
           color: '666666',
@@ -815,6 +816,131 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
         spacing: { before: 100 },
       }),
     );
+  }
+
+  // Cumulative Meta-Analysis
+  if (s.cumulative && cumResults && cumResults.length > 0) {
+    const isRatio = result.measure === 'OR' || result.measure === 'RR' || result.measure === 'HR';
+    const fmt = (v: number) => isRatio ? v.toFixed(2) : v.toFixed(3);
+    const first = cumResults[0];
+    const last = cumResults[cumResults.length - 1];
+    children.push(
+      new Paragraph({ text: 'Cumulative Meta-Analysis', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      new Paragraph({
+        children: [new TextRun({
+          text: `The cumulative meta-analysis progressed from ${first.studyCount} to ${last.studyCount} studies. The initial pooled ${result.measure} was ${fmt(first.effect)} (95% CI: ${fmt(first.ciLower)}\u2013${fmt(first.ciUpper)}) and the final estimate was ${fmt(last.effect)} (95% CI: ${fmt(last.ciLower)}\u2013${fmt(last.ciUpper)}; I\u00B2 = ${last.I2.toFixed(1)}%).`,
+          size: 20,
+          font: 'Times New Roman',
+        })],
+        spacing: { after: 100 },
+      }),
+    );
+    // Stability assessment
+    if (cumResults.length >= 4) {
+      const last3 = cumResults.slice(-3);
+      const baseline = last3[0].effect;
+      if (baseline !== 0) {
+        const stable = last3.every(r => Math.abs((r.effect - baseline) / baseline) < 0.1);
+        children.push(new Paragraph({
+          children: [new TextRun({
+            text: stable
+              ? 'Stability: The pooled estimate remained stable over the last 3 steps (< 10% change), suggesting a robust result.'
+              : 'Stability: The pooled estimate still fluctuated notably in recent steps, suggesting the result may not yet be fully stable.',
+            bold: true,
+            size: 20,
+            color: stable ? '228B22' : 'CC6600',
+            font: 'Times New Roman',
+          })],
+          spacing: { before: 50 },
+        }));
+      }
+    }
+    // Cumulative table
+    children.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({
+            children: [makeHeaderCell('Study Added'), makeHeaderCell('k'), makeHeaderCell(`${result.measure} [95% CI]`), makeHeaderCell('I\u00B2'), makeHeaderCell('P')],
+          }),
+          ...cumResults.map((r, i) =>
+            new TableRow({
+              children: [
+                makeCell(`${r.addedStudy}${r.year ? ` (${r.year})` : ''}`, { bold: i === cumResults.length - 1 }),
+                makeCell(r.studyCount.toString()),
+                makeCell(`${fmt(r.effect)} [${fmt(r.ciLower)}, ${fmt(r.ciUpper)}]`),
+                makeCell(`${r.I2.toFixed(1)}%`),
+                makeCell(formatP(r.pValue), { color: r.pValue < 0.05 ? 'CC0000' : undefined }),
+              ],
+            })
+          ),
+        ],
+      }),
+    );
+  }
+
+  // Leave-One-Out Forest Plot (text summary)
+  if (s.loo && sensitivityResults.length > 0) {
+    const isRatio = result.measure === 'OR' || result.measure === 'RR' || result.measure === 'HR';
+    const effects = sensitivityResults.map(r => r.effect);
+    const minEffect = Math.min(...effects);
+    const maxEffect = Math.max(...effects);
+    const fmt = (v: number) => isRatio ? v.toFixed(2) : v.toFixed(3);
+    const influential = sensitivityResults.filter(s => {
+      const dirChanged = isRatio ? (s.effect > 1) !== (result.effect > 1) : (s.effect > 0) !== (result.effect > 0);
+      const origSig = isRatio ? (result.ciLower > 1 || result.ciUpper < 1) : (result.ciLower > 0 || result.ciUpper < 0);
+      const newSig = isRatio ? (s.ciLower > 1 || s.ciUpper < 1) : (s.ciLower > 0 || s.ciUpper < 0);
+      return dirChanged || origSig !== newSig;
+    });
+    children.push(
+      new Paragraph({ text: 'Leave-One-Out Cross-Validation', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+      new Paragraph({
+        children: [new TextRun({
+          text: `The leave-one-out analysis shows the pooled ${result.measure} ranged from ${fmt(minEffect)} to ${fmt(maxEffect)} across ${sensitivityResults.length} iterations (full model: ${fmt(result.effect)}).${influential.length > 0 ? ` Removing ${influential.map(s => s.omittedStudy).join(', ')} altered the direction or significance of the pooled estimate.` : ' No single study substantially altered the overall result.'}`,
+          size: 20,
+          font: 'Times New Roman',
+        })],
+      }),
+    );
+  }
+
+  // Network Graph (text summary)
+  if (s.network && result.studies.length >= 3) {
+    const subgroups = new Set<string>();
+    const comparisons = new Map<string, number>();
+    for (const study of result.studies) {
+      // Try to extract subgroup as intervention name
+      const parts = study.name.split(/\s+vs\.?\s+/i);
+      if (parts.length === 2) {
+        subgroups.add(parts[0].trim());
+        subgroups.add(parts[1].trim());
+        const key = [parts[0].trim(), parts[1].trim()].sort().join(' vs ');
+        comparisons.set(key, (comparisons.get(key) || 0) + 1);
+      }
+    }
+    if (subgroups.size > 0) {
+      children.push(
+        new Paragraph({ text: 'Network Meta-Analysis Graph', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+        new Paragraph({
+          children: [new TextRun({
+            text: `The network graph includes ${subgroups.size} interventions and ${comparisons.size} direct comparisons from ${result.studies.length} studies. Interventions: ${[...subgroups].join(', ')}.`,
+            size: 20,
+            font: 'Times New Roman',
+          })],
+        }),
+      );
+    } else {
+      children.push(
+        new Paragraph({ text: 'Network Meta-Analysis Graph', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+        new Paragraph({
+          children: [new TextRun({
+            text: `The network graph visualizes the relationships among ${result.studies.length} studies included in the meta-analysis. For the graphical network representation, see the HTML report.`,
+            size: 20,
+            font: 'Times New Roman',
+          })],
+        }),
+      );
+    }
   }
 
   // Subgroup Analysis

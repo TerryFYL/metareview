@@ -14,9 +14,10 @@ interface ResultsSummaryProps {
   lang: Lang;
   onExportReport?: (sections: ReportSections) => void;
   onExportDOCX?: (sections: ReportSections) => void;
+  onExportJSON?: () => void;
 }
 
-export default function ResultsSummary({ result, eggers, subgroupResult, sensitivityResults, lang, onExportReport, onExportDOCX }: ResultsSummaryProps) {
+export default function ResultsSummary({ result, eggers, subgroupResult, sensitivityResults, lang, onExportReport, onExportDOCX, onExportJSON }: ResultsSummaryProps) {
   const { measure, model, heterogeneity: het } = result;
   const k = result.studies.length;
   const beggs = useUIStore((s) => s.beggs);
@@ -34,7 +35,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     setSections({
       pico: newVal, prisma: newVal, overall: newVal, interpretation: newVal, studyTable: newVal,
       eggers: newVal, beggs: newVal, plots: newVal, galbraith: newVal, subgroup: newVal, sensitivity: newVal,
-      metaReg: newVal, baujat: newVal, influence: newVal, loo: newVal, network: newVal, grade: newVal, doseResponse: newVal, methods: newVal, narrative: newVal,
+      metaReg: newVal, baujat: newVal, influence: newVal, loo: newVal, network: newVal, grade: newVal, cumulative: newVal, doseResponse: newVal, methods: newVal, narrative: newVal,
     });
   };
 
@@ -70,6 +71,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     { key: 'loo', labelKey: 'report.section.loo' },
     { key: 'network', labelKey: 'report.section.network' },
     { key: 'grade', labelKey: 'report.section.grade' },
+    { key: 'cumulative', labelKey: 'report.section.cumulative' },
     { key: 'doseResponse', labelKey: 'report.section.doseResponse' },
     { key: 'methods', labelKey: 'report.section.methods' },
     { key: 'narrative', labelKey: 'report.section.narrative' },
@@ -98,6 +100,11 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
           {onExportDOCX && (
             <button onClick={handleExportDOCX} style={docxBtnStyle}>
               {t('results.exportDOCX', lang)}
+            </button>
+          )}
+          {onExportJSON && (
+            <button onClick={() => { trackFeature('export_json'); onExportJSON(); }} style={jsonBtnStyle}>
+              {t('results.exportJSON', lang)}
             </button>
           )}
         </div>
@@ -536,6 +543,17 @@ const exportBtnStyle: React.CSSProperties = {
 const docxBtnStyle: React.CSSProperties = {
   padding: '7px 16px',
   background: '#16a34a',
+  color: '#fff',
+  border: 'none',
+  borderRadius: 6,
+  fontSize: 12,
+  fontWeight: 600,
+  cursor: 'pointer',
+};
+
+const jsonBtnStyle: React.CSSProperties = {
+  padding: '7px 16px',
+  background: '#7c3aed',
   color: '#fff',
   border: 'none',
   borderRadius: 6,

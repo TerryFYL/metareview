@@ -652,6 +652,10 @@ const translations = {
   'results.exportDOCX.zh': '导出 Word',
   'results.exportDOCX.en': 'Export DOCX',
 
+  // JSON Export
+  'results.exportJSON.zh': '导出 JSON',
+  'results.exportJSON.en': 'Export JSON',
+
   // Forest Plot Settings
   'forest.settings.zh': '图表设置',
   'forest.settings.en': 'Plot Settings',
@@ -1209,6 +1213,8 @@ const translations = {
   'a11y.doseResponsePlot.en': 'Dose-response relationship scatter plot and regression curve',
   'report.section.doseResponse.zh': '剂量-反应分析',
   'report.section.doseResponse.en': 'Dose-Response Analysis',
+  'report.section.cumulative.zh': '累积 Meta 分析',
+  'report.section.cumulative.en': 'Cumulative Meta-Analysis',
 
   // Prediction Interval
   'results.predictionInterval.zh': '预测区间',

@@ -195,7 +195,7 @@ export default function CumulativeMeta({ results, measure, lang }: Props) {
       )}
 
       {/* Cumulative forest plot */}
-      <div style={{ overflowX: 'auto', marginBottom: 16 }}>
+      <div className="cumulative-plot-container" style={{ overflowX: 'auto', marginBottom: 16 }}>
         <svg ref={svgRef} style={{ display: 'block', margin: '0 auto' }} />
       </div>
 

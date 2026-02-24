@@ -1,7 +1,8 @@
 // CSV Import/Export for MetaReview
 // Handles binary (OR/RR), continuous (MD/SMD), and HR data formats.
 
-import type { Study, EffectMeasure, BinaryData, ContinuousData, HRData } from './types';
+import type { Study, EffectMeasure, BinaryData, ContinuousData, HRData, MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult, CumulativeResult } from './types';
+import type { TrimAndFillResult } from './statistics/publication-bias';
 
 const isBinary = (m: EffectMeasure) => m === 'OR' || m === 'RR';
 const isHRMeasure = (m: EffectMeasure) => m === 'HR';
@@ -115,4 +116,68 @@ export function importCSV(csvString: string, measure: EffectMeasure): Study[] {
       return { id, name, year, subgroup, dose: dose != null && !isNaN(dose) ? dose : undefined, data };
     }
   });
+}
+
+/** Export complete analysis results as JSON */
+export interface JSONExportData {
+  meta: { tool: string; version: string; exportedAt: string };
+  settings: { measure: EffectMeasure; model: string };
+  studies: Study[];
+  result: MetaAnalysisResult | null;
+  diagnostics: {
+    eggers: EggersTest | null;
+    beggs: BeggsTest | null;
+    trimFill: TrimAndFillResult | null;
+    metaRegression: MetaRegressionResult | null;
+    influenceDiagnostics: InfluenceDiagnostic[];
+    grade: GradeAssessment | null;
+    doseResponse: DoseResponseResult | null;
+  };
+  subgroupResult: SubgroupAnalysisResult | null;
+  sensitivityResults: SensitivityResult[];
+  cumulativeResults: CumulativeResult[];
+}
+
+export function exportJSON(data: {
+  studies: Study[];
+  measure: EffectMeasure;
+  model: string;
+  result: MetaAnalysisResult | null;
+  eggers: EggersTest | null;
+  beggs: BeggsTest | null;
+  trimFill: TrimAndFillResult | null;
+  metaRegression: MetaRegressionResult | null;
+  influenceDiagnostics: InfluenceDiagnostic[];
+  gradeAssessment: GradeAssessment | null;
+  doseResponse: DoseResponseResult | null;
+  subgroupResult: SubgroupAnalysisResult | null;
+  sensitivityResults: SensitivityResult[];
+  cumulativeResults: CumulativeResult[];
+}): string {
+  const exportData: JSONExportData = {
+    meta: {
+      tool: 'MetaReview',
+      version: '1.0',
+      exportedAt: new Date().toISOString(),
+    },
+    settings: {
+      measure: data.measure,
+      model: data.model,
+    },
+    studies: data.studies,
+    result: data.result,
+    diagnostics: {
+      eggers: data.eggers,
+      beggs: data.beggs,
+      trimFill: data.trimFill,
+      metaRegression: data.metaRegression,
+      influenceDiagnostics: data.influenceDiagnostics,
+      grade: data.gradeAssessment,
+      doseResponse: data.doseResponse,
+    },
+    subgroupResult: data.subgroupResult,
+    sensitivityResults: data.sensitivityResults,
+    cumulativeResults: data.cumulativeResults,
+  };
+  return JSON.stringify(exportData, null, 2);
 }
