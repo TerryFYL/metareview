@@ -1,11 +1,13 @@
 import { useState, useRef } from 'react';
 import type { Study, EffectMeasure, BinaryData, ContinuousData } from '../lib/types';
 import { exportCSV, importCSV } from '../lib/csv';
+import { t, type Lang } from '../lib/i18n';
 
 interface DataTableProps {
   studies: Study[];
   measure: EffectMeasure;
   onStudiesChange: (studies: Study[]) => void;
+  lang: Lang;
 }
 
 function generateId() {
@@ -32,7 +34,7 @@ function emptyContinuousStudy(): Study {
 
 const isBinary = (m: EffectMeasure) => m === 'OR' || m === 'RR';
 
-export default function DataTable({ studies, measure, onStudiesChange }: DataTableProps) {
+export default function DataTable({ studies, measure, onStudiesChange, lang }: DataTableProps) {
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -60,7 +62,6 @@ export default function DataTable({ studies, measure, onStudiesChange }: DataTab
       }
     };
     reader.readAsText(file);
-    // Reset so the same file can be re-imported
     e.target.value = '';
   };
 
@@ -89,22 +90,22 @@ export default function DataTable({ studies, measure, onStudiesChange }: DataTab
 
   const columns = binary
     ? [
-        { key: 'name', label: 'Study', type: 'text' as const, width: '160px' },
-        { key: 'year', label: 'Year', type: 'number' as const, width: '70px' },
-        { key: 'events1', label: 'Events (T)', type: 'number' as const, width: '90px' },
-        { key: 'total1', label: 'Total (T)', type: 'number' as const, width: '90px' },
-        { key: 'events2', label: 'Events (C)', type: 'number' as const, width: '90px' },
-        { key: 'total2', label: 'Total (C)', type: 'number' as const, width: '90px' },
+        { key: 'name', label: t('table.study', lang), type: 'text' as const, width: '140px' },
+        { key: 'year', label: t('table.year', lang), type: 'number' as const, width: '65px' },
+        { key: 'events1', label: t('table.eventsT', lang), type: 'number' as const, width: '80px' },
+        { key: 'total1', label: t('table.totalT', lang), type: 'number' as const, width: '80px' },
+        { key: 'events2', label: t('table.eventsC', lang), type: 'number' as const, width: '80px' },
+        { key: 'total2', label: t('table.totalC', lang), type: 'number' as const, width: '80px' },
       ]
     : [
-        { key: 'name', label: 'Study', type: 'text' as const, width: '160px' },
-        { key: 'year', label: 'Year', type: 'number' as const, width: '70px' },
-        { key: 'mean1', label: 'Mean (T)', type: 'number' as const, width: '90px' },
-        { key: 'sd1', label: 'SD (T)', type: 'number' as const, width: '80px' },
-        { key: 'n1', label: 'N (T)', type: 'number' as const, width: '70px' },
-        { key: 'mean2', label: 'Mean (C)', type: 'number' as const, width: '90px' },
-        { key: 'sd2', label: 'SD (C)', type: 'number' as const, width: '80px' },
-        { key: 'n2', label: 'N (C)', type: 'number' as const, width: '70px' },
+        { key: 'name', label: t('table.study', lang), type: 'text' as const, width: '140px' },
+        { key: 'year', label: t('table.year', lang), type: 'number' as const, width: '65px' },
+        { key: 'mean1', label: t('table.meanT', lang), type: 'number' as const, width: '80px' },
+        { key: 'sd1', label: t('table.sdT', lang), type: 'number' as const, width: '75px' },
+        { key: 'n1', label: t('table.nT', lang), type: 'number' as const, width: '65px' },
+        { key: 'mean2', label: t('table.meanC', lang), type: 'number' as const, width: '80px' },
+        { key: 'sd2', label: t('table.sdC', lang), type: 'number' as const, width: '75px' },
+        { key: 'n2', label: t('table.nC', lang), type: 'number' as const, width: '65px' },
       ];
 
   const getValue = (study: Study, key: string): string => {
@@ -116,8 +117,8 @@ export default function DataTable({ studies, measure, onStudiesChange }: DataTab
 
   return (
     <div>
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 13 }}>
+      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+        <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 13, minWidth: 520 }}>
           <thead>
             <tr>
               <th style={thStyle}>#</th>
@@ -179,13 +180,13 @@ export default function DataTable({ studies, measure, onStudiesChange }: DataTab
 
       <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
         <button onClick={addStudy} style={addBtnStyle}>
-          + Add Study
+          {t('table.addStudy', lang)}
         </button>
         <button onClick={handleExportCSV} style={csvBtnStyle} disabled={studies.length === 0}>
-          Export CSV
+          {t('table.exportCSV', lang)}
         </button>
         <button onClick={() => fileInputRef.current?.click()} style={csvBtnStyle}>
-          Import CSV
+          {t('table.importCSV', lang)}
         </button>
         <input
           ref={fileInputRef}
@@ -198,7 +199,7 @@ export default function DataTable({ studies, measure, onStudiesChange }: DataTab
 
       {studies.length === 0 && (
         <p style={{ color: '#9ca3af', textAlign: 'center', marginTop: 24, fontSize: 13 }}>
-          No studies added yet. Click "+ Add Study" to begin.
+          {t('table.empty', lang)}
         </p>
       )}
     </div>
@@ -206,7 +207,7 @@ export default function DataTable({ studies, measure, onStudiesChange }: DataTab
 }
 
 const thStyle: React.CSSProperties = {
-  padding: '8px 6px',
+  padding: '8px 4px',
   borderBottom: '2px solid #e5e7eb',
   textAlign: 'left',
   fontSize: 11,
@@ -214,16 +215,17 @@ const thStyle: React.CSSProperties = {
   color: '#6b7280',
   textTransform: 'uppercase',
   letterSpacing: '0.05em',
+  whiteSpace: 'nowrap',
 };
 
 const tdStyle: React.CSSProperties = {
-  padding: '4px 4px',
+  padding: '4px 3px',
   borderBottom: '1px solid #f3f4f6',
 };
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
-  padding: '5px 8px',
+  padding: '5px 6px',
   border: '1px solid #e5e7eb',
   borderRadius: 4,
   fontSize: 13,

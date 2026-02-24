@@ -1,38 +1,40 @@
 import type { PICO } from '../lib/types';
+import { t, type Lang } from '../lib/i18n';
 
 interface PICOFormProps {
   pico: PICO;
   onChange: (pico: PICO) => void;
+  lang: Lang;
 }
 
-export default function PICOForm({ pico, onChange }: PICOFormProps) {
+export default function PICOForm({ pico, onChange, lang }: PICOFormProps) {
   const update = (field: keyof PICO, value: string) => {
     onChange({ ...pico, [field]: value });
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 12 }}>
       <Field
-        label="P — Population / Patients"
-        placeholder="e.g., Adults with type 2 diabetes"
+        label={t('pico.p', lang)}
+        placeholder={t('pico.p.placeholder', lang)}
         value={pico.population}
         onChange={(v) => update('population', v)}
       />
       <Field
-        label="I — Intervention"
-        placeholder="e.g., Metformin monotherapy"
+        label={t('pico.i', lang)}
+        placeholder={t('pico.i.placeholder', lang)}
         value={pico.intervention}
         onChange={(v) => update('intervention', v)}
       />
       <Field
-        label="C — Comparison"
-        placeholder="e.g., Placebo or lifestyle modification"
+        label={t('pico.c', lang)}
+        placeholder={t('pico.c.placeholder', lang)}
         value={pico.comparison}
         onChange={(v) => update('comparison', v)}
       />
       <Field
-        label="O — Outcome"
-        placeholder="e.g., HbA1c reduction at 12 weeks"
+        label={t('pico.o', lang)}
+        placeholder={t('pico.o.placeholder', lang)}
         value={pico.outcome}
         onChange={(v) => update('outcome', v)}
       />

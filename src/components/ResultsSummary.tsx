@@ -1,11 +1,13 @@
 import type { MetaAnalysisResult, EggersTest } from '../lib/types';
+import { t, type Lang } from '../lib/i18n';
 
 interface ResultsSummaryProps {
   result: MetaAnalysisResult;
   eggers: EggersTest | null;
+  lang: Lang;
 }
 
-export default function ResultsSummary({ result, eggers }: ResultsSummaryProps) {
+export default function ResultsSummary({ result, eggers, lang }: ResultsSummaryProps) {
   const { measure, model, heterogeneity: het } = result;
   const k = result.studies.length;
 
@@ -17,18 +19,18 @@ export default function ResultsSummary({ result, eggers }: ResultsSummaryProps) 
   return (
     <div style={{ fontSize: 13, lineHeight: 1.8, color: '#374151' }}>
       <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 12, color: '#111827' }}>
-        Results Summary
+        {t('results.title', lang)}
       </h3>
 
       {/* Overall effect */}
       <div style={cardStyle}>
-        <div style={cardTitleStyle}>Overall Effect</div>
+        <div style={cardTitleStyle}>{t('results.overallEffect', lang)}</div>
         <table style={tableStyle}>
           <tbody>
-            <Row label="Model" value={model === 'random' ? 'Random effects (DerSimonian-Laird)' : 'Fixed effects (Inverse Variance)'} />
-            <Row label="Effect measure" value={measure} />
-            <Row label="Number of studies" value={k.toString()} />
-            <Row label={`Pooled ${measure}`} value={result.effect.toFixed(4)} />
+            <Row label={t('results.model', lang)} value={model === 'random' ? t('model.random', lang) : t('model.fixed', lang)} />
+            <Row label={t('results.measure', lang)} value={measure} />
+            <Row label={t('results.numStudies', lang)} value={k.toString()} />
+            <Row label={`${t('results.pooled', lang)} ${measure}`} value={result.effect.toFixed(4)} />
             <Row label="95% CI" value={`[${result.ciLower.toFixed(4)}, ${result.ciUpper.toFixed(4)}]`} />
             <Row label="Z" value={result.z.toFixed(4)} />
             <Row label="P-value" value={formatP(result.pValue)} highlight={result.pValue < 0.05} />
@@ -38,24 +40,24 @@ export default function ResultsSummary({ result, eggers }: ResultsSummaryProps) 
 
       {/* Heterogeneity */}
       <div style={cardStyle}>
-        <div style={cardTitleStyle}>Heterogeneity</div>
+        <div style={cardTitleStyle}>{t('results.heterogeneity', lang)}</div>
         <table style={tableStyle}>
           <tbody>
             <Row label="Cochran's Q" value={`${het.Q.toFixed(2)} (df = ${het.df})`} />
             <Row label="P-value (Q)" value={formatP(het.pValue)} highlight={het.pValue < 0.1} />
             <Row label="I\u00B2" value={`${het.I2.toFixed(1)}%`} highlight={het.I2 > 50} />
-            <Row label="\u03C4\u00B2" value={het.tau2.toFixed(4)} />
-            <Row label="\u03C4" value={het.tau.toFixed(4)} />
+            <Row label={'\u03C4\u00B2'} value={het.tau2.toFixed(4)} />
+            <Row label={'\u03C4'} value={het.tau.toFixed(4)} />
             <Row label="H\u00B2" value={het.H2.toFixed(2)} />
           </tbody>
         </table>
-        <HeterogeneityInterpretation I2={het.I2} />
+        <HeterogeneityInterpretation I2={het.I2} lang={lang} />
       </div>
 
       {/* Egger's test */}
       {eggers && (
         <div style={cardStyle}>
-          <div style={cardTitleStyle}>Publication Bias (Egger's Test)</div>
+          <div style={cardTitleStyle}>{t('results.pubBias', lang)}</div>
           <table style={tableStyle}>
             <tbody>
               <Row label="Intercept" value={eggers.intercept.toFixed(4)} />
@@ -67,15 +69,15 @@ export default function ResultsSummary({ result, eggers }: ResultsSummaryProps) 
           </table>
           <p style={{ fontSize: 12, color: '#6b7280', marginTop: 8 }}>
             {eggers.pValue < 0.05
-              ? 'Significant asymmetry detected — potential publication bias.'
-              : 'No significant funnel plot asymmetry detected.'}
+              ? t('results.asymmetryDetected', lang)
+              : t('results.noAsymmetry', lang)}
           </p>
         </div>
       )}
 
-      {/* Auto-generated paragraph */}
+      {/* Auto-generated paragraph (always in English for academic use) */}
       <div style={cardStyle}>
-        <div style={cardTitleStyle}>Narrative Summary</div>
+        <div style={cardTitleStyle}>{t('results.narrative', lang)}</div>
         <p style={{ fontSize: 13, lineHeight: 1.7, color: '#374151' }}>
           A {model === 'random' ? 'random-effects' : 'fixed-effect'} meta-analysis
           of {k} studies was performed using the {
@@ -105,17 +107,17 @@ function Row({ label, value, highlight }: { label: string; value: string; highli
   );
 }
 
-function HeterogeneityInterpretation({ I2 }: { I2: number }) {
-  let level: string;
+function HeterogeneityInterpretation({ I2, lang }: { I2: number; lang: Lang }) {
+  let key: string;
   let color: string;
-  if (I2 < 25) { level = 'Low heterogeneity'; color = '#16a34a'; }
-  else if (I2 < 50) { level = 'Moderate heterogeneity'; color = '#ca8a04'; }
-  else if (I2 < 75) { level = 'Substantial heterogeneity'; color = '#ea580c'; }
-  else { level = 'Considerable heterogeneity'; color = '#dc2626'; }
+  if (I2 < 25) { key = 'het.low'; color = '#16a34a'; }
+  else if (I2 < 50) { key = 'het.moderate'; color = '#ca8a04'; }
+  else if (I2 < 75) { key = 'het.substantial'; color = '#ea580c'; }
+  else { key = 'het.considerable'; color = '#dc2626'; }
 
   return (
     <p style={{ fontSize: 12, color, fontWeight: 500, marginTop: 8 }}>
-      {level} (Higgins et al., 2003)
+      {t(key, lang)} (Higgins et al., 2003)
     </p>
   );
 }

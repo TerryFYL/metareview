@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Study, EffectMeasure, ModelType, PICO, MetaAnalysisResult, EggersTest } from './lib/types';
+import type { Lang } from './lib/i18n';
 
 interface ProjectStore {
   // Project data (persisted)
@@ -110,25 +111,37 @@ export const useProjectStore = create<ProjectStore>()(
   )
 );
 
-// UI store (not persisted)
+// UI store (lang is persisted, rest is not)
 interface UIStore {
+  lang: Lang;
   result: MetaAnalysisResult | null;
   eggers: EggersTest | null;
   error: string | null;
   activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'sensitivity';
+  setLang: (lang: Lang) => void;
   setResult: (result: MetaAnalysisResult | null) => void;
   setEggers: (eggers: EggersTest | null) => void;
   setError: (error: string | null) => void;
   setActiveTab: (tab: UIStore['activeTab']) => void;
 }
 
-export const useUIStore = create<UIStore>((set) => ({
-  result: null,
-  eggers: null,
-  error: null,
-  activeTab: 'input',
-  setResult: (result) => set({ result }),
-  setEggers: (eggers) => set({ eggers }),
-  setError: (error) => set({ error }),
-  setActiveTab: (activeTab) => set({ activeTab }),
-}));
+export const useUIStore = create<UIStore>()(
+  persist(
+    (set) => ({
+      lang: 'zh',
+      result: null,
+      eggers: null,
+      error: null,
+      activeTab: 'input',
+      setLang: (lang) => set({ lang }),
+      setResult: (result) => set({ result }),
+      setEggers: (eggers) => set({ eggers }),
+      setError: (error) => set({ error }),
+      setActiveTab: (activeTab) => set({ activeTab }),
+    }),
+    {
+      name: 'metareview-ui',
+      partialize: (state) => ({ lang: state.lang }),
+    }
+  )
+);

@@ -1,0 +1,173 @@
+// Simple i18n system for MetaReview
+// Default language: Chinese (target audience: Chinese medical researchers)
+
+export type Lang = 'zh' | 'en';
+
+const translations = {
+  // Header
+  'header.subtitle.zh': '免费在线 Meta 分析工具，5 分钟从数据到森林图',
+  'header.subtitle.en': 'Free online meta-analysis tool. From data to forest plot in 5 minutes.',
+  'header.loadDemo.zh': '加载示例',
+  'header.loadDemo.en': 'Load Demo',
+  'header.newAnalysis.zh': '新建分析',
+  'header.newAnalysis.en': 'New Analysis',
+
+  // Tabs
+  'tab.input.zh': '数据录入',
+  'tab.input.en': 'Data Input',
+  'tab.results.zh': '分析结果',
+  'tab.results.en': 'Results',
+  'tab.forest.zh': '森林图',
+  'tab.forest.en': 'Forest Plot',
+  'tab.funnel.zh': '漏斗图',
+  'tab.funnel.en': 'Funnel Plot',
+  'tab.sensitivity.zh': '敏感性分析',
+  'tab.sensitivity.en': 'Sensitivity',
+
+  // Data Input
+  'input.title.zh': '分析标题',
+  'input.title.en': 'Analysis Title',
+  'input.titlePlaceholder.zh': '例：阿司匹林 vs 安慰剂预防心血管事件',
+  'input.titlePlaceholder.en': 'e.g., Aspirin vs Placebo for Cardiovascular Events',
+  'input.pico.zh': 'PICO 框架',
+  'input.pico.en': 'PICO Framework',
+  'input.settings.zh': '分析设置',
+  'input.settings.en': 'Analysis Settings',
+  'input.measure.zh': '效应量指标',
+  'input.measure.en': 'Effect Measure',
+  'input.model.zh': '分析模型',
+  'input.model.en': 'Model',
+  'input.studyData.zh': '研究数据',
+  'input.studyData.en': 'Study Data',
+  'input.runAnalysis.zh': '运行 Meta 分析',
+  'input.runAnalysis.en': 'Run Meta-Analysis',
+  'input.minStudies.zh': '至少需要 2 项研究才能进行 Meta 分析。',
+  'input.minStudies.en': 'At least 2 studies are required for meta-analysis.',
+  'input.analysisFailed.zh': '分析失败',
+  'input.analysisFailed.en': 'Analysis failed',
+
+  // Model options
+  'model.random.zh': '随机效应模型 (DerSimonian-Laird)',
+  'model.random.en': 'Random Effects (DerSimonian-Laird)',
+  'model.fixed.zh': '固定效应模型 (逆方差法)',
+  'model.fixed.en': 'Fixed Effects (Inverse Variance)',
+
+  // PICO
+  'pico.p.zh': 'P — 研究人群',
+  'pico.p.en': 'P — Population / Patients',
+  'pico.p.placeholder.zh': '例：成年 2 型糖尿病患者',
+  'pico.p.placeholder.en': 'e.g., Adults with type 2 diabetes',
+  'pico.i.zh': 'I — 干预措施',
+  'pico.i.en': 'I — Intervention',
+  'pico.i.placeholder.zh': '例：二甲双胍单药治疗',
+  'pico.i.placeholder.en': 'e.g., Metformin monotherapy',
+  'pico.c.zh': 'C — 对照组',
+  'pico.c.en': 'C — Comparison',
+  'pico.c.placeholder.zh': '例：安慰剂或生活方式干预',
+  'pico.c.placeholder.en': 'e.g., Placebo or lifestyle modification',
+  'pico.o.zh': 'O — 结局指标',
+  'pico.o.en': 'O — Outcome',
+  'pico.o.placeholder.zh': '例：12 周 HbA1c 下降幅度',
+  'pico.o.placeholder.en': 'e.g., HbA1c reduction at 12 weeks',
+
+  // DataTable
+  'table.study.zh': '研究',
+  'table.study.en': 'Study',
+  'table.year.zh': '年份',
+  'table.year.en': 'Year',
+  'table.eventsT.zh': '事件(T)',
+  'table.eventsT.en': 'Events (T)',
+  'table.totalT.zh': '总数(T)',
+  'table.totalT.en': 'Total (T)',
+  'table.eventsC.zh': '事件(C)',
+  'table.eventsC.en': 'Events (C)',
+  'table.totalC.zh': '总数(C)',
+  'table.totalC.en': 'Total (C)',
+  'table.meanT.zh': '均值(T)',
+  'table.meanT.en': 'Mean (T)',
+  'table.sdT.zh': 'SD(T)',
+  'table.sdT.en': 'SD (T)',
+  'table.nT.zh': 'N(T)',
+  'table.nT.en': 'N (T)',
+  'table.meanC.zh': '均值(C)',
+  'table.meanC.en': 'Mean (C)',
+  'table.sdC.zh': 'SD(C)',
+  'table.sdC.en': 'SD (C)',
+  'table.nC.zh': 'N(C)',
+  'table.nC.en': 'N (C)',
+  'table.addStudy.zh': '+ 添加研究',
+  'table.addStudy.en': '+ Add Study',
+  'table.exportCSV.zh': '导出 CSV',
+  'table.exportCSV.en': 'Export CSV',
+  'table.importCSV.zh': '导入 CSV',
+  'table.importCSV.en': 'Import CSV',
+  'table.empty.zh': '尚未添加研究。点击"+ 添加研究"开始录入数据。',
+  'table.empty.en': 'No studies added yet. Click "+ Add Study" to begin.',
+
+  // Results
+  'results.title.zh': '结果汇总',
+  'results.title.en': 'Results Summary',
+  'results.overallEffect.zh': '总效应量',
+  'results.overallEffect.en': 'Overall Effect',
+  'results.model.zh': '分析模型',
+  'results.model.en': 'Model',
+  'results.measure.zh': '效应指标',
+  'results.measure.en': 'Effect measure',
+  'results.numStudies.zh': '纳入研究数',
+  'results.numStudies.en': 'Number of studies',
+  'results.pooled.zh': '合并效应量',
+  'results.pooled.en': 'Pooled',
+  'results.heterogeneity.zh': '异质性检验',
+  'results.heterogeneity.en': 'Heterogeneity',
+  'results.pubBias.zh': '发表偏倚 (Egger 检验)',
+  'results.pubBias.en': 'Publication Bias (Egger\'s Test)',
+  'results.narrative.zh': '结果描述段落',
+  'results.narrative.en': 'Narrative Summary',
+  'results.noAsymmetry.zh': '未检测到显著的漏斗图不对称性。',
+  'results.noAsymmetry.en': 'No significant funnel plot asymmetry detected.',
+  'results.asymmetryDetected.zh': '检测到显著不对称性 — 可能存在发表偏倚。',
+  'results.asymmetryDetected.en': 'Significant asymmetry detected — potential publication bias.',
+
+  // Heterogeneity levels
+  'het.low.zh': '低异质性',
+  'het.low.en': 'Low heterogeneity',
+  'het.moderate.zh': '中等异质性',
+  'het.moderate.en': 'Moderate heterogeneity',
+  'het.substantial.zh': '较高异质性',
+  'het.substantial.en': 'Substantial heterogeneity',
+  'het.considerable.zh': '高异质性',
+  'het.considerable.en': 'Considerable heterogeneity',
+
+  // Sensitivity
+  'sensitivity.title.zh': '逐一剔除敏感性分析',
+  'sensitivity.title.en': 'Leave-One-Out Sensitivity Analysis',
+  'sensitivity.desc.zh': '每行显示剔除该研究后的合并效应量。高亮行表示方向或统计显著性发生改变。',
+  'sensitivity.desc.en': 'Each row shows the pooled effect when that study is excluded. Highlighted rows indicate a change in direction or statistical significance.',
+  'sensitivity.omitted.zh': '剔除研究',
+  'sensitivity.omitted.en': 'Omitted Study',
+  'sensitivity.weight.zh': '权重',
+  'sensitivity.weight.en': 'Weight',
+  'sensitivity.fullModel.zh': '完整模型（所有研究）',
+  'sensitivity.fullModel.en': 'Full model (all studies)',
+  'sensitivity.influential.zh': '* 剔除该研究会改变合并结果的方向或统计显著性。',
+  'sensitivity.influential.en': '* Removing this study changes the direction or statistical significance of the pooled result.',
+
+  // Forest Plot
+  'forest.download.zh': '下载 SVG',
+  'forest.download.en': 'Download SVG',
+  'forest.favoursTreatment.zh': '\u2190 有利于治疗组',
+  'forest.favoursTreatment.en': '\u2190 Favours treatment',
+  'forest.favoursControl.zh': '有利于对照组 \u2192',
+  'forest.favoursControl.en': 'Favours control \u2192',
+
+  // Footer
+  'footer.text.zh': 'MetaReview — 开源免费的医学研究 Meta 分析平台',
+  'footer.text.en': 'MetaReview — Open-source meta-analysis platform for medical research',
+  'footer.feedback.zh': '意见反馈',
+  'footer.feedback.en': 'Feedback',
+} as const;
+
+export function t(key: string, lang: Lang): string {
+  const fullKey = `${key}.${lang}` as keyof typeof translations;
+  return translations[fullKey] ?? key;
+}

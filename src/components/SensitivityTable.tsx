@@ -1,30 +1,25 @@
-// Leave-one-out sensitivity analysis table.
-// Each row shows the pooled result when that study is omitted.
-// Rows where the direction reverses or significance changes are flagged.
-
 import type { SensitivityResult, MetaAnalysisResult } from '../lib/types';
 import { isLogScale } from '../lib/statistics';
+import { t, type Lang } from '../lib/i18n';
 
 interface SensitivityTableProps {
   results: SensitivityResult[];
   fullResult: MetaAnalysisResult;
+  lang: Lang;
 }
 
-export default function SensitivityTable({ results, fullResult }: SensitivityTableProps) {
+export default function SensitivityTable({ results, fullResult, lang }: SensitivityTableProps) {
   const { measure } = fullResult;
   const logScale = isLogScale(measure);
 
-  // The null value is 1 for log-scale measures (OR/RR), 0 for others (MD/SMD)
   const nullValue = logScale ? 1 : 0;
   const fullSignificant = fullResult.pValue < 0.05;
   const fullDirection = fullResult.effect > nullValue ? 'positive' : 'negative';
 
   const isInfluential = (row: SensitivityResult): boolean => {
-    // Direction reversal: effect crosses the null
     const rowDirection = row.effect > nullValue ? 'positive' : 'negative';
     if (rowDirection !== fullDirection) return true;
 
-    // Significance change: CI crosses null when full model doesn't, or vice versa
     const rowCrossesNull = logScale
       ? row.ciLower <= 1 && row.ciUpper >= 1
       : row.ciLower <= 0 && row.ciUpper >= 0;
@@ -41,18 +36,17 @@ export default function SensitivityTable({ results, fullResult }: SensitivityTab
   return (
     <div style={{ fontSize: 13, color: '#374151' }}>
       <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 4, color: '#111827' }}>
-        Leave-One-Out Sensitivity Analysis
+        {t('sensitivity.title', lang)}
       </h3>
       <p style={{ fontSize: 12, color: '#6b7280', marginBottom: 16 }}>
-        Each row shows the pooled {measure} when that study is excluded.
-        Highlighted rows indicate a change in direction or statistical significance.
+        {t('sensitivity.desc', lang)}
       </p>
 
-      <div style={{ overflowX: 'auto' }}>
+      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
         <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 13 }}>
           <thead>
             <tr>
-              <th style={thStyle}>Omitted Study</th>
+              <th style={thStyle}>{t('sensitivity.omitted', lang)}</th>
               <th style={{ ...thStyle, textAlign: 'right' }}>{measure}</th>
               <th style={{ ...thStyle, textAlign: 'right' }}>95% CI</th>
               <th style={{ ...thStyle, textAlign: 'right' }}>I{'\u00B2'}</th>
@@ -88,7 +82,7 @@ export default function SensitivityTable({ results, fullResult }: SensitivityTab
             {/* Reference row: full model */}
             <tr style={{ borderTop: '2px solid #e5e7eb', background: '#f0f9ff' }}>
               <td style={{ ...tdStyle, fontWeight: 600, color: '#1e40af' }}>
-                Full model (all studies)
+                {t('sensitivity.fullModel', lang)}
               </td>
               <td style={{ ...tdStyle, textAlign: 'right', fontFamily: 'monospace', fontWeight: 600, color: '#1e40af' }}>
                 {fmt(fullResult.effect)}
@@ -106,7 +100,7 @@ export default function SensitivityTable({ results, fullResult }: SensitivityTab
 
       {results.some(isInfluential) && (
         <p style={{ fontSize: 12, color: '#dc2626', marginTop: 12, fontWeight: 500 }}>
-          * Removing this study changes the direction or statistical significance of the pooled result.
+          {t('sensitivity.influential', lang)}
         </p>
       )}
     </div>

@@ -1,12 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import type { MetaAnalysisResult } from '../lib/types';
 import { isLogScale } from '../lib/statistics';
+import { t, type Lang } from '../lib/i18n';
 
 interface ForestPlotProps {
   result: MetaAnalysisResult;
   width?: number;
   title?: string;
+  lang?: Lang;
 }
 
 const MARGIN = { top: 40, right: 220, bottom: 40, left: 200 };
@@ -15,12 +17,31 @@ const DIAMOND_HEIGHT = 12;
 
 export default function ForestPlot({
   result,
-  width = 900,
+  width: propWidth,
   title,
+  lang = 'en',
 }: ForestPlotProps) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(propWidth || 900);
 
-  const totalRows = result.studies.length + 2; // studies + gap + summary
+  // Responsive: observe container width
+  useEffect(() => {
+    if (propWidth) return; // fixed width takes precedence
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const w = entry.contentRect.width;
+        if (w > 0) setContainerWidth(Math.max(w, 600));
+      }
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [propWidth]);
+
+  const width = propWidth || containerWidth;
+  const totalRows = result.studies.length + 2;
   const height = MARGIN.top + totalRows * ROW_HEIGHT + MARGIN.bottom;
   const plotWidth = width - MARGIN.left - MARGIN.right;
 
@@ -33,7 +54,6 @@ export default function ForestPlot({
     const { studies, measure } = result;
     const useLog = isLogScale(measure);
 
-    // Gather all CI bounds for scale
     const allValues = studies.flatMap((s) => [s.ciLower, s.ciUpper]);
     allValues.push(result.ciLower, result.ciUpper);
     const nullValue = useLog ? 1 : 0;
@@ -48,12 +68,10 @@ export default function ForestPlot({
       .domain([xMin - padding, xMax + padding])
       .range([0, plotWidth]);
 
-    // Main group
     const g = svg
       .append('g')
       .attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
 
-    // Title
     if (title) {
       svg
         .append('text')
@@ -66,7 +84,6 @@ export default function ForestPlot({
         .text(title);
     }
 
-    // Header
     const headerY = -8;
     g.append('text')
       .attr('x', -MARGIN.left + 10)
@@ -74,7 +91,7 @@ export default function ForestPlot({
       .attr('font-size', 11)
       .attr('font-weight', 'bold')
       .attr('fill', '#666')
-      .text('Study');
+      .text(lang === 'zh' ? '研究' : 'Study');
 
     g.append('text')
       .attr('x', plotWidth + 10)
@@ -90,9 +107,8 @@ export default function ForestPlot({
       .attr('font-size', 11)
       .attr('font-weight', 'bold')
       .attr('fill', '#666')
-      .text('Weight');
+      .text(lang === 'zh' ? '权重' : 'Weight');
 
-    // Null effect line
     g.append('line')
       .attr('x1', xScale(nullValue))
       .attr('x2', xScale(nullValue))
@@ -102,7 +118,6 @@ export default function ForestPlot({
       .attr('stroke-width', 1)
       .attr('stroke-dasharray', '4,3');
 
-    // Studies
     const maxWeight = d3.max(studies, (s) =>
       result.model === 'random' ? s.weightRandom : s.weightFixed
     )!;
@@ -112,7 +127,6 @@ export default function ForestPlot({
       const weight =
         result.model === 'random' ? study.weightRandom : study.weightFixed;
 
-      // Study name
       g.append('text')
         .attr('x', -MARGIN.left + 10)
         .attr('y', y + 4)
@@ -124,7 +138,6 @@ export default function ForestPlot({
             : study.name
         );
 
-      // CI line
       const ciLeft = Math.max(xScale(study.ciLower), 0);
       const ciRight = Math.min(xScale(study.ciUpper), plotWidth);
 
@@ -136,7 +149,6 @@ export default function ForestPlot({
         .attr('stroke', '#2563eb')
         .attr('stroke-width', 1.5);
 
-      // CI whiskers (if within bounds)
       if (xScale(study.ciLower) >= 0) {
         g.append('line')
           .attr('x1', ciLeft)
@@ -156,7 +168,6 @@ export default function ForestPlot({
           .attr('stroke-width', 1.5);
       }
 
-      // Effect size square (size proportional to weight)
       const squareSize = 4 + (weight / maxWeight) * 10;
       g.append('rect')
         .attr('x', xScale(study.effect) - squareSize / 2)
@@ -165,7 +176,6 @@ export default function ForestPlot({
         .attr('height', squareSize)
         .attr('fill', '#2563eb');
 
-      // Effect text (right side)
       g.append('text')
         .attr('x', plotWidth + 10)
         .attr('y', y + 4)
@@ -176,7 +186,6 @@ export default function ForestPlot({
           `${study.effect.toFixed(2)} [${study.ciLower.toFixed(2)}, ${study.ciUpper.toFixed(2)}]`
         );
 
-      // Weight text
       g.append('text')
         .attr('x', plotWidth + 155)
         .attr('y', y + 4)
@@ -186,10 +195,8 @@ export default function ForestPlot({
         .text(`${weight.toFixed(1)}%`);
     });
 
-    // Summary diamond
     const summaryY = (studies.length + 0.5) * ROW_HEIGHT + ROW_HEIGHT / 2;
 
-    // Separator line
     g.append('line')
       .attr('x1', -MARGIN.left + 10)
       .attr('x2', plotWidth + 200)
@@ -198,7 +205,6 @@ export default function ForestPlot({
       .attr('stroke', '#e5e7eb')
       .attr('stroke-width', 1);
 
-    // Diamond
     const diamondX = xScale(result.effect);
     const diamondLeft = xScale(result.ciLower);
     const diamondRight = xScale(result.ciUpper);
@@ -216,7 +222,6 @@ export default function ForestPlot({
       .attr('fill', '#dc2626')
       .attr('opacity', 0.85);
 
-    // Summary label
     g.append('text')
       .attr('x', -MARGIN.left + 10)
       .attr('y', summaryY + 4)
@@ -227,7 +232,6 @@ export default function ForestPlot({
         `Overall (${result.model === 'random' ? 'Random' : 'Fixed'}, I\u00B2=${result.heterogeneity.I2.toFixed(0)}%)`
       );
 
-    // Summary effect text
     g.append('text')
       .attr('x', plotWidth + 10)
       .attr('y', summaryY + 4)
@@ -239,7 +243,6 @@ export default function ForestPlot({
         `${result.effect.toFixed(2)} [${result.ciLower.toFixed(2)}, ${result.ciUpper.toFixed(2)}]`
       );
 
-    // X-axis
     const xAxis = d3.axisBottom(xScale).ticks(7);
     g.append('g')
       .attr('transform', `translate(0,${(studies.length + 1) * ROW_HEIGHT + 10})`)
@@ -247,7 +250,6 @@ export default function ForestPlot({
       .selectAll('text')
       .attr('font-size', 10);
 
-    // X-axis label
     g.append('text')
       .attr('x', plotWidth / 2)
       .attr('y', (studies.length + 1) * ROW_HEIGHT + 38)
@@ -256,7 +258,6 @@ export default function ForestPlot({
       .attr('fill', '#666')
       .text(useLog ? `${measure} (log scale)` : measure);
 
-    // Favours labels
     const labelY = (studies.length + 1) * ROW_HEIGHT + 38;
     g.append('text')
       .attr('x', xScale(nullValue) - 20)
@@ -264,7 +265,7 @@ export default function ForestPlot({
       .attr('text-anchor', 'end')
       .attr('font-size', 9)
       .attr('fill', '#999')
-      .text('\u2190 Favours treatment');
+      .text(t('forest.favoursTreatment', lang));
 
     g.append('text')
       .attr('x', xScale(nullValue) + 20)
@@ -272,16 +273,16 @@ export default function ForestPlot({
       .attr('text-anchor', 'start')
       .attr('font-size', 9)
       .attr('fill', '#999')
-      .text('Favours control \u2192');
-  }, [result, width, title]);
+      .text(t('forest.favoursControl', lang));
+  }, [result, width, title, lang, plotWidth]);
 
   return (
-    <div style={{ overflowX: 'auto' }}>
+    <div ref={containerRef} style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
       <svg
         ref={svgRef}
         width={width}
         height={height}
-        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
+        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', minWidth: 600 }}
       />
     </div>
   );
