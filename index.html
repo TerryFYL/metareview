@@ -72,7 +72,7 @@
     }
     </script>
 
-    <!-- Structured Data: FAQPage -->
+    <!-- Structured Data: FAQPage (Chinese) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -83,7 +83,7 @@
           "name": "如何免费做 Meta 分析？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "使用 MetaReview，只需输入 PICO 研究问题、录入研究数据（事件数/总数 或 均值/标准差/样本量），一键生成森林图、漏斗图和统计结果。无需安装 R 或 Stata，完全免费。"
+            "text": "使用 MetaReview，只需输入 PICO 研究问题、录入研究数据（事件数/总数 或 均值/标准差/样本量），一键生成森林图、漏斗图和统计结果。无需安装 R 或 Stata，完全免费，打开浏览器即可使用。"
           }
         },
         {
@@ -91,7 +91,7 @@
           "name": "不会编程可以做 Meta 分析吗？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "完全可以。MetaReview 是零代码的在线工具，提供可视化界面录入数据、选择效应量指标和统计模型，自动计算并生成森林图。支持 OR、RR、MD、SMD 四种效应量。"
+            "text": "完全可以。MetaReview 是零代码的在线工具，提供可视化界面录入数据、选择效应量指标和统计模型，自动计算并生成森林图。支持 OR、RR、MD、SMD 四种效应量，不需要任何 R 语言或 Stata 基础。"
           }
         },
         {
@@ -99,7 +99,7 @@
           "name": "如何用 AI 筛选系统综述文献？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "MetaReview 内置 PubMed 文献检索和 AI 智能筛选功能。输入 PICO 纳入标准后，系统通过关键词评分和 AI 深度分析自动判断每篇文献的相关性，给出纳入/排除建议和理由。"
+            "text": "MetaReview 内置 PubMed 文献检索和 AI 智能筛选功能。输入 PICO 纳入标准后，系统通过关键词评分和 AI 深度分析自动判断每篇文献的相关性，给出纳入/排除建议和理由，大幅减少人工筛选时间。"
           }
         },
         {
@@ -107,8 +107,161 @@
           "name": "MetaReview 支持哪些 Meta 分析功能？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "支持固定效应和随机效应模型、森林图/漏斗图生成、Egger's 发表偏倚检验、亚组分析、敏感性分析（留一法）、PRISMA 2020 流程图、结果段落自动生成、完整分析报告导出。"
+            "text": "支持固定效应和随机效应模型、森林图/漏斗图生成、Egger's 发表偏倚检验、亚组分析、敏感性分析（留一法）、PRISMA 2020 流程图、结果段落自动生成、完整分析报告导出。覆盖系统综述和 Meta 分析的全流程。"
           }
+        },
+        {
+          "@type": "Question",
+          "name": "森林图怎么画？在线生成森林图的方法？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MetaReview 提供在线森林图生成器。录入研究数据后，系统自动计算效应量和置信区间，生成标准森林图（Forest Plot），支持亚组分层显示、菱形汇总、异质性统计标注。图表为 SVG 格式，可直接下载用于论文投稿。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "有免费的 RevMan 替代软件吗？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MetaReview 是 RevMan 的免费在线替代方案。与 RevMan 相比，MetaReview 无需安装桌面软件，支持中英双语界面，内置 AI 文献筛选和 PubMed 检索，5 分钟即可从数据到森林图。所有数据保存在浏览器本地，保护隐私。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "OR、RR、MD、SMD 效应量怎么选？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "二分类数据（事件数/总数）用 OR（比值比）或 RR（风险比）；连续性数据（均值/标准差/样本量）用 MD（均数差）或 SMD（标准化均数差）。如果各研究使用相同量表用 MD，不同量表用 SMD。MetaReview 四种效应量全部支持，选择后自动计算。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Meta 分析异质性高怎么办？I² 统计量怎么判断？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "I² 统计量衡量研究间异质性：<25% 低异质性，25-50% 中等，50-75% 较高，>75% 高异质性。异质性高时应使用随机效应模型，并通过亚组分析（按研究特征分层）和敏感性分析（留一法）探索异质性来源。MetaReview 自动计算 I²、Q 检验和 τ²，并支持一键亚组分析和留一法敏感性分析。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "PRISMA 流程图怎么画？在线制作 PRISMA 2020？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MetaReview 内置 PRISMA 2020 流程图生成器。系统根据文献检索和筛选过程自动填充各阶段数量（检索记录数、排除数、纳入数），生成符合 PRISMA 2020 声明标准的流程图，支持 SVG 和 PNG 格式导出，可直接用于论文投稿。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "如何检测发表偏倚？Egger 检验怎么做？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MetaReview 提供漏斗图（Funnel Plot）可视化和 Egger's 回归检验来检测发表偏倚。漏斗图对称表示无明显偏倚，不对称可能存在发表偏倚。Egger 检验 p<0.05 提示存在统计学显著的发表偏倚。系统自动计算并在结果段落中描述检验结论。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "从 PDF 论文中自动提取 Meta 分析数据？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MetaReview 支持 AI PDF 数据提取功能。上传论文 PDF 后，系统自动识别并提取效应量（OR/RR/MD）、样本量、事件数、置信区间等关键数据，直接填入数据提取表格，大幅减少手动录入的时间和错误。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Meta 分析最少需要多少篇文献？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "理论上 2 篇即可进行 Meta 分析，但通常建议至少纳入 5 篇以上研究以获得稳健的合并效应量估计。纳入研究越多，统计效力越高，异质性评估和亚组分析越有意义。MetaReview 对纳入研究数量没有限制。"
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Structured Data: FAQPage (English) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How to do a meta-analysis for free online?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MetaReview is a free online meta-analysis tool. Enter your PICO research question, input study data (events/total for binary or mean/SD/N for continuous outcomes), and generate forest plots, funnel plots, and statistical results instantly. No R, Stata, or RevMan installation required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the best free alternative to RevMan for meta-analysis?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MetaReview is a modern, free alternative to RevMan. It offers AI-powered literature screening, built-in PubMed search, forest and funnel plot generation, subgroup analysis, sensitivity analysis, PRISMA 2020 flow diagrams, and one-click report export. Unlike RevMan, it runs entirely in your browser with no installation needed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How to generate a forest plot online?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MetaReview provides an online forest plot generator. Enter your study data, select an effect size measure (OR, RR, MD, or SMD), choose fixed or random effects model, and the tool automatically generates a publication-quality forest plot in SVG format. Supports subgroup stratification and diamond summary markers."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can AI help with systematic review screening?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. MetaReview includes AI-powered literature screening for systematic reviews. After setting your PICO inclusion criteria, the AI evaluates each study's relevance using keyword scoring and deep learning analysis, providing include/exclude recommendations with confidence scores and reasoning for each decision."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Structured Data: HowTo (Meta-Analysis Steps) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "如何用 MetaReview 做 Meta 分析（5 分钟指南）",
+      "description": "使用免费在线工具 MetaReview，5 分钟完成从文献检索到森林图的 Meta 分析全流程。",
+      "totalTime": "PT5M",
+      "tool": {
+        "@type": "HowToTool",
+        "name": "MetaReview（免费在线 Meta 分析工具）"
+      },
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "定义研究问题",
+          "text": "按 PICO 格式输入研究问题：人群（Population）、干预（Intervention）、对照（Comparison）、结局（Outcome）。"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "检索文献",
+          "text": "使用内置 PubMed 检索功能搜索相关文献，支持高级筛选（年份、文献类型、语言）。AI 智能筛选自动评估文献相关性。"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "提取数据",
+          "text": "在数据提取表格中录入各研究的效应量数据。二分类数据填写事件数和总数，连续性数据填写均值、标准差和样本量。支持 AI 从 PDF 自动提取。"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "运行分析",
+          "text": "选择效应量指标（OR/RR/MD/SMD）和统计模型（固定效应/随机效应），一键计算合并效应量、异质性（I²/Q/τ²）、发表偏倚（Egger检验）。"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "name": "生成报告",
+          "text": "自动生成森林图、漏斗图、PRISMA 流程图和结果描述段落。一键导出完整分析报告（HTML/PDF），可直接用于论文投稿。"
         }
       ]
     }
