@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import * as d3 from 'd3';
 import type { MetaAnalysisResult, SubgroupAnalysisResult } from '../lib/types';
 import { isLogScale } from '../lib/statistics';
@@ -33,6 +33,7 @@ export default function ForestPlot({
 }: ForestPlotProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(propWidth || 900);
   const plotSettings = useUIStore((s) => s.plotSettings);
   const colors = COLOR_SCHEMES[plotSettings.colorScheme];
@@ -69,6 +70,24 @@ export default function ForestPlot({
   const height = MARGIN.top + totalRows * ROW_HEIGHT + MARGIN.bottom;
   const plotWidth = width - MARGIN.left - MARGIN.right;
 
+  const showTooltip = useCallback((event: MouseEvent, html: string) => {
+    const tip = tooltipRef.current;
+    if (!tip) return;
+    tip.innerHTML = html;
+    tip.style.display = 'block';
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = event.clientX - rect.left + 12;
+    const y = event.clientY - rect.top - 10;
+    tip.style.left = `${x}px`;
+    tip.style.top = `${y}px`;
+  }, []);
+
+  const hideTooltip = useCallback(() => {
+    const tip = tooltipRef.current;
+    if (tip) tip.style.display = 'none';
+  }, []);
+
   useEffect(() => {
     if (!svgRef.current) return;
 
@@ -97,6 +116,9 @@ export default function ForestPlot({
       .scaleLinear()
       .domain([xMin - padding, xMax + padding])
       .range([0, plotWidth]);
+
+    // Accessible desc element
+    svg.append('desc').text(t('a11y.forestPlot', lang));
 
     const g = svg
       .append('g')
@@ -150,16 +172,30 @@ export default function ForestPlot({
       result.model === 'random' ? s.weightRandom : s.weightFixed
     )!;
 
-    // Helper: draw a study row
+    // Helper: draw a study row with tooltip + hover
     function drawStudyRow(
-      study: { effect: number; ciLower: number; ciUpper: number; name: string; year?: number; weightFixed: number; weightRandom: number },
+      study: { id?: string; effect: number; ciLower: number; ciUpper: number; name: string; year?: number; weightFixed: number; weightRandom: number; yi?: number; sei?: number },
       y: number,
       modelType: string,
       indent: boolean = false
     ) {
       const weight = modelType === 'random' ? study.weightRandom : study.weightFixed;
 
-      g.append('text')
+      // Group for the entire row (enables hover)
+      const row = g.append('g')
+        .attr('class', 'forest-study-row')
+        .style('cursor', 'pointer');
+
+      // Hover background
+      row.append('rect')
+        .attr('x', -MARGIN.left)
+        .attr('y', y - ROW_HEIGHT / 2)
+        .attr('width', plotWidth + MARGIN.left + MARGIN.right)
+        .attr('height', ROW_HEIGHT)
+        .attr('fill', 'transparent')
+        .attr('class', 'row-bg');
+
+      row.append('text')
         .attr('x', -MARGIN.left + (indent ? 20 : 10))
         .attr('y', y + 4)
         .attr('font-size', fs)
@@ -170,20 +206,20 @@ export default function ForestPlot({
       const ciRight = Math.min(xScale(study.ciUpper), plotWidth);
 
       // CI line
-      g.append('line')
+      row.append('line')
         .attr('x1', ciLeft).attr('x2', ciRight)
         .attr('y1', y).attr('y2', y)
         .attr('stroke', colors.study).attr('stroke-width', 1.5);
 
       // CI caps
       if (xScale(study.ciLower) >= 0) {
-        g.append('line')
+        row.append('line')
           .attr('x1', ciLeft).attr('x2', ciLeft)
           .attr('y1', y - 4).attr('y2', y + 4)
           .attr('stroke', colors.study).attr('stroke-width', 1.5);
       }
       if (xScale(study.ciUpper) <= plotWidth) {
-        g.append('line')
+        row.append('line')
           .attr('x1', ciRight).attr('x2', ciRight)
           .attr('y1', y - 4).attr('y2', y + 4)
           .attr('stroke', colors.study).attr('stroke-width', 1.5);
@@ -191,14 +227,14 @@ export default function ForestPlot({
 
       // Weight square
       const squareSize = 4 + (weight / maxWeight) * 10;
-      g.append('rect')
+      row.append('rect')
         .attr('x', xScale(study.effect) - squareSize / 2)
         .attr('y', y - squareSize / 2)
         .attr('width', squareSize).attr('height', squareSize)
         .attr('fill', colors.study);
 
       // Effect text
-      g.append('text')
+      row.append('text')
         .attr('x', plotWidth + 10).attr('y', y + 4)
         .attr('font-size', fs - 1).attr('fill', '#333')
         .attr('font-family', 'monospace')
@@ -206,12 +242,33 @@ export default function ForestPlot({
 
       // Weight text
       if (plotSettings.showWeights) {
-        g.append('text')
+        row.append('text')
           .attr('x', plotWidth + 155).attr('y', y + 4)
           .attr('font-size', fs - 1).attr('fill', '#666')
           .attr('font-family', 'monospace')
           .text(`${weight.toFixed(1)}%`);
       }
+
+      // Tooltip hover events
+      const tooltipHtml = `
+        <div style="font-weight:600;margin-bottom:4px">${study.year ? `${study.name} (${study.year})` : study.name}</div>
+        <div>${t('forest.tooltip.effect', lang)}: <b>${study.effect.toFixed(3)}</b></div>
+        <div>${t('forest.tooltip.ci', lang)}: [${study.ciLower.toFixed(3)}, ${study.ciUpper.toFixed(3)}]</div>
+        <div>${t('forest.tooltip.weight', lang)}: ${weight.toFixed(1)}%</div>
+        ${study.sei ? `<div>${t('forest.tooltip.se', lang)}: ${study.sei.toFixed(4)}</div>` : ''}
+      `;
+
+      row.on('mouseenter', function (event: MouseEvent) {
+        d3.select(this).select('.row-bg').attr('fill', '#f0f9ff');
+        showTooltip(event, tooltipHtml);
+      })
+      .on('mousemove', function (event: MouseEvent) {
+        showTooltip(event, tooltipHtml);
+      })
+      .on('mouseleave', function () {
+        d3.select(this).select('.row-bg').attr('fill', 'transparent');
+        hideTooltip();
+      });
     }
 
     // Helper: draw a diamond (summary)
@@ -368,15 +425,36 @@ export default function ForestPlot({
       .attr('x', xScale(nullValue) + 20).attr('y', labelY)
       .attr('text-anchor', 'start').attr('font-size', fs - 2).attr('fill', '#999')
       .text(rightLabel);
-  }, [result, subgroupResult, width, title, lang, plotWidth, hasSubgroups, plotSettings]);
+  }, [result, subgroupResult, width, title, lang, plotWidth, hasSubgroups, plotSettings, showTooltip, hideTooltip, colors]);
 
   return (
-    <div ref={containerRef} style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+    <div ref={containerRef} style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
       <svg
         ref={svgRef}
         width={width}
         height={height}
+        role="img"
+        aria-label={t('a11y.forestPlot', lang)}
         style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', minWidth: 600 }}
+      />
+      {/* Tooltip overlay */}
+      <div
+        ref={tooltipRef}
+        style={{
+          display: 'none',
+          position: 'absolute',
+          background: '#fff',
+          border: '1px solid #d1d5db',
+          borderRadius: 6,
+          padding: '8px 12px',
+          fontSize: 12,
+          color: '#333',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+          pointerEvents: 'none',
+          zIndex: 10,
+          maxWidth: 280,
+          lineHeight: 1.5,
+        }}
       />
     </div>
   );

@@ -2,10 +2,12 @@ import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import type { MetaAnalysisResult } from '../lib/types';
 import { funnelPlotData } from '../lib/statistics';
+import { t, type Lang } from '../lib/i18n';
 import { useUIStore, type ColorScheme } from '../store';
 
 interface FunnelPlotProps {
   result: MetaAnalysisResult;
+  lang?: Lang;
   width?: number;
   height?: number;
 }
@@ -20,6 +22,7 @@ const FUNNEL_COLORS: Record<ColorScheme, { point: string; summary: string; funne
 
 export default function FunnelPlot({
   result,
+  lang = 'en',
   width = 500,
   height = 400,
 }: FunnelPlotProps) {
@@ -155,6 +158,8 @@ export default function FunnelPlot({
       ref={svgRef}
       width={width}
       height={height}
+      role="img"
+      aria-label={t('a11y.funnelPlot', lang)}
       style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
     />
   );

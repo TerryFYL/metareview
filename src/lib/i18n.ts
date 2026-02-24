@@ -808,6 +808,44 @@ const translations = {
   'report.section.prisma.zh': 'PRISMA 流程摘要',
   'report.section.prisma.en': 'PRISMA Flow Summary',
 
+  // Galbraith Plot Tab
+  'tab.galbraith.zh': 'Galbraith 图',
+  'tab.galbraith.en': 'Galbraith',
+  'galbraith.title.zh': 'Galbraith 图（径向图）',
+  'galbraith.title.en': 'Galbraith Plot (Radial Plot)',
+  'galbraith.desc.zh': '标准化效应量（z 分数）对精度（1/SE）作图，用于识别异质性来源。落在 ±2 置信带外的研究是异质性来源。',
+  'galbraith.desc.en': 'Standardized effect (z-score) vs precision (1/SE). Studies outside the ±2 confidence band are sources of heterogeneity.',
+  'galbraith.xAxis.zh': '精度（1/SE）',
+  'galbraith.xAxis.en': 'Precision (1/SE)',
+  'galbraith.yAxis.zh': '标准化效应（yi / SE）',
+  'galbraith.yAxis.en': 'Standardized Effect (yi / SE)',
+  'galbraith.outlier.zh': '{count} 个研究落在 ±2 置信带外，可能是异质性的主要来源：',
+  'galbraith.outlier.en': '{count} study(ies) outside ±2 confidence band, likely source(s) of heterogeneity:',
+  'galbraith.noOutlier.zh': '所有研究均在 ±2 置信带内，异质性来源不明显。',
+  'galbraith.noOutlier.en': 'All studies within ±2 confidence band — no obvious sources of heterogeneity.',
+  'galbraith.downloadSVG.zh': '下载 SVG',
+  'galbraith.downloadSVG.en': 'Download SVG',
+
+  // Forest Plot Tooltips
+  'forest.tooltip.effect.zh': '效应量',
+  'forest.tooltip.effect.en': 'Effect',
+  'forest.tooltip.ci.zh': '95% CI',
+  'forest.tooltip.ci.en': '95% CI',
+  'forest.tooltip.weight.zh': '权重',
+  'forest.tooltip.weight.en': 'Weight',
+  'forest.tooltip.se.zh': '标准误',
+  'forest.tooltip.se.en': 'SE',
+
+  // Accessibility
+  'a11y.forestPlot.zh': '森林图：显示各研究效应量及合并效应量的图表',
+  'a11y.forestPlot.en': 'Forest plot: chart showing individual study effects and pooled effect estimate',
+  'a11y.funnelPlot.zh': '漏斗图：检测发表偏倚的散点图',
+  'a11y.funnelPlot.en': 'Funnel plot: scatter plot for detecting publication bias',
+  'a11y.galbraithPlot.zh': 'Galbraith 图：识别异质性来源的散点图',
+  'a11y.galbraithPlot.en': 'Galbraith plot: scatter plot for identifying sources of heterogeneity',
+  'a11y.tabs.zh': '分析步骤导航',
+  'a11y.tabs.en': 'Analysis step navigation',
+
   // Footer
   'footer.text.zh': 'MetaReview — 开源免费的医学研究 Meta 分析平台',
   'footer.text.en': 'MetaReview — Open-source meta-analysis platform for medical research',

@@ -1,7 +1,46 @@
-// Publication bias assessment: Funnel plot data and Egger's regression test
+// Publication bias assessment: Funnel plot data, Galbraith plot data, and Egger's regression test
 
 import type { StudyEffect, EggersTest, FunnelPoint } from '../types';
 import { tToP } from './distributions';
+
+export interface GalbraithPoint {
+  name: string;
+  precision: number;   // 1 / SE
+  zScore: number;      // yi / SE
+  isOutlier: boolean;  // |z - slope * precision| > 2
+}
+
+export interface GalbraithData {
+  points: GalbraithPoint[];
+  slope: number;       // pooled effect (regression slope = summary effect)
+  intercept: number;   // Egger's intercept
+  outliers: string[];  // names of outlier studies
+}
+
+/** Generate Galbraith (radial) plot data */
+export function galbraithPlotData(studies: StudyEffect[], summaryEffect: number): GalbraithData {
+  const points: GalbraithPoint[] = studies.map((s) => {
+    const precision = 1 / s.sei;
+    const zScore = s.yi / s.sei;
+    // Expected z = summary * precision; outlier if residual > 2
+    const residual = Math.abs(zScore - summaryEffect * precision);
+    return {
+      name: s.name,
+      precision,
+      zScore,
+      isOutlier: residual > 2,
+    };
+  });
+
+  const outliers = points.filter((p) => p.isOutlier).map((p) => p.name);
+
+  return {
+    points,
+    slope: summaryEffect,
+    intercept: 0,
+    outliers,
+  };
+}
 
 /** Generate funnel plot data points */
 export function funnelPlotData(studies: StudyEffect[]): FunnelPoint[] {

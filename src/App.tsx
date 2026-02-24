@@ -12,6 +12,7 @@ import PRISMAFlow from './components/PRISMAFlow';
 import LiteratureSearch from './components/LiteratureSearch';
 import OnboardingTour from './components/OnboardingTour';
 import CumulativeMeta from './components/CumulativeMeta';
+import GalbraithPlot from './components/GalbraithPlot';
 import { metaAnalysis, eggersTest, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, isBinaryData, isContinuousData, isHRData } from './lib/statistics';
 import { generateReportHTML, type ReportSections } from './lib/report-export';
 import { generateReportDOCX } from './lib/report-docx';
@@ -30,7 +31,7 @@ const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'SMD', label: "Hedges' g (SMD)", desc: 'Continuous, different scales' },
 ];
 
-const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'cumulative', 'sensitivity', 'subgroup', 'prisma'] as const;
+const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'galbraith', 'cumulative', 'sensitivity', 'subgroup', 'prisma'] as const;
 
 function ForestPlotControls({ lang, onDownloadSVG }: { lang: Lang; onDownloadSVG: () => void }) {
   const { plotSettings, setPlotSettings } = useUIStore();
@@ -457,7 +458,33 @@ export default function App() {
       </header>
 
       {/* Tab navigation */}
-      <nav style={{ display: 'flex', gap: 0, borderBottom: '2px solid #e5e7eb', marginBottom: 20, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+      <nav
+        role="tablist"
+        aria-label={t('a11y.tabs', lang)}
+        style={{ display: 'flex', gap: 0, borderBottom: '2px solid #e5e7eb', marginBottom: 20, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            const enabledTabs = TAB_KEYS.filter((tab) => {
+              const isAlwaysEnabled = tab === 'prisma' || tab === 'search' || tab === 'input' || tab === 'extract';
+              if (isAlwaysEnabled) return true;
+              if (!result) return false;
+              if (tab === 'sensitivity' && studies.length < 3) return false;
+              if (tab === 'subgroup' && !subgroupResult) return false;
+              if (tab === 'cumulative' && studies.length < 2) return false;
+              return true;
+            });
+            const idx = enabledTabs.indexOf(activeTab as typeof enabledTabs[number]);
+            const next = e.key === 'ArrowRight'
+              ? enabledTabs[(idx + 1) % enabledTabs.length]
+              : enabledTabs[(idx - 1 + enabledTabs.length) % enabledTabs.length];
+            setActiveTab(next);
+            // Focus the new tab button
+            const btn = document.getElementById(`tab-${next}`);
+            if (btn) btn.focus();
+          }
+        }}
+      >
         {TAB_KEYS.map((tab) => {
           const isAlwaysEnabled = tab === 'prisma' || tab === 'search' || tab === 'input' || tab === 'extract';
           const isSubgroup = tab === 'subgroup';
@@ -472,6 +499,11 @@ export default function App() {
           return (
             <button
               key={tab}
+              id={`tab-${tab}`}
+              role="tab"
+              aria-selected={activeTab === tab}
+              aria-controls={`tabpanel-${tab}`}
+              tabIndex={activeTab === tab ? 0 : -1}
               data-tour={`tab-${tab}`}
               onClick={() => setActiveTab(tab)}
               style={{
@@ -615,9 +647,14 @@ export default function App() {
         <div>
           <FunnelPlotControls lang={lang} />
           <div className="funnel-plot-container" style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
-            <FunnelPlot result={result} />
+            <FunnelPlot result={result} lang={lang} />
           </div>
         </div>
+      )}
+
+      {/* Galbraith Plot Tab */}
+      {activeTab === 'galbraith' && result && (
+        <GalbraithPlot result={result} lang={lang} />
       )}
 
       {/* Cumulative Meta-Analysis Tab */}
