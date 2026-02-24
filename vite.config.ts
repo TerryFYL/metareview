@@ -11,6 +11,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace('/api/pubmed/', ''),
       },
+      // AI screening — proxied to wrangler pages dev in local development
+      '/api/screening': {
+        target: 'http://localhost:8788',
+        changeOrigin: true,
+      },
     },
   },
 })

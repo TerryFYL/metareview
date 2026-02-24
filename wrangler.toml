@@ -1,0 +1,6 @@
+name = "metareview"
+pages_build_output_dir = "dist"
+
+# Workers AI binding for literature screening
+[ai]
+binding = "AI"

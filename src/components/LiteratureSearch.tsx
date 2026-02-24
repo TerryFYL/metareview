@@ -1,9 +1,11 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 import { t } from '../lib/i18n';
 import type { Lang } from '../lib/i18n';
 import type { Study, BinaryData, ContinuousData, PICO, ScreeningScore } from '../lib/types';
 import type { EffectMeasure } from '../lib/types';
 import { scorePICORelevance } from '../lib/screening/pico-scorer';
+import { batchScreen } from '../lib/screening/ai-screener';
+import type { AIScreeningResult } from '../lib/screening/ai-screener';
 
 interface PubMedArticle {
   pmid: string;
@@ -65,6 +67,14 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
   const [prismaNotice, setPrismaNotice] = useState(false);
   const [sortByScore, setSortByScore] = useState(false);
 
+  // AI Screening (Phase 2)
+  const [aiResults, setAiResults] = useState<Map<string, AIScreeningResult>>(new Map());
+  const [aiScreening, setAiScreening] = useState(false);
+  const [aiProgress, setAiProgress] = useState({ done: 0, total: 0 });
+  const [aiDone, setAiDone] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
   // Search history
   const [history, setHistory] = useState<string[]>(loadHistory);
 
@@ -112,6 +122,123 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
     if (!hasPICO) return 0;
     return results.filter(r => scores[r.pmid]?.bucket === 'likely').length;
   }, [results, scores, hasPICO]);
+
+  // AI screening summary counts
+  const aiSummary = useMemo(() => {
+    if (aiResults.size === 0) return null;
+    let include = 0, exclude = 0, maybe = 0;
+    for (const r of aiResults.values()) {
+      if (r.verdict === 'include') include++;
+      else if (r.verdict === 'exclude') exclude++;
+      else maybe++;
+    }
+    return { include, exclude, maybe };
+  }, [aiResults]);
+
+  const aiIncludeCount = useMemo(() => {
+    if (aiResults.size === 0) return 0;
+    return results.filter(r => aiResults.get(r.pmid)?.verdict === 'include').length;
+  }, [results, aiResults]);
+
+  const selectAllAiInclude = useCallback(() => {
+    const pmids = results
+      .filter(r => aiResults.get(r.pmid)?.verdict === 'include')
+      .map(r => r.pmid);
+    setSelected(new Set(pmids));
+  }, [results, aiResults]);
+
+  // Batch fetch abstracts for articles that don't have them yet
+  const fetchAbstractsBatch = useCallback(async (pmids: string[]): Promise<Record<string, string>> => {
+    const missing = pmids.filter(p => !abstracts[p]);
+    if (missing.length === 0) return abstracts;
+
+    const newAbstracts: Record<string, string> = {};
+    // Fetch in batches of 5
+    for (let i = 0; i < missing.length; i += 5) {
+      const batch = missing.slice(i, i + 5);
+      const fetches = batch.map(async (pmid) => {
+        try {
+          const res = await fetch(`/api/pubmed/efetch.fcgi?db=pubmed&id=${pmid}&rettype=abstract&retmode=text`);
+          if (res.ok) {
+            const text = await res.text();
+            newAbstracts[pmid] = text;
+          }
+        } catch {
+          // Skip failed abstracts
+        }
+      });
+      await Promise.all(fetches);
+      if (i + 5 < missing.length) {
+        await new Promise(r => setTimeout(r, 300));
+      }
+    }
+
+    const merged = { ...abstracts, ...newAbstracts };
+    setAbstracts(merged);
+    return merged;
+  }, [abstracts]);
+
+  // Start AI screening
+  const startAiScreening = useCallback(async () => {
+    if (!hasPICO || results.length === 0) return;
+
+    setAiScreening(true);
+    setAiDone(false);
+    setAiError(null);
+    setAiProgress({ done: 0, total: results.length });
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    try {
+      // Step 1: Batch load abstracts for all current results
+      const allAbstracts = await fetchAbstractsBatch(results.map(r => r.pmid));
+
+      // Step 2: Prepare articles with abstracts
+      const articlesForScreening = results
+        .filter(r => {
+          const abs = allAbstracts[r.pmid];
+          return abs && abs.trim().length >= 20;
+        })
+        .map(r => ({
+          pmid: r.pmid,
+          title: r.title,
+          abstract: allAbstracts[r.pmid] || '',
+        }));
+
+      if (articlesForScreening.length === 0) {
+        setAiError('no_abstracts');
+        setAiScreening(false);
+        return;
+      }
+
+      setAiProgress({ done: 0, total: articlesForScreening.length });
+
+      // Step 3: Run batch AI screening
+      const screeningResults = await batchScreen(
+        articlesForScreening,
+        pico,
+        (progress) => {
+          setAiProgress({ done: progress.completed, total: progress.total });
+          setAiResults(new Map(progress.results));
+        },
+        controller.signal,
+      );
+
+      setAiResults(screeningResults);
+      setAiDone(true);
+    } catch {
+      setAiError('error');
+    } finally {
+      setAiScreening(false);
+      abortRef.current = null;
+    }
+  }, [hasPICO, results, pico, fetchAbstractsBatch]);
+
+  const cancelAiScreening = useCallback(() => {
+    abortRef.current?.abort();
+    setAiScreening(false);
+  }, []);
 
   const buildFullQuery = useCallback((baseQuery: string): string => {
     const parts = [baseQuery.trim()];
@@ -518,6 +645,97 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
         </div>
       )}
 
+      {/* AI Screening controls */}
+      {hasResults && hasPICO && (
+        <div style={{ marginBottom: 12 }}>
+          {/* AI Screen button / progress */}
+          {!aiScreening && !aiDone && (
+            <button
+              onClick={startAiScreening}
+              style={aiScreenBtnStyle}
+            >
+              {t('screening.aiBtn', lang)}
+            </button>
+          )}
+
+          {/* Progress bar during screening */}
+          {aiScreening && (
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>
+                  {t('screening.aiProgress', lang)
+                    .replace('{done}', String(aiProgress.done))
+                    .replace('{total}', String(aiProgress.total))}
+                </div>
+                <div style={{ height: 6, background: '#e5e7eb', borderRadius: 3, overflow: 'hidden' }}>
+                  <div
+                    style={{
+                      height: '100%',
+                      width: `${aiProgress.total > 0 ? (aiProgress.done / aiProgress.total) * 100 : 0}%`,
+                      background: 'linear-gradient(90deg, #2563eb, #7c3aed)',
+                      borderRadius: 3,
+                      transition: 'width 0.3s ease',
+                    }}
+                  />
+                </div>
+              </div>
+              <button onClick={cancelAiScreening} style={aiCancelBtnStyle}>
+                {t('screening.aiCancel', lang)}
+              </button>
+            </div>
+          )}
+
+          {/* AI screening done summary */}
+          {aiDone && aiSummary && (
+            <div style={{
+              padding: '8px 14px',
+              background: '#f5f3ff',
+              border: '1px solid #ddd6fe',
+              borderRadius: 6,
+              fontSize: 12,
+              color: '#5b21b6',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 8,
+            }}>
+              <span>
+                {t('screening.aiDone', lang)
+                  .replace('{include}', String(aiSummary.include))
+                  .replace('{exclude}', String(aiSummary.exclude))
+                  .replace('{maybe}', String(aiSummary.maybe))}
+              </span>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {aiIncludeCount > 0 && (
+                  <button onClick={selectAllAiInclude} style={screeningSelectStyle}>
+                    {t('screening.aiSelectInclude', lang)} ({aiIncludeCount})
+                  </button>
+                )}
+                <button
+                  onClick={() => { setAiDone(false); setAiResults(new Map()); }}
+                  style={{ ...aiCancelBtnStyle, fontSize: 11 }}
+                >
+                  {t('screening.sortDefault', lang)}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* AI error messages */}
+          {aiError === 'quota_exceeded' && (
+            <div style={{ padding: '8px 14px', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 6, color: '#92400e', fontSize: 12, marginTop: 8 }}>
+              {t('screening.aiQuota', lang)}
+            </div>
+          )}
+          {aiError === 'error' && (
+            <div style={{ padding: '8px 14px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 6, color: '#dc2626', fontSize: 12, marginTop: 8 }}>
+              {t('screening.aiError', lang)}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* No results */}
       {!loading && totalCount === 0 && query.trim() && results.length === 0 && !error && (
         <div style={{ padding: '24px 16px', textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>
@@ -538,6 +756,10 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
           {sortedResults.map((article) => {
             const score = scores[article.pmid];
             const bucketStyle = score ? BUCKET_STYLES[score.bucket] : null;
+            const aiResult = aiResults.get(article.pmid);
+            const aiVerdictStyle = aiResult ? AI_VERDICT_STYLES[aiResult.verdict] : null;
+            // AI result takes priority for border color when available
+            const borderColor = aiVerdictStyle ? aiVerdictStyle.border : (bucketStyle ? bucketStyle.border : undefined);
 
             return (
               <div
@@ -548,7 +770,7 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
                   border: `1px solid ${selected.has(article.pmid) ? '#bfdbfe' : '#e5e7eb'}`,
                   borderRadius: 6,
                   marginBottom: 6,
-                  borderLeft: bucketStyle ? `3px solid ${bucketStyle.border}` : undefined,
+                  borderLeft: borderColor ? `3px solid ${borderColor}` : undefined,
                 }}
               >
                 <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
@@ -559,26 +781,48 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
                     style={{ marginTop: 3, flexShrink: 0 }}
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start', justifyContent: 'space-between' }}>
                       <div style={{ fontSize: 14, fontWeight: 500, color: '#111827', lineHeight: 1.4 }}>
                         {article.title}
                       </div>
-                      {/* PICO screening badge */}
-                      {score && hasPICO && (
-                        <span style={{
-                          flexShrink: 0,
-                          padding: '2px 8px',
-                          borderRadius: 10,
-                          fontSize: 11,
-                          fontWeight: 600,
-                          background: bucketStyle!.bg,
-                          color: bucketStyle!.text,
-                          whiteSpace: 'nowrap',
-                        }}>
-                          {t(`screening.${score.bucket}`, lang)} {score.score}
-                        </span>
-                      )}
+                      <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+                        {/* AI verdict badge (takes priority when present) */}
+                        {aiResult && (
+                          <span style={{
+                            padding: '2px 8px',
+                            borderRadius: 10,
+                            fontSize: 11,
+                            fontWeight: 600,
+                            background: aiVerdictStyle!.bg,
+                            color: aiVerdictStyle!.text,
+                            whiteSpace: 'nowrap',
+                          }}>
+                            {t(`screening.ai${aiResult.verdict.charAt(0).toUpperCase() + aiResult.verdict.slice(1)}`, lang)}
+                            {' '}{Math.round(aiResult.confidence * 100)}%
+                          </span>
+                        )}
+                        {/* PICO keyword badge */}
+                        {score && hasPICO && !aiResult && (
+                          <span style={{
+                            padding: '2px 8px',
+                            borderRadius: 10,
+                            fontSize: 11,
+                            fontWeight: 600,
+                            background: bucketStyle!.bg,
+                            color: bucketStyle!.text,
+                            whiteSpace: 'nowrap',
+                          }}>
+                            {t(`screening.${score.bucket}`, lang)} {score.score}
+                          </span>
+                        )}
+                      </div>
                     </div>
+                    {/* AI reason (shown when AI result exists) */}
+                    {aiResult && aiResult.reason && (
+                      <div style={{ fontSize: 11, color: '#6b7280', marginTop: 3, fontStyle: 'italic', lineHeight: 1.3 }}>
+                        {aiResult.reason}
+                      </div>
+                    )}
                     <div style={{ fontSize: 12, color: '#6b7280', marginTop: 4 }}>
                       {article.authors.slice(0, 3).join(', ')}
                       {article.authors.length > 3 && ` et al.`}
@@ -775,3 +1019,31 @@ const BUCKET_STYLES = {
   maybe: { bg: '#fef9c3', text: '#a16207', border: '#eab308' },
   unlikely: { bg: '#fee2e2', text: '#b91c1c', border: '#ef4444' },
 } as const;
+
+const AI_VERDICT_STYLES = {
+  include: { bg: '#dbeafe', text: '#1e40af', border: '#3b82f6' },
+  exclude: { bg: '#fee2e2', text: '#991b1b', border: '#ef4444' },
+  maybe: { bg: '#fef3c7', text: '#92400e', border: '#f59e0b' },
+} as const;
+
+const aiScreenBtnStyle: React.CSSProperties = {
+  padding: '8px 18px',
+  background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
+  color: '#fff',
+  border: 'none',
+  borderRadius: 8,
+  fontSize: 13,
+  fontWeight: 600,
+  cursor: 'pointer',
+  letterSpacing: 0.3,
+};
+
+const aiCancelBtnStyle: React.CSSProperties = {
+  padding: '4px 12px',
+  background: '#f3f4f6',
+  color: '#6b7280',
+  border: '1px solid #d1d5db',
+  borderRadius: 6,
+  fontSize: 12,
+  cursor: 'pointer',
+};
