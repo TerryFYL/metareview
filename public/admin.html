@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>MetaReview Analytics</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 16px}
+h1{font-size:1.5rem;font-weight:700;margin-bottom:8px}
+.subtitle{color:#94a3b8;font-size:.875rem;margin-bottom:24px}
+.range-bar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;align-items:center}
+.range-bar span{color:#94a3b8;font-size:.8rem;margin-right:8px}
+.rbtn{background:#1e293b;border:1px solid #334155;color:#cbd5e1;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:.8rem;transition:all .15s}
+.rbtn:hover{border-color:#38bdf8;color:#38bdf8}
+.rbtn.active{background:#0c4a6e;border-color:#38bdf8;color:#38bdf8}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.kpi{background:#1e293b;border-radius:10px;padding:20px;border:1px solid #334155}
+.kpi-label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.kpi-value{font-size:2rem;font-weight:700;color:#38bdf8;line-height:1.1}
+.kpi-sub{font-size:.7rem;color:#64748b;margin-top:4px}
+.card{background:#1e293b;border-radius:10px;padding:20px;border:1px solid #334155;margin-bottom:24px}
+.card-title{font-size:.9rem;font-weight:600;margin-bottom:16px;color:#e2e8f0}
+canvas{width:100%;border-radius:6px}
+.tooltip{position:absolute;background:#0f172a;border:1px solid #38bdf8;color:#e2e8f0;padding:6px 10px;border-radius:6px;font-size:.75rem;pointer-events:none;display:none;z-index:10;white-space:nowrap}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:.7rem;color:#64748b;text-transform:uppercase;letter-spacing:.5px;padding:8px 12px;border-bottom:1px solid #334155}
+td{padding:10px 12px;border-bottom:1px solid #1e293b;font-size:.85rem}
+td:last-child{text-align:right;color:#38bdf8;font-weight:600;font-variant-numeric:tabular-nums}
+tr:hover td{background:#0f172a}
+.loading{text-align:center;padding:60px 20px;color:#64748b}
+.loading .spinner{width:32px;height:32px;border:3px solid #334155;border-top-color:#38bdf8;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error{text-align:center;padding:40px 20px;color:#f87171}
+.error button{margin-top:12px;background:#1e293b;border:1px solid #f87171;color:#f87171;padding:8px 20px;border-radius:6px;cursor:pointer}
+@media(max-width:640px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .kpi-value{font-size:1.5rem}
+  .wrap{padding:16px 12px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>MetaReview Analytics</h1>
+  <p class="subtitle">产品数据概览</p>
+  <div class="range-bar">
+    <span>时间范围</span>
+    <button class="rbtn" data-days="7">7 天</button>
+    <button class="rbtn active" data-days="30">30 天</button>
+    <button class="rbtn" data-days="90">90 天</button>
+  </div>
+  <div id="app">
+    <div class="loading"><div class="spinner"></div>加载中...</div>
+  </div>
+</div>
+<div class="tooltip" id="tip"></div>
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const app = $('#app');
+  const tip = $('#tip');
+  let currentDays = 30;
+  let chartData = null;
+  let chartRect = null;
+  let canvasEl = null;
+
+  // range buttons
+  document.querySelectorAll('.rbtn').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('.rbtn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      currentDays = +b.dataset.days;
+      load(currentDays);
+    };
+  });
+
+  function load(days) {
+    app.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
+    fetch('/api/analytics/dashboard?days=' + days)
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(render)
+      .catch(err => {
+        app.innerHTML = '<div class="error">加载失败: ' + err.message + '<br><button onclick="location.reload()">重试</button></div>';
+      });
+  }
+
+  function render(data) {
+    const t = data.totals || {};
+    const pv = t.page_view || 0;
+    const ts = t.tab_switch || 0;
+    const subs = data.emailSubscribers || 0;
+    const featureKeys = Object.keys(t).filter(k => k !== 'page_view' && k !== 'tab_switch');
+    const features = featureKeys.length;
+    const range = data.range || {};
+
+    let html = '<div class="kpi-grid">';
+    html += kpi('页面浏览', 'Page Views', pv);
+    html += kpi('Tab 切换', 'Tab Switches', ts);
+    html += kpi('邮件订阅', 'Subscribers', subs);
+    html += kpi('功能使用', 'Unique Features', features);
+    html += '</div>';
+
+    html += '<div class="card"><div class="card-title">日趋势 - 页面浏览量 (' + (range.from || '') + ' ~ ' + (range.to || '') + ')</div>';
+    html += '<canvas id="chart" height="260"></canvas></div>';
+
+    // event table
+    const sorted = Object.entries(t).sort((a, b) => b[1] - a[1]);
+    html += '<div class="card"><div class="card-title">事件明细</div><table><thead><tr><th>事件类型</th><th style="text-align:right">总数</th></tr></thead><tbody>';
+    sorted.forEach(([k, v]) => {
+      html += '<tr><td>' + esc(k) + '</td><td>' + v.toLocaleString() + '</td></tr>';
+    });
+    html += '</tbody></table></div>';
+
+    app.innerHTML = html;
+    drawChart(data.daily || []);
+  }
+
+  function kpi(label, sub, value) {
+    return '<div class="kpi"><div class="kpi-label">' + label + '</div><div class="kpi-value">' + value.toLocaleString() + '</div><div class="kpi-sub">' + sub + '</div></div>';
+  }
+
+  function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  function drawChart(daily) {
+    const canvas = document.getElementById('chart');
+    if (!canvas) return;
+    canvasEl = canvas;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 260 * dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    const W = rect.width, H = 260;
+    const pad = { t: 20, r: 16, b: 40, l: 48 };
+    const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
+
+    const vals = daily.map(d => (d.events && d.events.page_view) || 0);
+    const dates = daily.map(d => d.date || '');
+    const max = Math.max(...vals, 1);
+    const niceMax = ceilNice(max);
+
+    // store for hover
+    chartData = { vals, dates, pad, cw, ch, W, H, niceMax };
+    chartRect = rect;
+
+    // bg
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, W, H);
+
+    // grid
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 1;
+    const gridLines = 4;
+    for (let i = 0; i <= gridLines; i++) {
+      const y = pad.t + ch - (ch * i / gridLines);
+      ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+      ctx.fillStyle = '#64748b';
+      ctx.font = '11px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(Math.round(niceMax * i / gridLines), pad.l - 8, y + 4);
+    }
+
+    // x labels
+    ctx.fillStyle = '#64748b';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    const step = Math.max(1, Math.floor(dates.length / 6));
+    dates.forEach((d, i) => {
+      if (i % step === 0 || i === dates.length - 1) {
+        const x = pad.l + (cw * i / Math.max(dates.length - 1, 1));
+        ctx.fillText(d.slice(5), x, H - pad.b + 20);
+      }
+    });
+
+    if (vals.length < 2) return;
+
+    // area
+    ctx.beginPath();
+    vals.forEach((v, i) => {
+      const x = pad.l + (cw * i / (vals.length - 1));
+      const y = pad.t + ch - (ch * v / niceMax);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.lineTo(pad.l + cw, pad.t + ch);
+    ctx.lineTo(pad.l, pad.t + ch);
+    ctx.closePath();
+    const grad = ctx.createLinearGradient(0, pad.t, 0, pad.t + ch);
+    grad.addColorStop(0, 'rgba(56,189,248,0.15)');
+    grad.addColorStop(1, 'rgba(56,189,248,0)');
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // line
+    ctx.beginPath();
+    vals.forEach((v, i) => {
+      const x = pad.l + (cw * i / (vals.length - 1));
+      const y = pad.t + ch - (ch * v / niceMax);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // dots
+    vals.forEach((v, i) => {
+      const x = pad.l + (cw * i / (vals.length - 1));
+      const y = pad.t + ch - (ch * v / niceMax);
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fill();
+    });
+
+    // hover
+    canvas.onmousemove = function(e) {
+      if (!chartData) return;
+      const cr = canvas.getBoundingClientRect();
+      const mx = e.clientX - cr.left;
+      const my = e.clientY - cr.top;
+      const d = chartData;
+      const n = d.vals.length;
+      if (n < 2) return;
+      const idx = Math.round((mx - d.pad.l) / d.cw * (n - 1));
+      if (idx < 0 || idx >= n) { tip.style.display = 'none'; return; }
+      const x = d.pad.l + (d.cw * idx / (n - 1));
+      const y = d.pad.t + d.ch - (d.ch * d.vals[idx] / d.niceMax);
+      if (mx < d.pad.l - 10 || mx > d.W - d.pad.r + 10) { tip.style.display = 'none'; return; }
+      tip.style.display = 'block';
+      tip.innerHTML = d.dates[idx] + '<br><b>' + d.vals[idx] + '</b> page views';
+      tip.style.left = (cr.left + x + window.scrollX + 12) + 'px';
+      tip.style.top = (cr.top + y + window.scrollY - 36) + 'px';
+    };
+    canvas.onmouseleave = function() { tip.style.display = 'none'; };
+  }
+
+  function ceilNice(v) {
+    if (v <= 5) return 5;
+    if (v <= 10) return 10;
+    const mag = Math.pow(10, Math.floor(Math.log10(v)));
+    const norm = v / mag;
+    if (norm <= 2) return 2 * mag;
+    if (norm <= 5) return 5 * mag;
+    return 10 * mag;
+  }
+
+  load(currentDays);
+})();
+</script>
+</body>
+</html>
