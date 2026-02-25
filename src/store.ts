@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Study, EffectMeasure, ModelType, PICO, MetaAnalysisResult, EggersTest, BeggsTest, MetaRegressionResult, RobAssessments } from './lib/types';
+import type { Study, EffectMeasure, ModelType, PICO, MetaAnalysisResult, EggersTest, BeggsTest, MetaRegressionResult, RobAssessments, ProtocolData } from './lib/types';
 import { isBinaryData, isContinuousData, isGenericData, isHRData } from './lib/statistics/effect-size';
 import type { Lang } from './lib/i18n';
 import type { PRISMAData } from './components/PRISMAFlow';
@@ -31,6 +31,7 @@ interface ProjectStore {
   studies: Study[];
   prisma: PRISMAData;
   robAssessments: RobAssessments;
+  protocol: ProtocolData;
 
   // Undo/redo history (not persisted)
   _history: Study[][];
@@ -44,6 +45,7 @@ interface ProjectStore {
   setStudies: (studies: Study[]) => void;
   setPRISMA: (prisma: PRISMAData) => void;
   setRobAssessments: (rob: RobAssessments) => void;
+  setProtocol: (protocol: ProtocolData) => void;
   reset: () => void;
   loadDemo: () => void;
   undo: () => void;
@@ -59,6 +61,43 @@ const emptyPICO: PICO = {
   outcome: '',
 };
 
+export const emptyProtocol: ProtocolData = {
+  title: '',
+  prosperoId: '',
+  authors: '',
+  contactEmail: '',
+  rationale: '',
+  studyTypes: [],
+  participants: '',
+  interventions: '',
+  comparators: '',
+  primaryOutcomes: '',
+  secondaryOutcomes: '',
+  timingOfOutcomes: '',
+  setting: '',
+  databases: [],
+  otherSources: '',
+  searchDateFrom: '',
+  searchDateTo: '',
+  searchStrategy: '',
+  screeningProcess: '',
+  dataExtractionProcess: '',
+  dataItems: '',
+  robTool: 'rob2',
+  robDetails: '',
+  effectMeasure: '',
+  synthesisMethod: '',
+  heterogeneityAssessment: '',
+  subgroupAnalyses: '',
+  sensitivityAnalyses: '',
+  publicationBiasAssessment: '',
+  confidenceAssessment: '',
+  anticipatedStartDate: '',
+  anticipatedEndDate: '',
+  funding: '',
+  conflictsOfInterest: '',
+};
+
 export const useProjectStore = create<ProjectStore>()(
   persist(
     (set, get) => ({
@@ -69,6 +108,7 @@ export const useProjectStore = create<ProjectStore>()(
       studies: [],
       prisma: emptyPRISMA,
       robAssessments: {} as RobAssessments,
+      protocol: emptyProtocol,
       _history: [[]] as Study[][],
       _historyIndex: 0,
 
@@ -95,6 +135,7 @@ export const useProjectStore = create<ProjectStore>()(
       }),
       setPRISMA: (prisma) => set({ prisma }),
       setRobAssessments: (robAssessments) => set({ robAssessments }),
+      setProtocol: (protocol) => set({ protocol }),
       undo: () => set((state) => {
         if (state._historyIndex <= 0) return {};
         const newIndex = state._historyIndex - 1;
@@ -122,6 +163,7 @@ export const useProjectStore = create<ProjectStore>()(
           studies: [],
           prisma: emptyPRISMA,
           robAssessments: {} as RobAssessments,
+          protocol: emptyProtocol,
           _history: [[]],
           _historyIndex: 0,
         }),
@@ -236,7 +278,7 @@ interface UIStore {
   beggs: BeggsTest | null;
   metaRegression: MetaRegressionResult | null;
   error: string | null;
-  activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'galbraith' | 'labbe' | 'baujat' | 'cumulative' | 'sensitivity' | 'influence' | 'subgroup' | 'metareg' | 'grade' | 'rob' | 'prisma' | 'search' | 'extract' | 'loo' | 'network' | 'doseresponse';
+  activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'galbraith' | 'labbe' | 'baujat' | 'cumulative' | 'sensitivity' | 'influence' | 'subgroup' | 'metareg' | 'grade' | 'rob' | 'prisma' | 'search' | 'extract' | 'loo' | 'network' | 'doseresponse' | 'protocol';
   plotSettings: PlotSettings;
   setLang: (lang: Lang) => void;
   setHeroSeen: (seen: boolean) => void;

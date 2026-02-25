@@ -20,6 +20,7 @@ import BaujatPlot from './components/BaujatPlot';
 import InfluenceDiagnostics from './components/InfluenceDiagnostics';
 import GradeAssessment from './components/GradeAssessment';
 import RobAssessment from './components/RobAssessment';
+import ProtocolTemplate from './components/ProtocolTemplate';
 import MetaRegressionPlot from './components/MetaRegressionPlot';
 import LeaveOneOutPlot from './components/LeaveOneOutPlot';
 import NetworkGraph from './components/NetworkGraph';
@@ -44,7 +45,7 @@ const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'SMD', label: "Hedges' g (SMD)", desc: 'Continuous, different scales' },
 ];
 
-const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'galbraith', 'labbe', 'baujat', 'cumulative', 'sensitivity', 'influence', 'loo', 'network', 'doseresponse', 'subgroup', 'metareg', 'grade', 'rob', 'prisma'] as const;
+const TAB_KEYS = ['protocol', 'search', 'extract', 'input', 'results', 'forest', 'funnel', 'galbraith', 'labbe', 'baujat', 'cumulative', 'sensitivity', 'influence', 'loo', 'network', 'doseresponse', 'subgroup', 'metareg', 'grade', 'rob', 'prisma'] as const;
 
 function ForestPlotControls({ lang, onDownloadSVG, onDownloadPNG }: { lang: Lang; onDownloadSVG: () => void; onDownloadPNG: () => void }) {
   const { plotSettings, setPlotSettings } = useUIStore();
@@ -253,8 +254,8 @@ const settingsInputStyle: React.CSSProperties = { width: '100%', padding: '5px 8
 
 export default function App() {
   const {
-    title, pico, measure, model, studies, prisma, robAssessments,
-    setTitle, setPICO, setMeasure, setModel, setStudies, setPRISMA, setRobAssessments, reset, loadDemo,
+    title, pico, measure, model, studies, prisma, robAssessments, protocol,
+    setTitle, setPICO, setMeasure, setModel, setStudies, setPRISMA, setRobAssessments, setProtocol, reset, loadDemo,
   } = useProjectStore();
 
   const {
@@ -779,7 +780,7 @@ export default function App() {
             e.preventDefault();
             const visibleTabs = readOnly ? TAB_KEYS.filter(t => t !== 'search' && t !== 'extract') : TAB_KEYS;
             const enabledTabs = visibleTabs.filter((tab) => {
-              const isAlwaysEnabled = tab === 'prisma' || tab === 'rob' || tab === 'search' || tab === 'input' || tab === 'extract';
+              const isAlwaysEnabled = tab === 'prisma' || tab === 'rob' || tab === 'search' || tab === 'input' || tab === 'extract' || tab === 'protocol';
               if (isAlwaysEnabled) return true;
               if (!result) return false;
               if (tab === 'sensitivity' && studies.length < 3) return false;
@@ -803,8 +804,8 @@ export default function App() {
           }
         }}
       >
-        {TAB_KEYS.filter(tab => !(readOnly && (tab === 'search' || tab === 'extract'))).map((tab) => {
-          const isAlwaysEnabled = tab === 'prisma' || tab === 'rob' || tab === 'search' || tab === 'input' || tab === 'extract';
+        {TAB_KEYS.filter(tab => !(readOnly && (tab === 'search' || tab === 'extract' || tab === 'protocol'))).map((tab) => {
+          const isAlwaysEnabled = tab === 'prisma' || tab === 'rob' || tab === 'search' || tab === 'input' || tab === 'extract' || tab === 'protocol';
           const isSubgroup = tab === 'subgroup';
           const isSensitivity = tab === 'sensitivity';
           const isInfluence = tab === 'influence';
@@ -855,6 +856,11 @@ export default function App() {
           );
         })}
       </nav>
+
+      {/* Protocol Template Tab */}
+      {activeTab === 'protocol' && (
+        <ProtocolTemplate protocol={protocol} pico={pico} measure={measure} model={model} onChange={setProtocol} lang={lang} />
+      )}
 
       {/* Literature Search Tab */}
       {activeTab === 'search' && (

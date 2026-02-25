@@ -376,6 +376,74 @@ export interface StudyRobAssessment {
 /** Complete Risk of Bias data for all studies */
 export type RobAssessments = Record<string, StudyRobAssessment>;
 
+/** Study design types for protocol eligibility */
+export type StudyDesignType = 'RCT' | 'quasi_experimental' | 'cohort' | 'case_control' | 'cross_sectional' | 'case_series' | 'other';
+
+/** Risk of bias tool options */
+export type RobToolType = 'rob2' | 'robins_i' | 'nos' | 'jbi' | 'custom';
+
+/** Database options for information sources */
+export type DatabaseType = 'pubmed' | 'embase' | 'central' | 'scopus' | 'web_of_science' | 'cinahl' | 'psycinfo' | 'other';
+
+/** SR/MA Protocol data following PRISMA-P 2015 */
+export interface ProtocolData {
+  // Section 1: Administrative
+  title: string;
+  prosperoId: string;
+  authors: string;
+  contactEmail: string;
+
+  // Section 2: Background
+  rationale: string;
+
+  // Section 3: Eligibility Criteria
+  studyTypes: StudyDesignType[];
+  participants: string;
+  interventions: string;
+  comparators: string;
+  primaryOutcomes: string;
+  secondaryOutcomes: string;
+  timingOfOutcomes: string;
+  setting: string;
+
+  // Section 4: Information Sources
+  databases: DatabaseType[];
+  otherSources: string;
+  searchDateFrom: string;
+  searchDateTo: string;
+
+  // Section 5: Search Strategy
+  searchStrategy: string;
+
+  // Section 6: Study Selection
+  screeningProcess: string;
+
+  // Section 7: Data Collection
+  dataExtractionProcess: string;
+  dataItems: string;
+
+  // Section 8: Risk of Bias
+  robTool: RobToolType;
+  robDetails: string;
+
+  // Section 9: Synthesis
+  effectMeasure: string;
+  synthesisMethod: string;
+  heterogeneityAssessment: string;
+  subgroupAnalyses: string;
+  sensitivityAnalyses: string;
+
+  // Section 10: Meta-bias & Confidence
+  publicationBiasAssessment: string;
+  confidenceAssessment: string;
+
+  // Section 11: Timeline & Funding
+  anticipatedStartDate: string;
+  anticipatedEndDate: string;
+  funding: string;
+  conflictsOfInterest: string;
+}
+
 /** PICO-based screening score */
 export interface ScreeningScore {
   score: number; // 0-100
