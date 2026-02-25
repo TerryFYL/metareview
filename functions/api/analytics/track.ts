@@ -80,6 +80,39 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       }
     }
 
+    // Track MA completions with visitor identity
+    if (body.event === 'ma_completed' && body.vid) {
+      const maKey = `${day}:_ma`;
+      const maRaw = await context.env.ANALYTICS.get(maKey);
+      const ma: Record<string, string> = maRaw ? JSON.parse(maRaw) : {};
+      ma[body.vid] = body.props?.studies || '0';
+      await context.env.ANALYTICS.put(maKey, JSON.stringify(ma), {
+        expirationTtl: 60 * 60 * 24 * 90,
+      });
+    }
+
+    // Track deep usage (≥3 features) with visitor identity
+    if (body.event === 'deep_usage' && body.vid) {
+      const deepKey = `${day}:_deep`;
+      const deepRaw = await context.env.ANALYTICS.get(deepKey);
+      const deep: Record<string, number> = deepRaw ? JSON.parse(deepRaw) : {};
+      deep[body.vid] = parseInt(body.props?.featureCount || '3', 10);
+      await context.env.ANALYTICS.put(deepKey, JSON.stringify(deep), {
+        expirationTtl: 60 * 60 * 24 * 90,
+      });
+    }
+
+    // Track time-to-forest-plot values
+    if (body.event === 'time_to_forest_plot' && body.props?.seconds) {
+      const ttfpKey = `${day}:_ttfp`;
+      const ttfpRaw = await context.env.ANALYTICS.get(ttfpKey);
+      const ttfp: number[] = ttfpRaw ? JSON.parse(ttfpRaw) : [];
+      ttfp.push(parseInt(body.props.seconds, 10));
+      await context.env.ANALYTICS.put(ttfpKey, JSON.stringify(ttfp), {
+        expirationTtl: 60 * 60 * 24 * 90,
+      });
+    }
+
     return Response.json({ ok: true }, { headers: CORS_HEADERS });
   } catch {
     return Response.json({ ok: false }, { status: 500, headers: CORS_HEADERS });

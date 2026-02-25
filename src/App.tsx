@@ -32,7 +32,7 @@ import { generateReportHTML, type ReportSections } from './lib/report-export';
 import { generateReportDOCX } from './lib/report-docx';
 import { generateReportMarkdown } from './lib/report-markdown';
 import { t, type Lang } from './lib/i18n';
-import { trackPageView, trackTabSwitch } from './lib/analytics';
+import { trackPageView, trackTabSwitch, trackTimeToForestPlot } from './lib/analytics';
 import { exportJSON } from './lib/csv';
 import type { EffectMeasure, ModelType, Study, BinaryData, ContinuousData, HRData, SubgroupAnalysisResult } from './lib/types';
 
@@ -415,8 +415,11 @@ export default function App() {
   // Track page view on mount
   useEffect(() => { trackPageView(); }, []);
 
-  // Track tab switches
-  useEffect(() => { trackTabSwitch(activeTab); }, [activeTab]);
+  // Track tab switches + time-to-forest-plot
+  useEffect(() => {
+    trackTabSwitch(activeTab);
+    if (activeTab === 'forest') trackTimeToForestPlot();
+  }, [activeTab]);
 
   const validateStudies = useCallback((studyList: Study[]): string | null => {
     for (let i = 0; i < studyList.length; i++) {

@@ -4,7 +4,7 @@ import type { ReportSections } from '../lib/report-export';
 import { defaultReportSections } from '../lib/report-export';
 import { t, type Lang } from '../lib/i18n';
 import { useProjectStore, useUIStore } from '../store';
-import { trackFeature, trackEvent } from '../lib/analytics';
+import { trackFeature, trackEvent, trackMaCompleted } from '../lib/analytics';
 import { calculateNNT } from '../lib/statistics';
 
 interface ResultsSummaryProps {
@@ -126,6 +126,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
   const handleExportHTML = () => {
     if (onExportReport) {
       trackEvent('export_html_custom', { studies: String(k), measure });
+      trackMaCompleted(k, measure);
       onExportReport(sections);
     }
   };
@@ -133,6 +134,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
   const handleExportDOCX = () => {
     if (onExportDOCX) {
       trackEvent('export_docx_custom', { studies: String(k), measure });
+      trackMaCompleted(k, measure);
       onExportDOCX(sections);
     }
   };
@@ -140,6 +142,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
   const handleExportMarkdown = () => {
     if (onExportMarkdown) {
       trackEvent('export_md_custom', { studies: String(k), measure });
+      trackMaCompleted(k, measure);
       onExportMarkdown(sections);
     }
   };

@@ -5,6 +5,10 @@
 const ANALYTICS_ENDPOINT = '/api/analytics/track';
 
 let sent = false; // Prevent duplicate page_view on same session
+const sessionStart = Date.now();
+const usedFeatures = new Set<string>();
+let deepUsageSent = false;
+let timeToForestPlotSent = false;
 
 // Anonymous visitor ID — persists across sessions via localStorage
 function getVisitorId(): string {
@@ -67,4 +71,25 @@ export function trackTabSwitch(tab: string) {
 
 export function trackFeature(feature: string) {
   trackEvent(feature);
+  // Track feature depth for deep usage metric
+  usedFeatures.add(feature);
+  if (usedFeatures.size >= 3 && !deepUsageSent) {
+    deepUsageSent = true;
+    trackEvent('deep_usage', { featureCount: String(usedFeatures.size) });
+  }
+}
+
+// Track time from session start to first forest plot view
+export function trackTimeToForestPlot() {
+  if (timeToForestPlotSent) return;
+  timeToForestPlotSent = true;
+  const seconds = Math.round((Date.now() - sessionStart) / 1000);
+  trackEvent('time_to_forest_plot', { seconds: String(seconds) });
+}
+
+// Track MA completion (export with ≥3 studies)
+export function trackMaCompleted(studies: number, measure: string) {
+  if (studies >= 3) {
+    trackEvent('ma_completed', { studies: String(studies), measure });
+  }
 }
