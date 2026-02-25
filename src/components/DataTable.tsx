@@ -91,7 +91,7 @@ function getCellIssue(study: Study, key: string, measure: EffectMeasure): CellIs
     const d = study.data as HRData;
     if (key === 'hr' && val <= 0) return 'error';
     if (key === 'ciLower' && (val <= 0 || val >= d.hr)) return 'error';
-    if (key === 'ciUpper' && (val <= 0 || val <= d.hr)) return 'error';
+    if (key === 'ciUpper' && (val <= 0 || val <= d.hr || val <= d.ciLower)) return 'error';
   } else {
     // continuous
     if ((key === 'sd1' || key === 'sd2') && val <= 0) return 'error';
@@ -199,6 +199,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
 
     // Parse lines into studies
     const parsed: Study[] = [];
+    let skippedCells = 0;
     for (const line of lines) {
       const cells = line.split('\t').map(c => c.trim());
       // Skip header-like rows (first cell matches a known header)
@@ -234,7 +235,13 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
         continue; // Not enough columns
       }
 
-      const nums = cells.slice(dataStart).map(c => parseFloat(c) || 0);
+      let skippedInRow = 0;
+      const nums = cells.slice(dataStart).map(c => {
+        const v = parseFloat(c);
+        if (isNaN(v) && c.trim() !== '' && c.trim() !== '0') skippedInRow++;
+        return isNaN(v) ? 0 : v;
+      });
+      skippedCells += skippedInRow;
       const id = Math.random().toString(36).slice(2, 9);
 
       if (isHR(measure)) {
@@ -249,9 +256,11 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
     if (parsed.length > 0) {
       onStudiesChange([...studies, ...parsed]);
       trackFeature('paste_import');
-      const msg = t('table.pasteHint', lang).replace('{n}', String(parsed.length));
+      const msg = skippedCells > 0
+        ? t('table.pasteSkipped', lang).replace('{n}', String(parsed.length)).replace('{skipped}', String(skippedCells))
+        : t('table.pasteHint', lang).replace('{n}', String(parsed.length));
       setPasteToast(msg);
-      setTimeout(() => setPasteToast(null), 3000);
+      setTimeout(() => setPasteToast(null), skippedCells > 0 ? 5000 : 3000);
     }
   }, [studies, measure, onStudiesChange, lang]);
 

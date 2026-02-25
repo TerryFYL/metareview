@@ -208,10 +208,10 @@ export default function ForestPlot({
         .text(lang === 'zh' ? '权重' : 'Weight');
     }
 
-    // Max weight for square sizing (from overall result)
+    // Max weight for square sizing (from overall result), guard against 0
     const maxWeight = d3.max(result.studies, (s) =>
       result.model === 'random' ? s.weightRandom : s.weightFixed
-    )!;
+    ) || 1;
 
     // Helper: draw a study row with tooltip + hover
     function drawStudyRow(

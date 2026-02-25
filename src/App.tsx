@@ -25,7 +25,7 @@ import MetaRegressionPlot from './components/MetaRegressionPlot';
 import LeaveOneOutPlot from './components/LeaveOneOutPlot';
 import NetworkGraph from './components/NetworkGraph';
 import DoseResponsePlot from './components/DoseResponsePlot';
-import { metaAnalysis, eggersTest, beggsTest, metaRegression as runMetaRegression, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, isBinaryData, isContinuousData, isHRData, trimAndFill, isLogScale, influenceDiagnostics as computeInfluence, gradeAssessment as computeGrade, doseResponseAnalysis } from './lib/statistics';
+import { metaAnalysis, eggersTest, beggsTest, metaRegression as runMetaRegression, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, isBinaryData, isContinuousData, isHRData, isGenericData, trimAndFill, isLogScale, influenceDiagnostics as computeInfluence, gradeAssessment as computeGrade, doseResponseAnalysis } from './lib/statistics';
 import type { TrimAndFillResult } from './lib/statistics';
 import { generateReportHTML, type ReportSections } from './lib/report-export';
 import { generateReportDOCX } from './lib/report-docx';
@@ -274,6 +274,25 @@ export default function App() {
     lang, heroSeen, tourSeen, result, eggers, beggs, metaRegression, error, activeTab,
     setLang, setHeroSeen, setTourSeen, setResult, setEggers, setBeggs, setMetaRegression, setError, setActiveTab,
   } = useUIStore();
+
+  // Wrap setMeasure with confirmation when studies would be deleted
+  const handleMeasureChange = useCallback((newMeasure: EffectMeasure) => {
+    if (studies.length > 0) {
+      const first = studies[0].data;
+      const BINARY: EffectMeasure[] = ['OR', 'RR'];
+      const CONTINUOUS: EffectMeasure[] = ['MD', 'SMD'];
+      const compatible = isGenericData(first) || (isHRData(first) && newMeasure === 'HR') ||
+        (isBinaryData(first) && BINARY.includes(newMeasure)) ||
+        (isContinuousData(first) && CONTINUOUS.includes(newMeasure));
+      if (!compatible) {
+        const msg = t('input.measureChangeConfirm', lang)
+          .replace('{measure}', newMeasure)
+          .replace('{n}', String(studies.length));
+        if (!window.confirm(msg)) return;
+      }
+    }
+    setMeasure(newMeasure);
+  }, [studies, lang, setMeasure]);
 
   const [subgroupResult, setSubgroupResult] = useState<SubgroupAnalysisResult | null>(null);
   const [trimFillResult, setTrimFillResult] = useState<TrimAndFillResult | null>(null);
@@ -1010,13 +1029,13 @@ export default function App() {
           {/* Settings */}
           <section style={sectionStyle}>
             <h2 style={h2Style}>{t('input.settings', lang)}</h2>
-            <EffectMeasureGuide lang={lang} currentMeasure={measure} onSelectMeasure={setMeasure} />
+            <EffectMeasureGuide lang={lang} currentMeasure={measure} onSelectMeasure={handleMeasureChange} />
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               <div style={{ flex: '1 1 260px', minWidth: 0 }}>
                 <label style={labelStyle}>{t('input.measure', lang)}</label>
                 <select
                   value={measure}
-                  onChange={(e) => setMeasure(e.target.value as EffectMeasure)}
+                  onChange={(e) => handleMeasureChange(e.target.value as EffectMeasure)}
                   style={selectStyle}
                 >
                   {MEASURES.map((m) => (

@@ -676,9 +676,15 @@ const translations = {
   'email.results.desc.zh': '获取新统计方法、功能更新和 Meta 分析技巧。',
   'email.results.desc.en': 'Get notified about new statistical methods, features, and meta-analysis tips.',
 
+  // Measure change confirmation
+  'input.measureChangeConfirm.zh': '切换到 {measure} 需要清空当前 {n} 条研究数据（数据格式不兼容）。确定要继续吗？',
+  'input.measureChangeConfirm.en': 'Switching to {measure} will clear all {n} studies (incompatible data format). Continue?',
+
   // Paste import
   'table.pasteHint.zh': '已从剪贴板粘贴 {n} 行数据',
   'table.pasteHint.en': 'Pasted {n} rows from clipboard',
+  'table.pasteSkipped.zh': '已粘贴 {n} 行数据（{skipped} 个非数字值被替换为 0）',
+  'table.pasteSkipped.en': 'Pasted {n} rows ({skipped} non-numeric values replaced with 0)',
   'table.pasteError.zh': '粘贴的数据列数不匹配（需要 {expected} 列数据列，得到 {got} 列）',
   'table.pasteError.en': 'Column mismatch (expected {expected} data columns, got {got})',
   'table.pasteTip.zh': '支持从 Excel / Google Sheets 粘贴',

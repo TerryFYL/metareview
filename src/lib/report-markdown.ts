@@ -23,8 +23,10 @@ interface MarkdownReportData {
   sections?: ReportSections;
 }
 
-const fmt = (n: number, d = 2) => n.toFixed(d);
+const fmt = (n: number, d = 2) => isFinite(n) ? n.toFixed(d) : '—';
 const fmtP = (p: number) => p < 0.001 ? '< 0.001' : p.toFixed(3);
+/** Escape markdown pipe characters in table cell content */
+const escMd = (s: string) => s.replace(/\|/g, '\\|');
 
 export function generateReportMarkdown(data: MarkdownReportData): string {
   const { result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, influenceDiagnostics, gradeAssessment, robAssessments, studies, cumulativeResults } = data;
@@ -91,7 +93,7 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
     lines.push(`|-------|${'-'.repeat(measure.length + 2)}|--------|--------|`);
     for (const s of result.studies) {
       const w = useRandom ? s.weightRandom : s.weightFixed;
-      lines.push(`| ${s.name} | ${fmt(s.yi)} | ${fmt(s.ciLower)}–${fmt(s.ciUpper)} | ${fmt(w, 1)}% |`);
+      lines.push(`| ${escMd(s.name)} | ${fmt(s.yi)} | ${fmt(s.ciLower)}–${fmt(s.ciUpper)} | ${fmt(w, 1)}% |`);
     }
     lines.push('');
   }
@@ -118,7 +120,7 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
     lines.push(`| Subgroup | k | ${measure} | 95% CI | I² |`);
     lines.push(`|----------|---|${'-'.repeat(measure.length + 2)}|--------|-----|`);
     for (const g of subgroupResult.subgroups) {
-      lines.push(`| ${g.name} | ${g.result.studies.length} | ${fmt(g.result.effect)} | ${fmt(g.result.ciLower)}–${fmt(g.result.ciUpper)} | ${fmt(g.result.heterogeneity.I2, 1)}% |`);
+      lines.push(`| ${escMd(g.name)} | ${g.result.studies.length} | ${fmt(g.result.effect)} | ${fmt(g.result.ciLower)}–${fmt(g.result.ciUpper)} | ${fmt(g.result.heterogeneity.I2, 1)}% |`);
     }
     if (subgroupResult.test.pValue != null) {
       lines.push(`\nInteraction test: Q = ${fmt(subgroupResult.test.Q)}, p = ${fmtP(subgroupResult.test.pValue)}`);
