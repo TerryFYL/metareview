@@ -431,7 +431,12 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
                   const editableFields = getEditableFields(r);
                   return (
                     <tr key={i} style={{ background: i % 2 ? '#f9fafb' : '#fff' }}>
-                      <td style={tdStyle}>{formatQueryType(r.queryType, lang)}</td>
+                      <td style={tdStyle}>
+                        {formatQueryType(r.queryType, lang)}
+                        <span style={reliabilityBadgeStyle(r.queryType)}>
+                          {t(`extract.reliability.${r.queryType}`, lang)}
+                        </span>
+                      </td>
                       <td style={tdStyle}>{r.outcome || '—'}</td>
                       <td style={{ ...tdStyle, fontFamily: 'monospace', minWidth: 160 }}>
                         {r.error ? `${r.error}` : editableFields.length > 0 ? (
@@ -575,6 +580,21 @@ function formatValue(r: ExtractionResult): string {
     default:
       return JSON.stringify(r.data);
   }
+}
+
+function reliabilityBadgeStyle(queryType: string): React.CSSProperties {
+  const isValidated = queryType === 'effect_size';
+  return {
+    display: 'block',
+    marginTop: 2,
+    padding: '1px 6px',
+    borderRadius: 8,
+    fontSize: 10,
+    fontWeight: 500,
+    background: isValidated ? '#f0fdf4' : '#fff7ed',
+    color: isValidated ? '#16a34a' : '#c2410c',
+    border: `1px solid ${isValidated ? '#bbf7d0' : '#fed7aa'}`,
+  };
 }
 
 function confidenceBadgeStyle(level: string): React.CSSProperties {

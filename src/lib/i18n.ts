@@ -313,6 +313,14 @@ const translations = {
   'extract.disclaimer.en': '⚠️ AI extraction is suggestive only. Verify every field.',
   'extract.reset.zh': '重新上传',
   'extract.reset.en': 'Upload New PDF',
+  'extract.reliability.effect_size.zh': '已验证',
+  'extract.reliability.effect_size.en': 'Validated',
+  'extract.reliability.sample_sizes.zh': '需人工确认',
+  'extract.reliability.sample_sizes.en': 'Verify manually',
+  'extract.reliability.events.zh': '需人工确认',
+  'extract.reliability.events.en': 'Verify manually',
+  'extract.reliability.continuous.zh': '需人工确认',
+  'extract.reliability.continuous.en': 'Verify manually',
 
   // Literature Search Tab
   'tab.search.zh': '文献检索',
@@ -1251,6 +1259,8 @@ const translations = {
   'network.totalStudies.en': 'Total studies',
   'network.dragHint.zh': '提示：拖拽节点可调整布局',
   'network.dragHint.en': 'Tip: Drag nodes to adjust layout',
+  'network.vizOnly.zh': '此图仅为治疗比较关系的可视化展示，不执行网络 Meta 分析统计计算（如混合治疗比较）。节点和边反映已录入的研究数据结构。',
+  'network.vizOnly.en': 'This graph is a visualization of treatment comparison relationships only. It does not perform network meta-analysis statistical calculations (e.g. mixed treatment comparisons). Nodes and edges reflect the structure of entered study data.',
 
   // Dose-Response
   'tab.doseresponse.zh': '剂量-反应',

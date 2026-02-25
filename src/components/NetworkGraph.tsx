@@ -283,6 +283,9 @@ export default function NetworkGraph({ studies, lang, width = 560, height = 480 
 
   return (
     <div>
+      <div style={{ padding: '8px 12px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 6, fontSize: 12, color: '#1e40af', marginBottom: 12 }}>
+        {t('network.vizOnly', lang)}
+      </div>
       <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 12 }}>
         {t('network.desc', lang)}
       </p>
