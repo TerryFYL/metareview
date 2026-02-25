@@ -17,6 +17,7 @@ export {
 } from './effect-size';
 export { funnelPlotData, eggersTest, beggsTest, galbraithPlotData, labbeePlotData, trimAndFill, baujatPlotData } from './publication-bias';
 export type { GalbraithPoint, GalbraithData, LabbePoint, LabbeData, TrimAndFillResult } from './publication-bias';
+export { calculateNNT } from './nnt';
 export { gradeAssessment } from './grade';
 export { doseResponseAnalysis } from './dose-response';
 export {

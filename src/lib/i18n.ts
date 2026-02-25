@@ -1316,6 +1316,28 @@ const translations = {
   'results.piNotAvailable.zh': '预测区间不可用（需 ≥ 3 项研究且为随机效应模型）',
   'results.piNotAvailable.en': 'Prediction interval not available (requires ≥ 3 studies and random-effects model)',
 
+  // NNT/NNH
+  'results.nnt.title.zh': '临床意义 (NNT/NNH)',
+  'results.nnt.title.en': 'Clinical Significance (NNT/NNH)',
+  'results.nnt.nnt.zh': '需要治疗的人数 (NNT)',
+  'results.nnt.nnt.en': 'Number Needed to Treat (NNT)',
+  'results.nnt.nnh.zh': '造成伤害的人数 (NNH)',
+  'results.nnt.nnh.en': 'Number Needed to Harm (NNH)',
+  'results.nnt.ard.zh': '绝对风险差 (ARD)',
+  'results.nnt.ard.en': 'Absolute Risk Difference (ARD)',
+  'results.nnt.cer.zh': '对照组事件率 (CER)',
+  'results.nnt.cer.en': 'Control Event Rate (CER)',
+  'results.nnt.eer.zh': '实验组事件率 (EER)',
+  'results.nnt.eer.en': 'Experimental Event Rate (EER)',
+  'results.nnt.interp.benefit.zh': '每治疗 {nnt} 名患者，可预防 1 例事件发生。',
+  'results.nnt.interp.benefit.en': 'For every {nnt} patients treated, 1 event is prevented.',
+  'results.nnt.interp.harm.zh': '每治疗 {nnt} 名患者，会额外导致 1 例不良事件。',
+  'results.nnt.interp.harm.en': 'For every {nnt} patients treated, 1 additional harm event occurs.',
+  'results.nnt.note.zh': '基于合并效应量和各研究对照组的加权平均事件率计算。NNT/NNH 仅适用于二分类结局。',
+  'results.nnt.note.en': 'Based on pooled effect and weighted average control event rate across studies. NNT/NNH applies only to binary outcomes.',
+  'results.nnt.ciNote.zh': '95% CI 跨越无效线，NNT 置信区间不连续。',
+  'results.nnt.ciNote.en': '95% CI crosses the null — NNT confidence interval is discontinuous.',
+
   // Accessibility
   'a11y.looPlot.zh': '留一法交叉验证森林图',
   'a11y.looPlot.en': 'Leave-one-out cross-validation forest plot',

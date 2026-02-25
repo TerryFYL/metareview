@@ -15,6 +15,7 @@ import {
   convertInchesToTwip,
 } from 'docx';
 import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult, CumulativeResult, Study, RobAssessments, RobDomain, RobJudgment } from './types';
+import { calculateNNT } from './statistics/nnt';
 import type { PRISMAData } from '../components/PRISMAFlow';
 import type { ReportSections } from './report-export';
 import { defaultReportSections } from './report-export';
@@ -629,6 +630,31 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
       new Paragraph({ text: 'Clinical Interpretation', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
       ...interpretationRows(result),
     );
+  }
+
+  // NNT/NNH (only for binary outcomes)
+  if (s.interpretation && rawStudies) {
+    const nnt = calculateNNT(result, rawStudies);
+    if (nnt) {
+      const label = nnt.isHarm ? 'Number Needed to Harm (NNH)' : 'Number Needed to Treat (NNT)';
+      const nntRounded = Math.ceil(nnt.nnt);
+      const ciCrossesNull = !isFinite(nnt.nntCIUpper);
+      const ciLower = Math.ceil(nnt.nntCILower);
+      const ciStr = ciCrossesNull ? `[${ciLower}, \u221E]` : `[${ciLower}, ${Math.ceil(nnt.nntCIUpper)}]`;
+      const interp = nnt.isHarm
+        ? `For every ${nntRounded} patients treated, 1 additional harm event occurs.`
+        : `For every ${nntRounded} patients treated, 1 event is prevented.`;
+      children.push(
+        new Paragraph({ text: 'Clinical Significance (NNT/NNH)', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+        new Paragraph({ children: [new TextRun({ text: `${label}: `, bold: true }), new TextRun({ text: nntRounded.toString(), bold: true })], spacing: { before: 100 } }),
+        new Paragraph({ children: [new TextRun({ text: '95% CI: ', bold: true }), new TextRun(ciStr)], spacing: { before: 60 } }),
+        new Paragraph({ children: [new TextRun({ text: 'Absolute Risk Difference: ', bold: true }), new TextRun(`${(nnt.absoluteRiskDifference * 100).toFixed(2)}%`)], spacing: { before: 60 } }),
+        new Paragraph({ children: [new TextRun({ text: 'Control Event Rate: ', bold: true }), new TextRun(`${(nnt.controlEventRate * 100).toFixed(2)}%`)], spacing: { before: 60 } }),
+        new Paragraph({ children: [new TextRun({ text: 'Experimental Event Rate: ', bold: true }), new TextRun(`${(nnt.experimentalEventRate * 100).toFixed(2)}%`)], spacing: { before: 60 } }),
+        new Paragraph({ children: [new TextRun({ text: interp, italics: true, color: nnt.isHarm ? 'DC2626' : '16A34A' })], spacing: { before: 100 } }),
+        new Paragraph({ children: [new TextRun({ text: 'Based on pooled effect and weighted average control event rate across studies.', italics: true, size: 18, color: '6B7280' })], spacing: { before: 60 } }),
+      );
+    }
   }
 
   // Individual Study Results

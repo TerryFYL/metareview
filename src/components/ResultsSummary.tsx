@@ -5,6 +5,7 @@ import { defaultReportSections } from '../lib/report-export';
 import { t, type Lang } from '../lib/i18n';
 import { useProjectStore, useUIStore } from '../store';
 import { trackFeature } from '../lib/analytics';
+import { calculateNNT } from '../lib/statistics';
 
 interface ResultsSummaryProps {
   result: MetaAnalysisResult;
@@ -170,6 +171,9 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
       {/* Clinical Interpretation */}
       <EffectInterpretation effect={result.effect} ciLower={result.ciLower} ciUpper={result.ciUpper} pValue={result.pValue} measure={measure} lang={lang} />
 
+      {/* NNT/NNH */}
+      <NNTSection result={result} lang={lang} />
+
       {/* Heterogeneity */}
       <div style={cardStyle}>
         <div style={cardTitleStyle}>{t('results.heterogeneity', lang)}</div>
@@ -285,6 +289,13 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
             const testSig = sg.test.pValue < 0.05;
             return ` Subgroup analysis by ${sgNames.join(' vs ')} revealed ${sgEffects.join('; ')}. The test for subgroup differences ${testSig ? 'was statistically significant' : 'was not statistically significant'} (Q = ${sg.test.Q.toFixed(2)}, df = ${sg.test.df}, P ${sg.test.pValue < 0.001 ? '< 0.001' : `= ${sg.test.pValue.toFixed(3)}`})${testSig ? ', suggesting effect modification across subgroups' : ', indicating no significant effect modification'}.`;
           })()}
+          {(() => {
+            const nntResult = calculateNNT(result, useProjectStore.getState().studies);
+            if (!nntResult) return '';
+            const label = nntResult.isHarm ? 'NNH' : 'NNT';
+            const nntRounded = Math.ceil(nntResult.nnt);
+            return ` The ${label} was ${nntRounded} (95% CI: ${Math.ceil(nntResult.nntCILower)}\u2013${isFinite(nntResult.nntCIUpper) ? Math.ceil(nntResult.nntCIUpper) : '\u221E'}), based on a control event rate of ${(nntResult.controlEventRate * 100).toFixed(1)}%.`;
+          })()}
         </p>
       </div>
 
@@ -389,6 +400,51 @@ function MethodsParagraph({ result, eggers, subgroupResult, sensitivityResults, 
       </div>
       <p style={{ fontSize: 13, lineHeight: 1.7, color: '#374151' }}>
         {methodsText}
+      </p>
+    </div>
+  );
+}
+
+function NNTSection({ result, lang }: { result: MetaAnalysisResult; lang: Lang }) {
+  const { studies } = useProjectStore();
+  const nntResult = calculateNNT(result, studies);
+  if (!nntResult) return null;
+
+  const label = nntResult.isHarm ? t('results.nnt.nnh', lang) : t('results.nnt.nnt', lang);
+  const interpKey = nntResult.isHarm ? 'results.nnt.interp.harm' : 'results.nnt.interp.benefit';
+  const nntRounded = Math.ceil(nntResult.nnt);
+  const interp = t(interpKey, lang).replace('{nnt}', nntRounded.toString());
+  const ciCrossesNull = !isFinite(nntResult.nntCIUpper);
+
+  const formatCI = () => {
+    const lower = Math.ceil(nntResult.nntCILower);
+    if (ciCrossesNull) return `[${lower}, \u221E]`;
+    const upper = Math.ceil(nntResult.nntCIUpper);
+    return `[${lower}, ${upper}]`;
+  };
+
+  return (
+    <div style={{ ...cardStyle, background: nntResult.isHarm ? '#fef2f2' : '#f0fdf4', borderColor: nntResult.isHarm ? '#fecaca' : '#bbf7d0' }}>
+      <div style={cardTitleStyle}>{t('results.nnt.title', lang)}</div>
+      <table style={tableStyle}>
+        <tbody>
+          <Row label={label} value={nntRounded.toString()} highlight />
+          <Row label="95% CI" value={formatCI()} />
+          <Row label={t('results.nnt.ard', lang)} value={`${(nntResult.absoluteRiskDifference * 100).toFixed(2)}%`} />
+          <Row label={t('results.nnt.cer', lang)} value={`${(nntResult.controlEventRate * 100).toFixed(2)}%`} />
+          <Row label={t('results.nnt.eer', lang)} value={`${(nntResult.experimentalEventRate * 100).toFixed(2)}%`} />
+        </tbody>
+      </table>
+      <p style={{ fontSize: 13, fontWeight: 500, color: nntResult.isHarm ? '#dc2626' : '#16a34a', marginTop: 8 }}>
+        {interp}
+      </p>
+      {ciCrossesNull && (
+        <p style={{ fontSize: 11, color: '#92400e', marginTop: 4, fontStyle: 'italic' }}>
+          {t('results.nnt.ciNote', lang)}
+        </p>
+      )}
+      <p style={{ fontSize: 11, color: '#6b7280', marginTop: 4, fontStyle: 'italic' }}>
+        {t('results.nnt.note', lang)}
       </p>
     </div>
   );

@@ -295,6 +295,24 @@ export interface InfluenceDiagnostic {
   leaveOneOutI2: number;
 }
 
+/** NNT/NNH result (binary outcomes only) */
+export interface NNTResult {
+  /** Number Needed to Treat (or Harm) — always positive */
+  nnt: number;
+  /** NNT 95% CI lower bound */
+  nntCILower: number;
+  /** NNT 95% CI upper bound (Infinity if CI crosses null) */
+  nntCIUpper: number;
+  /** Whether the effect is harmful (NNH) rather than beneficial (NNT) */
+  isHarm: boolean;
+  /** Absolute Risk Difference (positive = benefit, negative = harm) */
+  absoluteRiskDifference: number;
+  /** Pooled Control Event Rate used */
+  controlEventRate: number;
+  /** Computed Experimental Event Rate */
+  experimentalEventRate: number;
+}
+
 /** GRADE evidence quality level */
 export type GradeLevel = 'high' | 'moderate' | 'low' | 'very_low';
 

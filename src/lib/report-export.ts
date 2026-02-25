@@ -2,6 +2,7 @@
 import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult, CumulativeResult, RobAssessments, RobJudgment, RobDomain, Study } from './types';
 import type { PRISMAData } from '../components/PRISMAFlow';
 import type { TrimAndFillResult } from './statistics/publication-bias';
+import { calculateNNT } from './statistics/nnt';
 
 export interface ReportSections {
   pico: boolean;
@@ -179,6 +180,35 @@ function interpretationSection(r: MetaAnalysisResult): string {
       </tbody>
     </table>
     <p class="note">Note: Clinical significance depends on context. Statistical significance &ne; clinical importance.</p>`;
+}
+
+function nntSection(r: MetaAnalysisResult, studies: Study[]): string {
+  const nnt = calculateNNT(r, studies);
+  if (!nnt) return '';
+
+  const label = nnt.isHarm ? 'Number Needed to Harm (NNH)' : 'Number Needed to Treat (NNT)';
+  const nntRounded = Math.ceil(nnt.nnt);
+  const ciCrossesNull = !isFinite(nnt.nntCIUpper);
+  const ciLower = Math.ceil(nnt.nntCILower);
+  const ciStr = ciCrossesNull ? `[${ciLower}, &infin;]` : `[${ciLower}, ${Math.ceil(nnt.nntCIUpper)}]`;
+  const interp = nnt.isHarm
+    ? `For every ${nntRounded} patients treated, 1 additional harm event occurs.`
+    : `For every ${nntRounded} patients treated, 1 event is prevented.`;
+
+  return `
+    <h2>Clinical Significance (NNT/NNH)</h2>
+    <table class="data-table">
+      <tbody>
+        <tr><td class="label">${label}</td><td class="sig">${nntRounded}</td></tr>
+        <tr><td class="label">95% CI</td><td>${ciStr}</td></tr>
+        <tr><td class="label">Absolute Risk Difference</td><td>${(nnt.absoluteRiskDifference * 100).toFixed(2)}%</td></tr>
+        <tr><td class="label">Control Event Rate</td><td>${(nnt.controlEventRate * 100).toFixed(2)}%</td></tr>
+        <tr><td class="label">Experimental Event Rate</td><td>${(nnt.experimentalEventRate * 100).toFixed(2)}%</td></tr>
+      </tbody>
+    </table>
+    <p class="note">${esc(interp)}</p>
+    ${ciCrossesNull ? '<p class="note">Note: 95% CI crosses the null — NNT confidence interval is discontinuous.</p>' : ''}
+    <p class="note">Based on pooled effect and weighted average control event rate across studies.</p>`;
 }
 
 function studyTable(r: MetaAnalysisResult): string {
@@ -742,6 +772,7 @@ export function generateReportHTML(data: ReportData): string {
   ${s.pico ? picoSection(pico) : ''}
   ${s.overall ? overallSection(result) : ''}
   ${s.interpretation ? interpretationSection(result) : ''}
+  ${s.interpretation && studyList ? nntSection(result, studyList) : ''}
   ${s.studyTable ? studyTable(result) : ''}
   ${(() => {
     let figNum = 0;
