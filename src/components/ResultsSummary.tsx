@@ -4,7 +4,7 @@ import type { ReportSections } from '../lib/report-export';
 import { defaultReportSections } from '../lib/report-export';
 import { t, type Lang } from '../lib/i18n';
 import { useProjectStore, useUIStore } from '../store';
-import { trackFeature } from '../lib/analytics';
+import { trackFeature, trackEvent } from '../lib/analytics';
 import { calculateNNT } from '../lib/statistics';
 
 interface ResultsSummaryProps {
@@ -125,21 +125,21 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
 
   const handleExportHTML = () => {
     if (onExportReport) {
-      trackFeature('export_html_custom');
+      trackEvent('export_html_custom', { studies: String(k), measure });
       onExportReport(sections);
     }
   };
 
   const handleExportDOCX = () => {
     if (onExportDOCX) {
-      trackFeature('export_docx_custom');
+      trackEvent('export_docx_custom', { studies: String(k), measure });
       onExportDOCX(sections);
     }
   };
 
   const handleExportMarkdown = () => {
     if (onExportMarkdown) {
-      trackFeature('export_md_custom');
+      trackEvent('export_md_custom', { studies: String(k), measure });
       onExportMarkdown(sections);
     }
   };
@@ -175,7 +175,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
             </button>
           )}
           {onExportJSON && (
-            <button onClick={() => { trackFeature('export_json'); onExportJSON(); }} style={jsonBtnStyle}>
+            <button onClick={() => { trackEvent('export_json', { studies: String(k), measure }); onExportJSON(); }} style={jsonBtnStyle}>
               {t('results.exportJSON', lang)}
             </button>
           )}

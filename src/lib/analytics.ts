@@ -1,24 +1,36 @@
 // Lightweight analytics client for MetaReview
 // Sends events to our KV-based analytics endpoint
-// No cookies, no fingerprinting, just event counts
+// No cookies, no fingerprinting — localStorage-based anonymous visitor ID
 
 const ANALYTICS_ENDPOINT = '/api/analytics/track';
 
 let sent = false; // Prevent duplicate page_view on same session
 
+// Anonymous visitor ID — persists across sessions via localStorage
+function getVisitorId(): string {
+  const KEY = 'mr_vid';
+  let vid = '';
+  try {
+    vid = localStorage.getItem(KEY) || '';
+  } catch { /* private browsing */ }
+  if (!vid) {
+    vid = crypto.randomUUID?.() || Math.random().toString(36).slice(2) + Date.now().toString(36);
+    try { localStorage.setItem(KEY, vid); } catch { /* noop */ }
+  }
+  return vid;
+}
+
 export function trackEvent(event: string, props?: Record<string, string>) {
   // Fire-and-forget, never block UI
+  const payload = JSON.stringify({ event, props, vid: getVisitorId() });
   try {
-    navigator.sendBeacon(
-      ANALYTICS_ENDPOINT,
-      JSON.stringify({ event, props })
-    );
+    navigator.sendBeacon(ANALYTICS_ENDPOINT, payload);
   } catch {
     // sendBeacon not available, try fetch
     fetch(ANALYTICS_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ event, props }),
+      body: payload,
       keepalive: true,
     }).catch(() => {
       // Analytics failure is never user-facing

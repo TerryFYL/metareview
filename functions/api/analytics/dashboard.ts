@@ -44,22 +44,38 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     const referrerPromises = dateKeys.map(dk =>
       context.env.ANALYTICS.get(`${dk}:_referrers`)
     );
+    const uvPromises = dateKeys.map(dk =>
+      context.env.ANALYTICS.get(`${dk}:_uv`)
+    );
     const emailCountPromise = context.env.EMAILS.get('_count');
 
-    const [summaries, referrerData, emailCountStr] = await Promise.all([
+    const [summaries, referrerData, uvData, emailCountStr] = await Promise.all([
       Promise.all(summaryPromises),
       Promise.all(referrerPromises),
+      Promise.all(uvPromises),
       emailCountPromise,
     ]);
+
+    let totalUniqueVisitors = 0;
+    const allVisitorIds = new Set<string>();
 
     for (let i = 0; i < dateKeys.length; i++) {
       const raw = summaries[i];
       const events: Record<string, number> = raw ? JSON.parse(raw) : {};
-      dailyData.push({ date: dateKeys[i], events });
+      // Count daily unique visitors
+      const uvRaw = uvData[i];
+      const dayUv = uvRaw ? Object.keys(JSON.parse(uvRaw)).length : 0;
+      if (uvRaw) {
+        for (const vid of Object.keys(JSON.parse(uvRaw))) {
+          allVisitorIds.add(vid);
+        }
+      }
+      dailyData.push({ date: dateKeys[i], events, uniqueVisitors: dayUv });
       for (const [key, val] of Object.entries(events)) {
         totals[key] = (totals[key] || 0) + val;
       }
     }
+    totalUniqueVisitors = allVisitorIds.size;
 
     // Aggregate referrer sources
     const referrers: Record<string, number> = {};
@@ -78,6 +94,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     return Response.json({
       range: { from: dateKeys[dateKeys.length - 1], to: dateKeys[0], days },
       totals,
+      uniqueVisitors: totalUniqueVisitors,
       referrers,
       emailSubscribers,
       daily: dailyData,

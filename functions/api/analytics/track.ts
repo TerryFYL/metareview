@@ -8,6 +8,7 @@ interface Env {
 interface TrackEvent {
   event: string;    // e.g. "page_view", "tab_switch", "search", "ai_screen", "export_report", "pdf_upload"
   props?: Record<string, string>;  // optional properties
+  vid?: string;     // anonymous visitor ID (localStorage-based)
 }
 
 const CORS_HEADERS = {
@@ -51,6 +52,19 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     await context.env.ANALYTICS.put(summaryKey, JSON.stringify(events), {
       expirationTtl: 60 * 60 * 24 * 90,
     });
+
+    // Track unique visitors per day
+    if (body.vid && body.event === 'page_view') {
+      const uvKey = `${day}:_uv`;
+      const uvRaw = await context.env.ANALYTICS.get(uvKey);
+      const uv: Record<string, number> = uvRaw ? JSON.parse(uvRaw) : {};
+      if (!uv[body.vid]) {
+        uv[body.vid] = 1;
+        await context.env.ANALYTICS.put(uvKey, JSON.stringify(uv), {
+          expirationTtl: 60 * 60 * 24 * 90,
+        });
+      }
+    }
 
     // Store referrer/UTM data for page_view events
     if (body.event === 'page_view' && body.props) {
