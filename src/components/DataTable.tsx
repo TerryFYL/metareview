@@ -1,9 +1,10 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useMemo } from 'react';
 import type { Study, EffectMeasure, BinaryData, ContinuousData, HRData } from '../lib/types';
 import { exportCSV, importCSV } from '../lib/csv';
 import { importRIS } from '../lib/ris';
 import { t, type Lang } from '../lib/i18n';
 import { trackFeature } from '../lib/analytics';
+import type { InlineExtractionProgress } from '../lib/extraction/inline-extract';
 
 interface DataTableProps {
   studies: Study[];
@@ -52,6 +53,23 @@ const isHR = (m: EffectMeasure) => m === 'HR';
 
 type CellIssue = 'error' | 'warning' | null;
 
+/** Check if a study has all data fields set to zero (needs data entry) */
+function isStudyDataEmpty(study: Study, measure: EffectMeasure): boolean {
+  if (!study.name) return false; // Unnamed studies are manually created, not imported
+  const data = study.data as unknown as Record<string, number>;
+  if (isHR(measure)) {
+    const d = data as unknown as HRData;
+    return d.hr === 0 && d.ciLower === 0 && d.ciUpper === 0;
+  }
+  if (isBinary(measure)) {
+    const d = data as unknown as BinaryData;
+    return d.events1 === 0 && d.total1 === 0 && d.events2 === 0 && d.total2 === 0;
+  }
+  // Continuous
+  const d = data as unknown as ContinuousData;
+  return d.mean1 === 0 && d.sd1 === 0 && d.n1 === 0 && d.mean2 === 0 && d.sd2 === 0 && d.n2 === 0;
+}
+
 /** Check if a cell value has a data quality issue */
 function getCellIssue(study: Study, key: string, measure: EffectMeasure): CellIssue {
   if (key === 'name' || key === 'year' || key === 'subgroup' || key === 'dose') return null;
@@ -97,6 +115,19 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
   const fileInputRef = useRef<HTMLInputElement>(null);
   const risInputRef = useRef<HTMLInputElement>(null);
   const tableRef = useRef<HTMLTableElement>(null);
+
+  // Per-row PDF extraction state
+  const [extractingId, setExtractingId] = useState<string | null>(null);
+  const [extractProgress, setExtractProgress] = useState<InlineExtractionProgress | null>(null);
+  const [extractToast, setExtractToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
+  const extractTargetId = useRef<string | null>(null);
+
+  // Count studies needing data entry
+  const emptyDataCount = useMemo(
+    () => studies.filter(s => isStudyDataEmpty(s, measure)).length,
+    [studies, measure]
+  );
 
   const handleExportCSV = () => {
     const csv = exportCSV(studies, measure);
@@ -283,6 +314,61 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
     trackFeature('batch_subgroup');
   };
 
+  // Per-row PDF extraction
+  const startPdfExtract = useCallback((studyId: string) => {
+    extractTargetId.current = studyId;
+    pdfInputRef.current?.click();
+  }, []);
+
+  const handlePdfFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const targetId = extractTargetId.current;
+    if (!file || !targetId) return;
+    e.target.value = '';
+
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+      setExtractToast({ type: 'error', message: t('table.extractScanned', lang) });
+      setTimeout(() => setExtractToast(null), 4000);
+      return;
+    }
+
+    setExtractingId(targetId);
+    setExtractToast(null);
+
+    try {
+      // Dynamic import to avoid bundling pdfjs-dist in main chunk
+      const { extractStudyFromPDF } = await import('../lib/extraction/inline-extract');
+      trackFeature('inline_pdf_extract');
+
+      const result = await extractStudyFromPDF(
+        file,
+        measure,
+        (progress) => setExtractProgress(progress),
+      );
+
+      if (result.success && result.data) {
+        // Auto-fill the study row with extracted data
+        onStudiesChange(
+          studies.map(s => s.id === targetId ? { ...s, data: result.data! } : s)
+        );
+        const confidenceLabel = t(`table.confidence.${result.confidence}`, lang);
+        const msg = t('table.extractSuccess', lang).replace('{confidence}', confidenceLabel);
+        setExtractToast({ type: 'success', message: msg });
+        trackFeature('inline_extract_success');
+      } else {
+        setExtractToast({ type: 'error', message: t('table.extractFail', lang) });
+        trackFeature('inline_extract_fail');
+      }
+    } catch {
+      setExtractToast({ type: 'error', message: t('table.extractFail', lang) });
+    } finally {
+      setExtractingId(null);
+      setExtractProgress(null);
+      extractTargetId.current = null;
+      setTimeout(() => setExtractToast(null), 5000);
+    }
+  }, [studies, measure, onStudiesChange, lang]);
+
   /** Navigate to adjacent cell via keyboard */
   const navigateCell = useCallback((currentInput: HTMLInputElement, direction: 'up' | 'down' | 'left' | 'right') => {
     if (!tableRef.current) return;
@@ -418,8 +504,41 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
 
   return (
     <div onPaste={handlePaste}>
+      {/* Hidden PDF input for per-row extraction */}
+      <input
+        ref={pdfInputRef}
+        type="file"
+        accept=".pdf"
+        onChange={handlePdfFile}
+        style={{ display: 'none' }}
+      />
+
       {pasteToast && (
         <div style={toastStyle}>{pasteToast}</div>
+      )}
+
+      {/* Extraction toast */}
+      {extractToast && (
+        <div style={{
+          ...toastStyle,
+          background: extractToast.type === 'success' ? '#f0fdf4' : '#fef2f2',
+          border: `1px solid ${extractToast.type === 'success' ? '#bbf7d0' : '#fecaca'}`,
+          color: extractToast.type === 'success' ? '#16a34a' : '#dc2626',
+        }}>
+          {extractToast.message}
+        </div>
+      )}
+
+      {/* Data completeness banner — shows when imported studies need data */}
+      {emptyDataCount > 0 && (
+        <div style={needsDataBannerStyle}>
+          <span style={{ fontSize: 12, fontWeight: 500, color: '#92400e' }}>
+            {t('table.needsData', lang).replace('{n}', String(emptyDataCount))}
+          </span>
+          <span style={{ fontSize: 11, color: '#b45309' }}>
+            {t('table.needsDataHint', lang)}
+          </span>
+        </div>
       )}
 
       {/* Batch action bar */}
@@ -477,65 +596,96 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
             </tr>
           </thead>
           <tbody>
-            {studies.map((study, idx) => (
-              <tr key={study.id} style={{ background: selectedIds.has(study.id) ? '#eff6ff' : idx % 2 ? '#f9fafb' : '#fff' }}>
-                <td style={{ ...tdStyle, padding: '4px 2px', textAlign: 'center' }}>
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.has(study.id)}
-                    onChange={() => toggleSelect(study.id)}
-                    style={{ cursor: 'pointer' }}
-                  />
-                </td>
-                <td style={tdStyle}>{idx + 1}</td>
-                {columns.map((col) => {
-                  const issue = getCellIssue(study, col.key, measure);
-                  return (
-                    <td key={col.key} style={tdStyle} title={getCellTitle(issue, col.key, study)}>
-                      <input
-                        type={col.type}
-                        value={
-                          editingCell === `${study.id}-${col.key}`
-                            ? undefined
-                            : getValue(study, col.key)
-                        }
-                        defaultValue={
-                          editingCell === `${study.id}-${col.key}`
-                            ? getValue(study, col.key)
-                            : undefined
-                        }
-                        onFocus={(e) => {
-                          setEditingCell(`${study.id}-${col.key}`);
-                          if (col.type === 'number') e.target.select();
-                        }}
-                        onBlur={(e) => {
-                          setEditingCell(null);
-                          updateStudy(study.id, col.key, e.target.value);
-                        }}
-                        onChange={(e) => {
-                          if (editingCell !== `${study.id}-${col.key}`) {
-                            updateStudy(study.id, col.key, e.target.value);
+            {studies.map((study, idx) => {
+              const isEmpty = isStudyDataEmpty(study, measure);
+              const isExtracting = extractingId === study.id;
+              return (
+                <tr
+                  key={study.id}
+                  style={{
+                    background: selectedIds.has(study.id) ? '#eff6ff' : idx % 2 ? '#f9fafb' : '#fff',
+                    borderLeft: isEmpty ? '3px solid #f59e0b' : undefined,
+                  }}
+                >
+                  <td style={{ ...tdStyle, padding: '4px 2px', textAlign: 'center' }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(study.id)}
+                      onChange={() => toggleSelect(study.id)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </td>
+                  <td style={tdStyle}>{idx + 1}</td>
+                  {columns.map((col) => {
+                    const issue = getCellIssue(study, col.key, measure);
+                    return (
+                      <td key={col.key} style={tdStyle} title={getCellTitle(issue, col.key, study)}>
+                        <input
+                          type={col.type}
+                          value={
+                            editingCell === `${study.id}-${col.key}`
+                              ? undefined
+                              : getValue(study, col.key)
                           }
+                          defaultValue={
+                            editingCell === `${study.id}-${col.key}`
+                              ? getValue(study, col.key)
+                              : undefined
+                          }
+                          onFocus={(e) => {
+                            setEditingCell(`${study.id}-${col.key}`);
+                            if (col.type === 'number') e.target.select();
+                          }}
+                          onBlur={(e) => {
+                            setEditingCell(null);
+                            updateStudy(study.id, col.key, e.target.value);
+                          }}
+                          onChange={(e) => {
+                            if (editingCell !== `${study.id}-${col.key}`) {
+                              updateStudy(study.id, col.key, e.target.value);
+                            }
+                          }}
+                          onKeyDown={handleKeyDown}
+                          style={getInputStyle(issue)}
+                          step={col.type === 'number' ? 'any' : undefined}
+                        />
+                      </td>
+                    );
+                  })}
+                  <td style={{ ...tdStyle, whiteSpace: 'nowrap' }}>
+                    {/* Per-row PDF extract button for empty studies */}
+                    {isEmpty && (
+                      <button
+                        onClick={() => startPdfExtract(study.id)}
+                        disabled={isExtracting || !!extractingId}
+                        style={{
+                          ...extractBtnStyle,
+                          opacity: isExtracting || !!extractingId ? 0.5 : 1,
+                          cursor: isExtracting || !!extractingId ? 'default' : 'pointer',
                         }}
-                        onKeyDown={handleKeyDown}
-                        style={getInputStyle(issue)}
-                        step={col.type === 'number' ? 'any' : undefined}
-                      />
-                    </td>
-                  );
-                })}
-                <td style={tdStyle}>
-                  <button
-                    onClick={() => removeStudy(study.id)}
-                    style={deleteBtnStyle}
-                    title="Remove study"
-                    tabIndex={-1}
-                  >
-                    &times;
-                  </button>
-                </td>
-              </tr>
-            ))}
+                        title={t('table.extractPdf', lang)}
+                      >
+                        {isExtracting ? (
+                          <span style={{ fontSize: 11 }}>
+                            {extractProgress ? `${extractProgress.percent}%` : '...'}
+                          </span>
+                        ) : (
+                          '\uD83D\uDCC4'
+                        )}
+                      </button>
+                    )}
+                    <button
+                      onClick={() => removeStudy(study.id)}
+                      style={deleteBtnStyle}
+                      title="Remove study"
+                      tabIndex={-1}
+                    >
+                      &times;
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -704,4 +854,27 @@ const batchActionBtnStyle: React.CSSProperties = {
   cursor: 'pointer',
   fontSize: 12,
   color: '#374151',
+};
+
+const needsDataBannerStyle: React.CSSProperties = {
+  display: 'flex',
+  gap: 8,
+  alignItems: 'center',
+  padding: '8px 12px',
+  background: '#fffbeb',
+  border: '1px solid #fde68a',
+  borderRadius: 6,
+  marginBottom: 8,
+  flexWrap: 'wrap',
+};
+
+const extractBtnStyle: React.CSSProperties = {
+  background: 'none',
+  border: '1px solid #fde68a',
+  borderRadius: 4,
+  padding: '2px 6px',
+  fontSize: 14,
+  cursor: 'pointer',
+  marginRight: 2,
+  lineHeight: 1,
 };

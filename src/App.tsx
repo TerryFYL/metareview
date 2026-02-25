@@ -872,6 +872,7 @@ export default function App() {
             pico={pico}
             onStudiesChange={setStudies}
             onSwitchToInput={() => setActiveTab('input')}
+            onSwitchToExtract={() => setActiveTab('input')}
             onPRISMAUpdate={(updates) => setPRISMA({ ...prisma, ...updates })}
           />
         </Suspense>

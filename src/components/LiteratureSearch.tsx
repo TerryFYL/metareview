@@ -24,6 +24,7 @@ interface Props {
   pico: PICO;
   onStudiesChange: (studies: Study[]) => void;
   onSwitchToInput: () => void;
+  onSwitchToExtract?: () => void;
   onPRISMAUpdate?: (updates: Partial<PRISMAData>) => void;
 }
 
@@ -53,7 +54,7 @@ function loadHistory(): string[] {
   }
 }
 
-export default function LiteratureSearch({ lang, measure, studies, pico, onStudiesChange, onSwitchToInput, onPRISMAUpdate }: Props) {
+export default function LiteratureSearch({ lang, measure, studies, pico, onStudiesChange, onSwitchToInput, onSwitchToExtract, onPRISMAUpdate }: Props) {
   const [query, setQuery] = useState('');
   const [activeQuery, setActiveQuery] = useState('');
   const [results, setResults] = useState<PubMedArticle[]>([]);
@@ -592,10 +593,18 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
       {/* Import success message */}
       {importedCount > 0 && (
         <div style={{ padding: '10px 16px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 6, color: '#16a34a', fontSize: 13, marginBottom: 16 }}>
-          {t('search.imported', lang).replace('{n}', String(importedCount))}
+          {t('search.importedBridge', lang).replace('{n}', String(importedCount))}
           {' '}
-          <button onClick={onSwitchToInput} style={{ color: '#2563eb', background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', fontSize: 13 }}>
-            {t('search.goToInput', lang)}
+          {onSwitchToExtract && (
+            <>
+              <button onClick={onSwitchToExtract} style={{ color: '#2563eb', background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>
+                {t('search.goToExtract', lang)}
+              </button>
+              {' | '}
+            </>
+          )}
+          <button onClick={onSwitchToInput} style={{ color: '#6b7280', background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', fontSize: 13 }}>
+            {t('search.goToInputManual', lang)}
           </button>
         </div>
       )}

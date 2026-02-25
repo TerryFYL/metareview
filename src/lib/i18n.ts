@@ -736,6 +736,36 @@ const translations = {
   'table.risImportHint.zh': '已导入 {n} 条文献（请填写数据列）',
   'table.risImportHint.en': '{n} references imported (please fill in data columns)',
 
+  // Data completeness bridge (Screening → DataTable)
+  'table.needsData.zh': '{n} 个研究尚未填写数据',
+  'table.needsData.en': '{n} studies need data entry',
+  'table.needsDataHint.zh': '手动输入数值，或上传 PDF 自动提取',
+  'table.needsDataHint.en': 'Enter values manually or upload PDF to extract',
+  'table.extractPdf.zh': '上传 PDF 提取',
+  'table.extractPdf.en': 'Extract from PDF',
+  'table.extracting.zh': '提取中...',
+  'table.extracting.en': 'Extracting...',
+  'table.extractSuccess.zh': '已从 PDF 自动填充数据（{confidence}置信度）',
+  'table.extractSuccess.en': 'Data auto-filled from PDF ({confidence} confidence)',
+  'table.extractFail.zh': '未能从 PDF 提取足够数据，请手动输入',
+  'table.extractFail.en': 'Could not extract sufficient data from PDF. Please enter manually.',
+  'table.extractScanned.zh': 'PDF 为扫描件，无法提取文字',
+  'table.extractScanned.en': 'Scanned PDF — cannot extract text',
+  'table.confidence.high.zh': '高',
+  'table.confidence.high.en': 'high',
+  'table.confidence.medium.zh': '中',
+  'table.confidence.medium.en': 'medium',
+  'table.confidence.low.zh': '低',
+  'table.confidence.low.en': 'low',
+
+  // Improved import flow (LiteratureSearch)
+  'search.importedBridge.zh': '已成功导入 {n} 篇文献。下一步：',
+  'search.importedBridge.en': '{n} articles imported. Next step:',
+  'search.goToExtract.zh': '上传 PDF 提取数据 →',
+  'search.goToExtract.en': 'Upload PDFs to extract data →',
+  'search.goToInputManual.zh': '手动录入数据 →',
+  'search.goToInputManual.en': 'Enter data manually →',
+
   // Report Template Sections
   'report.customize.zh': '选择导出章节',
   'report.customize.en': 'Select Sections',
