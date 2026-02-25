@@ -49,6 +49,7 @@
   <url>
     <loc>https://metareview-8c1.pages.dev/guides/meta-analysis-software-comparison</loc>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/meta-analysis-software-comparison" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview-8c1.pages.dev/guides/best-meta-analysis-software" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -114,6 +115,14 @@
   <url>
     <loc>https://metareview-8c1.pages.dev/guides/meta-analysis-calculator</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://metareview-8c1.pages.dev/guides/meta-analysis-calculator" />
+    <lastmod>2026-02-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://metareview-8c1.pages.dev/guides/best-meta-analysis-software</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview-8c1.pages.dev/guides/best-meta-analysis-software" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/meta-analysis-software-comparison" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
