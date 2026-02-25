@@ -51,6 +51,8 @@ export default function GalbraithPlot({ result, lang, width = 560, height = 420 
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
+    if (data.points.length === 0) return;
+
     const plotW = width - MARGIN.left - MARGIN.right;
     const plotH = height - MARGIN.top - MARGIN.bottom;
 

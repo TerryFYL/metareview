@@ -32,12 +32,14 @@ export function labbeePlotData(
 ): LabbeData | null {
   if (studies.length === 0) return null;
 
-  const points: LabbePoint[] = studies.map((s) => ({
-    name: s.name,
-    eventRateExp: s.events1 / s.total1,
-    eventRateCtrl: s.events2 / s.total2,
-    sampleSize: s.total1 + s.total2,
-  }));
+  const points: LabbePoint[] = studies
+    .filter((s) => s.total1 > 0 && s.total2 > 0)
+    .map((s) => ({
+      name: s.name,
+      eventRateExp: s.events1 / s.total1,
+      eventRateCtrl: s.events2 / s.total2,
+      sampleSize: s.total1 + s.total2,
+    }));
 
   const favoursTreatment = points.filter((p) => p.eventRateExp < p.eventRateCtrl).length;
   const favoursControl = points.filter((p) => p.eventRateExp > p.eventRateCtrl).length;
@@ -61,18 +63,20 @@ export interface GalbraithData {
 
 /** Generate Galbraith (radial) plot data */
 export function galbraithPlotData(studies: StudyEffect[], summaryEffect: number): GalbraithData {
-  const points: GalbraithPoint[] = studies.map((s) => {
-    const precision = 1 / s.sei;
-    const zScore = s.yi / s.sei;
-    // Expected z = summary * precision; outlier if residual > 2
-    const residual = Math.abs(zScore - summaryEffect * precision);
-    return {
-      name: s.name,
-      precision,
-      zScore,
-      isOutlier: residual > 2,
-    };
-  });
+  const points: GalbraithPoint[] = studies
+    .filter((s) => s.sei > 0 && isFinite(s.sei))
+    .map((s) => {
+      const precision = 1 / s.sei;
+      const zScore = s.yi / s.sei;
+      // Expected z = summary * precision; outlier if residual > 2
+      const residual = Math.abs(zScore - summaryEffect * precision);
+      return {
+        name: s.name,
+        precision,
+        zScore,
+        isOutlier: residual > 2,
+      };
+    });
 
   const outliers = points.filter((p) => p.isOutlier).map((p) => p.name);
 

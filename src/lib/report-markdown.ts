@@ -1,9 +1,9 @@
-import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, RobAssessments, RobDomain, Study, CumulativeResult } from './types';
+import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, RobAssessments, RobDomain, Study, CumulativeResult, DoseResponseResult } from './types';
 import type { TrimAndFillResult } from './statistics/publication-bias';
+import type { PRISMAData } from '../components/PRISMAFlow';
 import type { ReportSections } from './report-export';
 import { defaultReportSections } from './report-export';
-import { calculateNNT } from './statistics/nnt';
-import { isLogScale } from './statistics';
+import { calculateNNT, isLogScale, galbraithPlotData, isBinaryData, labbeePlotData, baujatPlotData } from './statistics';
 
 interface MarkdownReportData {
   title: string;
@@ -20,6 +20,8 @@ interface MarkdownReportData {
   robAssessments?: RobAssessments;
   studies?: Study[];
   cumulativeResults?: CumulativeResult[];
+  doseResponseResult?: DoseResponseResult | null;
+  prisma?: PRISMAData;
   sections?: ReportSections;
 }
 
@@ -29,7 +31,7 @@ const fmtP = (p: number) => !isFinite(p) ? '—' : p < 0.001 ? '< 0.001' : p.toF
 const escMd = (s: string) => s.replace(/\|/g, '\\|');
 
 export function generateReportMarkdown(data: MarkdownReportData): string {
-  const { result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, influenceDiagnostics, gradeAssessment, robAssessments, studies, cumulativeResults } = data;
+  const { result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, influenceDiagnostics, gradeAssessment, robAssessments, studies, cumulativeResults, doseResponseResult, prisma } = data;
   const sec = data.sections || defaultReportSections;
   const measure = result.measure;
   const log = isLogScale(measure);
@@ -48,6 +50,31 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
     if (data.pico.comparison) lines.push(`| **Comparison** | ${data.pico.comparison} |`);
     if (data.pico.outcome) lines.push(`| **Outcome** | ${data.pico.outcome} |`);
     lines.push('');
+  }
+
+  // PRISMA Flow Summary
+  if (sec.prisma && prisma) {
+    const n = (val: string) => val.trim();
+    const items: [string, string][] = [];
+    if (n(prisma.dbRecords)) items.push(['Records from databases', n(prisma.dbRecords)]);
+    if (n(prisma.otherRecords)) items.push(['Records from other sources', n(prisma.otherRecords)]);
+    if (n(prisma.duplicatesRemoved)) items.push(['After duplicates removed', n(prisma.duplicatesRemoved)]);
+    if (n(prisma.recordsScreened)) items.push(['Records screened', n(prisma.recordsScreened)]);
+    if (n(prisma.recordsExcluded)) items.push(['Records excluded', n(prisma.recordsExcluded)]);
+    if (n(prisma.fullTextAssessed)) items.push(['Full-text articles assessed', n(prisma.fullTextAssessed)]);
+    if (n(prisma.fullTextExcluded)) items.push(['Full-text articles excluded', n(prisma.fullTextExcluded)]);
+    if (prisma.fullTextExcludeReasons) items.push(['Exclusion reasons', prisma.fullTextExcludeReasons]);
+    if (n(prisma.qualitativeSynthesis)) items.push(['Studies in qualitative synthesis', n(prisma.qualitativeSynthesis)]);
+    if (n(prisma.quantitativeSynthesis)) items.push(['Studies in quantitative synthesis', n(prisma.quantitativeSynthesis)]);
+    if (items.length > 0) {
+      lines.push('## PRISMA 2020 Flow Summary\n');
+      lines.push('| Stage | Count |');
+      lines.push('|-------|-------|');
+      for (const [label, val] of items) {
+        lines.push(`| ${label} | ${escMd(val)} |`);
+      }
+      lines.push('');
+    }
   }
 
   // Overall results
@@ -114,6 +141,37 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
     lines.push('');
   }
 
+  // Contour-Enhanced Funnel Plot
+  if (sec.contourFunnel && result.studies.length >= 3) {
+    const studiesWithZ = result.studies.map(s => ({ name: s.name, z: Math.abs(s.yi / s.sei) }));
+    const sig01 = studiesWithZ.filter(s => s.z >= 2.576).length;
+    const sig05 = studiesWithZ.filter(s => s.z >= 1.96 && s.z < 2.576).length;
+    const sig10 = studiesWithZ.filter(s => s.z >= 1.645 && s.z < 1.96).length;
+    const nonsig = studiesWithZ.filter(s => s.z < 1.645).length;
+    lines.push('## Contour-Enhanced Funnel Plot\n');
+    lines.push(`| Significance Region | Studies |`);
+    lines.push(`|---------------------|---------|`);
+    lines.push(`| p < 0.01 | ${sig01} |`);
+    lines.push(`| 0.01 ≤ p < 0.05 | ${sig05} |`);
+    lines.push(`| 0.05 ≤ p < 0.10 | ${sig10} |`);
+    lines.push(`| p ≥ 0.10 (non-significant) | ${nonsig} |`);
+    if (nonsig === 0 && result.studies.length > 3) {
+      lines.push(`\n⚠️ All studies fall in significant regions — potential publication bias.`);
+    }
+    lines.push('');
+  }
+
+  // Galbraith Plot
+  if (sec.galbraith && result.studies.length >= 3) {
+    const gData = galbraithPlotData(result.studies, result.summary);
+    lines.push('## Galbraith Plot (Radial Plot)\n');
+    if (gData.outliers.length > 0) {
+      lines.push(`**Outliers** (outside ±2 confidence band): ${gData.outliers.join(', ')}\n`);
+    } else {
+      lines.push('All studies fall within the ±2 confidence band — no outliers detected.\n');
+    }
+  }
+
   // Subgroup analysis
   if (sec.subgroup && subgroupResult) {
     lines.push('## Subgroup Analysis\n');
@@ -128,6 +186,21 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
     lines.push('');
   }
 
+  // Baujat Plot
+  if (sec.baujat && result.studies.length >= 3) {
+    const bData = baujatPlotData(result.studies, result.summary, result.heterogeneity.tau2);
+    if (bData) {
+      const influential = bData.points.filter(p => p.contribution > bData.meanContribution && p.influence > bData.meanInfluence);
+      lines.push('## Baujat Plot\n');
+      if (influential.length > 0) {
+        lines.push(`**Studies with high contribution and influence**: ${influential.map(p => p.name).join(', ')}\n`);
+        lines.push('These studies contribute disproportionately to overall heterogeneity and influence the pooled estimate.\n');
+      } else {
+        lines.push('No studies identified in the high-contribution/high-influence quadrant.\n');
+      }
+    }
+  }
+
   // Sensitivity analysis
   if (sec.sensitivity && sensitivityResults.length > 0) {
     lines.push('## Sensitivity Analysis (Leave-One-Out)\n');
@@ -137,6 +210,49 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
       lines.push(`| ${s.omittedStudy} | ${fmt(s.effect)} | ${fmt(s.ciLower)}–${fmt(s.ciUpper)} | ${fmt(s.I2, 1)}% |`);
     }
     lines.push('');
+  }
+
+  // Leave-One-Out Cross-Validation Summary
+  if (sec.loo && sensitivityResults.length > 0) {
+    const isRatio = measure === 'OR' || measure === 'RR' || measure === 'HR';
+    const effects = sensitivityResults.map(r => r.effect);
+    const minEffect = Math.min(...effects);
+    const maxEffect = Math.max(...effects);
+    const fmtLoo = (v: number) => !isFinite(v) ? '—' : isRatio ? v.toFixed(2) : v.toFixed(3);
+    const influential = sensitivityResults.filter(s => {
+      const dirChanged = isRatio ? (s.effect > 1) !== (result.effect > 1) : (s.effect > 0) !== (result.effect > 0);
+      const origSig = isRatio ? (result.ciLower > 1 || result.ciUpper < 1) : (result.ciLower > 0 || result.ciUpper < 0);
+      const newSig = isRatio ? (s.ciLower > 1 || s.ciUpper < 1) : (s.ciLower > 0 || s.ciUpper < 0);
+      return dirChanged || origSig !== newSig;
+    });
+    lines.push('## Leave-One-Out Cross-Validation\n');
+    lines.push(`Effect range when omitting each study: ${fmtLoo(minEffect)} to ${fmtLoo(maxEffect)}\n`);
+    if (influential.length === 0) {
+      lines.push('The pooled estimate is robust — no single study substantially alters the overall result.\n');
+    } else {
+      lines.push(`**Influential studies**: ${influential.map(s => s.omittedStudy).join(', ')} — removing these alters the direction or significance of the pooled estimate.\n`);
+    }
+  }
+
+  // L'Abbé Plot
+  if (sec.labbe && studies && studies.length > 0) {
+    const binaryEntries = studies
+      .filter(st => isBinaryData(st.data))
+      .map(st => {
+        const d = st.data as { events1: number; total1: number; events2: number; total2: number };
+        return { name: st.name, events1: d.events1, total1: d.total1, events2: d.events2, total2: d.total2 };
+      });
+    if (binaryEntries.length > 0) {
+      const lData = labbeePlotData(binaryEntries);
+      if (lData && lData.points.length > 0) {
+        lines.push("## L'Abbé Plot\n");
+        lines.push(`- **Total studies**: ${lData.points.length}`);
+        lines.push(`- **Favouring treatment** (below diagonal): ${lData.favoursTreatment}`);
+        lines.push(`- **Favouring control** (above diagonal): ${lData.favoursControl}`);
+        lines.push(`- **On diagonal** (no difference): ${lData.points.length - lData.favoursTreatment - lData.favoursControl}`);
+        lines.push('');
+      }
+    }
   }
 
   // Meta-regression
@@ -160,6 +276,32 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
       lines.push(`**Potentially influential studies**: ${influential.map(d => d.name).join(', ')}\n`);
     } else {
       lines.push('No individually influential studies detected.\n');
+    }
+  }
+
+  // Network Graph
+  if (sec.network && result.studies.length >= 3) {
+    const subgroups = new Set<string>();
+    const comparisons = new Map<string, number>();
+    for (const study of result.studies) {
+      const parts = study.name.split(/\s+vs\.?\s+/i);
+      if (parts.length >= 2) {
+        const a = parts[0].trim();
+        const b = parts[1].trim();
+        subgroups.add(a);
+        subgroups.add(b);
+        const key = [a, b].sort().join(' vs ');
+        comparisons.set(key, (comparisons.get(key) || 0) + 1);
+      }
+    }
+    if (subgroups.size >= 2) {
+      lines.push('## Network Graph\n');
+      lines.push(`- **Interventions**: ${Array.from(subgroups).join(', ')}`);
+      lines.push(`- **Direct comparisons**: ${comparisons.size}`);
+      for (const [comp, count] of comparisons) {
+        lines.push(`  - ${comp}: ${count} ${count === 1 ? 'study' : 'studies'}`);
+      }
+      lines.push('');
     }
   }
 
@@ -206,6 +348,55 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
     for (const c of cumulativeResults) {
       lines.push(`| ${c.addedStudy} | ${fmt(c.effect)} | ${fmt(c.ciLower)}–${fmt(c.ciUpper)} |`);
     }
+    lines.push('');
+  }
+
+  // Dose-Response Analysis
+  if (sec.doseResponse && doseResponseResult) {
+    const dr = doseResponseResult;
+    lines.push('## Dose-Response Analysis\n');
+    lines.push(`- **Model type**: ${dr.modelType}`);
+    lines.push(`- **Dose levels**: ${dr.k}`);
+    lines.push(`- **Linear coefficient (β₁)**: ${fmt(dr.beta1, 4)}`);
+    if (dr.modelType === 'quadratic') {
+      lines.push(`- **Quadratic coefficient (β₂)**: ${fmt(dr.beta2, 4)}`);
+    }
+    lines.push(`- **p-value (linear)**: ${fmtP(dr.pLinear)}`);
+    lines.push(`- **R²**: ${fmt(isFinite(dr.R2) ? dr.R2 * 100 : NaN, 1)}%`);
+    lines.push(`\n${dr.pLinear < 0.05 ? `A significant ${dr.modelType} dose-response relationship was detected (p = ${fmtP(dr.pLinear)}).` : `No significant dose-response relationship was detected (p = ${fmtP(dr.pLinear)}).`}`);
+    lines.push('');
+  }
+
+  // Narrative Summary
+  if (sec.narrative) {
+    const het = result.heterogeneity;
+    const k = result.studies.length;
+    let text = `A ${result.model === 'random' ? 'random-effects' : 'fixed-effect'} meta-analysis of ${k} studies was performed. The pooled ${measure} was ${fmt(result.effect)} (95% CI: ${fmt(result.ciLower)}–${fmt(result.ciUpper)}; p ${fmtP(result.pValue) === '< 0.001' ? '< 0.001' : `= ${fmtP(result.pValue)}`}), ${result.pValue < 0.05 ? 'indicating a statistically significant effect' : 'showing no statistically significant effect'}.`;
+    text += ` Heterogeneity was ${het.I2 < 25 ? 'low' : het.I2 < 50 ? 'moderate' : het.I2 < 75 ? 'substantial' : 'considerable'} (I² = ${fmt(het.I2, 1)}%, Q = ${fmt(het.Q)}, p ${fmtP(het.pValue) === '< 0.001' ? '< 0.001' : `= ${fmtP(het.pValue)}`}; τ² = ${fmt(het.tau2, 4)}).`;
+    if (result.predictionInterval) {
+      text += ` The 95% prediction interval was ${fmt(result.predictionInterval.lower)}–${fmt(result.predictionInterval.upper)}.`;
+    }
+    if (eggers) {
+      text += ` Egger's test ${eggers.pValue < 0.05 ? 'indicated significant' : 'did not indicate'} funnel plot asymmetry (p = ${fmtP(eggers.pValue)}).`;
+    }
+    if (beggs) {
+      text += ` Begg's test ${beggs.pValue < 0.05 ? 'revealed significant' : 'showed no significant'} evidence of publication bias (p = ${fmtP(beggs.pValue)}).`;
+    }
+    if (trimFillResult && trimFillResult.k0 > 0) {
+      text += ` Trim-and-Fill estimated ${trimFillResult.k0} missing ${trimFillResult.k0 === 1 ? 'study' : 'studies'}; adjusted ${measure} = ${fmt(trimFillResult.adjustedEffect)}.`;
+    }
+    if (subgroupResult && subgroupResult.subgroups.length > 1) {
+      const testSig = subgroupResult.test.pValue < 0.05;
+      text += ` Subgroup interaction test ${testSig ? 'was significant' : 'was not significant'} (p ${fmtP(subgroupResult.test.pValue) === '< 0.001' ? '< 0.001' : `= ${fmtP(subgroupResult.test.pValue)}`}).`;
+    }
+    if (metaRegression) {
+      text += ` Meta-regression with ${metaRegression.covariate} ${metaRegression.pValue < 0.05 ? 'identified a significant moderating effect' : 'did not identify a significant moderating effect'} (p = ${fmtP(metaRegression.pValue)}).`;
+    }
+    if (gradeAssessment) {
+      text += ` GRADE certainty: ${gradeAssessment.overall}.`;
+    }
+    lines.push('## Narrative Summary\n');
+    lines.push(text);
     lines.push('');
   }
 

@@ -663,6 +663,7 @@ export default function App() {
     if (!result) return;
     const influenceData = studies.length >= 3 ? computeInfluence(studies, measure, model) : [];
     const gradeData = result ? computeGrade({ result, eggers, beggs, trimFill: trimFillResult }) : null;
+    const drData = result.studies.length >= 3 ? doseResponseAnalysis(result.studies, studies.map(s => s.dose ?? NaN), studies.map(s => s.name)) : null;
     const md = generateReportMarkdown({
       title,
       pico,
@@ -678,6 +679,8 @@ export default function App() {
       robAssessments,
       studies,
       cumulativeResults,
+      doseResponseResult: drData,
+      prisma,
       sections,
     });
     const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });

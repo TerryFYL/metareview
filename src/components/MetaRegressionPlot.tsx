@@ -57,7 +57,7 @@ export default function MetaRegressionPlot({ metaRegression: mr, lang, width = 5
 
     // Compute CI band parameters from WLS
     const Sw = points.reduce((sum, p) => sum + p.weight, 0);
-    const meanX = points.reduce((sum, p) => sum + p.weight * p.x, 0) / Sw;
+    const meanX = Sw > 0 ? points.reduce((sum, p) => sum + p.weight * p.x, 0) / Sw : 0;
     const Sxx = points.reduce((sum, p) => sum + p.weight * (p.x - meanX) ** 2, 0);
 
     // X scale: year
@@ -88,6 +88,7 @@ export default function MetaRegressionPlot({ metaRegression: mr, lang, width = 5
 
     const getCI = (x: number): [number, number] => {
       const pred = intercept + coefficient * x;
+      if (Sw < 1e-10 || Sxx < 1e-10) return [pred, pred]; // Degenerate: no CI band
       const sePred = Math.sqrt(1 / Sw + (x - meanX) ** 2 / Sxx);
       return [pred - 1.96 * sePred, pred + 1.96 * sePred];
     };
@@ -207,7 +208,8 @@ export default function MetaRegressionPlot({ metaRegression: mr, lang, width = 5
     URL.revokeObjectURL(url);
   }, []);
 
-  const fmtP = (p: number) => p < 0.001 ? '< 0.001' : p.toFixed(3);
+  const fmtP = (p: number) => !isFinite(p) ? '—' : p < 0.001 ? '< 0.001' : p.toFixed(3);
+  const fmtN = (n: number, d = 4) => isFinite(n) ? n.toFixed(d) : '—';
 
   return (
     <div>
@@ -221,13 +223,13 @@ export default function MetaRegressionPlot({ metaRegression: mr, lang, width = 5
         <table style={{ fontSize: 13 }}>
           <tbody>
             <Row label={t('metaReg.covariate', lang)} value={`${mr.covariate} (k = ${k})`} />
-            <Row label={t('metaReg.coefficient', lang)} value={`${coefficient.toFixed(4)} (SE = ${se.toFixed(4)})`} />
-            <Row label="Z" value={zVal.toFixed(4)} />
+            <Row label={t('metaReg.coefficient', lang)} value={`${fmtN(coefficient)} (SE = ${fmtN(se)})`} />
+            <Row label="Z" value={fmtN(zVal)} />
             <Row label="P-value" value={fmtP(pValue)} highlight={pValue < 0.05} />
-            <Row label={t('metaReg.intercept', lang)} value={intercept.toFixed(4)} />
-            <Row label={t('metaReg.qModel', lang)} value={`${QModel.toFixed(2)} (p = ${fmtP(QModelP)})`} highlight={QModelP < 0.05} />
-            <Row label={t('metaReg.qResidual', lang)} value={`${QResidual.toFixed(2)} (df = ${QResidualDf}, p = ${fmtP(QResidualP)})`} />
-            <Row label={t('metaReg.r2', lang)} value={`${(R2 * 100).toFixed(1)}%`} />
+            <Row label={t('metaReg.intercept', lang)} value={fmtN(intercept)} />
+            <Row label={t('metaReg.qModel', lang)} value={`${fmtN(QModel, 2)} (p = ${fmtP(QModelP)})`} highlight={QModelP < 0.05} />
+            <Row label={t('metaReg.qResidual', lang)} value={`${fmtN(QResidual, 2)} (df = ${QResidualDf}, p = ${fmtP(QResidualP)})`} />
+            <Row label={t('metaReg.r2', lang)} value={`${isFinite(R2) ? (R2 * 100).toFixed(1) : '—'}%`} />
           </tbody>
         </table>
         <p style={{ fontSize: 12, color: pValue < 0.05 ? '#dc2626' : '#16a34a', marginTop: 8, fontWeight: 500 }}>

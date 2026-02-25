@@ -50,6 +50,7 @@ export default function FunnelPlot({
     const plotH = height - MARGIN.top - MARGIN.bottom;
 
     const points = funnelPlotData(result.studies);
+    if (points.length === 0) return;
     const summaryEffect = result.summary;
 
     // X scale: effect sizes
