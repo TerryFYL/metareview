@@ -199,13 +199,16 @@ export default function ForestPlot({
       .text(`${measure} [95% CI]`);
 
     if (plotSettings.showWeights) {
-      g.append('text')
+      const weightHeader = g.append('text')
         .attr('x', plotWidth + 150)
         .attr('y', headerY)
         .attr('font-size', fs)
         .attr('font-weight', 'bold')
         .attr('fill', '#666')
-        .text(lang === 'zh' ? '权重' : 'Weight');
+        .attr('cursor', 'help')
+        .text(lang === 'zh' ? '权重 ⓘ' : 'Weight ⓘ');
+      const weightTipKey = result.model === 'random' ? 'forest.weightTip.random' : 'forest.weightTip.fixed';
+      weightHeader.append('title').text(t(weightTipKey, lang));
     }
 
     // Max weight for square sizing (from overall result), guard against 0
@@ -297,6 +300,7 @@ export default function ForestPlot({
         <div>${t('forest.tooltip.ci', lang)}: [${study.ciLower.toFixed(3)}, ${study.ciUpper.toFixed(3)}]</div>
         <div>${t('forest.tooltip.weight', lang)}: ${weight.toFixed(1)}%</div>
         ${study.sei ? `<div>${t('forest.tooltip.se', lang)}: ${study.sei.toFixed(4)}</div>` : ''}
+        <div style="margin-top:4px;font-size:11px;color:#888;max-width:260px">${t(modelType === 'random' ? 'forest.weightTip.random' : 'forest.weightTip.fixed', lang)}</div>
       `;
 
       row.on('mouseenter', function (event: MouseEvent) {

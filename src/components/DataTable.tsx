@@ -175,12 +175,27 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
     reader.onload = (event) => {
       const text = event.target?.result;
       if (typeof text !== 'string') return;
-      const imported = importCSV(text, measure);
-      if (imported.length > 0) {
-        onStudiesChange([...studies, ...imported]);
-        const msg = t('table.pasteHint', lang).replace('{n}', String(imported.length));
+      const result = importCSV(text, measure);
+      if (result.studies.length > 0) {
+        onStudiesChange([...studies, ...result.studies]);
+        let msg = t('table.pasteHint', lang).replace('{n}', String(result.studies.length));
+        if (result.skippedRows > 0) {
+          msg += ' · ' + t('table.csvColumnMismatch', lang)
+            .replace('{measure}', measure)
+            .replace('{expected}', String(result.expectedColumns))
+            .replace('{actual}', String(result.actualColumns ?? '?'))
+            .replace('{skipped}', String(result.skippedRows));
+        }
         setPasteToast(msg);
-        setTimeout(() => setPasteToast(null), 3000);
+        setTimeout(() => setPasteToast(null), result.skippedRows > 0 ? 6000 : 3000);
+      } else if (result.skippedRows > 0) {
+        const msg = t('table.csvColumnMismatch', lang)
+          .replace('{measure}', measure)
+          .replace('{expected}', String(result.expectedColumns))
+          .replace('{actual}', String(result.actualColumns ?? '?'))
+          .replace('{skipped}', String(result.skippedRows));
+        setPasteToast(msg);
+        setTimeout(() => setPasteToast(null), 6000);
       } else {
         const msg = lang === 'zh' ? 'CSV 文件中未找到可导入的数据' : 'No importable data found in CSV file';
         setPasteToast(msg);
@@ -229,6 +244,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
     // Parse lines into studies
     const parsed: Study[] = [];
     let skippedCells = 0;
+    let skippedRows = 0;
     for (const line of lines) {
       const cells = line.split('\t').map(c => c.trim());
       // Skip header-like rows (first cell matches a known header)
@@ -261,6 +277,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
         // just data
         dataStart = 0;
       } else {
+        skippedRows++;
         continue; // Not enough columns
       }
 
@@ -285,11 +302,24 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
     if (parsed.length > 0) {
       onStudiesChange([...studies, ...parsed]);
       trackFeature('paste_import');
-      const msg = skippedCells > 0
+      let msg = skippedCells > 0
         ? t('table.pasteSkipped', lang).replace('{n}', String(parsed.length)).replace('{skipped}', String(skippedCells))
         : t('table.pasteHint', lang).replace('{n}', String(parsed.length));
+      if (skippedRows > 0) {
+        msg += ' · ' + t('table.pasteColumnMismatch', lang)
+          .replace('{measure}', measure)
+          .replace('{expected}', String(dataColCount))
+          .replace('{skipped}', String(skippedRows));
+      }
       setPasteToast(msg);
-      setTimeout(() => setPasteToast(null), skippedCells > 0 ? 5000 : 3000);
+      setTimeout(() => setPasteToast(null), (skippedCells > 0 || skippedRows > 0) ? 6000 : 3000);
+    } else if (skippedRows > 0) {
+      const msg = t('table.pasteColumnMismatch', lang)
+        .replace('{measure}', measure)
+        .replace('{expected}', String(dataColCount))
+        .replace('{skipped}', String(skippedRows));
+      setPasteToast(msg);
+      setTimeout(() => setPasteToast(null), 6000);
     }
   }, [studies, measure, onStudiesChange, lang]);
 

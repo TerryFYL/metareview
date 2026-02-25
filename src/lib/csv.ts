@@ -69,19 +69,48 @@ function splitCSVLine(line: string): string[] {
   return fields;
 }
 
-/** Parse a CSV string into Study[] */
-export function importCSV(csvString: string, measure: EffectMeasure): Study[] {
+/** Minimum total columns (metadata + data) required for each measure type */
+function minColumnsForMeasure(measure: EffectMeasure): number {
+  // 4 metadata cols (Study, Year, Subgroup, Dose) + data cols
+  if (isHRMeasure(measure)) return 7;      // + 3 (HR, CI_Lower, CI_Upper)
+  if (isBinary(measure)) return 8;          // + 4 (Events_T, Total_T, Events_C, Total_C)
+  return 10;                                // + 6 (Mean_T, SD_T, N_T, Mean_C, SD_C, N_C)
+}
+
+export interface CSVImportResult {
+  studies: Study[];
+  skippedRows: number;
+  expectedColumns: number;
+  /** Column count of the first skipped row (for error messaging) */
+  actualColumns?: number;
+}
+
+/** Parse a CSV string into Study[] with column validation */
+export function importCSV(csvString: string, measure: EffectMeasure): CSVImportResult {
   const binary = isBinary(measure);
   const hr = isHRMeasure(measure);
   const lines = csvString.split(/\r?\n/).filter((line) => line.trim() !== '');
+  const expectedCols = minColumnsForMeasure(measure);
 
-  if (lines.length < 2) return [];
+  if (lines.length < 2) return { studies: [], skippedRows: 0, expectedColumns: expectedCols };
 
   // Skip header row
   const dataLines = lines.slice(1);
 
-  return dataLines.map((line) => {
+  const studies: Study[] = [];
+  let skippedRows = 0;
+  let firstSkippedActual: number | undefined;
+
+  for (const line of dataLines) {
     const fields = splitCSVLine(line).map(parseField);
+
+    // Skip rows with insufficient columns
+    if (fields.length < expectedCols) {
+      skippedRows++;
+      if (firstSkippedActual === undefined) firstSkippedActual = fields.length;
+      continue;
+    }
+
     const name = fields[0] || 'Untitled';
     const year = fields[1] ? parseInt(fields[1]) : undefined;
     const subgroup = fields[2]?.trim() || undefined;
@@ -95,7 +124,7 @@ export function importCSV(csvString: string, measure: EffectMeasure): Study[] {
         ciLower: parseFloat(fields[5]) || 0,
         ciUpper: parseFloat(fields[6]) || 0,
       };
-      return { id, name, year, subgroup, dose: dose != null && !isNaN(dose) ? dose : undefined, data };
+      studies.push({ id, name, year, subgroup, dose: dose != null && !isNaN(dose) ? dose : undefined, data });
     } else if (binary) {
       const data: BinaryData = {
         events1: parseFloat(fields[4]) || 0,
@@ -103,7 +132,7 @@ export function importCSV(csvString: string, measure: EffectMeasure): Study[] {
         events2: parseFloat(fields[6]) || 0,
         total2: parseFloat(fields[7]) || 0,
       };
-      return { id, name, year, subgroup, dose: dose != null && !isNaN(dose) ? dose : undefined, data };
+      studies.push({ id, name, year, subgroup, dose: dose != null && !isNaN(dose) ? dose : undefined, data });
     } else {
       const data: ContinuousData = {
         mean1: parseFloat(fields[4]) || 0,
@@ -113,9 +142,11 @@ export function importCSV(csvString: string, measure: EffectMeasure): Study[] {
         sd2: parseFloat(fields[8]) || 0,
         n2: parseFloat(fields[9]) || 0,
       };
-      return { id, name, year, subgroup, dose: dose != null && !isNaN(dose) ? dose : undefined, data };
+      studies.push({ id, name, year, subgroup, dose: dose != null && !isNaN(dose) ? dose : undefined, data });
     }
-  });
+  }
+
+  return { studies, skippedRows, expectedColumns: expectedCols, actualColumns: firstSkippedActual };
 }
 
 /** Export complete analysis results as JSON */

@@ -1009,6 +1009,16 @@ const translations = {
   'forest.tooltip.weight.en': 'Weight',
   'forest.tooltip.se.zh': '标准误',
   'forest.tooltip.se.en': 'SE',
+  'forest.weightTip.fixed.zh': '权重（%）：各研究对合并效应量的相对贡献。基于逆方差法（Inverse Variance）计算 — 方差越小的研究权重越大。所有权重之和为 100%。',
+  'forest.weightTip.fixed.en': 'Weight (%): relative contribution of each study to the pooled effect. Calculated using the Inverse Variance method — studies with smaller variance receive higher weight. Weights sum to 100%.',
+  'forest.weightTip.random.zh': '权重（%）：各研究对合并效应量的相对贡献。基于 DerSimonian-Laird 随机效应模型计算 — 同时考虑研究内方差和研究间异质性（τ²）。权重分布比固定效应模型更均匀。',
+  'forest.weightTip.random.en': 'Weight (%): relative contribution of each study to the pooled effect. Calculated using the DerSimonian-Laird random-effects model — accounts for both within-study variance and between-study heterogeneity (τ²). Weights are more evenly distributed than under fixed effects.',
+
+  // CSV/Paste column validation
+  'table.csvColumnMismatch.zh': 'CSV 列数不匹配：当前效应量指标（{measure}）需要至少 {expected} 列数据，但文件仅有 {actual} 列。已跳过 {skipped} 行。',
+  'table.csvColumnMismatch.en': 'CSV column mismatch: current measure ({measure}) requires at least {expected} data columns, but file has only {actual}. Skipped {skipped} rows.',
+  'table.pasteColumnMismatch.zh': '粘贴列数不足：当前效应量指标（{measure}）需要至少 {expected} 列数据。已跳过 {skipped} 行。',
+  'table.pasteColumnMismatch.en': 'Insufficient columns pasted: current measure ({measure}) requires at least {expected} data columns. Skipped {skipped} rows.',
 
   // Accessibility
   'a11y.forestPlot.zh': '森林图：显示各研究效应量及合并效应量的图表',
