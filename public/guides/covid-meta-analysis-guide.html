@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COVID-19 Meta-Analysis Guide: Vaccine Efficacy, Treatment Effects &amp; Variant Subgroups (2026) | MetaReview</title>
+  <meta name="description" content="Complete guide to COVID-19 meta-analysis. Learn how to pool vaccine efficacy (VE) using 1-RR, analyze treatment effects for Paxlovid and dexamethasone, handle variant-driven heterogeneity, and navigate preprint inclusion in systematic reviews." />
+  <meta name="keywords" content="COVID meta analysis, COVID-19 meta-analysis, vaccine efficacy meta analysis, COVID treatment meta analysis, COVID systematic review, Paxlovid meta analysis, COVID variant meta analysis, mRNA vaccine meta analysis, COVID-19 forest plot, SARS-CoV-2 meta-analysis" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview.cc/guides/covid-meta-analysis-guide" />
+  <link rel="alternate" hreflang="en" href="https://metareview.cc/guides/covid-meta-analysis-guide" />
+  <link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/covid-meta-analysis" />
+  <link rel="alternate" hreflang="x-default" href="https://metareview.cc/guides/covid-meta-analysis-guide" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview.cc/guides/covid-meta-analysis-guide" />
+  <meta property="og:title" content="COVID-19 Meta-Analysis Guide: Vaccine Efficacy, Treatment Effects & Variant Subgroups" />
+  <meta property="og:description" content="How to conduct a COVID-19 meta-analysis: VE=1-RR for vaccines, OR/HR for antivirals, subgroup by variant and severity, preprint handling strategies." />
+  <meta property="og:image" content="https://metareview.cc/og-image.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MetaReview" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="COVID-19 Meta-Analysis Guide: Vaccine Efficacy, Treatment Effects & Variant Subgroups" />
+  <meta name="twitter:description" content="How to conduct a COVID-19 meta-analysis: VE=1-RR for vaccines, OR/HR for treatments, variant subgroup analysis." />
+  <meta name="twitter:image" content="https://metareview.cc/og-image.png" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "MetaReview", "item": "https://metareview.cc/"},
+      {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://metareview.cc/#guides"},
+      {"@type": "ListItem", "position": 3, "name": "COVID-19 Meta-Analysis Guide"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "COVID-19 Meta-Analysis Guide: Vaccine Efficacy, Treatment Effects & Variant Subgroups (2026)",
+    "description": "Complete guide to conducting COVID-19 meta-analysis covering vaccine efficacy pooling, antiviral and immunomodulator treatment effects, variant-specific subgroup analysis, and preprint inclusion strategies.",
+    "author": {"@type": "Organization", "name": "MetaReview"},
+    "publisher": {"@type": "Organization", "name": "MetaReview"},
+    "datePublished": "2026-02-25",
+    "dateModified": "2026-02-25"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What effect size should I use for COVID-19 vaccine efficacy meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Vaccine Efficacy (VE) is calculated as VE = 1 - RR, where RR is the Risk Ratio of infection in the vaccinated group versus the unvaccinated group. For meta-analysis, pool the RR (or HR from Cox models) on the log scale using inverse-variance weighting, then convert the pooled estimate back to VE. Do not pool VE percentages directly, as VE is a non-linear transformation and direct averaging produces biased results."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I combine vaccine efficacy data from different COVID-19 variants in one meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can include studies from different variant periods, but you must perform subgroup analysis by dominant variant (ancestral, Alpha, Delta, Omicron BA.1, BA.5, XBB, JN.1). Variant-specific immune evasion dramatically alters VE, so pooling across variants without stratification produces misleading results. Always report variant-stratified results alongside any overall pooled estimate."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I handle preprints in a COVID-19 systematic review?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "During the pandemic, preprints were a major source of early evidence. Include preprints in your search (medRxiv, bioRxiv, SSRN) but flag them clearly. Conduct a sensitivity analysis comparing results with and without preprints. Check whether preprints were subsequently peer-reviewed and use the peer-reviewed version if available. Document preprint status in your risk-of-bias assessment."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which effect size should I use for COVID-19 treatment meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For mortality and hospitalization outcomes, use Odds Ratio (OR) or Risk Ratio (RR) from RCTs. For time-to-event outcomes (time to recovery, time to viral clearance), use Hazard Ratio (HR). For continuous outcomes (viral load reduction, days of symptoms), use Mean Difference (MD). The RECOVERY and SOLIDARITY trials primarily reported RR for mortality and rate ratios for recovery."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I account for waning immunity in vaccine efficacy meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Waning immunity is a major confounder. Studies measuring VE at 2-4 weeks post-vaccination will show higher efficacy than those measuring at 6+ months. Stratify by time since vaccination (e.g., 14-60 days, 61-120 days, 121-180 days, >180 days). Report VE decay curves when sufficient data exists. Also distinguish between VE against infection, symptomatic disease, hospitalization, and death, as waning rates differ across endpoints."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the test-negative design and how does it affect COVID-19 meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The test-negative design (TND) compares vaccination status among individuals who test positive for COVID-19 (cases) versus those who test negative (controls), all presenting with similar symptoms. TND studies produce OR estimates that approximate VE = 1 - OR. When pooling TND studies with RCTs, note the difference in effect measures (OR vs RR) and consider analyzing them separately or using a sensitivity analysis to assess consistency."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How should I handle heterogeneity from mixing RCTs and observational studies in COVID-19 meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "COVID-19 evidence includes both RCTs and large observational studies (cohort, case-control, test-negative design). Best practice: (1) Analyze RCTs and observational studies separately as primary analyses, (2) Pool all studies together as a secondary analysis with study design as a subgroup variable, (3) Use random-effects models, (4) Conduct sensitivity analysis restricted to RCTs only. Always assess risk of bias using RoB 2 for RCTs and ROBINS-I or Newcastle-Ottawa Scale for observational studies."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many COVID-19 studies do I need for a meaningful meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There is no strict minimum, but practical considerations apply. With 2-3 studies, you can calculate a pooled effect but heterogeneity assessment has very low power. Funnel plots and Egger's test require at least 10 studies. Given the massive volume of COVID-19 literature, most topics have sufficient studies. However, for newer variants or specific subpopulations, evidence may be limited. Even with few studies, a systematic review with quantitative synthesis is more informative than a narrative review alone."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Conduct a COVID-19 Meta-Analysis with MetaReview",
+    "description": "Step-by-step guide to performing a COVID-19 meta-analysis covering vaccine efficacy and treatment effects.",
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "Define your COVID-19 research question using PICO", "text": "Define Population (confirmed COVID-19 patients, general population for vaccines, severity level), Intervention (specific vaccine or treatment), Comparator (placebo, standard care, or unvaccinated), and Outcomes (infection, symptomatic disease, hospitalization, mortality, viral clearance)."},
+      {"@type": "HowToStep", "position": 2, "name": "Search COVID-19 literature databases", "text": "Search PubMed, Embase, Cochrane COVID-19 Study Register, WHO COVID-19 database, and ClinicalTrials.gov. Include preprint servers (medRxiv, bioRxiv). Use terms: SARS-CoV-2, COVID-19, specific vaccine or drug names."},
+      {"@type": "HowToStep", "position": 3, "name": "Select the appropriate effect measure", "text": "Choose RR or HR for vaccine efficacy (VE = 1 - RR), OR or RR for binary treatment outcomes (mortality, hospitalization), HR for time-to-event (recovery), and MD for continuous outcomes (symptom duration, viral load)."},
+      {"@type": "HowToStep", "position": 4, "name": "Extract data and record variant context", "text": "Record effect estimates with 95% CI, sample sizes, vaccine or drug name, dosing schedule, dominant variant during study period, time since vaccination, study design (RCT vs observational vs test-negative), and preprint vs peer-reviewed status."},
+      {"@type": "HowToStep", "position": 5, "name": "Enter data in MetaReview and run analysis", "text": "Select the effect measure, enter study data or paste from a spreadsheet, assign subgroups (variant, vaccine type, severity), and click Run Meta-Analysis. MetaReview generates forest plot, funnel plot, and heterogeneity statistics."},
+      {"@type": "HowToStep", "position": 6, "name": "Perform variant-stratified subgroup analysis", "text": "Assign variant labels (Alpha, Delta, Omicron BA.1, BA.5, XBB) to each study. Run subgroup analysis to see how VE or treatment effect varies across variants. Use Q-between test to assess statistical significance of differences."},
+      {"@type": "HowToStep", "position": 7, "name": "Run sensitivity analyses for COVID-specific biases", "text": "Conduct sensitivity analyses: (1) with vs without preprints, (2) RCTs only vs all study designs, (3) by time since vaccination, (4) by endpoint definition. Use leave-one-out analysis to check robustness."},
+      {"@type": "HowToStep", "position": 8, "name": "Export the complete report", "text": "Generate an HTML or DOCX report with forest plots, funnel plots, sensitivity analyses, and an auto-generated Methods paragraph following PRISMA 2020 guidelines. Include variant-specific VE tables and waning immunity curves if applicable."}
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .decision-tree { background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; overflow-x: auto; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">Open Tool</a>
+      <a href="/guides/how-to-meta-analysis">How-To Guide</a>
+      <a href="/guides/hazard-ratio-meta-analysis-guide">HR Guide</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>COVID-19 Meta-Analysis Guide</h1>
+  <p>From vaccine efficacy pooling to antiviral treatment effects and variant-stratified subgroup analysis. Navigate the unique challenges of synthesizing pandemic evidence.</p>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#why" style="color:#1e40af">Why Meta-Analysis Was Essential During the COVID-19 Pandemic</a></li>
+      <li><a href="#pico" style="color:#1e40af">Defining Your COVID-19 Research Question (PICO)</a></li>
+      <li><a href="#effect-size" style="color:#1e40af">Choosing the Right Effect Size</a></li>
+      <li><a href="#vaccine" style="color:#1e40af">Vaccine Efficacy Meta-Analysis</a></li>
+      <li><a href="#treatment" style="color:#1e40af">Treatment Effect Meta-Analysis</a></li>
+      <li><a href="#data-extraction" style="color:#1e40af">Data Extraction Checklist for COVID-19 Studies</a></li>
+      <li><a href="#heterogeneity" style="color:#1e40af">Handling Heterogeneity in COVID-19 Evidence</a></li>
+      <li><a href="#subgroup" style="color:#1e40af">Subgroup Analysis: Variant, Vaccine Type, Severity</a></li>
+      <li><a href="#metareview" style="color:#1e40af">Step-by-Step: COVID-19 Meta-Analysis in MetaReview</a></li>
+      <li><a href="#pitfalls" style="color:#1e40af">Common Pitfalls in COVID-19 Meta-Analysis</a></li>
+    </ol>
+  </div>
+
+  <div class="section" id="why">
+    <h2>1. Why Meta-Analysis Was Essential During the COVID-19 Pandemic</h2>
+    <p>The COVID-19 pandemic produced an unprecedented volume of clinical evidence &mdash; over 400,000 publications by 2024 &mdash; but individual studies varied enormously in design, population, variant context, and quality. Meta-analysis became indispensable for:</p>
+    <ul>
+      <li><strong>Rapid evidence synthesis</strong> &mdash; Living meta-analyses (e.g., the COVID-NMA initiative) provided continuously updated pooled estimates as new trials reported, enabling real-time policy decisions on vaccines and treatments.</li>
+      <li><strong>Resolving conflicting signals</strong> &mdash; Early RCTs disagreed on hydroxychloroquine, convalescent plasma, and ivermectin. Meta-analyses of large RCTs (RECOVERY, SOLIDARITY) definitively settled these debates.</li>
+      <li><strong>Quantifying variant-specific effects</strong> &mdash; As SARS-CoV-2 evolved from ancestral to Alpha, Delta, and Omicron sublineages, meta-analyses tracked how vaccine efficacy and treatment effectiveness shifted.</li>
+      <li><strong>Informing WHO and CDC guidelines</strong> &mdash; Every major COVID-19 guideline update &mdash; from dexamethasone adoption to Paxlovid authorization &mdash; was grounded in systematic reviews and meta-analyses.</li>
+    </ul>
+    <div class="tip"><strong>Landmark COVID-19 meta-analyses:</strong> The WHO REACT Working Group meta-analysis of corticosteroids (7 RCTs, JAMA 2020), the Cochrane review of mRNA vaccines, and the living systematic review by Siemieniuk et al. (BMJ) shaped global treatment protocols.</div>
+  </div>
+
+  <div class="section" id="pico">
+    <h2>2. Defining Your COVID-19 Research Question (PICO)</h2>
+    <p>COVID-19 meta-analyses span three broad domains: vaccines, treatments, and diagnostics. Each requires a distinct PICO framework.</p>
+
+    <table class="data-table">
+      <tr><th>Element</th><th>Vaccine Efficacy</th><th>Treatment Effect</th><th>Diagnostics</th></tr>
+      <tr><td><strong>P</strong></td><td>General population or risk groups (elderly, immunocompromised)</td><td>Confirmed COVID-19 patients (mild/moderate/severe/critical)</td><td>Suspected COVID-19 cases</td></tr>
+      <tr><td><strong>I</strong></td><td>Specific vaccine (BNT162b2, mRNA-1273, ChAdOx1, Ad26.COV2.S, CoronaVac)</td><td>Specific drug (nirmatrelvir/ritonavir, molnupiravir, remdesivir, dexamethasone, tocilizumab, baricitinib)</td><td>Specific test (RT-PCR, rapid antigen, antibody)</td></tr>
+      <tr><td><strong>C</strong></td><td>Placebo or unvaccinated</td><td>Standard care or placebo</td><td>RT-PCR (reference standard)</td></tr>
+      <tr><td><strong>O</strong></td><td>Infection, symptomatic disease, hospitalization, death</td><td>Mortality, hospitalization, time to recovery, viral clearance</td><td>Sensitivity, specificity, PPV, NPV</td></tr>
+    </table>
+
+    <div class="warn"><strong>Scope warning:</strong> "All COVID-19 vaccines against all outcomes across all variants" is far too broad. Narrow to a specific vaccine platform (mRNA), a specific outcome (hospitalization), and a defined variant period (Omicron). You can expand with subgroup analyses.</div>
+
+    <h3>Search Strategy for COVID-19</h3>
+    <ul>
+      <li><strong>Databases:</strong> PubMed, Embase, Cochrane COVID-19 Study Register, WHO COVID-19 Research Database</li>
+      <li><strong>Preprint servers:</strong> medRxiv, bioRxiv, SSRN &mdash; essential for capturing early evidence</li>
+      <li><strong>Trial registries:</strong> ClinicalTrials.gov, ISRCTN, WHO ICTRP &mdash; identify unpublished or ongoing trials</li>
+      <li><strong>Living reviews:</strong> Check existing living systematic reviews (COVID-NMA, Cochrane) to avoid duplication</li>
+    </ul>
+  </div>
+
+  <div class="section" id="effect-size">
+    <h2>3. Choosing the Right Effect Size</h2>
+    <p>The correct effect measure depends entirely on your research domain and outcome type.</p>
+
+    <div class="decision-tree">
+What is your COVID-19 research question?
+&#x251c;&#x2500; Vaccine efficacy
+&#x2502;   &#x251c;&#x2500; RCT with person-time follow-up &#x2192; <strong>HR</strong> (then VE = 1 &minus; HR)
+&#x2502;   &#x251c;&#x2500; RCT with cumulative incidence &#x2192; <strong>RR</strong> (then VE = 1 &minus; RR)
+&#x2502;   &#x2514;&#x2500; Test-negative design &#x2192; <strong>OR</strong> (then VE = 1 &minus; OR)
+&#x251c;&#x2500; Treatment effect (binary: mortality, hospitalization)
+&#x2502;   &#x251c;&#x2500; Common events (&gt;20%) &#x2192; <strong>RR</strong>
+&#x2502;   &#x2514;&#x2500; Rare events (&lt;20%) &#x2192; <strong>OR</strong>
+&#x251c;&#x2500; Treatment effect (time-to-event: recovery, viral clearance)
+&#x2502;   &#x2514;&#x2500; <strong>HR</strong> or Rate Ratio
+&#x2514;&#x2500; Continuous outcome (symptom duration, viral load)
+    &#x251c;&#x2500; Same scale &#x2192; <strong>MD</strong>
+    &#x2514;&#x2500; Different scales &#x2192; <strong>SMD</strong>
+    </div>
+
+    <table class="data-table">
+      <tr><th>Outcome</th><th>Common Sources</th><th>Effect Size</th><th>Null Value</th><th>Interpretation</th></tr>
+      <tr><td>Vaccine efficacy vs infection</td><td>RCTs, cohort studies</td><td>1 &minus; RR or 1 &minus; HR</td><td>0% (RR=1)</td><td>VE 90% = 90% reduction in infection risk</td></tr>
+      <tr><td>Vaccine efficacy (TND)</td><td>Test-negative studies</td><td>1 &minus; OR</td><td>0% (OR=1)</td><td>VE 85% = 85% lower odds of testing positive</td></tr>
+      <tr><td>28-day mortality (treatment)</td><td>RECOVERY, SOLIDARITY</td><td>RR or OR</td><td>1.0</td><td>RR &lt; 1 = treatment reduces mortality</td></tr>
+      <tr><td>Time to recovery</td><td>ACTT-1, EPIC-HR</td><td>HR (Rate Ratio)</td><td>1.0</td><td>HR &gt; 1 = faster recovery with treatment</td></tr>
+      <tr><td>Hospitalization risk</td><td>Outpatient RCTs</td><td>RR or HR</td><td>1.0</td><td>RR &lt; 1 = treatment reduces hospitalization</td></tr>
+    </table>
+
+    <div class="formula">
+Vaccine Efficacy: VE = (1 &minus; RR) &times; 100%<br>
+Pool RR on log scale: log(RR_pooled), SE &rarr; then VE_pooled = 1 &minus; exp(log(RR_pooled))
+    </div>
+
+    <div class="warn"><strong>Critical:</strong> Never average VE percentages directly (e.g., averaging 95% and 85% to get 90%). VE is a non-linear transformation of RR. Always pool on the log(RR) scale and convert back to VE after pooling.</div>
+  </div>
+
+  <div class="section" id="vaccine">
+    <h2>4. Vaccine Efficacy Meta-Analysis</h2>
+
+    <h3>Vaccine Platforms and Key Trials</h3>
+    <table class="data-table">
+      <tr><th>Platform</th><th>Vaccine</th><th>Key RCT</th><th>Primary VE (Ancestral)</th><th>Doses</th></tr>
+      <tr><td>mRNA</td><td>BNT162b2 (Pfizer-BioNTech)</td><td>C4591001</td><td>95% (symptomatic)</td><td>2-dose + boosters</td></tr>
+      <tr><td>mRNA</td><td>mRNA-1273 (Moderna)</td><td>COVE</td><td>94.1% (symptomatic)</td><td>2-dose + boosters</td></tr>
+      <tr><td>Adenovirus</td><td>ChAdOx1 nCoV-19 (AstraZeneca)</td><td>COV002/COV003</td><td>70.4% (symptomatic)</td><td>2-dose</td></tr>
+      <tr><td>Adenovirus</td><td>Ad26.COV2.S (J&amp;J/Janssen)</td><td>ENSEMBLE</td><td>66.9% (moderate-severe)</td><td>1-dose + booster</td></tr>
+      <tr><td>Inactivated</td><td>CoronaVac (Sinovac)</td><td>Multiple Phase III</td><td>50-84% (varies by country)</td><td>2-dose + boosters</td></tr>
+    </table>
+
+    <h3>Key Dimensions for Vaccine Meta-Analysis</h3>
+    <ul>
+      <li><strong>Endpoint hierarchy:</strong> Infection &rarr; symptomatic disease &rarr; hospitalization &rarr; death (VE typically increases for more severe endpoints)</li>
+      <li><strong>Dose schedule:</strong> Primary series (2-dose) vs booster (3rd dose) vs bivalent booster &mdash; analyze separately</li>
+      <li><strong>Variant era:</strong> Ancestral, Alpha (B.1.1.7), Delta (B.1.617.2), Omicron BA.1, BA.2, BA.5, XBB, JN.1</li>
+      <li><strong>Time since vaccination:</strong> 14-60 days, 61-120 days, 121-180 days, &gt;180 days (waning immunity)</li>
+      <li><strong>Population:</strong> General adults, elderly (&ge;65), immunocompromised, children, pregnant women</li>
+    </ul>
+
+    <div class="tip"><strong>MetaReview supports RR input directly.</strong> Enter the RR and 95% CI from each study. The tool performs log-transformation, inverse-variance pooling, and back-transformation automatically. You can then convert the pooled RR to VE = (1 &minus; RR) &times; 100%.</div>
+  </div>
+
+  <div class="section" id="treatment">
+    <h2>5. Treatment Effect Meta-Analysis</h2>
+    <p>COVID-19 treatments fall into two major categories: antivirals (targeting viral replication) and immunomodulators (targeting the host inflammatory response). The treatment stage matters critically.</p>
+
+    <h3>Antivirals: Early Treatment (Outpatient)</h3>
+    <table class="data-table">
+      <tr><th>Drug</th><th>Key Trial</th><th>Primary Outcome</th><th>Effect Size</th><th>Result</th></tr>
+      <tr><td>Nirmatrelvir/ritonavir (Paxlovid)</td><td>EPIC-HR</td><td>Hospitalization or death by Day 28</td><td>RR</td><td>RR 0.12 (89% relative reduction)</td></tr>
+      <tr><td>Molnupiravir</td><td>MOVe-OUT</td><td>Hospitalization or death by Day 29</td><td>RR</td><td>RR 0.69 (31% relative reduction)</td></tr>
+      <tr><td>Remdesivir (3-day outpatient)</td><td>PINETREE</td><td>Hospitalization or death by Day 28</td><td>HR</td><td>HR 0.13 (87% relative reduction)</td></tr>
+    </table>
+
+    <h3>Immunomodulators: Hospitalized Patients</h3>
+    <table class="data-table">
+      <tr><th>Drug</th><th>Key Trial</th><th>Primary Outcome</th><th>Effect Size</th><th>Result</th></tr>
+      <tr><td>Dexamethasone</td><td>RECOVERY</td><td>28-day mortality</td><td>Rate Ratio</td><td>RR 0.83 overall; RR 0.64 in ventilated patients</td></tr>
+      <tr><td>Tocilizumab</td><td>RECOVERY, REMAP-CAP</td><td>28-day mortality</td><td>OR / RR</td><td>OR 0.84 (RECOVERY); benefit with concurrent steroids</td></tr>
+      <tr><td>Baricitinib</td><td>COV-BARRIER, ACTT-2</td><td>28-day mortality, time to recovery</td><td>HR / OR</td><td>HR 0.57 for mortality (COV-BARRIER); faster recovery in ACTT-2</td></tr>
+    </table>
+
+    <div class="warn"><strong>Severity matters:</strong> Dexamethasone reduced mortality in patients requiring oxygen or ventilation but showed potential harm in mild cases. Always stratify treatment meta-analyses by disease severity (mild/moderate vs severe/critical). Pooling across severity levels without stratification is misleading.</div>
+  </div>
+
+  <div class="section" id="data-extraction">
+    <h2>6. Data Extraction Checklist for COVID-19 Studies</h2>
+    <p>COVID-19 studies require additional extraction fields beyond standard meta-analysis practice.</p>
+
+    <h3>Standard Fields</h3>
+    <ul>
+      <li>First author, publication year, journal (or preprint server)</li>
+      <li>Study design: RCT, cohort, case-control, test-negative design</li>
+      <li>Registration number (NCT ID, ISRCTN), protocol availability</li>
+      <li>Sample size per arm, median age, sex distribution, comorbidities</li>
+    </ul>
+
+    <h3>COVID-19-Specific Fields</h3>
+    <ul>
+      <li><strong>Dominant variant:</strong> Confirmed by sequencing or inferred from study dates and local surveillance</li>
+      <li><strong>Vaccination status of participants:</strong> Unvaccinated, partially vaccinated, fully vaccinated, boosted</li>
+      <li><strong>Time since vaccination:</strong> Days from last dose to outcome measurement</li>
+      <li><strong>Disease severity at enrollment:</strong> WHO ordinal scale score, oxygen requirement, ICU status</li>
+      <li><strong>Prior infection status:</strong> Naive vs previously infected (hybrid immunity)</li>
+      <li><strong>Preprint vs peer-reviewed:</strong> Flag preprint status; record if subsequently published</li>
+      <li><strong>Endpoint definition:</strong> PCR-confirmed infection, symptomatic disease (CDC/WHO definition), hospitalization criteria</li>
+    </ul>
+
+    <h3>Outcome Data</h3>
+    <ul>
+      <li>Effect estimate (RR, OR, HR, VE) with 95% CI</li>
+      <li>Events/total per arm (for recalculation)</li>
+      <li>Follow-up duration and data cutoff date</li>
+      <li>Adjusted vs unadjusted estimates (and covariates used)</li>
+    </ul>
+
+    <div class="tip"><strong>Variant dating:</strong> If the study does not report sequencing data, use the study period dates cross-referenced with variant surveillance data (e.g., GISAID, national genomic surveillance reports) to assign the likely dominant variant.</div>
+  </div>
+
+  <div class="section" id="heterogeneity">
+    <h2>7. Handling Heterogeneity in COVID-19 Evidence</h2>
+    <p>COVID-19 meta-analyses face unique heterogeneity challenges driven by the rapidly evolving virus, shifting vaccination landscapes, and unprecedented reliance on diverse study designs.</p>
+
+    <h3>Sources of Heterogeneity Unique to COVID-19</h3>
+    <table class="data-table">
+      <tr><th>Source</th><th>Why It Matters</th><th>How to Handle</th></tr>
+      <tr><td>Variant differences</td><td>Omicron BA.1 VE is 30-50 percentage points lower than ancestral VE for infection</td><td>Subgroup by variant; never pool across variant eras without stratification</td></tr>
+      <tr><td>Waning immunity</td><td>VE against infection drops from ~90% at 2 weeks to ~40% at 6 months</td><td>Subgroup by time since vaccination; restrict to similar time windows</td></tr>
+      <tr><td>Study design mixing</td><td>RCTs, cohort studies, and test-negative designs yield different effect measures</td><td>Analyze separately by design; sensitivity analysis restricted to RCTs</td></tr>
+      <tr><td>Preprint quality</td><td>Non-peer-reviewed studies may have methodological flaws</td><td>Sensitivity analysis with and without preprints; track peer-review status</td></tr>
+      <tr><td>Prior infection (hybrid immunity)</td><td>Previously infected individuals have different baseline immunity</td><td>Separate naive vs previously infected when data permits</td></tr>
+      <tr><td>Endpoint definitions</td><td>"Infection" may mean PCR-positive, symptomatic, or hospitalized</td><td>Analyze each endpoint separately; never mix infection with hospitalization</td></tr>
+    </table>
+
+    <h3>Quantifying Heterogeneity</h3>
+    <ul>
+      <li><strong>I&sup2;</strong>: 0% = no heterogeneity, 25% = low, 50% = moderate, 75% = high</li>
+      <li><strong>Q-test p-value</strong>: p &lt; 0.10 indicates significant heterogeneity</li>
+      <li><strong>&tau;&sup2;</strong>: Between-study variance &mdash; especially useful for comparing heterogeneity across variant-specific subgroups</li>
+      <li><strong>Prediction interval</strong>: Shows the expected range of true effects in future studies, more informative than CI alone when &tau;&sup2; is large</li>
+    </ul>
+
+    <div class="tip"><strong>Always use random-effects models</strong> for COVID-19 meta-analyses. Clinical heterogeneity from variant evolution, population differences, and study design variation is virtually guaranteed.</div>
+  </div>
+
+  <div class="section" id="subgroup">
+    <h2>8. Subgroup Analysis: Variant, Vaccine Type, Severity</h2>
+    <p>Subgroup analysis is arguably the most important analytical step in COVID-19 meta-analysis, given the dramatic effect modification by variant, vaccine type, and disease severity.</p>
+
+    <h3>Pre-Specified Subgroups for Vaccine Meta-Analysis</h3>
+    <table class="data-table">
+      <tr><th>Subgroup Variable</th><th>Categories</th><th>Rationale</th></tr>
+      <tr><td>Variant</td><td>Ancestral, Alpha, Delta, Omicron BA.1/BA.2, BA.5, XBB, JN.1</td><td>Immune evasion directly reduces VE</td></tr>
+      <tr><td>Vaccine platform</td><td>mRNA (BNT162b2, mRNA-1273), adenovirus (ChAdOx1, Ad26.COV2.S), inactivated (CoronaVac)</td><td>Different immunogenicity profiles</td></tr>
+      <tr><td>Doses received</td><td>Primary series (1 or 2 doses), 1st booster, 2nd booster, bivalent booster</td><td>Boosters restore waned immunity</td></tr>
+      <tr><td>Time since vaccination</td><td>&le;60 days, 61-120 days, 121-180 days, &gt;180 days</td><td>Waning immunity over time</td></tr>
+      <tr><td>Age group</td><td>&lt;18, 18-64, &ge;65</td><td>Elderly have lower immune response but higher disease risk</td></tr>
+      <tr><td>Endpoint</td><td>Infection, symptomatic disease, hospitalization, death</td><td>VE against severe outcomes wanes more slowly</td></tr>
+    </table>
+
+    <h3>Pre-Specified Subgroups for Treatment Meta-Analysis</h3>
+    <ul>
+      <li><strong>Disease severity:</strong> Mild/moderate (outpatient) vs severe (hospitalized, oxygen) vs critical (ventilated, ICU)</li>
+      <li><strong>Treatment timing:</strong> Early (&le;3 days from symptom onset) vs late (&gt;5 days)</li>
+      <li><strong>Vaccination status:</strong> Vaccinated vs unvaccinated patients</li>
+      <li><strong>Comorbidities:</strong> Diabetes, obesity, cardiovascular disease, immunosuppression</li>
+      <li><strong>Age:</strong> &lt;65 vs &ge;65 (risk-benefit profile differs)</li>
+      <li><strong>Variant era:</strong> Pre-Omicron vs Omicron (treatment effects may differ with milder variant)</li>
+    </ul>
+
+    <div class="tip"><strong>In MetaReview:</strong> Assign subgroup labels (e.g., "Delta", "Omicron BA.1", "Omicron XBB") in the Subgroup column. The tool generates a grouped forest plot with subgroup subtotals and Q-between test to assess whether effects significantly differ across subgroups.</div>
+  </div>
+
+  <div class="section" id="metareview">
+    <h2>9. Step-by-Step: COVID-19 Meta-Analysis in MetaReview</h2>
+
+    <h3>Step 1: Select Effect Measure</h3>
+    <p>Open MetaReview and choose the appropriate effect measure:</p>
+    <ul>
+      <li><strong>Risk Ratio</strong> for vaccine efficacy (VE = 1 &minus; RR) or binary treatment outcomes</li>
+      <li><strong>Odds Ratio</strong> for test-negative design studies or rare outcomes</li>
+      <li><strong>Hazard Ratio</strong> for time-to-event treatment outcomes (recovery, viral clearance)</li>
+    </ul>
+
+    <h3>Step 2: Enter Study Data</h3>
+    <p>For RR/OR analysis: enter Study name, Year, Events and Total for both Treatment and Control (or Vaccinated and Unvaccinated) arms.</p>
+    <p>For HR analysis: enter Study name, Year, HR, CI Lower, CI Upper.</p>
+    <div class="tip"><strong>Batch entry:</strong> Organize your data in Excel or Google Sheets, then copy and paste directly into MetaReview. The tool auto-detects tabular data and maps columns.</div>
+
+    <h3>Step 3: Assign Variant and Vaccine Subgroups</h3>
+    <p>Use the "Subgroup" column to assign dominant variant, vaccine type, or severity level. This enables stratified forest plots with Q-between testing.</p>
+
+    <h3>Step 4: Run the Analysis</h3>
+    <p>Click <strong>"Run Meta-Analysis"</strong>. Results include:</p>
+    <ul>
+      <li>Forest plot with individual study effects and pooled estimate</li>
+      <li>Subgroup forest plot with Q-between test</li>
+      <li>Funnel plot for publication bias assessment</li>
+      <li>Heterogeneity statistics (I&sup2;, Q, &tau;&sup2;)</li>
+      <li>Leave-one-out sensitivity analysis</li>
+    </ul>
+
+    <h3>Step 5: COVID-Specific Sensitivity Analyses</h3>
+    <ul>
+      <li><strong>Preprint sensitivity:</strong> Run analysis with and without preprint-only studies</li>
+      <li><strong>Design sensitivity:</strong> Restrict to RCTs only, then compare with all-studies pooled result</li>
+      <li><strong>Temporal sensitivity:</strong> Restrict to studies within the same variant wave</li>
+    </ul>
+
+    <h3>Step 6: Export Report</h3>
+    <p>Generate a complete HTML or DOCX report with all forest plots, funnel plots, sensitivity analyses, and an auto-generated Methods paragraph following PRISMA 2020 guidelines.</p>
+  </div>
+
+  <div class="section" id="pitfalls">
+    <h2>10. Common Pitfalls in COVID-19 Meta-Analysis</h2>
+
+    <h3>Pitfall 1: Mixing VE From Different Endpoints</h3>
+    <p>A study reporting VE 95% against symptomatic disease and another reporting VE 70% against any infection are measuring fundamentally different outcomes. Pooling them produces a meaningless number.</p>
+    <p><strong>Solution:</strong> Analyze each endpoint separately. Maintain strict endpoint definitions across included studies.</p>
+
+    <h3>Pitfall 2: Ignoring Variant-Temporal Changes</h3>
+    <p>A VE estimate from a study conducted during the Delta wave cannot be directly compared to one from the Omicron BA.5 wave. Immune evasion by newer variants dramatically alters efficacy.</p>
+    <p><strong>Solution:</strong> Always stratify by dominant variant. Report variant-specific pooled estimates. The overall pooled VE across all variants is of limited clinical value.</p>
+
+    <h3>Pitfall 3: Treating Preprints as Equal to Peer-Reviewed Studies</h3>
+    <p>During the pandemic, some preprints were later retracted or substantially revised after peer review. Including unvetted preprints without flagging their status can bias results.</p>
+    <p><strong>Solution:</strong> Include preprints to maximize coverage, but conduct a prespecified sensitivity analysis excluding preprints. Update to peer-reviewed versions when available.</p>
+
+    <h3>Pitfall 4: Confounding in Observational Studies</h3>
+    <p>Observational vaccine studies are prone to healthy vaccinee bias (vaccinated individuals are generally healthier), healthcare-seeking behavior bias, and misclassification of vaccination status.</p>
+    <p><strong>Solution:</strong> Prefer adjusted estimates. Conduct sensitivity analysis restricted to RCTs. Use test-negative design studies which partially control for healthcare-seeking bias. Assess risk of bias with ROBINS-I.</p>
+
+    <h3>Pitfall 5: Ignoring Waning Immunity</h3>
+    <p>Averaging VE at 2 weeks post-vaccination with VE at 6 months produces an estimate that describes no real-world scenario. VE is a moving target.</p>
+    <p><strong>Solution:</strong> Report VE by time interval since vaccination. If pooling, restrict to studies with similar time windows. Present a waning curve when data permits.</p>
+
+    <h3>Pitfall 6: Index Event Bias in Severity Analyses</h3>
+    <p>When studying VE against death conditional on hospitalization, conditioning on the intermediate event (hospitalization) introduces collider bias. Vaccinated hospitalized patients may be sicker than unvaccinated ones because vaccination prevents mild hospitalizations.</p>
+    <p><strong>Solution:</strong> Analyze VE against hospitalization and VE against death as unconditional outcomes from the general population. If conditional analyses are necessary, discuss index event bias as a limitation.</p>
+  </div>
+
+  <div class="cta">
+    <h2>Start Your COVID-19 Meta-Analysis Now</h2>
+    <p>Enter RR with 95% CI for vaccine efficacy, or events/totals for treatment outcomes. MetaReview handles the statistics, forest plots, and report generation. Free, no coding required.</p>
+    <a href="/">Open MetaReview</a>
+    <p style="margin-top:12px"><a href="/?s=6ae5971c" style="color:#93c5fd;font-size:14px;text-decoration:underline;">See live demo: Aspirin vs Placebo meta-analysis (7 RCTs) &rarr;</a></p>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">Stay Updated</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">Get notified about new features and meta-analysis tips.</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="Enter your email" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Subscribe</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">No spam. Unsubscribe anytime.</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='Submitting...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-covid-en',lang:'en'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'You are already subscribed!':'Subscribed! We will notify you about new features.';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Please enter a valid email address.';btn.textContent='Subscribe';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Submission failed. Please try again later.';btn.textContent='Subscribe';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="related">
+    <h2>Related Guides</h2>
+    <ul>
+      <li><a href="/guides/how-to-meta-analysis">How to Do a Meta-Analysis: Step-by-Step Guide</a></li>
+      <li><a href="/guides/free-forest-plot-generator">Free Forest Plot Generator Online</a></li>
+      <li><a href="/guides/free-funnel-plot-maker">Free Funnel Plot Maker Online</a></li>
+      <li><a href="/guides/meta-analysis-calculator">Meta-Analysis Calculator Online</a></li>
+      <li><a href="/guides/best-meta-analysis-software">Best Free Meta-Analysis Software Compared</a></li>
+      <li><a href="/guides/free-prisma-flow-diagram-generator">Free PRISMA Flow Diagram Generator</a></li>
+      <li><a href="/guides/meta-analysis-effect-size-guide">Meta-Analysis Effect Size Guide: OR vs RR vs HR vs MD vs SMD</a></li>
+      <li><a href="/guides/hazard-ratio-meta-analysis-guide">Hazard Ratio Meta-Analysis Guide: HR Extraction & Forest Plot</a></li>
+      <li><a href="/guides/cancer-meta-analysis-guide">Cancer & Oncology Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis-guide">Cardiovascular Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/diabetes-meta-analysis-guide">Diabetes Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis-guide">Psychiatric Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/covid-meta-analysis">COVID-19 Meta 分析指南（中文版）</a></li>
+      <li><a href="/guides/tumor-meta-analysis">肿瘤 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">心血管 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/diabetes-meta-analysis">糖尿病 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis">精神科 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/effect-size-selection">效应量选择指南（中文）</a></li>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤（中文）</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图指南（中文）</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 流程图指南（中文）</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta 分析软件对比（中文）</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> &mdash; Free Online Meta-Analysis Tool</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

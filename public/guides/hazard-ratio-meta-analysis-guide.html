@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hazard Ratio Meta-Analysis Guide: HR Extraction, Calculation &amp; Forest Plot (2026) | MetaReview</title>
+  <meta name="description" content="Complete guide to hazard ratio (HR) meta-analysis. Learn how to extract HR from papers, calculate log(HR) and SE, interpret survival forest plots, and avoid common pitfalls in time-to-event meta-analysis." />
+  <meta name="keywords" content="hazard ratio meta analysis, HR meta-analysis, survival meta analysis, time to event meta analysis, HR forest plot, cox regression meta analysis, kaplan meier meta analysis, log hazard ratio, HR extraction, survival analysis systematic review, how to pool hazard ratios" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview.cc/guides/hazard-ratio-meta-analysis-guide" />
+  <link rel="alternate" hreflang="en" href="https://metareview.cc/guides/hazard-ratio-meta-analysis-guide" />
+  <link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/survival-analysis-meta" />
+  <link rel="alternate" hreflang="x-default" href="https://metareview.cc/guides/hazard-ratio-meta-analysis-guide" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview.cc/guides/hazard-ratio-meta-analysis-guide" />
+  <meta property="og:title" content="Hazard Ratio Meta-Analysis Guide: HR Extraction, Calculation & Forest Plot" />
+  <meta property="og:description" content="From Kaplan-Meier curves to forest plots. Step-by-step guide to conducting HR meta-analysis for survival outcomes." />
+  <meta property="og:image" content="https://metareview.cc/og-image.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MetaReview" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Hazard Ratio Meta-Analysis Guide: HR Extraction, Calculation & Forest Plot" />
+  <meta name="twitter:description" content="From Kaplan-Meier curves to forest plots. Step-by-step guide to conducting HR meta-analysis." />
+  <meta name="twitter:image" content="https://metareview.cc/og-image.png" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "MetaReview", "item": "https://metareview.cc/"},
+      {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://metareview.cc/#guides"},
+      {"@type": "ListItem", "position": 3, "name": "Hazard Ratio Meta-Analysis Guide"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Hazard Ratio Meta-Analysis Guide: HR Extraction, Calculation & Forest Plot (2026)",
+    "description": "Complete guide to conducting hazard ratio meta-analysis for survival outcomes, including HR extraction, log transformation, and forest plot interpretation.",
+    "author": {"@type": "Organization", "name": "MetaReview"},
+    "publisher": {"@type": "Organization", "name": "MetaReview"},
+    "datePublished": "2026-02-25",
+    "dateModified": "2026-02-25"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What software can I use for hazard ratio meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MetaReview is a free online HR meta-analysis tool. Enter the HR and 95% CI, and it automatically performs log transformation, pooled effect calculation, forest plots, and funnel plots. Alternatives include R (meta/metafor packages), Stata (metan command), and RevMan. MetaReview's advantage is that it requires no programming and shows results in real time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I extract HR from a paper that only shows Kaplan-Meier curves?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use the Tierney et al. (2007) method published in BMC Medical Research Methodology. Digitize the Kaplan-Meier curve coordinates using WebPlotDigitizer, combine with the number-at-risk table (usually below the KM plot), reconstruct event and censoring counts for each time interval, and estimate the HR from the reconstructed individual patient data."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does HR less than 1 or greater than 1 mean?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "HR < 1 means the intervention (experimental) group has a lower instantaneous event rate than the control group, meaning the intervention reduces the risk of the event. For example, HR = 0.70 means the intervention group's event rate at any time point is 70% of the control group's, a 30% risk reduction. HR > 1 means the intervention increases risk. HR = 1 means no difference."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I combine HR and OR in the same meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. HR comes from survival analysis (Cox regression) and accounts for time and censoring. OR comes from logistic regression or 2x2 tables and only considers events at a fixed time point. They have different statistical meanings and mathematical foundations and cannot be pooled together. All studies in a meta-analysis must use the same effect measure."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is log transformation needed for HR meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "HR values range from 0 to infinity and have a right-skewed distribution. Log transformation makes the distribution approximately normal (required for meta-analysis), centers the null value at 0 instead of 1, and makes symmetric effects equidistant from null (log(0.5) = -0.693 and log(2.0) = 0.693 are equally far from 0). MetaReview performs this transformation automatically."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I use adjusted or unadjusted HR in meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Preferably use adjusted (multivariable) HR because it controls for confounding factors like age, sex, and disease stage. The key is consistency: either use adjusted HR from all studies or unadjusted HR from all studies. Pre-specify which type you will extract in your protocol. If you must mix, conduct a sensitivity analysis comparing results with each type."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I calculate SE from HR and p-value when 95% CI is not reported?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Convert the p-value to a z-score (e.g., p = 0.05 gives z = 1.96, p = 0.01 gives z = 2.576). Then calculate SE[log(HR)] = |log(HR)| / z. Finally, reconstruct the 95% CI as exp(log(HR) +/- 1.96 * SE). For example, HR = 0.65, p = 0.003: z = 2.968, log(0.65) = -0.431, SE = 0.431/2.968 = 0.145, 95% CI = (0.489, 0.863)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the proportional hazards assumption and why does it matter?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The proportional hazards (PH) assumption means the HR remains constant throughout the follow-up period. If Kaplan-Meier curves cross, the PH assumption is violated, and a single HR cannot accurately describe the treatment effect. Check for crossing KM curves and Schoenfeld residual tests. If PH is violated, consider restricted mean survival time (RMST) as an alternative."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Conduct a Hazard Ratio Meta-Analysis",
+    "description": "Step-by-step guide to performing a meta-analysis of hazard ratios from survival studies using MetaReview.",
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "Select Hazard Ratio as effect measure", "text": "Open MetaReview and select 'Hazard Ratio' from the effect measure dropdown. The data entry form will switch to HR-specific input fields."},
+      {"@type": "HowToStep", "position": 2, "name": "Extract HR data from papers", "text": "For each included study, extract the HR value and 95% CI from the paper. Prefer adjusted HRs from multivariable Cox regression. Record the source (directly reported, p-value derived, or KM-curve extracted)."},
+      {"@type": "HowToStep", "position": 3, "name": "Enter study information", "text": "For each study, enter the study name (typically 'First Author Year'), publication year, HR value, CI lower bound, and CI upper bound."},
+      {"@type": "HowToStep", "position": 4, "name": "Run the meta-analysis", "text": "Click 'Run Meta-Analysis'. MetaReview automatically performs log(HR) transformation, calculates standard errors, applies inverse-variance weighting, and pools the effect."},
+      {"@type": "HowToStep", "position": 5, "name": "Interpret the forest plot", "text": "The forest plot displays each study's HR with 95% CI. The vertical line at HR = 1 is the null line. Points left of 1 favor the intervention. The diamond at the bottom is the pooled HR."},
+      {"@type": "HowToStep", "position": 6, "name": "Assess heterogeneity and publication bias", "text": "Check I-squared (>50% indicates substantial heterogeneity), examine the funnel plot for asymmetry, and run Egger's test. If heterogeneity is high, perform subgroup analysis or meta-regression."},
+      {"@type": "HowToStep", "position": 7, "name": "Export the report", "text": "Generate a complete HTML or DOCX report including forest plot, funnel plot, heterogeneity statistics, sensitivity analysis, and an auto-generated Methods paragraph in PRISMA 2020 format."}
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .decision-tree { background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; overflow-x: auto; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">Open Tool</a>
+      <a href="/guides/how-to-meta-analysis">How-To Guide</a>
+      <a href="/guides/meta-analysis-effect-size-guide">Effect Size Guide</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Hazard Ratio Meta-Analysis Guide: HR Extraction, Calculation &amp; Forest Plot</h1>
+  <p>From Kaplan-Meier curves to forest plots. A complete guide to pooling hazard ratios for survival outcomes.</p>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <h2>What Is Hazard Ratio Meta-Analysis?</h2>
+    <p>In medical research, many clinical outcomes are <strong>time-to-event</strong> data: the time from treatment initiation to disease progression, death, or another endpoint. These data are analyzed using <strong>survival analysis</strong> methods.</p>
+    <p>When multiple studies report the effect of the same intervention on a survival outcome, meta-analysis pools them to obtain a more precise overall estimate. The core effect measure for survival data meta-analysis is the <strong>Hazard Ratio (HR)</strong>.</p>
+
+    <h3>What Is a Hazard Ratio?</h3>
+    <p>HR is the ratio of instantaneous event rates (hazards) between two groups. It comes from the Cox proportional hazards regression model and accounts for follow-up time and censoring. HR = 0.70 means that at any given time point, the intervention group's event rate is 70% of the control group's &mdash; a 30% risk reduction.</p>
+
+    <h3>When Do You Need HR Meta-Analysis?</h3>
+    <ul>
+      <li><strong>Oncology</strong> &mdash; Overall survival (OS), progression-free survival (PFS), disease-free survival (DFS). Nearly all oncology RCTs report HR.</li>
+      <li><strong>Cardiovascular disease</strong> &mdash; Time to major adverse cardiovascular events (MACE), composite endpoints of heart failure hospitalization or death.</li>
+      <li><strong>Infectious disease</strong> &mdash; Time to virological cure, time to infection recurrence.</li>
+      <li><strong>Organ transplantation</strong> &mdash; Graft survival time, time to rejection.</li>
+      <li><strong>Chronic disease</strong> &mdash; Diabetic nephropathy progression time, COPD exacerbation interval.</li>
+    </ul>
+
+    <h3>HR vs. RR: Don't Confuse Them</h3>
+    <table class="data-table">
+      <tr><th>Feature</th><th>HR (Hazard Ratio)</th><th>RR (Risk Ratio)</th></tr>
+      <tr><td>Data source</td><td>Cox proportional hazards / survival analysis</td><td>2&times;2 table / cumulative incidence</td></tr>
+      <tr><td>Accounts for time</td><td>Yes, considers when events occur during follow-up</td><td>No, only cumulative event counts at a fixed time point</td></tr>
+      <tr><td>Handles censoring</td><td>Yes, correctly handles loss to follow-up and study end</td><td>No, censored patients are typically excluded or simply handled</td></tr>
+      <tr><td>Null value</td><td>1</td><td>1</td></tr>
+      <tr><td>Typical use</td><td>Oncology OS/PFS, cardiovascular MACE</td><td>RCT binary outcomes (cure rate, mortality at a fixed time)</td></tr>
+    </table>
+    <div class="warn"><strong>Key distinction:</strong> HR is based on event rates across the entire follow-up period, while RR is based on cumulative event rates at a fixed time point. They cannot be mixed in the same meta-analysis.</div>
+  </div>
+
+  <div class="section">
+    <h2>How to Extract HR Data from Papers</h2>
+    <p>Extracting HR data is the most critical and error-prone step in survival meta-analysis. Depending on what the paper reports, there are three extraction scenarios.</p>
+
+    <h3>Scenario 1: Paper Reports HR + 95% CI (Most Common, Easiest)</h3>
+    <p>This is the ideal case. Most high-quality RCTs and cohort studies directly report the HR and 95% CI from Cox regression in the text or tables.</p>
+    <p>Example: Paper reports "HR = 0.72, 95% CI: 0.58&ndash;0.90." Record these three numbers:</p>
+    <ul>
+      <li>HR = 0.72</li>
+      <li>CI Lower = 0.58</li>
+      <li>CI Upper = 0.90</li>
+    </ul>
+    <p>MetaReview handles all subsequent log transformation and SE calculations automatically.</p>
+    <div class="tip"><strong>Extraction priority:</strong> Results section text &gt; Tables (typically in multivariable analysis tables) &gt; Figure legends &gt; Supplementary material. If multiple models report HR, prefer the <strong>adjusted (multivariable)</strong> HR, as it controls for confounders.</div>
+
+    <h3>Scenario 2: Paper Reports HR + p-value (No CI)</h3>
+    <p>Some older papers or conference abstracts report only the HR and p-value without a 95% CI. You can back-calculate the SE from the p-value:</p>
+    <ol>
+      <li>Convert the p-value to a z-score (e.g., p = 0.05 &rarr; z = 1.96, p = 0.01 &rarr; z = 2.576)</li>
+      <li>Calculate SE: SE[log(HR)] = |log(HR)| / z</li>
+      <li>Reconstruct 95% CI: CI = exp(log(HR) &plusmn; 1.96 &times; SE)</li>
+    </ol>
+    <div class="formula">
+      SE[log(HR)] = |log(HR)| / z<br>
+      where z is the normal distribution quantile corresponding to the p-value
+    </div>
+    <p><strong>Example:</strong> Paper reports HR = 0.65, p = 0.003.</p>
+    <ol>
+      <li>p = 0.003 (two-sided) &rarr; z = 2.968</li>
+      <li>log(0.65) = &minus;0.431</li>
+      <li>SE = |&minus;0.431| / 2.968 = 0.145</li>
+      <li>95% CI = exp(&minus;0.431 &plusmn; 1.96 &times; 0.145) = (0.489, 0.863)</li>
+    </ol>
+    <div class="warn"><strong>Caution:</strong> If the paper only reports "p &lt; 0.05," using z = 1.96 will overestimate the SE (underestimate precision). This is a conservative approach &mdash; acceptable but not ideal. Contact the authors for exact data whenever possible.</div>
+
+    <h3>Scenario 3: Paper Only Shows Kaplan-Meier Curves (No HR Reported)</h3>
+    <p>This is the most challenging scenario. Some older publications or studies with negative results only show KM curves without reporting HR.</p>
+    <p>Use the <strong>Tierney et al. (2007)</strong> method to estimate HR from KM curves:</p>
+    <ol>
+      <li>Digitize the KM curve using a tool like WebPlotDigitizer to extract survival probability coordinates at each time point</li>
+      <li>Combine with the number-at-risk table (usually displayed below the KM plot)</li>
+      <li>Reconstruct event and censoring counts for each time interval</li>
+      <li>Estimate the HR from the reconstructed approximate individual patient data (IPD)</li>
+    </ol>
+    <p>Reference: Tierney JF, Stewart LA, Ghersi D, Burdett S, Sydes MR. Practical methods for incorporating summary time-to-event data into meta-analysis. <em>Trials</em>. 2007;8:16.</p>
+    <div class="tip"><strong>Tip:</strong> Tierney's method has a companion Excel calculator available in the paper's supplementary materials. If the KM plot lacks a number-at-risk table, estimation accuracy drops significantly. Consider listing "unable to extract HR" as an exclusion criterion.</div>
+
+    <h3>Data Extraction Template</h3>
+    <table class="data-table">
+      <tr><th>Field</th><th>Description</th><th>Example</th></tr>
+      <tr><td>First Author</td><td>Study's first author</td><td>Wang</td></tr>
+      <tr><td>Year</td><td>Publication year</td><td>2023</td></tr>
+      <tr><td>Study Design</td><td>RCT / Cohort / Other</td><td>RCT</td></tr>
+      <tr><td>Intervention</td><td>Experimental group treatment</td><td>Immunotherapy + chemo</td></tr>
+      <tr><td>Control</td><td>Control group treatment</td><td>Chemotherapy alone</td></tr>
+      <tr><td>Outcome</td><td>OS / PFS / DFS etc.</td><td>OS</td></tr>
+      <tr><td>HR</td><td>Hazard Ratio</td><td>0.72</td></tr>
+      <tr><td>CI Lower</td><td>95% CI lower bound</td><td>0.58</td></tr>
+      <tr><td>CI Upper</td><td>95% CI upper bound</td><td>0.90</td></tr>
+      <tr><td>HR Type</td><td>Adjusted / Unadjusted</td><td>Adjusted</td></tr>
+      <tr><td>Data Source</td><td>Directly reported / p-value derived / KM extracted</td><td>Directly reported</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Statistical Principles of HR Meta-Analysis</h2>
+    <p>Understanding the statistical foundation helps you correctly perform the analysis and identify errors. The key point: <strong>HRs are pooled on the log scale, not the original scale</strong>.</p>
+
+    <h3>Why Log Transformation?</h3>
+    <p>HR values range from (0, +&infin;) and have a right-skewed distribution. For example, HR = 0.5 (risk halved) and HR = 2.0 (risk doubled) represent effects of equal magnitude but opposite direction, yet they are unequally distant from the null value of 1 (distances: 0.5 vs. 1.0).</p>
+    <p>After log transformation:</p>
+    <ul>
+      <li>log(0.5) = &minus;0.693, log(2.0) = 0.693 &mdash; equidistant from zero</li>
+      <li>log(1.0) = 0 &mdash; null value becomes 0, convenient for statistical testing</li>
+      <li>log(HR) is approximately normally distributed &mdash; satisfying the assumptions required for meta-analysis</li>
+    </ul>
+
+    <h3>Calculating the Standard Error</h3>
+    <p>When you know the HR and 95% CI:</p>
+    <div class="formula">
+      SE[log(HR)] = (log(CI<sub>upper</sub>) &minus; log(CI<sub>lower</sub>)) / 3.92
+    </div>
+    <p>Where 3.92 = 2 &times; 1.96, because 95% CI = log(HR) &plusmn; 1.96 &times; SE, so CI width = 2 &times; 1.96 &times; SE.</p>
+    <p><strong>Example:</strong> HR = 0.72, 95% CI (0.58, 0.90):</p>
+    <ol>
+      <li>log(HR) = log(0.72) = &minus;0.329</li>
+      <li>log(0.90) = &minus;0.105</li>
+      <li>log(0.58) = &minus;0.545</li>
+      <li>SE = (&minus;0.105 &minus; (&minus;0.545)) / 3.92 = 0.440 / 3.92 = 0.112</li>
+    </ol>
+
+    <h3>Inverse-Variance Weighted Pooling</h3>
+    <p>Meta-analysis uses the <strong>inverse-variance method</strong> to pool log(HR) values across studies:</p>
+    <div class="formula">
+      Weight w<sub>i</sub> = 1 / SE<sub>i</sub>&sup2;<br><br>
+      Pooled log(HR) = &sum;(w<sub>i</sub> &times; log(HR<sub>i</sub>)) / &sum;w<sub>i</sub>
+    </div>
+    <p>Studies with smaller SE (typically larger sample size, more events) receive greater weight. After pooling, the combined log(HR) and its CI are back-transformed via exp():</p>
+    <div class="formula">
+      Pooled HR = exp(pooled log(HR))<br>
+      Pooled 95% CI = exp(pooled log(HR) &plusmn; 1.96 &times; SE<sub>pooled</sub>)
+    </div>
+    <div class="tip"><strong>Good news:</strong> MetaReview handles all these calculations automatically. You only need to enter the original HR and 95% CI &mdash; the tool performs log transformation, SE calculation, inverse-variance weighting, and back-transformation behind the scenes.</div>
+
+    <h3>Fixed-Effect vs. Random-Effects Model</h3>
+    <ul>
+      <li><strong>Fixed-effect model:</strong> Assumes all studies estimate the same true HR. Appropriate when studies are highly homogeneous.</li>
+      <li><strong>Random-effects model:</strong> Assumes the true HR varies across studies and pools the average HR. Appropriate when heterogeneity exists &mdash; the more common choice.</li>
+    </ul>
+    <p>Decision guide: Use random-effects when I&sup2; &gt; 50% or Q-test p &lt; 0.10.</p>
+  </div>
+
+  <div class="section">
+    <h2>Forest Plot Interpretation for HR</h2>
+    <p>The forest plot is the most important visual output of any meta-analysis. HR forest plots share the same structure as OR/RR plots but have specific interpretation details.</p>
+
+    <h3>Basic Elements</h3>
+    <table class="data-table">
+      <tr><th>Element</th><th>Meaning</th></tr>
+      <tr><td>Square (each row)</td><td>Point estimate of a single study's HR. Square size = study weight (smaller SE = larger square).</td></tr>
+      <tr><td>Horizontal lines</td><td>95% CI of that study's HR. Shorter line = more precise estimate.</td></tr>
+      <tr><td>Vertical dashed line (x = 1)</td><td>Null line. HR = 1 means no difference between groups.</td></tr>
+      <tr><td>Diamond (bottom)</td><td>Pooled HR. Diamond center = pooled point estimate; diamond width = pooled 95% CI.</td></tr>
+    </table>
+
+    <h3>Direction Interpretation</h3>
+    <p>HR forest plots typically use a log-scale x-axis. Key judgments:</p>
+    <ul>
+      <li><strong>HR &lt; 1 (left of null line)</strong>: Lower event rate in intervention group = <strong>favours treatment</strong></li>
+      <li><strong>HR &gt; 1 (right of null line)</strong>: Higher event rate in intervention group = <strong>favours control</strong></li>
+      <li><strong>CI crosses null line 1</strong>: The study result is not statistically significant (p &gt; 0.05)</li>
+      <li><strong>Diamond entirely on one side</strong>: The pooled result is statistically significant</li>
+    </ul>
+    <div class="decision-tree">
+Forest Plot Reading Example:
+
+Study A:  ----[====]----          HR = 0.65 (0.48, 0.88)
+          CI entirely left of 1 &#x2192; Significantly favours treatment
+
+Study B:        -----[==]-----|  HR = 0.89 (0.71, 1.12)
+          CI crosses null line 1 &#x2192; Not statistically significant
+
+Study C:  --[======]---          HR = 0.58 (0.39, 0.86)
+          Large square &#x2192; High weight study
+
+Pooled:         &lt;====&gt;           HR = 0.71 (0.59, 0.85)
+          Diamond left of 1 &#x2192; Pooled result significantly favours treatment
+    </div>
+    <div class="tip"><strong>Publication tip:</strong> Always label the forest plot sides: left = "Favours treatment," right = "Favours control." This is recommended by the Cochrane Handbook and is frequently checked by peer reviewers.</div>
+
+    <h3>Heterogeneity Indicators</h3>
+    <ul>
+      <li><strong>I&sup2;</strong>: Percentage of total variation due to heterogeneity. 0% = no heterogeneity, &gt;50% = moderate-to-high, &gt;75% = high.</li>
+      <li><strong>Q-test p-value</strong>: p &lt; 0.10 suggests significant heterogeneity (threshold is 0.10, not 0.05, because Q-test has low statistical power).</li>
+      <li><strong>&tau;&sup2;</strong>: Estimated between-study variance (random-effects model).</li>
+    </ul>
+    <div class="warn"><strong>If I&sup2; is very high (&gt;75%):</strong> The pooled HR may be misleading. Prioritize subgroup analysis or meta-regression to identify the source of heterogeneity (e.g., different tumor types, treatment regimens, or follow-up durations).</div>
+  </div>
+
+  <div class="section">
+    <h2>Step-by-Step: HR Meta-Analysis in MetaReview</h2>
+
+    <h3>Step 1: Select Effect Measure</h3>
+    <p>Open MetaReview and select <strong>"Hazard Ratio"</strong> from the effect measure dropdown at the top. The data entry area automatically switches to HR-specific input fields.</p>
+
+    <h3>Step 2: Enter Study Information</h3>
+    <p>For each row, fill in:</p>
+    <ul>
+      <li><strong>Study</strong>: Study name, typically "First Author Year" (e.g., "Wang 2023")</li>
+      <li><strong>Year</strong>: Publication year, used for sorting and subgroup analysis</li>
+    </ul>
+
+    <h3>Step 3: Enter HR and Confidence Interval</h3>
+    <ul>
+      <li><strong>HR</strong>: Hazard Ratio point estimate (e.g., 0.72)</li>
+      <li><strong>CI Lower</strong>: 95% CI lower bound (e.g., 0.58)</li>
+      <li><strong>CI Upper</strong>: 95% CI upper bound (e.g., 0.90)</li>
+    </ul>
+    <p>MetaReview automatically performs log(HR) transformation and SE calculation in the background.</p>
+
+    <h3>Step 4: Run the Analysis</h3>
+    <p>After entering all study data, click <strong>"Run Meta-Analysis"</strong>. Results are computed within seconds.</p>
+
+    <h3>Step 5: Review Results</h3>
+    <ol>
+      <li><strong>Forest Plot</strong> &mdash; Displays each study's HR, 95% CI, weight, and pooled result. X-axis uses log scale with the null line at HR = 1.</li>
+      <li><strong>Funnel Plot</strong> &mdash; Assesses publication bias. A symmetric funnel shape suggests no obvious bias; asymmetry suggests possible small-study effects.</li>
+      <li><strong>Sensitivity Analysis (Leave-one-out)</strong> &mdash; Recalculates the pooled HR after removing each study one at a time. If removing a study substantially changes the result, that study has high influence.</li>
+      <li><strong>Heterogeneity Statistics</strong> &mdash; I&sup2;, Q-test p-value, and &tau;&sup2;.</li>
+    </ol>
+
+    <h3>Keyboard Shortcuts for Faster Data Entry</h3>
+    <ul>
+      <li><strong>Tab</strong>: Jump between input fields</li>
+      <li><strong>Enter</strong>: Add a new study row or run the analysis</li>
+      <li><strong>Ctrl+Z</strong>: Undo the last change</li>
+    </ul>
+    <div class="tip"><strong>Batch entry tip:</strong> Organize all study data in Excel first (Study, Year, HR, CI Lower, CI Upper), then copy and paste row by row. MetaReview also supports pasting tabular data from Excel or Google Sheets.</div>
+  </div>
+
+  <div class="section">
+    <h2>Common Pitfalls and How to Avoid Them</h2>
+
+    <h3>Pitfall 1: Mixing HR with OR/RR</h3>
+    <p>This is the most serious methodological error. HR comes from survival analysis (Cox regression) and accounts for time and censoring. OR comes from logistic regression, RR from frequency tables &mdash; they only consider cumulative events at a fixed time point. Their mathematical foundations are entirely different.</p>
+    <p><strong>Solution:</strong> Specify in your inclusion criteria that "studies must report HR or provide data from which HR can be calculated." Analyze studies reporting only OR separately.</p>
+
+    <h3>Pitfall 2: Mixing Adjusted and Unadjusted HRs</h3>
+    <p>The same paper may report both unadjusted (univariate) and adjusted (multivariable) HRs. They can differ substantially.</p>
+    <p><strong>Solution:</strong> Pre-specify in your protocol which type of HR to extract. Prefer <strong>adjusted HRs</strong> because they control for confounders. Maintain consistency across all included studies. If mixing is unavoidable, conduct a sensitivity analysis.</p>
+
+    <h3>Pitfall 3: Ignoring the Proportional Hazards Assumption</h3>
+    <p>The Cox model assumes the HR remains constant throughout follow-up (<strong>proportional hazards assumption</strong>). If KM curves cross, this assumption is violated and a single HR cannot accurately describe the treatment effect.</p>
+    <p><strong>How to check:</strong></p>
+    <ul>
+      <li>Look for crossing KM curves in the original papers</li>
+      <li>Check if the paper reports Schoenfeld residual tests</li>
+      <li>If curves separate early but cross later, the treatment effect changes over time</li>
+    </ul>
+    <p><strong>Solution:</strong> Discuss the PH limitation in your Discussion section. If multiple studies show crossing curves, consider restricted mean survival time (RMST) as an alternative effect measure.</p>
+
+    <h3>Pitfall 4: Incorrect Subgroup HR Extraction</h3>
+    <p>Papers often report subgroup HRs (by tumor type, age group, PD-L1 expression, etc.) in forest plot format.</p>
+    <ul>
+      <li>If your meta-analysis targets the overall effect, extract the <strong>overall HR</strong>, not a subgroup HR</li>
+      <li>If your meta-analysis specifically targets a subgroup (e.g., "immunotherapy effect in PD-L1 high expressors"), extract the corresponding subgroup HR</li>
+      <li><strong>Never</strong> treat multiple subgroup HRs from the same study as independent studies &mdash; this causes double-counting and statistical bias</li>
+    </ul>
+
+    <h3>Pitfall 5: Ignoring Follow-Up Duration Differences</h3>
+    <p>Different studies may have vastly different median follow-up times (e.g., 12 months vs. 60 months). Short follow-up may underestimate long-term effects, while long follow-up may be affected by treatment crossover.</p>
+    <p><strong>Solution:</strong> Record median follow-up time during data extraction and explore it as a potential source of heterogeneity via meta-regression.</p>
+
+    <h3>Pitfall 6: Publication Bias</h3>
+    <p>Studies with positive results (HR significantly &lt; 1) are more likely to be published, while negative results may remain in file drawers.</p>
+    <p><strong>Solution:</strong></p>
+    <ul>
+      <li>Search trial registries (ClinicalTrials.gov) for completed but unpublished studies</li>
+      <li>Examine funnel plot symmetry</li>
+      <li>Use Egger's test or Begg's test to quantitatively assess publication bias</li>
+      <li>MetaReview automatically generates funnel plots and supports both Egger's and Begg's tests</li>
+    </ul>
+  </div>
+
+  <div class="cta">
+    <h2>Start Your HR Meta-Analysis Now</h2>
+    <p>Enter HR and 95% CI. MetaReview automatically handles log transformation, pooling, forest plots, and funnel plots. Free, no coding required.</p>
+    <a href="/">Open MetaReview</a>
+    <p style="margin-top:12px"><a href="/?s=6ae5971c" style="color:#93c5fd;font-size:14px;text-decoration:underline;">See live demo: Aspirin vs Placebo meta-analysis (7 RCTs) &rarr;</a></p>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">Stay Updated</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">Get notified about new features and meta-analysis tips.</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="Enter your email" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Subscribe</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">No spam. Unsubscribe anytime.</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='Submitting...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-hr-en',lang:'en'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'You are already subscribed!':'Subscribed! We will notify you about new features.';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Please enter a valid email address.';btn.textContent='Subscribe';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Submission failed. Please try again later.';btn.textContent='Subscribe';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="related">
+    <h2>Related Guides</h2>
+    <ul>
+      <li><a href="/guides/meta-analysis-effect-size-guide">Meta-Analysis Effect Size Guide: OR vs RR vs HR vs MD vs SMD</a></li>
+      <li><a href="/guides/how-to-meta-analysis">How to Do a Meta-Analysis: Step-by-Step Guide</a></li>
+      <li><a href="/guides/free-forest-plot-generator">Free Forest Plot Generator Online</a></li>
+      <li><a href="/guides/free-funnel-plot-maker">Free Funnel Plot Maker Online</a></li>
+      <li><a href="/guides/meta-analysis-calculator">Meta-Analysis Calculator Online</a></li>
+      <li><a href="/guides/best-meta-analysis-software">Best Free Meta-Analysis Software Compared</a></li>
+      <li><a href="/guides/free-prisma-flow-diagram-generator">Free PRISMA Flow Diagram Generator</a></li>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析指南（中文版）</a></li>
+      <li><a href="/guides/effect-size-selection">效应量选择指南（中文）</a></li>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤（中文）</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图指南（中文）</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 流程图指南（中文）</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta 分析软件对比（中文）</a></li>
+      <li><a href="/guides/tumor-meta-analysis">肿瘤 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">心血管 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/diabetes-meta-analysis">糖尿病 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/covid-meta-analysis">COVID-19 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis">精神科 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/cancer-meta-analysis-guide">Cancer & Oncology Meta-Analysis Guide</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis-guide">Cardiovascular Meta-Analysis Guide</a></li>
+      <li><a href="/guides/diabetes-meta-analysis-guide">Diabetes Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/covid-meta-analysis-guide">COVID-19 Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis-guide">Psychiatry Meta-Analysis Guide (English)</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> &mdash; Free Online Meta-Analysis Tool</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

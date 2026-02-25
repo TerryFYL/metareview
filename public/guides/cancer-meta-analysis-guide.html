@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cancer &amp; Oncology Meta-Analysis Guide: From Effect Size Selection to Subgroup Analysis (2026) | MetaReview</title>
+  <meta name="description" content="Complete guide to oncology meta-analysis. Learn how to choose HR vs OR vs RR for cancer endpoints, extract survival data, handle heterogeneity across tumor types, and perform subgroup analysis by biomarker status." />
+  <meta name="keywords" content="cancer meta analysis, oncology meta-analysis, tumor meta analysis, immunotherapy meta analysis, cancer systematic review, HR meta analysis cancer, overall survival meta analysis, PFS meta analysis, oncology forest plot, cancer clinical trial meta analysis, targeted therapy meta analysis, biomarker subgroup analysis" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview.cc/guides/cancer-meta-analysis-guide" />
+  <link rel="alternate" hreflang="en" href="https://metareview.cc/guides/cancer-meta-analysis-guide" />
+  <link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/tumor-meta-analysis" />
+  <link rel="alternate" hreflang="x-default" href="https://metareview.cc/guides/cancer-meta-analysis-guide" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview.cc/guides/cancer-meta-analysis-guide" />
+  <meta property="og:title" content="Cancer & Oncology Meta-Analysis Guide: Effect Size Selection to Subgroup Analysis" />
+  <meta property="og:description" content="How to conduct a cancer meta-analysis: HR for OS/PFS, OR/RR for ORR, subgroup by biomarker, heterogeneity in oncology trials." />
+  <meta property="og:image" content="https://metareview.cc/og-image.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MetaReview" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Cancer & Oncology Meta-Analysis Guide: Effect Size Selection to Subgroup Analysis" />
+  <meta name="twitter:description" content="How to conduct a cancer meta-analysis: HR for OS/PFS, OR/RR for ORR, subgroup by biomarker." />
+  <meta name="twitter:image" content="https://metareview.cc/og-image.png" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "MetaReview", "item": "https://metareview.cc/"},
+      {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://metareview.cc/#guides"},
+      {"@type": "ListItem", "position": 3, "name": "Cancer & Oncology Meta-Analysis Guide"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Cancer & Oncology Meta-Analysis Guide: From Effect Size Selection to Subgroup Analysis (2026)",
+    "description": "Complete guide to conducting cancer meta-analysis covering survival endpoints, response rates, biomarker-stratified subgroup analysis, and heterogeneity handling across oncology trials.",
+    "author": {"@type": "Organization", "name": "MetaReview"},
+    "publisher": {"@type": "Organization", "name": "MetaReview"},
+    "datePublished": "2026-02-25",
+    "dateModified": "2026-02-25"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Which effect size should I use for cancer meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It depends on the endpoint. For survival endpoints (OS, PFS, DFS), use Hazard Ratio (HR) because it accounts for time-to-event and censoring. For binary efficacy endpoints (ORR, DCR), use Odds Ratio (OR) or Risk Ratio (RR). For continuous outcomes (QoL scores), use Mean Difference (MD) or Standardized Mean Difference (SMD). Never mix different effect sizes in the same analysis."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I combine HR and OR in the same oncology meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. HR (from Cox regression, time-to-event) and OR (from logistic regression, cumulative events at a fixed time point) have fundamentally different mathematical foundations. Combining them would produce statistically invalid results. If some studies report HR and others report OR, analyze them separately or convert to a common measure when methodologically appropriate."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I handle heterogeneity in cancer meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Cancer meta-analyses often have high heterogeneity due to differences in tumor types, stages, treatment lines, and biomarker profiles. Use I-squared, Q-test, and tau-squared to quantify heterogeneity. When I-squared exceeds 50%, perform pre-specified subgroup analyses (by cancer type, treatment line, PD-L1 status, mutation status) and sensitivity analyses (leave-one-out, restricting to RCTs only). Always use random-effects models when clinical heterogeneity is expected."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I use fixed-effect or random-effects model for oncology meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Random-effects model is generally recommended for oncology meta-analyses because included studies almost always differ in patient populations (tumor type, stage, biomarker status), treatment regimens, and follow-up durations. Fixed-effect models assume all studies estimate the same true effect, which is rarely realistic in oncology. However, if you have a very homogeneous set of studies (same cancer type, same regimen, similar design), fixed-effect may be appropriate."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I extract HR when it is not directly reported in the paper?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Three approaches: (1) If only the p-value is reported, convert it to a z-score and calculate SE[log(HR)] = |log(HR)| / z. (2) If only Kaplan-Meier curves are available, use the Tierney method to digitize the curves and reconstruct HR. (3) If only median survival times are reported, note that converting medians to HR requires strong assumptions and should be used as a last resort. MetaReview accepts HR + 95% CI as input and handles log transformation automatically."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I perform subgroup analysis by biomarker status in cancer meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Pre-specify biomarker subgroups in your protocol (e.g., PD-L1 high vs low, EGFR mutant vs wild-type, HER2 positive vs negative). Extract the subgroup-specific HR or OR from each study. Important: never treat multiple subgroup results from the same study as independent entries. Use Q-between test to assess whether the treatment effect significantly differs across subgroups. MetaReview supports subgroup assignment and automatically calculates Q-between statistics."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are MACE-like composite endpoints and how do I handle them in meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Composite endpoints in oncology typically combine progression-free survival with objective response (e.g., clinical benefit rate = CR + PR + SD for >6 months). When pooling composite endpoints, ensure all studies use the same definition. If definitions vary (e.g., some include disease control rate while others use clinical benefit rate), either standardize definitions or analyze each component separately. Document the exact composite definition used by each study."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many studies do I need for a meaningful cancer meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There is no strict minimum, but practical considerations apply. With 2-3 studies, you can calculate a pooled effect but heterogeneity assessment (I-squared) has very low power. Funnel plots and Egger's test require at least 10 studies to be informative. Meta-regression typically needs 10+ studies per covariate. For cancer meta-analyses, 5-15 well-designed RCTs is a common range. Even with few studies, a meta-analysis can be valuable if it provides the best available synthesis of evidence."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Conduct a Cancer Meta-Analysis with MetaReview",
+    "description": "Step-by-step guide to performing an oncology meta-analysis covering survival and efficacy endpoints.",
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "Define your oncology research question using PICO", "text": "Define Population (specific cancer type and stage), Intervention (immunotherapy, targeted therapy, chemotherapy regimen), Comparator (standard of care, placebo, or another regimen), and Outcomes (OS, PFS, ORR, adverse events)."},
+      {"@type": "HowToStep", "position": 2, "name": "Search oncology literature databases", "text": "Search PubMed, Embase, Cochrane CENTRAL, and ClinicalTrials.gov. Use MeSH terms (Neoplasms, Antineoplastic Agents) combined with free-text terms. Also search ASCO and ESMO conference abstracts for unpublished data."},
+      {"@type": "HowToStep", "position": 3, "name": "Select the appropriate effect measure", "text": "Choose HR for survival endpoints (OS, PFS, DFS), OR or RR for binary endpoints (ORR, DCR, adverse event rates), and MD for continuous outcomes (QoL scores). Never mix effect types in one analysis."},
+      {"@type": "HowToStep", "position": 4, "name": "Extract data from included studies", "text": "Record HR and 95% CI (or events/totals for binary outcomes), cancer type, stage, treatment line, sample size, median follow-up, and biomarker status. Use a standardized extraction form."},
+      {"@type": "HowToStep", "position": 5, "name": "Enter data in MetaReview and run analysis", "text": "Select the effect measure, enter study data (or paste from Excel/Google Sheets), and click Run Meta-Analysis. MetaReview automatically generates forest plot, funnel plot, and heterogeneity statistics."},
+      {"@type": "HowToStep", "position": 6, "name": "Perform subgroup and sensitivity analyses", "text": "Assign subgroups (by cancer type, treatment line, biomarker status) and re-run. Use leave-one-out sensitivity analysis to check result robustness. Examine meta-regression if sufficient studies exist."},
+      {"@type": "HowToStep", "position": 7, "name": "Assess publication bias and evidence quality", "text": "Examine funnel plot symmetry, run Egger's and Begg's tests. Apply GRADE framework to rate the certainty of evidence. Use Trim-and-Fill to estimate the impact of missing studies."},
+      {"@type": "HowToStep", "position": 8, "name": "Export the complete report", "text": "Generate an HTML or DOCX report with forest plots, funnel plots, sensitivity analyses, GRADE assessment, and an auto-generated Methods paragraph following PRISMA 2020 guidelines."}
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .decision-tree { background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; overflow-x: auto; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">Open Tool</a>
+      <a href="/guides/how-to-meta-analysis">How-To Guide</a>
+      <a href="/guides/hazard-ratio-meta-analysis-guide">HR Guide</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Cancer &amp; Oncology Meta-Analysis Guide</h1>
+  <p>From effect size selection to biomarker-stratified subgroup analysis. Everything you need to synthesize evidence from cancer clinical trials.</p>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#why" style="color:#1e40af">Why Meta-Analysis Matters in Oncology</a></li>
+      <li><a href="#pico" style="color:#1e40af">Defining Your Oncology Research Question (PICO)</a></li>
+      <li><a href="#effect-size" style="color:#1e40af">Choosing the Right Effect Size for Cancer Endpoints</a></li>
+      <li><a href="#survival" style="color:#1e40af">Survival Endpoints: HR Meta-Analysis in Practice</a></li>
+      <li><a href="#binary" style="color:#1e40af">Binary Endpoints: ORR, DCR, and Adverse Events</a></li>
+      <li><a href="#data-extraction" style="color:#1e40af">Data Extraction Checklist for Oncology Studies</a></li>
+      <li><a href="#heterogeneity" style="color:#1e40af">Handling Heterogeneity in Cancer Trials</a></li>
+      <li><a href="#subgroup" style="color:#1e40af">Subgroup Analysis by Biomarker and Treatment Line</a></li>
+      <li><a href="#metareview" style="color:#1e40af">Step-by-Step: Cancer Meta-Analysis in MetaReview</a></li>
+      <li><a href="#pitfalls" style="color:#1e40af">Common Pitfalls in Oncology Meta-Analysis</a></li>
+    </ol>
+  </div>
+
+  <div class="section" id="why">
+    <h2>Why Meta-Analysis Matters in Oncology</h2>
+    <p>Cancer research produces thousands of clinical trials each year, but individual trials are often limited by small sample sizes, short follow-up, or narrow patient populations. Meta-analysis addresses these limitations by:</p>
+    <ul>
+      <li><strong>Increasing statistical power</strong> &mdash; Pooling data across trials reveals treatment effects that individual studies may miss, especially for uncommon endpoints or subgroups.</li>
+      <li><strong>Resolving conflicting results</strong> &mdash; When trials disagree on whether a treatment works, meta-analysis provides a quantitative synthesis weighted by study quality and precision.</li>
+      <li><strong>Enabling subgroup exploration</strong> &mdash; With sufficient studies, you can examine whether treatment effects differ by biomarker status (PD-L1, EGFR, HER2), tumor stage, or treatment line.</li>
+      <li><strong>Informing clinical guidelines</strong> &mdash; Organizations like NCCN, ESMO, and ASCO rely on meta-analyses to grade evidence and formulate treatment recommendations.</li>
+    </ul>
+    <div class="tip"><strong>Key areas where oncology meta-analyses have shaped practice:</strong> Immunotherapy (PD-1/PD-L1 inhibitors) vs chemotherapy, adjuvant vs neoadjuvant therapy timing, targeted therapy in molecularly defined subgroups, and maintenance therapy strategies.</div>
+  </div>
+
+  <div class="section" id="pico">
+    <h2>Defining Your Oncology Research Question (PICO)</h2>
+    <p>A well-structured PICO framework is essential for a focused, reproducible oncology meta-analysis.</p>
+
+    <table class="data-table">
+      <tr><th>Element</th><th>Description</th><th>Oncology Examples</th></tr>
+      <tr><td><strong>P</strong> (Population)</td><td>Cancer type, stage, molecular profile</td><td>Stage III-IV NSCLC with PD-L1 TPS &ge;50%; HER2-positive metastatic breast cancer; Unresectable hepatocellular carcinoma</td></tr>
+      <tr><td><strong>I</strong> (Intervention)</td><td>Treatment being evaluated</td><td>Pembrolizumab + chemotherapy; Trastuzumab deruxtecan; Atezolizumab + bevacizumab</td></tr>
+      <tr><td><strong>C</strong> (Comparator)</td><td>Control arm</td><td>Chemotherapy alone; Placebo + chemotherapy; Standard of care</td></tr>
+      <tr><td><strong>O</strong> (Outcomes)</td><td>Primary and secondary endpoints</td><td>OS, PFS, ORR, DCR, Grade &ge;3 adverse events, QoL</td></tr>
+    </table>
+
+    <div class="warn"><strong>Scope warning:</strong> Overly broad PICO definitions (e.g., "all cancer types, all immunotherapies") lead to extreme heterogeneity. Narrow your scope to a specific cancer type or mechanism of action. You can always expand later with subgroup analyses.</div>
+
+    <h3>Search Strategy Tips for Oncology</h3>
+    <ul>
+      <li><strong>Databases:</strong> PubMed, Embase, Cochrane CENTRAL, ClinicalTrials.gov (for unpublished results)</li>
+      <li><strong>MeSH terms:</strong> "Neoplasms"[Mesh], "Antineoplastic Agents"[Mesh], specific cancer terms</li>
+      <li><strong>Conference abstracts:</strong> ASCO (asco.org), ESMO (esmo.org), AACR (aacr.org) &mdash; critical for capturing recent unpublished data</li>
+      <li><strong>Trial registries:</strong> ClinicalTrials.gov status filter = "Completed" to find unreported studies</li>
+    </ul>
+  </div>
+
+  <div class="section" id="effect-size">
+    <h2>Choosing the Right Effect Size for Cancer Endpoints</h2>
+    <p>This is the most critical methodological decision in your cancer meta-analysis. The wrong effect size invalidates the entire analysis.</p>
+
+    <div class="decision-tree">
+What is your outcome type?
+&#x251c;&#x2500; Survival / Time-to-event (OS, PFS, DFS, TTR)
+&#x2502;   &#x2514;&#x2500; Use <strong>Hazard Ratio (HR)</strong>
+&#x2502;       &#x2514;&#x2500; Accounts for censoring + time dimension
+&#x251c;&#x2500; Binary response (ORR, DCR, CR rate, AE rate)
+&#x2502;   &#x251c;&#x2500; Common events (&gt;20%) &#x2192; <strong>Risk Ratio (RR)</strong>
+&#x2502;   &#x2514;&#x2500; Rare events (&lt;20%) &#x2192; <strong>Odds Ratio (OR)</strong>
+&#x2514;&#x2500; Continuous (QoL score, tumor size change)
+    &#x251c;&#x2500; Same scale across studies &#x2192; <strong>MD</strong>
+    &#x2514;&#x2500; Different scales &#x2192; <strong>SMD</strong>
+    </div>
+
+    <table class="data-table">
+      <tr><th>Endpoint</th><th>Type</th><th>Effect Size</th><th>Null Value</th><th>Interpretation</th></tr>
+      <tr><td>Overall Survival (OS)</td><td>Time-to-event</td><td>HR</td><td>1.0</td><td>HR &lt; 1 = treatment reduces death risk</td></tr>
+      <tr><td>Progression-Free Survival (PFS)</td><td>Time-to-event</td><td>HR</td><td>1.0</td><td>HR &lt; 1 = treatment delays progression</td></tr>
+      <tr><td>Disease-Free Survival (DFS)</td><td>Time-to-event</td><td>HR</td><td>1.0</td><td>HR &lt; 1 = treatment reduces recurrence risk</td></tr>
+      <tr><td>Objective Response Rate (ORR)</td><td>Binary</td><td>OR or RR</td><td>1.0</td><td>OR/RR &gt; 1 = higher response with treatment</td></tr>
+      <tr><td>Disease Control Rate (DCR)</td><td>Binary</td><td>OR or RR</td><td>1.0</td><td>OR/RR &gt; 1 = better disease control</td></tr>
+      <tr><td>Grade &ge;3 Adverse Events</td><td>Binary</td><td>OR or RR</td><td>1.0</td><td>OR/RR &gt; 1 = more toxicity with treatment</td></tr>
+      <tr><td>Quality of Life (EORTC QLQ-C30)</td><td>Continuous</td><td>MD</td><td>0</td><td>MD &gt; 0 = better QoL with treatment</td></tr>
+    </table>
+
+    <div class="warn"><strong>Critical rule:</strong> Never combine HR and OR/RR in the same pooled analysis. They measure fundamentally different things. HR accounts for when events occur (time dimension); OR/RR only counts whether events occurred by a fixed time point.</div>
+  </div>
+
+  <div class="section" id="survival">
+    <h2>Survival Endpoints: HR Meta-Analysis in Practice</h2>
+
+    <h3>Why HR Is the Gold Standard for Survival Data</h3>
+    <p>In oncology, survival endpoints (OS, PFS, DFS) are the most important efficacy measures. The Hazard Ratio is the correct effect size because:</p>
+    <ul>
+      <li>It uses <strong>all available follow-up time</strong>, not just events at a single time point</li>
+      <li>It correctly handles <strong>censored patients</strong> (those lost to follow-up or alive at data cutoff)</li>
+      <li>It is the <strong>standard output of Cox regression</strong>, the dominant survival analysis method in oncology trials</li>
+    </ul>
+
+    <h3>Three Scenarios for HR Extraction</h3>
+    <table class="data-table">
+      <tr><th>Scenario</th><th>Data Available</th><th>Method</th><th>Reliability</th></tr>
+      <tr><td>Best case</td><td>HR + 95% CI directly reported</td><td>Enter values directly</td><td>High</td></tr>
+      <tr><td>Alternative</td><td>HR + p-value (no CI)</td><td>Convert p to z-score, then SE = |log(HR)|/z</td><td>Moderate</td></tr>
+      <tr><td>Last resort</td><td>Only Kaplan-Meier curves</td><td>Tierney method: digitize KM curves to reconstruct HR</td><td>Lower (measurement error)</td></tr>
+    </table>
+
+    <div class="formula">
+SE[log(HR)] = [log(CI_upper) &minus; log(CI_lower)] / (2 &times; 1.96)
+    </div>
+
+    <div class="tip"><strong>MetaReview automatically handles log transformation.</strong> Simply enter HR, CI Lower, and CI Upper. The tool computes log(HR), SE, inverse-variance weight, and pools the result using your chosen model (fixed or random effects).</div>
+
+    <h3>Interpreting the Pooled HR</h3>
+    <ul>
+      <li><strong>HR = 0.70</strong>: Treatment reduces the event hazard by 30% compared to control</li>
+      <li><strong>HR = 1.00</strong>: No difference between treatment and control</li>
+      <li><strong>HR = 1.25</strong>: Treatment increases the event hazard by 25% (harmful)</li>
+      <li><strong>95% CI excludes 1.0</strong>: The result is statistically significant at p &lt; 0.05</li>
+    </ul>
+  </div>
+
+  <div class="section" id="binary">
+    <h2>Binary Endpoints: ORR, DCR, and Adverse Events</h2>
+
+    <p>Many cancer meta-analyses also pool binary outcomes alongside survival endpoints. Common binary endpoints include:</p>
+
+    <h3>Objective Response Rate (ORR)</h3>
+    <p>Defined as CR + PR per RECIST 1.1 criteria. For each study, extract:</p>
+    <ul>
+      <li><strong>Events:</strong> Number of patients achieving CR or PR in each arm</li>
+      <li><strong>Total:</strong> Number of evaluable patients in each arm</li>
+    </ul>
+    <p>Use OR when ORR is rare (&lt;20%) or RR when ORR is common (&gt;20%). OR overestimates relative effects when baseline rates are high.</p>
+
+    <h3>Adverse Event Rates</h3>
+    <p>Grade &ge;3 treatment-related adverse events are commonly pooled to compare safety profiles. Extract events/totals from each arm. Report separately for specific AE types (pneumonitis, hepatotoxicity, skin toxicity) when data permits.</p>
+
+    <table class="data-table">
+      <tr><th>Endpoint</th><th>Extract</th><th>Preferred Effect Size</th><th>Note</th></tr>
+      <tr><td>ORR (CR+PR)</td><td>Events / Total per arm</td><td>RR (common) or OR (rare)</td><td>Use RECIST 1.1 criteria</td></tr>
+      <tr><td>DCR (CR+PR+SD)</td><td>Events / Total per arm</td><td>RR or OR</td><td>SD duration cutoff varies by study</td></tr>
+      <tr><td>Grade &ge;3 AE</td><td>Events / Total per arm</td><td>RR or OR</td><td>Separate by AE type when possible</td></tr>
+      <tr><td>Treatment discontinuation</td><td>Events / Total per arm</td><td>RR or OR</td><td>Distinguishes AE-related vs progression</td></tr>
+    </table>
+
+    <div class="tip"><strong>Zero events handling:</strong> If one arm has zero events (e.g., no grade 5 AE in treatment group), MetaReview automatically applies continuity correction (adding 0.5 to each cell) to enable OR/RR calculation.</div>
+  </div>
+
+  <div class="section" id="data-extraction">
+    <h2>Data Extraction Checklist for Oncology Studies</h2>
+    <p>Use a standardized extraction form to ensure consistency. For each included study, record:</p>
+
+    <h3>Study Characteristics</h3>
+    <ul>
+      <li>First author, publication year, journal</li>
+      <li>Study design (RCT, single-arm, retrospective cohort)</li>
+      <li>Phase (II, III), registration number (NCT ID)</li>
+      <li>Region / Country (single-center vs multicenter, international vs regional)</li>
+    </ul>
+
+    <h3>Patient Population</h3>
+    <ul>
+      <li>Cancer type and histological subtype</li>
+      <li>TNM stage at enrollment</li>
+      <li>Treatment line (first-line, second-line, &ge;third-line)</li>
+      <li>Biomarker status (PD-L1 TPS/CPS, EGFR/ALK/ROS1/BRAF mutations, HER2, MSI/dMMR)</li>
+      <li>ECOG performance status distribution</li>
+      <li>Sample size per arm</li>
+      <li>Median age, sex distribution</li>
+    </ul>
+
+    <h3>Treatment Details</h3>
+    <ul>
+      <li>Exact regimen (drug names, doses, schedules)</li>
+      <li>Treatment duration / cycles</li>
+      <li>Crossover allowed? (critical for OS interpretation)</li>
+    </ul>
+
+    <h3>Outcomes Data</h3>
+    <ul>
+      <li>HR + 95% CI for OS, PFS (or events/totals for binary endpoints)</li>
+      <li>Median follow-up duration</li>
+      <li>Data maturity (e.g., "mature at 60% OS events")</li>
+      <li>Adjusted vs unadjusted HR (document which)</li>
+    </ul>
+
+    <div class="warn"><strong>Crossover bias:</strong> Many oncology RCTs allow control-arm patients to cross over to the experimental treatment upon progression. This dilutes the OS benefit. Look for crossover-adjusted analyses (e.g., RPSFT method) and consider conducting a sensitivity analysis using adjusted vs unadjusted OS data.</div>
+  </div>
+
+  <div class="section" id="heterogeneity">
+    <h2>Handling Heterogeneity in Cancer Trials</h2>
+    <p>Heterogeneity is almost inevitable in oncology meta-analyses due to differences in cancer biology, patient selection, and treatment protocols.</p>
+
+    <h3>Sources of Heterogeneity in Oncology</h3>
+    <table class="data-table">
+      <tr><th>Source</th><th>Examples</th><th>Impact</th></tr>
+      <tr><td>Tumor biology</td><td>Different histological subtypes (squamous vs adenocarcinoma), molecular profiles</td><td>May respond differently to the same treatment</td></tr>
+      <tr><td>Patient selection</td><td>Stage differences, ECOG PS, prior treatment history</td><td>Affects baseline prognosis and treatment benefit</td></tr>
+      <tr><td>Treatment protocol</td><td>Drug doses, combination partners, treatment duration</td><td>Different dose intensities may alter efficacy</td></tr>
+      <tr><td>Follow-up duration</td><td>12 months vs 60 months median follow-up</td><td>Short follow-up may miss delayed effects or crossover impact</td></tr>
+      <tr><td>Geographic / ethnic</td><td>East Asian vs Western populations, smoking prevalence</td><td>Pharmacogenomic differences in drug metabolism</td></tr>
+    </table>
+
+    <h3>Quantifying Heterogeneity</h3>
+    <ul>
+      <li><strong>I&sup2;</strong>: 0% = no heterogeneity, 25% = low, 50% = moderate, 75% = high</li>
+      <li><strong>Q-test p-value</strong>: p &lt; 0.10 indicates significant heterogeneity (lower threshold because Q-test has low power with few studies)</li>
+      <li><strong>&tau;&sup2;</strong>: Between-study variance (useful for comparing heterogeneity across analyses)</li>
+    </ul>
+
+    <h3>Strategies When I&sup2; Is High</h3>
+    <ol>
+      <li><strong>Pre-specified subgroup analysis</strong> &mdash; by tumor type, biomarker, treatment line</li>
+      <li><strong>Meta-regression</strong> &mdash; test continuous moderators (publication year, median age, sample size)</li>
+      <li><strong>Sensitivity analysis</strong> &mdash; leave-one-out, restrict to Phase III RCTs only, exclude studies with high risk of bias</li>
+      <li><strong>Narrative synthesis</strong> &mdash; if heterogeneity remains unexplained and I&sup2; &gt; 85%, consider whether pooling is appropriate at all</li>
+    </ol>
+
+    <div class="tip"><strong>Always use random-effects models</strong> for oncology meta-analyses unless you have strong reasons to believe all studies estimate the same effect (e.g., identical protocol, same cancer type, same line of therapy).</div>
+  </div>
+
+  <div class="section" id="subgroup">
+    <h2>Subgroup Analysis by Biomarker and Treatment Line</h2>
+    <p>Subgroup analysis is arguably the most clinically relevant component of an oncology meta-analysis. Modern cancer treatment is increasingly biomarker-driven, and pooled subgroup data can inform precision medicine decisions.</p>
+
+    <h3>Common Pre-Specified Subgroups</h3>
+    <table class="data-table">
+      <tr><th>Cancer Type</th><th>Key Biomarker Subgroups</th><th>Clinical Relevance</th></tr>
+      <tr><td>NSCLC</td><td>PD-L1 TPS (&ge;50%, 1-49%, &lt;1%); EGFR/ALK status; Squamous vs non-squamous</td><td>PD-L1 level predicts immunotherapy benefit; EGFR/ALK positive patients benefit more from targeted therapy</td></tr>
+      <tr><td>Breast cancer</td><td>HER2 status; ER/PR status; Triple-negative</td><td>Determines whether targeted therapy (trastuzumab) or endocrine therapy is effective</td></tr>
+      <tr><td>Colorectal</td><td>KRAS/NRAS/BRAF status; MSI/dMMR; Left vs right-sided</td><td>KRAS wild-type responds to anti-EGFR therapy; MSI-high responds to immunotherapy</td></tr>
+      <tr><td>Gastric</td><td>HER2 status; PD-L1 CPS; Claudin 18.2</td><td>HER2-positive benefits from trastuzumab; high CPS predicts immunotherapy benefit</td></tr>
+      <tr><td>Melanoma</td><td>BRAF V600E; PD-L1; TMB</td><td>BRAF-mutant benefits from BRAF/MEK inhibitors</td></tr>
+    </table>
+
+    <h3>Other Important Subgroups</h3>
+    <ul>
+      <li><strong>Treatment line:</strong> First-line vs second-line vs later lines (benefit often differs)</li>
+      <li><strong>Geographic region:</strong> East Asian vs Western (especially for EGFR mutations in NSCLC)</li>
+      <li><strong>Performance status:</strong> ECOG 0-1 vs &ge;2</li>
+      <li><strong>Age:</strong> &lt;65 vs &ge;65 (elderly patients may have different risk-benefit profiles)</li>
+      <li><strong>Brain metastases:</strong> Present vs absent (affects PFS and treatment selection)</li>
+    </ul>
+
+    <h3>Statistical Considerations</h3>
+    <ul>
+      <li>Use <strong>Q-between test</strong> (interaction test) to determine whether treatment effects significantly differ across subgroups</li>
+      <li><strong>Never treat subgroup HRs from the same study as independent observations</strong> &mdash; this causes unit-of-analysis error</li>
+      <li>Pre-specify all subgroup analyses in your PROSPERO registration to avoid post-hoc data dredging accusations</li>
+      <li>With &lt;3 studies per subgroup, results are exploratory only and should not drive clinical conclusions</li>
+    </ul>
+
+    <div class="tip"><strong>In MetaReview:</strong> Assign subgroup labels in the "Subgroup" column, then run the analysis. The tool generates a grouped forest plot with subgroup subtotals and Q-between significance test automatically.</div>
+  </div>
+
+  <div class="section" id="metareview">
+    <h2>Step-by-Step: Cancer Meta-Analysis in MetaReview</h2>
+
+    <h3>Step 1: Select Effect Measure</h3>
+    <p>Open MetaReview and choose the appropriate effect measure from the dropdown:</p>
+    <ul>
+      <li><strong>Hazard Ratio</strong> for OS/PFS/DFS analysis</li>
+      <li><strong>Odds Ratio</strong> or <strong>Risk Ratio</strong> for ORR/DCR/AE analysis</li>
+    </ul>
+
+    <h3>Step 2: Enter Study Data</h3>
+    <p>For HR analysis: enter Study name, Year, HR, CI Lower, CI Upper.</p>
+    <p>For OR/RR analysis: enter Study name, Year, Events and Total for both Treatment and Control arms.</p>
+    <div class="tip"><strong>Batch entry:</strong> Organize your data in Excel or Google Sheets, then copy and paste directly into MetaReview. The tool auto-detects tabular data and maps columns intelligently.</div>
+
+    <h3>Step 3: Assign Subgroups</h3>
+    <p>Use the "Subgroup" column to assign biomarker status, cancer type, or treatment line to each study. This enables stratified analysis.</p>
+
+    <h3>Step 4: Run the Analysis</h3>
+    <p>Click <strong>"Run Meta-Analysis"</strong>. Results appear within seconds, including:</p>
+    <ul>
+      <li>Forest plot with individual study effects and pooled estimate</li>
+      <li>Subgroup forest plot (if subgroups assigned) with Q-between test</li>
+      <li>Funnel plot for publication bias assessment</li>
+      <li>Heterogeneity statistics (I&sup2;, Q, &tau;&sup2;)</li>
+      <li>Sensitivity analysis (leave-one-out)</li>
+    </ul>
+
+    <h3>Step 5: Advanced Diagnostics</h3>
+    <ul>
+      <li><strong>Egger's / Begg's test</strong> &mdash; Quantitative publication bias assessment</li>
+      <li><strong>Trim-and-Fill</strong> &mdash; Estimate the impact of potentially missing studies</li>
+      <li><strong>Meta-Regression</strong> &mdash; Test whether a continuous moderator (publication year, sample size) explains heterogeneity</li>
+      <li><strong>Influence diagnostics</strong> &mdash; Cook's distance, DFFITS, covariance ratio to identify influential studies</li>
+      <li><strong>GRADE assessment</strong> &mdash; Rate the certainty of evidence across 5 domains</li>
+    </ul>
+
+    <h3>Step 6: Export Report</h3>
+    <p>Generate a complete HTML or DOCX report with all figures, tables, auto-generated Methods paragraph (PRISMA 2020 format), and narrative interpretation.</p>
+  </div>
+
+  <div class="section" id="pitfalls">
+    <h2>Common Pitfalls in Oncology Meta-Analysis</h2>
+
+    <h3>Pitfall 1: Mixing Effect Sizes</h3>
+    <p>Combining HR (survival) with OR (response) in a single pooled analysis is the most common and most serious error. They measure different aspects of treatment effect and use different statistical frameworks.</p>
+    <p><strong>Solution:</strong> Conduct separate analyses for each endpoint type. Present OS (HR), PFS (HR), and ORR (OR/RR) as distinct results.</p>
+
+    <h3>Pitfall 2: Ignoring Crossover Effects on OS</h3>
+    <p>Many oncology RCTs allow control-arm patients to receive the experimental treatment upon progression. This blurs the OS difference between arms. An HR for PFS of 0.50 may translate to an OS HR of only 0.85 due to crossover.</p>
+    <p><strong>Solution:</strong> Report both PFS and OS results. Look for crossover-adjusted OS analyses (RPSFT, IPCW methods). Discuss crossover as a limitation.</p>
+
+    <h3>Pitfall 3: Including Immature Data</h3>
+    <p>Early data cutoffs may show impressive PFS but immature OS. Subsequent data updates may reveal different results. Including both interim and final analyses from the same trial causes double-counting.</p>
+    <p><strong>Solution:</strong> Use the most mature data available for each trial. If multiple publications exist, extract from the latest data cutoff. Never include both interim and final results from the same trial.</p>
+
+    <h3>Pitfall 4: Overlooking Single-Arm Studies</h3>
+    <p>Phase II single-arm trials report only the experimental arm (no comparator). These cannot be directly included in a comparative meta-analysis.</p>
+    <p><strong>Solution:</strong> Restrict inclusion to comparative studies (RCTs or well-designed cohorts with control arms). Single-arm studies can be separately pooled to estimate single-arm ORR if needed.</p>
+
+    <h3>Pitfall 5: Biomarker Subgroup Double-Counting</h3>
+    <p>A trial reporting HR for PD-L1 &ge;50%, PD-L1 1-49%, and PD-L1 &lt;1% is one study with three subgroups, not three independent studies.</p>
+    <p><strong>Solution:</strong> If your meta-analysis targets the overall effect, use the overall HR. If it targets a specific biomarker subgroup, extract only that subgroup HR.</p>
+
+    <h3>Pitfall 6: Publication Bias in Positive Oncology Trials</h3>
+    <p>Pharmaceutical-sponsored trials with positive results are more likely to be published quickly and in high-impact journals. Negative trials may be delayed or published as abstracts only.</p>
+    <p><strong>Solution:</strong> Search ClinicalTrials.gov for completed but unreported studies. Include conference abstracts. Use Egger's test and Trim-and-Fill. Discuss potential bias transparently.</p>
+  </div>
+
+  <div class="cta">
+    <h2>Start Your Oncology Meta-Analysis Now</h2>
+    <p>Enter HR and 95% CI for survival endpoints, or events/totals for response rates. MetaReview handles the statistics, forest plots, and report generation. Free, no coding required.</p>
+    <a href="/">Open MetaReview</a>
+    <p style="margin-top:12px"><a href="/?s=6ae5971c" style="color:#93c5fd;font-size:14px;text-decoration:underline;">See live demo: Aspirin vs Placebo meta-analysis (7 RCTs) &rarr;</a></p>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">Stay Updated</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">Get notified about new features and meta-analysis tips.</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="Enter your email" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Subscribe</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">No spam. Unsubscribe anytime.</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='Submitting...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-cancer-en',lang:'en'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'You are already subscribed!':'Subscribed! We will notify you about new features.';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Please enter a valid email address.';btn.textContent='Subscribe';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Submission failed. Please try again later.';btn.textContent='Subscribe';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="related">
+    <h2>Related Guides</h2>
+    <ul>
+      <li><a href="/guides/hazard-ratio-meta-analysis-guide">Hazard Ratio Meta-Analysis Guide: HR Extraction & Forest Plot</a></li>
+      <li><a href="/guides/meta-analysis-effect-size-guide">Meta-Analysis Effect Size Guide: OR vs RR vs HR vs MD vs SMD</a></li>
+      <li><a href="/guides/how-to-meta-analysis">How to Do a Meta-Analysis: Step-by-Step Guide</a></li>
+      <li><a href="/guides/free-forest-plot-generator">Free Forest Plot Generator Online</a></li>
+      <li><a href="/guides/free-funnel-plot-maker">Free Funnel Plot Maker Online</a></li>
+      <li><a href="/guides/meta-analysis-calculator">Meta-Analysis Calculator Online</a></li>
+      <li><a href="/guides/best-meta-analysis-software">Best Free Meta-Analysis Software Compared</a></li>
+      <li><a href="/guides/free-prisma-flow-diagram-generator">Free PRISMA Flow Diagram Generator</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis-guide">Cardiovascular Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/diabetes-meta-analysis-guide">Diabetes Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/covid-meta-analysis-guide">COVID-19 Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis-guide">Psychiatry Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/tumor-meta-analysis">肿瘤 Meta 分析指南（中文版）</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">心血管 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/diabetes-meta-analysis">糖尿病 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/covid-meta-analysis">COVID-19 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis">精神科 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/effect-size-selection">效应量选择指南（中文）</a></li>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤（中文）</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图指南（中文）</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 流程图指南（中文）</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta 分析软件对比（中文）</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> &mdash; Free Online Meta-Analysis Tool</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

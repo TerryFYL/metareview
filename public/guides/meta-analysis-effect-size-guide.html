@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meta-Analysis Effect Size Guide: OR vs RR vs HR vs MD vs SMD (2026) | MetaReview</title>
+  <meta name="description" content="Complete guide to choosing effect sizes in meta-analysis. Learn the difference between OR, RR, HR, MD, and SMD with a visual decision tree, formulas, interpretation tables, and common mistakes to avoid." />
+  <meta name="keywords" content="meta analysis effect size, OR vs RR, odds ratio vs risk ratio, effect size selection, cohen's d interpretation, SMD meta analysis, hazard ratio vs risk ratio, mean difference meta analysis, effect size calculator, how to choose effect size meta analysis, effect measure meta-analysis" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview.cc/guides/meta-analysis-effect-size-guide" />
+  <link rel="alternate" hreflang="en" href="https://metareview.cc/guides/meta-analysis-effect-size-guide" />
+  <link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/effect-size-selection" />
+  <link rel="alternate" hreflang="x-default" href="https://metareview.cc/guides/meta-analysis-effect-size-guide" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview.cc/guides/meta-analysis-effect-size-guide" />
+  <meta property="og:title" content="Meta-Analysis Effect Size Guide: OR vs RR vs HR vs MD vs SMD" />
+  <meta property="og:description" content="Visual decision tree and complete guide to choosing the right effect size for your meta-analysis. Formulas, interpretation, and common mistakes." />
+  <meta property="og:image" content="https://metareview.cc/og-image.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MetaReview" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Meta-Analysis Effect Size Guide: OR vs RR vs HR vs MD vs SMD" />
+  <meta name="twitter:description" content="Visual decision tree and complete guide to choosing the right effect size for your meta-analysis." />
+  <meta name="twitter:image" content="https://metareview.cc/og-image.png" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "MetaReview", "item": "https://metareview.cc/"},
+      {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://metareview.cc/#guides"},
+      {"@type": "ListItem", "position": 3, "name": "Meta-Analysis Effect Size Guide: OR vs RR vs HR vs MD vs SMD"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Meta-Analysis Effect Size Guide: OR vs RR vs HR vs MD vs SMD (2026)",
+    "description": "Complete guide to choosing the right effect size in meta-analysis with decision tree, formulas, interpretation tables, and common mistakes.",
+    "author": {"@type": "Organization", "name": "MetaReview"},
+    "publisher": {"@type": "Organization", "name": "MetaReview"},
+    "datePublished": "2026-02-25",
+    "dateModified": "2026-02-25"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the difference between OR and RR in meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "OR (Odds Ratio) compares the odds of an event between two groups, while RR (Risk Ratio) compares the probabilities. When event rates are below 10%, OR approximates RR. At higher event rates, OR exaggerates the effect size. Use RR for RCTs and cohort studies; use OR only for case-control studies or when adjusted estimates from logistic regression are reported."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "When should I use MD vs SMD in meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use MD (Mean Difference) when all studies measure the outcome on the same scale and unit (e.g., blood pressure in mmHg, weight in kg). Use SMD (Standardized Mean Difference / Cohen's d) when studies use different scales to measure the same construct (e.g., different depression scales like PHQ-9, BDI, HAM-D). Prefer MD when possible because it has direct clinical interpretation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which effect size is most commonly used in clinical meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It depends on the field: RR is most common in clinical intervention trials (more intuitive than OR), OR is standard for case-control studies, MD is preferred for drug efficacy comparisons with a common unit (e.g., blood pressure reduction in mmHg), SMD (Cohen's d) is standard in psychology and education, and HR is used in oncology and cardiovascular survival analyses."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does a negative effect size mean in meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For MD and SMD: a negative value means the intervention group has a lower mean than the control group. Interpretation depends on the outcome direction — if the outcome is blood pressure (lower is better), a negative value means the intervention is effective. For OR, RR, and HR: on the log scale, ln(OR) < 0 or ln(RR) < 0 means the intervention group has lower event risk than the control group."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I use OR or RR for mortality outcomes?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use RR. Mortality is a prospective outcome (from exposure to event), and RR provides more intuitive clinical interpretation: RR = 0.7 means 'the intervention reduced mortality risk by 30%.' OR = 0.7 means 'the odds of death in the intervention group is 0.7 times the control group,' which is less intuitive. Only use OR for mortality in case-control study designs."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "When should I use Hazard Ratio (HR) instead of RR?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use HR when dealing with time-to-event (survival) data from Cox proportional hazards regression or Kaplan-Meier analysis. HR accounts for follow-up time and censoring, while RR only considers cumulative events at a fixed time point. Common HR applications include overall survival (OS) and progression-free survival (PFS) in oncology, cardiovascular event time, and infection cure time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I mix different effect sizes in the same meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. All studies in a single meta-analysis must use the same effect size measure. You cannot mix OR with RR, or HR with OR. If some studies report HR and others report OR, you must analyze them separately as subgroups or exclude studies that don't report your chosen effect measure. Mixing effect sizes is a serious methodological error that reviewers will catch."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I interpret Cohen's d (SMD) values?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Cohen's d benchmarks: 0.2 = small effect (effect exists but is subtle), 0.5 = medium effect (clinically meaningful improvement), 0.8 = large effect (substantial clinical improvement). However, these benchmarks are guidelines, not rigid thresholds. In some fields, a 'small' effect can still be clinically important — for example, an SMD of 0.3 for a cheap, safe intervention may be very worthwhile."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Choose the Right Effect Size for Meta-Analysis",
+    "description": "A step-by-step guide to selecting the appropriate effect measure (OR, RR, HR, MD, or SMD) for your systematic review and meta-analysis.",
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "Identify your outcome data type", "text": "Determine whether your outcome is binary (yes/no, event/no event), continuous (means, scores), or time-to-event (survival data). This is the most important factor in effect size selection."},
+      {"@type": "HowToStep", "position": 2, "name": "Check the study design", "text": "For binary outcomes: case-control studies require OR; RCTs and cohort studies should use RR. For survival data: use HR from Cox regression. For continuous data: proceed to step 3."},
+      {"@type": "HowToStep", "position": 3, "name": "Check scale consistency", "text": "For continuous outcomes: if all studies use the same scale and unit, use MD (Mean Difference). If studies use different scales for the same construct, use SMD (Standardized Mean Difference / Cohen's d)."},
+      {"@type": "HowToStep", "position": 4, "name": "Verify consistency across studies", "text": "Ensure all included studies can provide data for your chosen effect size. Studies that cannot be converted to your chosen measure may need to be excluded or analyzed separately."},
+      {"@type": "HowToStep", "position": 5, "name": "Run analysis in MetaReview", "text": "Open MetaReview, select your effect size from the dropdown menu, enter your data, and click Run. MetaReview supports all 5 effect sizes (OR, RR, HR, MD, SMD) with automatic calculations."},
+      {"@type": "HowToStep", "position": 6, "name": "Perform sensitivity analysis", "text": "As a robustness check, re-run the analysis with an alternative effect size (e.g., OR instead of RR for binary data) to confirm that your conclusions are consistent regardless of the measure used."}
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .decision-tree { background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; overflow-x: auto; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">Open Tool</a>
+      <a href="/guides/how-to-meta-analysis">How-To Guide</a>
+      <a href="/guides/free-forest-plot-generator">Forest Plot</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Meta-Analysis Effect Size Guide: OR vs RR vs HR vs MD vs SMD</h1>
+  <p>A visual decision tree to choose the right effect measure. Stop guessing, avoid common pitfalls.</p>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <h2>Effect Size Decision Tree</h2>
+    <p>Not sure which effect size to use? Follow this flowchart:</p>
+    <div class="decision-tree">
+What type of outcome data do you have?
+&#x2502;
+&#x251c;&#x2500;&#x2500; Binary (yes/no, death/survival, response/no response)
+&#x2502;   &#x2502;
+&#x2502;   &#x251c;&#x2500;&#x2500; Case-control study?
+&#x2502;   &#x2502;   &#x2514;&#x2500;&#x2500; &#x2192; Use <strong>OR (Odds Ratio)</strong>
+&#x2502;   &#x2502;
+&#x2502;   &#x2514;&#x2500;&#x2500; RCT or cohort study?
+&#x2502;       &#x2514;&#x2500;&#x2500; &#x2192; Use <strong>RR (Risk Ratio)</strong>
+&#x2502;           (When event rate &lt; 10%, OR &#x2248; RR, either is fine)
+&#x2502;
+&#x251c;&#x2500;&#x2500; Time-to-event / survival data (Kaplan-Meier, Cox regression)
+&#x2502;   &#x2514;&#x2500;&#x2500; &#x2192; Use <strong>HR (Hazard Ratio)</strong>
+&#x2502;         Enter the HR and 95% CI reported in the paper
+&#x2502;
+&#x2514;&#x2500;&#x2500; Continuous (means, scores, measurements)
+    &#x2502;
+    &#x251c;&#x2500;&#x2500; All studies use the same scale/unit?
+    &#x2502;   &#x2514;&#x2500;&#x2500; &#x2192; Use <strong>MD (Mean Difference)</strong>
+    &#x2502;         e.g., blood pressure (mmHg), weight (kg), HbA1c (%)
+    &#x2502;
+    &#x2514;&#x2500;&#x2500; Studies use different scales?
+        &#x2514;&#x2500;&#x2500; &#x2192; Use <strong>SMD (Standardized Mean Difference)</strong>
+              e.g., different depression scales (PHQ-9, BDI, HAM-D)
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>OR &mdash; Odds Ratio</h2>
+    <h3>Definition</h3>
+    <p>OR compares the odds of an event between two groups. Odds = probability of event / probability of no event.</p>
+    <div class="formula">
+      OR = (a/b) / (c/d) = (a &times; d) / (b &times; c)
+    </div>
+    <p>Where a = intervention group events, b = intervention group non-events, c = control group events, d = control group non-events.</p>
+    <h3>When to Use OR</h3>
+    <ul>
+      <li><strong>Case-control studies</strong> &mdash; the only design where OR is the correct measure (you cannot calculate incidence rates directly)</li>
+      <li><strong>Logistic regression</strong> output naturally reports adjusted ORs</li>
+      <li>When event rate is very low (&lt;10%), OR &asymp; RR, so either is acceptable</li>
+    </ul>
+    <h3>Interpretation</h3>
+    <table class="data-table">
+      <tr><th>OR Value</th><th>Meaning</th></tr>
+      <tr><td>OR = 1</td><td>No difference between groups</td></tr>
+      <tr><td>OR &lt; 1</td><td>Lower odds of event in intervention group (protective if the event is adverse)</td></tr>
+      <tr><td>OR &gt; 1</td><td>Higher odds of event in intervention group</td></tr>
+    </table>
+    <div class="warn"><strong>Common pitfall:</strong> When event rates are high (&gt;10%), OR exaggerates the effect size. For example, a true RR of 2.0 might correspond to an OR of 3.0 or higher. Do not substitute OR for RR when event rates are substantial.</div>
+  </div>
+
+  <div class="section">
+    <h2>RR &mdash; Risk Ratio (Relative Risk)</h2>
+    <h3>Definition</h3>
+    <p>RR compares the probability (risk) of an event between two groups. Risk = number of events / total number of participants.</p>
+    <div class="formula">
+      RR = (a / (a+b)) / (c / (c+d))
+    </div>
+    <h3>When to Use RR</h3>
+    <ul>
+      <li><strong>RCTs</strong> &mdash; the preferred effect measure for evaluating intervention effects</li>
+      <li><strong>Cohort studies</strong> &mdash; association between exposure and outcome</li>
+      <li>More intuitive clinical interpretation: RR = 0.7 &rarr; "30% risk reduction"</li>
+    </ul>
+    <h3>OR vs RR: How Much Do They Diverge?</h3>
+    <table class="data-table">
+      <tr><th>Control Group Event Rate</th><th>True RR</th><th>Corresponding OR</th><th>Divergence</th></tr>
+      <tr><td>5%</td><td>2.0</td><td>2.1</td><td>Minimal</td></tr>
+      <tr><td>20%</td><td>2.0</td><td>2.7</td><td>Notable</td></tr>
+      <tr><td>40%</td><td>2.0</td><td>4.7</td><td>Severe</td></tr>
+    </table>
+    <div class="tip"><strong>Rule of thumb:</strong> The higher the event rate, the more OR overstates the effect compared to RR. If your study design is RCT or cohort, always prefer RR over OR.</div>
+  </div>
+
+  <div class="section">
+    <h2>HR &mdash; Hazard Ratio</h2>
+    <h3>Definition</h3>
+    <p>HR compares the instantaneous event rate (hazard) between two groups. It comes from survival analysis and accounts for follow-up time and censoring.</p>
+    <div class="formula">
+      HR = hazard(intervention) / hazard(control)
+    </div>
+    <h3>When to Use HR</h3>
+    <ul>
+      <li><strong>Survival analysis</strong> &mdash; cancer survival (OS, PFS), cardiovascular event time, time to relapse</li>
+      <li><strong>Cox proportional hazards regression</strong> &mdash; papers reporting HR + 95% CI</li>
+      <li>Kaplan-Meier curves with log-rank tests</li>
+    </ul>
+    <h3>Interpretation</h3>
+    <table class="data-table">
+      <tr><th>HR Value</th><th>Meaning</th></tr>
+      <tr><td>HR = 1</td><td>No difference between groups</td></tr>
+      <tr><td>HR &lt; 1</td><td>Lower event rate in intervention group (e.g., slower disease progression &rarr; protective)</td></tr>
+      <tr><td>HR &gt; 1</td><td>Higher event rate in intervention group (harmful or risk factor)</td></tr>
+    </table>
+    <h3>HR vs RR: Key Differences</h3>
+    <table class="data-table">
+      <tr><th>Feature</th><th>HR (Hazard Ratio)</th><th>RR (Risk Ratio)</th></tr>
+      <tr><td>Data source</td><td>Cox regression / survival analysis</td><td>2&times;2 frequency table / cumulative incidence</td></tr>
+      <tr><td>Accounts for time</td><td>Yes, considers when events occur</td><td>No, only cumulative events at a fixed time point</td></tr>
+      <tr><td>Handles censoring</td><td>Yes, correctly handles loss to follow-up</td><td>No, censored patients are excluded or crudely handled</td></tr>
+      <tr><td>Typical use</td><td>Oncology OS/PFS, cardiovascular MACE</td><td>RCT binary outcomes (cure rate, mortality rate)</td></tr>
+    </table>
+    <div class="warn"><strong>Critical rule:</strong> HR and OR/RR come from fundamentally different data types (survival data vs. frequency tables). Never mix them in the same meta-analysis.</div>
+  </div>
+
+  <div class="section">
+    <h2>MD &mdash; Mean Difference</h2>
+    <h3>Definition</h3>
+    <p>MD is the direct difference between group means, preserving the original measurement unit.</p>
+    <div class="formula">
+      MD = Mean(intervention) &minus; Mean(control)
+    </div>
+    <h3>When to Use MD</h3>
+    <ul>
+      <li>All studies measure the outcome on the <strong>same scale and unit</strong></li>
+      <li>Examples: systolic blood pressure (mmHg), body weight (kg), HbA1c (%)</li>
+    </ul>
+    <h3>Why MD Is Preferred Over SMD When Possible</h3>
+    <p>MD has direct clinical meaning. "MD = &minus;5.2 mmHg" tells a clinician exactly how much the intervention lowered blood pressure. This is far more actionable than "SMD = &minus;0.4 standard deviations."</p>
+    <div class="tip"><strong>Tip:</strong> If a paper reports only the mean difference and its 95% CI (without individual group means and SDs), you can still include it using the generic inverse-variance method. Enter the MD and CI directly.</div>
+  </div>
+
+  <div class="section">
+    <h2>SMD &mdash; Standardized Mean Difference (Cohen's d)</h2>
+    <h3>Definition</h3>
+    <p>SMD divides the mean difference by the pooled standard deviation, removing scale differences. The most common variant is Hedges' g (bias-corrected Cohen's d).</p>
+    <div class="formula">
+      SMD = (Mean(intervention) &minus; Mean(control)) / SD(pooled)
+    </div>
+    <h3>When to Use SMD</h3>
+    <ul>
+      <li>Studies measure the same construct on <strong>different scales</strong></li>
+      <li>Examples: different depression scales (PHQ-9, BDI-II, HAM-D), different quality-of-life instruments (SF-36, EQ-5D, WHOQOL)</li>
+    </ul>
+    <h3>Cohen's d Interpretation Benchmarks</h3>
+    <table class="data-table">
+      <tr><th>|SMD|</th><th>Effect Size</th><th>Clinical Meaning</th></tr>
+      <tr><td>0.2</td><td>Small</td><td>Effect exists but is subtle; may not be noticeable to patients</td></tr>
+      <tr><td>0.5</td><td>Medium</td><td>Clinically meaningful improvement; patients can perceive the difference</td></tr>
+      <tr><td>0.8</td><td>Large</td><td>Substantial clinical improvement; clearly noticeable benefit</td></tr>
+    </table>
+    <div class="warn"><strong>Limitation:</strong> SMD loses the original unit, making clinical interpretation less intuitive. Reviewers may ask you to convert the SMD back to a representative scale by multiplying it by that scale's SD. For example, SMD = 0.5 &times; SD of PHQ-9 (typically ~5) = 2.5 PHQ-9 points, which is more clinically meaningful.</div>
+  </div>
+
+  <div class="section">
+    <h2>Complete Comparison Table</h2>
+    <table class="data-table">
+      <tr><th>Feature</th><th>OR</th><th>RR</th><th>HR</th><th>MD</th><th>SMD</th></tr>
+      <tr><td>Data type</td><td>Binary</td><td>Binary</td><td>Survival</td><td>Continuous</td><td>Continuous</td></tr>
+      <tr><td>Null value</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+      <tr><td>Preserves original unit</td><td>No</td><td>No</td><td>No</td><td>Yes</td><td>No</td></tr>
+      <tr><td>Clinical interpretability</td><td>Medium</td><td>High</td><td>High</td><td>High</td><td>Low</td></tr>
+      <tr><td>Recommended study design</td><td>Case-control</td><td>RCT / Cohort</td><td>Cox / KM</td><td>Same scale</td><td>Different scales</td></tr>
+      <tr><td>Log transformation needed</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+      <tr><td>Statistical properties</td><td>Good symmetry</td><td>Bounded direction</td><td>PH assumption</td><td>Good normal approx.</td><td>Good normal approx.</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Common Mistakes and Their Consequences</h2>
+    <ol>
+      <li><strong>Using OR instead of RR when event rates are high</strong> &mdash; Overstates the effect size, potentially misleading clinical judgment. This is one of the most frequently flagged issues by peer reviewers.</li>
+      <li><strong>Using SMD when all studies use the same scale</strong> &mdash; Discards clinically meaningful units. "Blood pressure decreased by 0.3 standard deviations" is far less useful than "blood pressure decreased by 5 mmHg."</li>
+      <li><strong>Using MD when studies use different scales</strong> &mdash; Pooling values in different units produces a meaningless combined estimate that cannot be interpreted.</li>
+      <li><strong>Mixing OR and RR in the same analysis</strong> &mdash; All studies in a single meta-analysis must use the same effect measure. You cannot have some studies contribute OR and others contribute RR.</li>
+      <li><strong>Mixing HR with OR/RR</strong> &mdash; HR comes from survival analysis (considers time and censoring), while OR/RR come from frequency tables. They have fundamentally different statistical bases and cannot be combined.</li>
+      <li><strong>Using unadjusted and adjusted estimates together</strong> &mdash; When extracting ORs or HRs, ensure consistency: either use adjusted estimates from all studies or unadjusted estimates from all studies. Mixing creates systematic bias.</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h2>How to Switch Effect Sizes in MetaReview</h2>
+    <p>MetaReview supports all 5 effect sizes with one-click switching:</p>
+    <ol>
+      <li>Enter your raw data on the "Data Extraction" tab</li>
+      <li>Switch to the "Results" tab</li>
+      <li>Select the effect size type from the dropdown menu (OR / RR / HR / MD / SMD)</li>
+      <li>All statistics, forest plot, funnel plot, and narrative paragraph update in real-time</li>
+    </ol>
+    <div class="tip"><strong>Best practice:</strong> Run your primary analysis with the most appropriate effect size for your study design, then switch to an alternative as a sensitivity analysis. For example, if your primary analysis uses RR, re-run with OR as a sensitivity check. If conclusions are consistent, your findings are more robust.</div>
+  </div>
+
+  <div class="section">
+    <h2>Quick Reference: Which Effect Size Should I Use?</h2>
+    <table class="data-table">
+      <tr><th>Your Situation</th><th>Recommended Effect Size</th><th>Why</th></tr>
+      <tr><td>RCT comparing drug vs. placebo, outcome is mortality</td><td>RR</td><td>Prospective design, binary outcome, clinically intuitive</td></tr>
+      <tr><td>Case-control study of risk factor and disease</td><td>OR</td><td>Cannot calculate incidence in case-control designs</td></tr>
+      <tr><td>Oncology trial, outcome is overall survival</td><td>HR</td><td>Time-to-event data from Cox regression</td></tr>
+      <tr><td>Drug trial, outcome is blood pressure reduction (mmHg)</td><td>MD</td><td>All studies use same unit; MD preserves clinical meaning</td></tr>
+      <tr><td>Depression treatment, studies use different scales</td><td>SMD</td><td>Different instruments measuring the same construct</td></tr>
+      <tr><td>Logistic regression output from observational studies</td><td>OR</td><td>Adjusted ORs from logistic regression are standard</td></tr>
+      <tr><td>Cardiovascular trial, outcome is MACE event time</td><td>HR</td><td>Survival analysis with censoring and follow-up variation</td></tr>
+    </table>
+  </div>
+
+  <div class="cta">
+    <h2>Calculate Effect Sizes with MetaReview</h2>
+    <p>Supports OR, RR, HR, MD, and SMD with automatic pooling, forest plots, funnel plots, and full report export. Free, no coding required.</p>
+    <a href="/">Open MetaReview</a>
+    <p style="margin-top:12px"><a href="/?s=6ae5971c" style="color:#93c5fd;font-size:14px;text-decoration:underline;">See live demo: Aspirin vs Placebo OR analysis (7 RCTs) &rarr;</a></p>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">Stay Updated</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">Get notified about new features and meta-analysis tips.</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="Enter your email" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Subscribe</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">No spam. Unsubscribe anytime.</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='Submitting...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-effect-en',lang:'en'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'You are already subscribed!':'Subscribed! We will notify you about new features.';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Please enter a valid email address.';btn.textContent='Subscribe';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Submission failed. Please try again later.';btn.textContent='Subscribe';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="related">
+    <h2>Related Guides</h2>
+    <ul>
+      <li><a href="/guides/how-to-meta-analysis">How to Do a Meta-Analysis: Step-by-Step Guide</a></li>
+      <li><a href="/guides/free-forest-plot-generator">Free Forest Plot Generator Online</a></li>
+      <li><a href="/guides/free-funnel-plot-maker">Free Funnel Plot Maker Online</a></li>
+      <li><a href="/guides/meta-analysis-calculator">Meta-Analysis Calculator Online</a></li>
+      <li><a href="/guides/best-meta-analysis-software">Best Free Meta-Analysis Software Compared</a></li>
+      <li><a href="/guides/free-prisma-flow-diagram-generator">Free PRISMA Flow Diagram Generator</a></li>
+      <li><a href="/guides/hazard-ratio-meta-analysis-guide">Hazard Ratio Meta-Analysis Guide</a></li>
+      <li><a href="/guides/effect-size-selection">OR/RR/HR/MD/SMD 效应量选择指南（中文版）</a></li>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤（中文）</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图指南（中文）</a></li>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 流程图指南（中文）</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta 分析软件对比（中文）</a></li>
+      <li><a href="/guides/tumor-meta-analysis">肿瘤 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">心血管 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/diabetes-meta-analysis">糖尿病 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/covid-meta-analysis">COVID-19 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis">精神科 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/cancer-meta-analysis-guide">Cancer & Oncology Meta-Analysis Guide</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis-guide">Cardiovascular Meta-Analysis Guide</a></li>
+      <li><a href="/guides/diabetes-meta-analysis-guide">Diabetes Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/covid-meta-analysis-guide">COVID-19 Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis-guide">Psychiatry Meta-Analysis Guide (English)</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> &mdash; Free Online Meta-Analysis Tool</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

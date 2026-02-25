@@ -43,7 +43,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   try {
     const response = await fetch(ncbiUrl.toString(), {
-      headers: { 'User-Agent': 'MetaReview/1.0 (https://metareview-8c1.pages.dev)' },
+      headers: { 'User-Agent': 'MetaReview/1.0 (https://metareview.cc)' },
     });
 
     const body = await response.text();

@@ -1105,7 +1105,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
     if (subgroupResult && subgroupResult.subgroups.length > 1) {
       methodsParts.push('Subgroup analysis was conducted to explore potential sources of heterogeneity, and the test for subgroup differences (Q-between) was used to evaluate effect modification.');
     }
-    methodsParts.push('All analyses were performed using MetaReview (metareview-8c1.pages.dev), an open-source online meta-analysis platform. A two-sided P value < 0.05 was considered statistically significant.');
+    methodsParts.push('All analyses were performed using MetaReview (metareview.cc), an open-source online meta-analysis platform. A two-sided P value < 0.05 was considered statistically significant.');
     children.push(
       new Paragraph({ text: 'Methods Paragraph (for manuscript)', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
       new Paragraph({
@@ -1147,7 +1147,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
     }),
     new Paragraph({
       children: [new TextRun({
-        text: 'metareview-8c1.pages.dev',
+        text: 'metareview.cc',
         size: 16,
         color: '2563EB',
         font: 'Helvetica',
@@ -1240,7 +1240,7 @@ export async function generatePRISMADOCX(data: PRISMAData): Promise<Blob> {
     }),
     new Paragraph({
       children: [new TextRun({
-        text: 'metareview-8c1.pages.dev',
+        text: 'metareview.cc',
         size: 16,
         color: '2563EB',
         font: 'Helvetica',

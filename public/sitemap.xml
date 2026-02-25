@@ -2,127 +2,199 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://metareview-8c1.pages.dev/</loc>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://metareview-8c1.pages.dev/" />
+    <loc>https://metareview.cc/</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://metareview.cc/" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/meta-analysis-steps</loc>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/meta-analysis-steps" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://metareview-8c1.pages.dev/guides/how-to-meta-analysis" />
+    <loc>https://metareview.cc/guides/meta-analysis-steps</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/meta-analysis-steps" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/how-to-meta-analysis" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/forest-plot-generator</loc>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/forest-plot-generator" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://metareview-8c1.pages.dev/guides/free-forest-plot-generator" />
+    <loc>https://metareview.cc/guides/forest-plot-generator</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/forest-plot-generator" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/free-forest-plot-generator" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/effect-size-selection</loc>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/effect-size-selection" />
+    <loc>https://metareview.cc/guides/effect-size-selection</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/effect-size-selection" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/meta-analysis-effect-size-guide" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/prisma-flow-diagram</loc>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/prisma-flow-diagram" />
+    <loc>https://metareview.cc/guides/prisma-flow-diagram</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/prisma-flow-diagram" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/free-prisma-flow-diagram-generator" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/survival-analysis-meta</loc>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/survival-analysis-meta" />
+    <loc>https://metareview.cc/guides/survival-analysis-meta</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/survival-analysis-meta" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/hazard-ratio-meta-analysis-guide" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/meta-analysis-software-comparison</loc>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/meta-analysis-software-comparison" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://metareview-8c1.pages.dev/guides/best-meta-analysis-software" />
+    <loc>https://metareview.cc/guides/meta-analysis-software-comparison</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/meta-analysis-software-comparison" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/best-meta-analysis-software" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/tumor-meta-analysis</loc>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/tumor-meta-analysis" />
+    <loc>https://metareview.cc/guides/tumor-meta-analysis</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/tumor-meta-analysis" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/cancer-meta-analysis-guide" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/cardiovascular-meta-analysis</loc>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/cardiovascular-meta-analysis" />
+    <loc>https://metareview.cc/guides/cardiovascular-meta-analysis</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/cardiovascular-meta-analysis" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/cardiovascular-meta-analysis-guide" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/how-to-meta-analysis</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://metareview-8c1.pages.dev/guides/how-to-meta-analysis" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/meta-analysis-steps" />
+    <loc>https://metareview.cc/guides/how-to-meta-analysis</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/how-to-meta-analysis" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/meta-analysis-steps" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/diabetes-meta-analysis</loc>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/diabetes-meta-analysis" />
+    <loc>https://metareview.cc/guides/diabetes-meta-analysis</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/diabetes-meta-analysis" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/diabetes-meta-analysis-guide" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/free-forest-plot-generator</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://metareview-8c1.pages.dev/guides/free-forest-plot-generator" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/forest-plot-generator" />
+    <loc>https://metareview.cc/guides/free-forest-plot-generator</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/free-forest-plot-generator" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/forest-plot-generator" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/covid-meta-analysis</loc>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/covid-meta-analysis" />
+    <loc>https://metareview.cc/guides/covid-meta-analysis</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/covid-meta-analysis" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/covid-meta-analysis-guide" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/psychiatric-meta-analysis</loc>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/psychiatric-meta-analysis" />
+    <loc>https://metareview.cc/guides/psychiatric-meta-analysis</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/psychiatric-meta-analysis" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/psychiatric-meta-analysis-guide" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/free-funnel-plot-maker</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://metareview-8c1.pages.dev/guides/free-funnel-plot-maker" />
+    <loc>https://metareview.cc/guides/free-funnel-plot-maker</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/free-funnel-plot-maker" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/meta-analysis-calculator</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://metareview-8c1.pages.dev/guides/meta-analysis-calculator" />
+    <loc>https://metareview.cc/guides/meta-analysis-calculator</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/meta-analysis-calculator" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://metareview-8c1.pages.dev/guides/best-meta-analysis-software</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://metareview-8c1.pages.dev/guides/best-meta-analysis-software" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/meta-analysis-software-comparison" />
+    <loc>https://metareview.cc/guides/best-meta-analysis-software</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/best-meta-analysis-software" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/meta-analysis-software-comparison" />
+    <lastmod>2026-02-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://metareview.cc/guides/free-prisma-flow-diagram-generator</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/free-prisma-flow-diagram-generator" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/prisma-flow-diagram" />
+    <lastmod>2026-02-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://metareview.cc/guides/meta-analysis-effect-size-guide</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/meta-analysis-effect-size-guide" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/effect-size-selection" />
+    <lastmod>2026-02-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://metareview.cc/guides/hazard-ratio-meta-analysis-guide</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/hazard-ratio-meta-analysis-guide" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/survival-analysis-meta" />
+    <lastmod>2026-02-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://metareview.cc/guides/cancer-meta-analysis-guide</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/cancer-meta-analysis-guide" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/tumor-meta-analysis" />
+    <lastmod>2026-02-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://metareview.cc/guides/cardiovascular-meta-analysis-guide</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/cardiovascular-meta-analysis-guide" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/cardiovascular-meta-analysis" />
+    <lastmod>2026-02-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://metareview.cc/guides/diabetes-meta-analysis-guide</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/diabetes-meta-analysis-guide" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/diabetes-meta-analysis" />
+    <lastmod>2026-02-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://metareview.cc/guides/covid-meta-analysis-guide</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/covid-meta-analysis-guide" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/covid-meta-analysis" />
+    <lastmod>2026-02-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://metareview.cc/guides/psychiatric-meta-analysis-guide</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://metareview.cc/guides/psychiatric-meta-analysis-guide" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/psychiatric-meta-analysis" />
     <lastmod>2026-02-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

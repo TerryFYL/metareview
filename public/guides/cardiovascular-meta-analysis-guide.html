@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cardiovascular Meta-Analysis Guide: MACE, Lipid Endpoints &amp; Trial Design (2026) | MetaReview</title>
+  <meta name="description" content="Complete guide to cardiovascular meta-analysis. Learn how to handle MACE composite endpoints, choose HR vs OR for CV outcomes, extract data from CVOT trials, manage ITT vs per-protocol analyses, and perform subgroup analysis by CV risk profile." />
+  <meta name="keywords" content="cardiovascular meta analysis, MACE meta analysis, cardiac meta-analysis, cardiovascular outcome trial, CVOT meta analysis, heart failure meta analysis, lipid lowering meta analysis, statin meta analysis, anticoagulant meta analysis, cardiovascular systematic review, coronary artery disease meta analysis, atrial fibrillation meta analysis" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview-8c1.pages.dev/guides/cardiovascular-meta-analysis-guide" />
+  <link rel="alternate" hreflang="en" href="https://metareview-8c1.pages.dev/guides/cardiovascular-meta-analysis-guide" />
+  <link rel="alternate" hreflang="zh-CN" href="https://metareview-8c1.pages.dev/guides/cardiovascular-meta-analysis" />
+  <link rel="alternate" hreflang="x-default" href="https://metareview-8c1.pages.dev/guides/cardiovascular-meta-analysis-guide" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview-8c1.pages.dev/guides/cardiovascular-meta-analysis-guide" />
+  <meta property="og:title" content="Cardiovascular Meta-Analysis Guide: MACE, Lipid Endpoints & Trial Design" />
+  <meta property="og:description" content="How to conduct CV meta-analysis: MACE composite endpoints, HR for CV death, ITT considerations, and risk-stratified subgroup analysis." />
+  <meta property="og:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MetaReview" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Cardiovascular Meta-Analysis Guide: MACE, Lipid Endpoints & Trial Design" />
+  <meta name="twitter:description" content="How to conduct CV meta-analysis: MACE, HR, ITT, and risk-stratified subgroup analysis." />
+  <meta name="twitter:image" content="https://metareview-8c1.pages.dev/og-image.png" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "MetaReview", "item": "https://metareview-8c1.pages.dev/"},
+      {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://metareview-8c1.pages.dev/#guides"},
+      {"@type": "ListItem", "position": 3, "name": "Cardiovascular Meta-Analysis Guide"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Cardiovascular Meta-Analysis Guide: MACE, Lipid Endpoints & Trial Design (2026)",
+    "description": "Complete guide to conducting cardiovascular meta-analysis covering composite endpoints, CV outcome trials, lipid-lowering therapy, and risk-stratified subgroup analysis.",
+    "author": {"@type": "Organization", "name": "MetaReview"},
+    "publisher": {"@type": "Organization", "name": "MetaReview"},
+    "datePublished": "2026-02-25",
+    "dateModified": "2026-02-25"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is MACE and how do I handle it in meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MACE (Major Adverse Cardiovascular Events) is a composite endpoint typically including cardiovascular death, non-fatal myocardial infarction, and non-fatal stroke (3-point MACE). Some trials use 4-point MACE by adding hospitalization for unstable angina. The critical issue for meta-analysis is that MACE definitions vary across trials. Before pooling, verify that all studies use the same MACE definition. If definitions differ, either analyze individual components separately or clearly state the heterogeneity in your methods."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I use HR or OR for cardiovascular meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use HR (Hazard Ratio) for time-to-event endpoints like MACE, CV death, and heart failure hospitalization, because HR accounts for censoring and the time dimension. Use OR (Odds Ratio) or RR (Risk Ratio) for binary endpoints measured at a fixed time point (e.g., in-hospital mortality, 30-day readmission rate). Most CVOTs report HR as the primary analysis, so HR is the default choice for large cardiovascular outcome trials."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I handle ITT vs per-protocol analysis in cardiovascular meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Always use Intention-to-Treat (ITT) analysis as the primary result because it preserves randomization and avoids selection bias from treatment discontinuation. Per-protocol analysis can be used as a sensitivity analysis. In cardiovascular trials, treatment discontinuation and crossover are common (especially in long-duration CVOTs), making ITT particularly important. Document which analysis population each study uses."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many studies do I need for a cardiovascular meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There is no strict minimum, but practical considerations apply. Heterogeneity tests (I-squared) have low power with fewer than 5 studies. Funnel plots and Egger's test are unreliable with fewer than 10 studies. Meta-regression requires at least 10 studies per covariate. For drug class meta-analyses (e.g., SGLT2 inhibitors), 3-6 large CVOTs may provide sufficient power. Even 2-3 studies can justify pooling if they address the same clinical question with similar designs."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I meta-analyze lipid-lowering therapy trials?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For efficacy: pool the percent change in LDL-C as Mean Difference (MD) across trials. For clinical outcomes (MACE, CV death): use HR from each CVOT. Key considerations: (1) ensure baseline LDL-C is comparable, (2) account for background statin therapy, (3) distinguish between primary and secondary prevention populations, (4) report absolute risk reduction (ARR) alongside relative measures. The NNT (Number Needed to Treat) provides clinical context that relative measures lack."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the key differences between primary and secondary prevention CV trials in meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Primary prevention trials enroll patients without established CV disease (higher NNT, smaller absolute risk reductions). Secondary prevention trials enroll patients with prior CV events (lower NNT, larger absolute benefits). Mixing primary and secondary prevention populations creates significant heterogeneity because baseline event rates differ dramatically. Always pre-specify this as a subgroup variable. If pooling both, use random-effects models and report the subgroup interaction test."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I handle competing risks in cardiovascular meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Competing risks occur when patients can experience events that prevent the outcome of interest (e.g., non-CV death prevents observation of CV death). Standard Cox regression (HR) may overestimate the cumulative incidence of CV events if non-CV mortality is high. Some CV trials report cause-specific HR and subdistribution HR (Fine-Gray). When available, extract the cause-specific HR for consistency. Note competing risk limitations in your discussion, especially for elderly populations where non-CV mortality is substantial."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I include observational studies alongside RCTs in cardiovascular meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, but with caveats. Analyze RCTs and observational studies separately first. If results are consistent, you may consider a combined analysis with appropriate sensitivity analyses. Observational studies are subject to confounding (healthy user bias, immortal time bias, indication bias). Use the Newcastle-Ottawa Scale for quality assessment of observational studies. In the GRADE framework, observational evidence starts at 'low' certainty while RCT evidence starts at 'high'."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Conduct a Cardiovascular Meta-Analysis with MetaReview",
+    "description": "Step-by-step guide to performing a cardiovascular meta-analysis covering MACE endpoints and CV outcome trials.",
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "Define your CV research question using PICO", "text": "Define Population (CAD, heart failure, AF patients), Intervention (drug class or specific regimen), Comparator (placebo, active comparator, standard therapy), and Outcomes (MACE, CV death, HF hospitalization, LDL-C change)."},
+      {"@type": "HowToStep", "position": 2, "name": "Search cardiovascular databases", "text": "Search PubMed, Embase, Cochrane CENTRAL. Include ACC, AHA, and ESC conference abstracts. Search ClinicalTrials.gov for completed CVOTs. Use terms like 'cardiovascular outcomes trial' combined with the drug class."},
+      {"@type": "HowToStep", "position": 3, "name": "Verify MACE definition consistency", "text": "Before pooling, confirm that all included studies use the same composite endpoint definition. Document whether each study uses 3-point MACE (CV death + MI + stroke) or 4-point MACE (adding unstable angina hospitalization)."},
+      {"@type": "HowToStep", "position": 4, "name": "Extract HR and 95% CI from each study", "text": "Record ITT HR and 95% CI for the primary composite endpoint. Also extract individual component HRs (CV death, MI, stroke separately), sample size, baseline characteristics, follow-up duration, and event rates per arm."},
+      {"@type": "HowToStep", "position": 5, "name": "Enter data in MetaReview and run analysis", "text": "Select Hazard Ratio as effect measure, enter study data, assign subgroups (primary vs secondary prevention, baseline risk), and click Run Meta-Analysis."},
+      {"@type": "HowToStep", "position": 6, "name": "Analyze individual MACE components", "text": "Run separate meta-analyses for CV death, MI, stroke, and HF hospitalization. Component-level analysis reveals whether the composite result is driven by one component or reflects a broad treatment benefit."},
+      {"@type": "HowToStep", "position": 7, "name": "Assess publication bias and evidence quality", "text": "Examine funnel plots, run Egger's test. Apply GRADE framework. Note that industry-sponsored CVOTs may have reporting bias for secondary endpoints."},
+      {"@type": "HowToStep", "position": 8, "name": "Export the complete report", "text": "Generate an HTML or DOCX report with forest plots for composite and individual endpoints, funnel plots, sensitivity analyses, and auto-generated Methods paragraph in PRISMA 2020 format."}
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .decision-tree { background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; overflow-x: auto; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">Open Tool</a>
+      <a href="/guides/how-to-meta-analysis">How-To Guide</a>
+      <a href="/guides/hazard-ratio-meta-analysis-guide">HR Guide</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Cardiovascular Meta-Analysis Guide</h1>
+  <p>From MACE composite endpoints to lipid-lowering CVOTs. Everything you need to synthesize evidence from cardiovascular clinical trials.</p>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#why" style="color:#1e40af">Why Meta-Analysis Is Essential in Cardiology</a></li>
+      <li><a href="#pico" style="color:#1e40af">Defining Your CV Research Question (PICO)</a></li>
+      <li><a href="#endpoints" style="color:#1e40af">Understanding Cardiovascular Endpoints</a></li>
+      <li><a href="#effect-size" style="color:#1e40af">Choosing the Right Effect Size</a></li>
+      <li><a href="#mace" style="color:#1e40af">MACE Composite Endpoints: Definition Challenges</a></li>
+      <li><a href="#data-extraction" style="color:#1e40af">Data Extraction from CV Trials</a></li>
+      <li><a href="#heterogeneity" style="color:#1e40af">Handling Heterogeneity in CV Meta-Analysis</a></li>
+      <li><a href="#subgroup" style="color:#1e40af">Subgroup Analysis by Risk Profile</a></li>
+      <li><a href="#metareview" style="color:#1e40af">Step-by-Step: CV Meta-Analysis in MetaReview</a></li>
+      <li><a href="#pitfalls" style="color:#1e40af">Common Pitfalls in Cardiovascular Meta-Analysis</a></li>
+    </ol>
+  </div>
+
+  <div class="section" id="why">
+    <h2>Why Meta-Analysis Is Essential in Cardiology</h2>
+    <p>Cardiovascular medicine generates more clinical trial data than almost any other specialty. Meta-analysis plays a central role because:</p>
+    <ul>
+      <li><strong>CVOTs are large but few</strong> &mdash; A single CVOT may enroll 10,000+ patients but only 3-5 trials exist for a given drug class. Pooling these trials reveals treatment effects with much greater precision.</li>
+      <li><strong>Event rates are low</strong> &mdash; With 3-point MACE rates of 5-10% over 3 years, individual trials may lack power for component endpoints (CV death alone, stroke alone). Meta-analysis provides the statistical power to analyze individual components.</li>
+      <li><strong>Guideline-shaping</strong> &mdash; ACC/AHA, ESC, and other bodies base treatment recommendations on systematic reviews and meta-analyses. Your analysis could directly influence clinical practice.</li>
+      <li><strong>Drug class effects</strong> &mdash; Meta-analysis can determine whether benefits are drug-specific or represent a class effect (e.g., do all SGLT2 inhibitors reduce heart failure hospitalization, or only empagliflozin?)</li>
+    </ul>
+    <div class="tip"><strong>Landmark CV meta-analyses that changed practice:</strong> CTT Collaboration (statin therapy), EMPA-REG/CANVAS/DECLARE pooled analysis (SGLT2 inhibitors for HFrEF), and antiplatelet therapy duration meta-analyses.</div>
+  </div>
+
+  <div class="section" id="pico">
+    <h2>Defining Your CV Research Question (PICO)</h2>
+
+    <table class="data-table">
+      <tr><th>Element</th><th>Description</th><th>CV Examples</th></tr>
+      <tr><td><strong>P</strong> (Population)</td><td>CV condition, risk profile, comorbidities</td><td>Patients with established ASCVD; T2DM with high CV risk; HFrEF (EF &le;40%); AF on anticoagulation</td></tr>
+      <tr><td><strong>I</strong> (Intervention)</td><td>Treatment being evaluated</td><td>SGLT2 inhibitors; PCSK9 inhibitors; DOACs; GLP-1 receptor agonists</td></tr>
+      <tr><td><strong>C</strong> (Comparator)</td><td>Control treatment</td><td>Placebo + standard of care; Warfarin; Statin monotherapy</td></tr>
+      <tr><td><strong>O</strong> (Outcomes)</td><td>Primary and secondary endpoints</td><td>3-point MACE; CV death; MI; Stroke; HF hospitalization; All-cause death; LDL-C change</td></tr>
+    </table>
+
+    <h3>Search Strategy for CV Trials</h3>
+    <ul>
+      <li><strong>Databases:</strong> PubMed, Embase, Cochrane CENTRAL, ClinicalTrials.gov</li>
+      <li><strong>Conference proceedings:</strong> ACC (acc.org), AHA (heart.org), ESC (escardio.org), TCT</li>
+      <li><strong>MeSH terms:</strong> "Cardiovascular Diseases"[Mesh], "Myocardial Infarction"[Mesh], specific drug class terms</li>
+      <li><strong>Key filter:</strong> Publication type = "Randomized Controlled Trial" for highest evidence</li>
+    </ul>
+
+    <div class="warn"><strong>Scope management:</strong> A PICO of "any anticoagulant for any cardiac condition" is too broad. Narrow to a specific drug class (DOACs), condition (non-valvular AF), and endpoint (stroke prevention). You can expand with subgroup analyses.</div>
+  </div>
+
+  <div class="section" id="endpoints">
+    <h2>Understanding Cardiovascular Endpoints</h2>
+    <p>CV trials use a hierarchy of endpoints ranging from hard clinical outcomes to surrogate markers.</p>
+
+    <h3>Hard Clinical Endpoints</h3>
+    <table class="data-table">
+      <tr><th>Endpoint</th><th>Definition</th><th>Analysis Type</th><th>Effect Size</th></tr>
+      <tr><td>All-cause death</td><td>Death from any cause</td><td>Time-to-event</td><td>HR</td></tr>
+      <tr><td>CV death</td><td>Death attributed to cardiovascular cause</td><td>Time-to-event</td><td>HR</td></tr>
+      <tr><td>Non-fatal MI</td><td>MI not resulting in death within 28 days</td><td>Time-to-event</td><td>HR</td></tr>
+      <tr><td>Non-fatal stroke</td><td>Stroke not resulting in death within 28 days</td><td>Time-to-event</td><td>HR</td></tr>
+      <tr><td>HF hospitalization</td><td>Hospitalization for worsening heart failure</td><td>Time-to-event</td><td>HR</td></tr>
+    </table>
+
+    <h3>Composite Endpoints</h3>
+    <table class="data-table">
+      <tr><th>Composite</th><th>Components</th><th>Used In</th></tr>
+      <tr><td>3-point MACE</td><td>CV death + non-fatal MI + non-fatal stroke</td><td>Most CVOTs (FDA-required)</td></tr>
+      <tr><td>4-point MACE</td><td>3-point MACE + hospitalization for unstable angina</td><td>Some older CVOTs</td></tr>
+      <tr><td>HF composite</td><td>CV death + HF hospitalization</td><td>HF trials (EMPEROR, DAPA-HF)</td></tr>
+      <tr><td>Kidney composite</td><td>Sustained eGFR decline + ESKD + renal death</td><td>Cardiorenal trials</td></tr>
+    </table>
+
+    <h3>Surrogate Endpoints</h3>
+    <ul>
+      <li><strong>LDL-C change (%)</strong> &mdash; Validated surrogate for CV events (CTT Collaboration). Analyze as Mean Difference (MD).</li>
+      <li><strong>HbA1c change</strong> &mdash; For cardiometabolic trials. Not a validated CV surrogate.</li>
+      <li><strong>Blood pressure change</strong> &mdash; Validated surrogate for stroke and heart failure.</li>
+      <li><strong>LVEF change</strong> &mdash; Surrogate for HF prognosis. Analyze as MD.</li>
+    </ul>
+
+    <div class="tip"><strong>Best practice:</strong> Always report the composite endpoint result AND individual component results. A composite MACE HR of 0.80 may be driven entirely by MI reduction with no effect on CV death or stroke. Component analysis reveals the true treatment profile.</div>
+  </div>
+
+  <div class="section" id="effect-size">
+    <h2>Choosing the Right Effect Size</h2>
+
+    <div class="decision-tree">
+What is your CV endpoint type?
+&#x251c;&#x2500; Time-to-first-event (MACE, CV death, MI, stroke, HF hosp)
+&#x2502;   &#x2514;&#x2500; Use <strong>Hazard Ratio (HR)</strong>
+&#x2502;       &#x2514;&#x2500; Standard output of Cox regression in CVOTs
+&#x251c;&#x2500; Binary at fixed timepoint (30-day mortality, in-hospital events)
+&#x2502;   &#x251c;&#x2500; Common events (&gt;20%) &#x2192; <strong>Risk Ratio (RR)</strong>
+&#x2502;   &#x2514;&#x2500; Rare events (&lt;20%) &#x2192; <strong>Odds Ratio (OR)</strong>
+&#x2514;&#x2500; Continuous (LDL-C change, BP change, LVEF change)
+    &#x251c;&#x2500; Same unit across studies &#x2192; <strong>MD</strong>
+    &#x2514;&#x2500; Different scales &#x2192; <strong>SMD</strong>
+    </div>
+
+    <h3>Special Considerations for CV Meta-Analysis</h3>
+    <ul>
+      <li><strong>Recurrent events:</strong> Standard HR only captures time-to-first-event. Some newer CV trials report recurrent event analyses (e.g., total HF hospitalizations). These require different statistical methods (negative binomial, Anderson-Gill, or Wei-Lin-Weissfeld models).</li>
+      <li><strong>Competing risks:</strong> Non-CV death competes with CV endpoints. Standard HR may overestimate cumulative CV event risk in elderly populations. Note this limitation in your discussion.</li>
+      <li><strong>Absolute vs relative risk:</strong> HR = 0.80 is more meaningful in a high-risk population (ARR 4%, NNT 25) than in a low-risk population (ARR 0.5%, NNT 200). Report both.</li>
+    </ul>
+  </div>
+
+  <div class="section" id="mace">
+    <h2>MACE Composite Endpoints: Definition Challenges</h2>
+    <p>MACE is the most common primary endpoint in CVOTs, but its definition is not standardized across all trials.</p>
+
+    <h3>MACE Definition Variations</h3>
+    <table class="data-table">
+      <tr><th>Trial</th><th>MACE Definition</th><th>Components</th></tr>
+      <tr><td>EMPA-REG OUTCOME</td><td>3-point MACE</td><td>CV death + non-fatal MI + non-fatal stroke</td></tr>
+      <tr><td>CANVAS Program</td><td>3-point MACE</td><td>CV death + non-fatal MI + non-fatal stroke</td></tr>
+      <tr><td>LEADER</td><td>3-point MACE</td><td>CV death + non-fatal MI + non-fatal stroke</td></tr>
+      <tr><td>SAVOR-TIMI 53</td><td>3-point MACE</td><td>CV death + MI + ischemic stroke</td></tr>
+      <tr><td>Older trials</td><td>4-point MACE</td><td>3-point + unstable angina hospitalization</td></tr>
+    </table>
+
+    <h3>Handling Definition Heterogeneity</h3>
+    <ol>
+      <li><strong>Preferred approach:</strong> Pool only studies using the identical MACE definition</li>
+      <li><strong>If mixing is unavoidable:</strong> Conduct sensitivity analysis excluding studies with different definitions</li>
+      <li><strong>Best alternative:</strong> Analyze individual MACE components (CV death, MI, stroke) separately &mdash; these are consistently defined</li>
+    </ol>
+
+    <div class="warn"><strong>Adjudication matters:</strong> Centrally adjudicated events (blinded endpoint committee) are more reliable than investigator-reported events. Prefer studies with independent event adjudication committees.</div>
+  </div>
+
+  <div class="section" id="data-extraction">
+    <h2>Data Extraction from CV Trials</h2>
+
+    <h3>Essential Data Points</h3>
+    <ul>
+      <li><strong>Study identification:</strong> First author, year, trial name/acronym (e.g., "EMPA-REG OUTCOME"), NCT number</li>
+      <li><strong>Population:</strong> Inclusion criteria, established ASCVD vs risk factors only, HF status (HFrEF/HFpEF/no HF)</li>
+      <li><strong>Baseline characteristics:</strong> Mean age, sex distribution, diabetes prevalence, prior MI/stroke, mean LVEF, mean eGFR, baseline LDL-C</li>
+      <li><strong>Treatment:</strong> Drug name, dose, background therapy (statin use %, antiplatelet %, ACEi/ARB %)</li>
+      <li><strong>Follow-up:</strong> Median duration, completion rate</li>
+      <li><strong>Outcomes:</strong> HR + 95% CI for each endpoint, event counts per arm, ITT analysis</li>
+    </ul>
+
+    <h3>Data Extraction Template</h3>
+    <table class="data-table">
+      <tr><th>Field</th><th>Source in Paper</th><th>Notes</th></tr>
+      <tr><td>HR (95% CI) for MACE</td><td>Abstract or primary results table</td><td>Use ITT population</td></tr>
+      <tr><td>HR for CV death</td><td>Component analysis table or forest plot</td><td>May be in supplementary appendix</td></tr>
+      <tr><td>HR for MI</td><td>Component analysis table</td><td>Distinguish fatal vs non-fatal</td></tr>
+      <tr><td>HR for stroke</td><td>Component analysis table</td><td>Distinguish ischemic vs hemorrhagic</td></tr>
+      <tr><td>HR for HF hospitalization</td><td>Secondary endpoint or supplementary</td><td>Often not a primary endpoint</td></tr>
+      <tr><td>Events / N per arm</td><td>Results table</td><td>For calculating event rates</td></tr>
+      <tr><td>Median follow-up</td><td>Methods or results</td><td>Affects maturity of OS data</td></tr>
+    </table>
+
+    <div class="tip"><strong>Check supplementary appendices.</strong> CV trial primary publications often report only composite results. Individual component HRs, subgroup forest plots, and sensitivity analyses are frequently in supplementary materials or companion papers.</div>
+  </div>
+
+  <div class="section" id="heterogeneity">
+    <h2>Handling Heterogeneity in CV Meta-Analysis</h2>
+
+    <h3>Sources of Heterogeneity</h3>
+    <table class="data-table">
+      <tr><th>Source</th><th>Examples</th><th>Approach</th></tr>
+      <tr><td>Baseline CV risk</td><td>Primary vs secondary prevention; HFrEF vs HFpEF</td><td>Subgroup analysis</td></tr>
+      <tr><td>Background therapy</td><td>Statin use (30% vs 95%), antiplatelet variation</td><td>Meta-regression on % statin use</td></tr>
+      <tr><td>Follow-up duration</td><td>1.5 years (SUSTAIN-6) vs 5.4 years (FOURIER)</td><td>Sensitivity analysis, meta-regression</td></tr>
+      <tr><td>Drug dose</td><td>Different doses within the same class</td><td>Dose-response meta-analysis</td></tr>
+      <tr><td>Geographic variation</td><td>Regional differences in CV risk profile</td><td>Subgroup by region</td></tr>
+      <tr><td>Endpoint adjudication</td><td>Central vs investigator-reported</td><td>Sensitivity analysis</td></tr>
+    </table>
+
+    <h3>Strategies for High Heterogeneity</h3>
+    <ol>
+      <li><strong>Pre-specified subgroup analysis</strong> &mdash; primary vs secondary prevention, with vs without HF, with vs without diabetes</li>
+      <li><strong>Meta-regression</strong> &mdash; test moderators like baseline LDL-C, % statin use, mean age, follow-up duration</li>
+      <li><strong>Sensitivity analysis</strong> &mdash; restrict to Phase III CVOTs only, exclude open-label studies, ITT only</li>
+      <li><strong>Component-level pooling</strong> &mdash; if composite heterogeneity is high, analyze individual components which may be more homogeneous</li>
+    </ol>
+
+    <div class="tip"><strong>Expected I&sup2; ranges in CV meta-analyses:</strong> Drug class CVOTs (same mechanism) typically show I&sup2; 0-30%. Cross-class comparisons may show I&sup2; 40-70%. Mixed primary/secondary prevention cohorts often exceed I&sup2; 50%.</div>
+  </div>
+
+  <div class="section" id="subgroup">
+    <h2>Subgroup Analysis by Risk Profile</h2>
+    <p>Cardiovascular trials are particularly amenable to clinically meaningful subgroup analyses because baseline risk strongly modifies absolute treatment benefit.</p>
+
+    <h3>Key Pre-Specified Subgroups</h3>
+    <table class="data-table">
+      <tr><th>Subgroup Variable</th><th>Categories</th><th>Clinical Rationale</th></tr>
+      <tr><td>Prevention type</td><td>Primary vs secondary</td><td>Event rates differ 3-5x, affecting absolute benefit</td></tr>
+      <tr><td>Heart failure status</td><td>HFrEF vs HFpEF vs no HF</td><td>SGLT2i show differential HF benefit by EF</td></tr>
+      <tr><td>Diabetes status</td><td>T2DM vs no diabetes</td><td>Some drug classes approved only for diabetic patients</td></tr>
+      <tr><td>Renal function</td><td>eGFR &ge;60 vs 30-59 vs &lt;30</td><td>CV risk increases with CKD stage; some drugs contraindicated</td></tr>
+      <tr><td>Age</td><td>&lt;65 vs &ge;65 vs &ge;75</td><td>Bleeding risk increases with age (anticoagulants)</td></tr>
+      <tr><td>Baseline LDL-C</td><td>Above vs below median</td><td>Higher baseline = greater absolute LDL-C reduction</td></tr>
+      <tr><td>Prior MI</td><td>Yes vs no</td><td>Post-MI patients have higher event rates</td></tr>
+    </table>
+
+    <h3>NNT by Risk Profile</h3>
+    <p>Absolute risk reduction (ARR) and Number Needed to Treat (NNT) vary dramatically by baseline risk:</p>
+    <div class="formula">
+NNT = 1 / ARR = 1 / (Control Event Rate &times; (1 &minus; HR))
+    </div>
+    <p>Example for HR = 0.80:</p>
+    <ul>
+      <li>High-risk (20% event rate): ARR = 20% &times; 0.20 = 4.0%, NNT = 25</li>
+      <li>Moderate-risk (10% event rate): ARR = 10% &times; 0.20 = 2.0%, NNT = 50</li>
+      <li>Low-risk (3% event rate): ARR = 3% &times; 0.20 = 0.6%, NNT = 167</li>
+    </ul>
+
+    <div class="warn"><strong>Statistical caution:</strong> Subgroup analyses in individual trials are often underpowered. Meta-analysis of patient-level subgroups requires individual participant data (IPD). Study-level subgroup meta-analysis (using aggregate subgroup HRs) is more feasible but subject to ecological bias.</div>
+  </div>
+
+  <div class="section" id="metareview">
+    <h2>Step-by-Step: CV Meta-Analysis in MetaReview</h2>
+
+    <h3>Step 1: Select Effect Measure</h3>
+    <p>Open MetaReview and choose:</p>
+    <ul>
+      <li><strong>Hazard Ratio</strong> for MACE, CV death, MI, stroke, HF hospitalization</li>
+      <li><strong>Odds Ratio / Risk Ratio</strong> for binary outcomes (30-day mortality, procedural success)</li>
+      <li><strong>Mean Difference</strong> for continuous outcomes (LDL-C change, BP change)</li>
+    </ul>
+
+    <h3>Step 2: Enter Trial Data</h3>
+    <p>For each CVOT, enter the trial name/acronym (e.g., "EMPA-REG 2015"), publication year, and HR + 95% CI from the ITT analysis.</p>
+    <div class="tip"><strong>Batch entry:</strong> Copy your extraction table from Excel or Google Sheets and paste directly into MetaReview. The tool auto-detects and maps columns.</div>
+
+    <h3>Step 3: Run Multiple Analyses</h3>
+    <p>Conduct separate meta-analyses for:</p>
+    <ol>
+      <li>Composite MACE</li>
+      <li>CV death (individual component)</li>
+      <li>Non-fatal MI (individual component)</li>
+      <li>Non-fatal stroke (individual component)</li>
+      <li>HF hospitalization (if reported)</li>
+      <li>All-cause death</li>
+    </ol>
+    <p>This component-level analysis reveals whether the composite result is driven by one specific endpoint.</p>
+
+    <h3>Step 4: Assign Subgroups and Re-Analyze</h3>
+    <p>Label studies as "Primary Prevention" or "Secondary Prevention" in the Subgroup column. Re-run to see stratified forest plots with Q-between interaction test.</p>
+
+    <h3>Step 5: Assess Bias and Quality</h3>
+    <ul>
+      <li><strong>Funnel plot + Egger's test</strong> for publication bias</li>
+      <li><strong>Trim-and-Fill</strong> to estimate missing study impact</li>
+      <li><strong>GRADE assessment</strong> across 5 domains (risk of bias, inconsistency, indirectness, imprecision, publication bias)</li>
+      <li><strong>Leave-one-out sensitivity analysis</strong> to check if one trial drives the result</li>
+    </ul>
+
+    <h3>Step 6: Export Report</h3>
+    <p>Generate HTML or DOCX reports with all forest plots (composite + components), funnel plots, heterogeneity statistics, and auto-generated Methods paragraph in PRISMA 2020 format.</p>
+  </div>
+
+  <div class="section" id="pitfalls">
+    <h2>Common Pitfalls in Cardiovascular Meta-Analysis</h2>
+
+    <h3>Pitfall 1: Inconsistent MACE Definitions</h3>
+    <p>Pooling 3-point MACE with 4-point MACE inflates heterogeneity. Studies adding unstable angina hospitalization will have higher event rates.</p>
+    <p><strong>Solution:</strong> Pool only studies with identical MACE definitions. Alternatively, analyze individual MACE components where definitions are standardized.</p>
+
+    <h3>Pitfall 2: Mixing ITT and Per-Protocol Analyses</h3>
+    <p>ITT preserves randomization but may dilute treatment effects due to discontinuation. Per-protocol inflates effects by excluding non-compliant patients.</p>
+    <p><strong>Solution:</strong> Use ITT results as the primary analysis. Report per-protocol as sensitivity analysis. Document which population each study uses.</p>
+
+    <h3>Pitfall 3: Ignoring Background Therapy Evolution</h3>
+    <p>Older CV trials had lower statin use (30-50%), while modern CVOTs have near-universal statin use (90%+). This affects the baseline event rate and the potential for additional benefit.</p>
+    <p><strong>Solution:</strong> Record background therapy rates and use meta-regression to explore whether statin use modifies the treatment effect.</p>
+
+    <h3>Pitfall 4: Double-Counting from Multiple Publications</h3>
+    <p>Large CVOTs often produce multiple publications: primary results, extended follow-up, subgroup analyses, and mechanistic sub-studies. Using data from multiple timepoints of the same trial creates bias.</p>
+    <p><strong>Solution:</strong> Use the most recent (most mature) data cutoff for each trial. Track trial registration numbers (NCT IDs) to identify duplicate publications.</p>
+
+    <h3>Pitfall 5: Neglecting Absolute Risk Measures</h3>
+    <p>A pooled HR of 0.80 sounds impressive, but if the baseline event rate is only 2%, the ARR is just 0.4% (NNT = 250). Relative measures alone can overstate clinical importance.</p>
+    <p><strong>Solution:</strong> Report ARR and NNT alongside HR. Calculate NNT at different baseline risk levels to help clinicians apply results to their patient populations.</p>
+
+    <h3>Pitfall 6: Publication and Reporting Bias in Industry CVOTs</h3>
+    <p>FDA-mandated CVOTs are designed to demonstrate non-inferiority for safety, with superiority as a secondary objective. Positive results receive prominent publication; neutral results may be reported with less emphasis.</p>
+    <p><strong>Solution:</strong> Search ClinicalTrials.gov for all registered CVOTs with the drug class. Compare registered primary endpoints against published endpoints to detect outcome switching. Include industry-funded and independently-funded studies.</p>
+  </div>
+
+  <div class="cta">
+    <h2>Start Your Cardiovascular Meta-Analysis Now</h2>
+    <p>Enter HR and 95% CI from CVOTs. MetaReview handles pooling, forest plots, component analysis, and report generation. Free, no coding required.</p>
+    <a href="/">Open MetaReview</a>
+    <p style="margin-top:12px"><a href="/?s=6ae5971c" style="color:#93c5fd;font-size:14px;text-decoration:underline;">See live demo: Aspirin vs Placebo meta-analysis (7 RCTs) &rarr;</a></p>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">Stay Updated</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">Get notified about new features and meta-analysis tips.</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="Enter your email" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Subscribe</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">No spam. Unsubscribe anytime.</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='Submitting...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-cv-en',lang:'en'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'You are already subscribed!':'Subscribed! We will notify you about new features.';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Please enter a valid email address.';btn.textContent='Subscribe';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Submission failed. Please try again later.';btn.textContent='Subscribe';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="related">
+    <h2>Related Guides</h2>
+    <ul>
+      <li><a href="/guides/hazard-ratio-meta-analysis-guide">Hazard Ratio Meta-Analysis Guide: HR Extraction & Forest Plot</a></li>
+      <li><a href="/guides/meta-analysis-effect-size-guide">Meta-Analysis Effect Size Guide: OR vs RR vs HR vs MD vs SMD</a></li>
+      <li><a href="/guides/how-to-meta-analysis">How to Do a Meta-Analysis: Step-by-Step Guide</a></li>
+      <li><a href="/guides/free-forest-plot-generator">Free Forest Plot Generator Online</a></li>
+      <li><a href="/guides/free-funnel-plot-maker">Free Funnel Plot Maker Online</a></li>
+      <li><a href="/guides/meta-analysis-calculator">Meta-Analysis Calculator Online</a></li>
+      <li><a href="/guides/best-meta-analysis-software">Best Free Meta-Analysis Software Compared</a></li>
+      <li><a href="/guides/free-prisma-flow-diagram-generator">Free PRISMA Flow Diagram Generator</a></li>
+      <li><a href="/guides/cancer-meta-analysis-guide">Cancer & Oncology Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/diabetes-meta-analysis-guide">Diabetes Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/covid-meta-analysis-guide">COVID-19 Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis-guide">Psychiatry Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">心血管 Meta 分析指南（中文版）</a></li>
+      <li><a href="/guides/tumor-meta-analysis">肿瘤 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/diabetes-meta-analysis">糖尿病 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/covid-meta-analysis">COVID-19 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis">精神科 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/effect-size-selection">效应量选择指南（中文）</a></li>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤（中文）</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图指南（中文）</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 流程图指南（中文）</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta 分析软件对比（中文）</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> &mdash; Free Online Meta-Analysis Tool</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

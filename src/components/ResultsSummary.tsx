@@ -366,7 +366,7 @@ function MethodsParagraph({ result, eggers, subgroupResult, sensitivityResults, 
 
   // 8. Software
   parts.push(
-    'All analyses were performed using MetaReview (https://metareview-8c1.pages.dev/), an open-source online meta-analysis platform. A two-sided P value < 0.05 was considered statistically significant.'
+    'All analyses were performed using MetaReview (https://metareview.cc/), an open-source online meta-analysis platform. A two-sided P value < 0.05 was considered statistically significant.'
   );
 
   const methodsText = parts.join(' ');

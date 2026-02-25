@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import { t, type Lang } from '../lib/i18n';
 import { trackFeature } from '../lib/analytics';
 
@@ -54,10 +54,20 @@ interface OnboardingTourProps {
 
 export default function OnboardingTour({ lang, onComplete, onTabSwitch }: OnboardingTourProps) {
   const [step, setStep] = useState(0);
-  const [tooltipStyle, setTooltipStyle] = useState<React.CSSProperties>({});
-  const [arrowStyle, setArrowStyle] = useState<React.CSSProperties>({});
+  const [tooltipStyle, setTooltipStyle] = useState<React.CSSProperties>({
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 300,
+    zIndex: 10002,
+  });
+  const [arrowStyle, setArrowStyle] = useState<React.CSSProperties>({ position: 'fixed', top: -999, left: -999, zIndex: 10003 });
   const [arrowDir, setArrowDir] = useState<'top' | 'bottom' | 'left' | 'right'>('top');
+  const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const onTabSwitchRef = useRef(onTabSwitch);
+  onTabSwitchRef.current = onTabSwitch;
 
   const currentStep = TOUR_STEPS[step];
 
@@ -67,6 +77,7 @@ export default function OnboardingTour({ lang, onComplete, onTabSwitch }: Onboar
     if (!el) return;
 
     const rect = el.getBoundingClientRect();
+    setTargetRect(rect);
     const tooltipW = 300;
     const tooltipH = tooltipRef.current?.offsetHeight || 140;
     const gap = 12;
@@ -142,18 +153,24 @@ export default function OnboardingTour({ lang, onComplete, onTabSwitch }: Onboar
     el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [currentStep]);
 
+  // Handle tab switching separately with stable ref
   useEffect(() => {
-    if (currentStep?.tabSwitch && onTabSwitch) {
-      onTabSwitch(currentStep.tabSwitch);
+    if (currentStep?.tabSwitch && onTabSwitchRef.current) {
+      onTabSwitchRef.current(currentStep.tabSwitch);
     }
-    // Small delay to allow tab content to render
-    const timer = setTimeout(positionTooltip, 150);
+  }, [step, currentStep]);
+
+  // Position tooltip: immediately after DOM commit + delayed for tab switch content
+  useLayoutEffect(() => {
+    positionTooltip();
+    // Also run after delay to handle tab switch content rendering
+    const timer = setTimeout(positionTooltip, 200);
     window.addEventListener('resize', positionTooltip);
     return () => {
       clearTimeout(timer);
       window.removeEventListener('resize', positionTooltip);
     };
-  }, [step, positionTooltip, currentStep, onTabSwitch]);
+  }, [step, positionTooltip]);
 
   const handleNext = () => {
     if (step < TOUR_STEPS.length - 1) {
@@ -170,10 +187,6 @@ export default function OnboardingTour({ lang, onComplete, onTabSwitch }: Onboar
   };
 
   if (!currentStep) return null;
-
-  // Highlight ring around target
-  const targetEl = document.querySelector(`[data-tour="${currentStep.target}"]`);
-  const targetRect = targetEl?.getBoundingClientRect();
 
   const arrowBorders: Record<string, React.CSSProperties> = {
     top: { borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderBottom: '8px solid #fff' },

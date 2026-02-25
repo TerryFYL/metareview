@@ -13,7 +13,7 @@ const MEASURE_LABELS: Record<string, string> = {
   SMD: 'Standardized Mean Difference',
 };
 
-const BASE_URL = 'https://metareview-8c1.pages.dev';
+const BASE_URL = 'https://metareview.cc';
 
 function escapeAttr(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

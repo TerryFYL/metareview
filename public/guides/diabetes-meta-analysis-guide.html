@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diabetes Meta-Analysis Guide: From HbA1c to Cardiovascular Outcomes (2026) | MetaReview</title>
+  <meta name="description" content="Complete guide to diabetes meta-analysis. Learn how to choose MD for HbA1c, HR for MACE and renal outcomes, handle CVOT design nuances, and perform subgroup analysis by baseline HbA1c, eGFR, and cardiovascular risk." />
+  <meta name="keywords" content="diabetes meta analysis, HbA1c meta analysis, SGLT2 inhibitor meta analysis, GLP-1 meta analysis, CVOT meta analysis diabetes, diabetes systematic review, antidiabetic drug meta analysis, MACE meta analysis, cardiovascular outcome trial diabetes" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview.cc/guides/diabetes-meta-analysis-guide" />
+  <link rel="alternate" hreflang="en" href="https://metareview.cc/guides/diabetes-meta-analysis-guide" />
+  <link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/diabetes-meta-analysis" />
+  <link rel="alternate" hreflang="x-default" href="https://metareview.cc/guides/diabetes-meta-analysis-guide" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview.cc/guides/diabetes-meta-analysis-guide" />
+  <meta property="og:title" content="Diabetes Meta-Analysis Guide: From HbA1c to Cardiovascular Outcomes (2026)" />
+  <meta property="og:description" content="How to conduct a diabetes meta-analysis: MD for HbA1c, HR for MACE and renal endpoints, subgroup by eGFR and CV risk, CVOT design considerations." />
+  <meta property="og:image" content="https://metareview.cc/og-image.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MetaReview" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Diabetes Meta-Analysis Guide: From HbA1c to Cardiovascular Outcomes (2026)" />
+  <meta name="twitter:description" content="How to conduct a diabetes meta-analysis: MD for HbA1c, HR for MACE, subgroup by eGFR and CV risk." />
+  <meta name="twitter:image" content="https://metareview.cc/og-image.png" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "MetaReview", "item": "https://metareview.cc/"},
+      {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://metareview.cc/#guides"},
+      {"@type": "ListItem", "position": 3, "name": "Diabetes Meta-Analysis Guide"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Diabetes Meta-Analysis Guide: From HbA1c to Cardiovascular Outcomes (2026)",
+    "description": "Complete guide to conducting diabetes meta-analysis covering glycemic endpoints (HbA1c), cardiovascular outcome trials (CVOT), MACE endpoints, renal outcomes, and subgroup analysis by baseline HbA1c, eGFR, and cardiovascular risk profile.",
+    "author": {"@type": "Organization", "name": "MetaReview"},
+    "publisher": {"@type": "Organization", "name": "MetaReview"},
+    "datePublished": "2026-02-25",
+    "dateModified": "2026-02-25"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Which effect size should I use for a diabetes meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It depends on the endpoint. For glycemic outcomes (HbA1c change from baseline), use Mean Difference (MD) since all studies report HbA1c on the same percentage-point scale. For cardiovascular outcomes (MACE, heart failure hospitalization), use Hazard Ratio (HR) because these are time-to-event endpoints from Cox regression. For binary safety events (hypoglycemia, DKA), use Odds Ratio (OR) or Risk Ratio (RR). Never mix different effect sizes in the same pooled analysis."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between MACE-3 and MACE-4 in diabetes CVOTs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MACE-3 (3-point MACE) includes cardiovascular death, non-fatal myocardial infarction, and non-fatal stroke. MACE-4 (4-point MACE) adds hospitalization for unstable angina as a fourth component. Most modern CVOTs use MACE-3 as the primary endpoint per FDA 2008 guidance, but some older trials used MACE-4. When conducting a meta-analysis, ensure all included studies use the same MACE definition, or perform separate analyses for MACE-3 and MACE-4."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I combine HbA1c and MACE outcomes in the same diabetes meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. HbA1c change is a continuous outcome analyzed using Mean Difference (MD), while MACE is a time-to-event outcome analyzed using Hazard Ratio (HR). These effect measures have different mathematical foundations and cannot be pooled together. Conduct separate analyses: one for glycemic efficacy (HbA1c as MD) and one for cardiovascular safety/benefit (MACE as HR). You may present both results in the same paper but they must remain distinct analyses."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I handle heterogeneity in diabetes meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Diabetes meta-analyses often have moderate to high heterogeneity due to differences in drug class, baseline HbA1c, renal function, and cardiovascular risk profile. Use I-squared, Q-test, and tau-squared to quantify heterogeneity. When I-squared exceeds 50%, perform pre-specified subgroup analyses by drug class (SGLT2i vs GLP-1 RA vs DPP-4i), baseline HbA1c level, eGFR strata, and established ASCVD status. Always use random-effects models when pooling across different drug classes or trial designs."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I pool SGLT2 inhibitors and GLP-1 receptor agonists together?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It depends on your research question. If you are asking whether newer antidiabetic agents as a class reduce MACE, pooling may be justified with subgroup analysis by drug class. However, SGLT2 inhibitors and GLP-1 RAs have different mechanisms: SGLT2i primarily reduce heart failure hospitalization and renal progression, while GLP-1 RAs primarily reduce atherosclerotic events (MI, stroke). Most reviewers recommend analyzing each drug class separately as the primary analysis and only pooling as a secondary or sensitivity analysis."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is the FDA 2008 guidance important for diabetes CVOT meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The FDA 2008 Guidance for Industry on diabetes drug cardiovascular risk assessment requires that new antidiabetic drugs demonstrate cardiovascular safety before and after approval. This guidance led to the design of large cardiovascular outcome trials (CVOTs) for all new diabetes drugs since 2008. These CVOTs are designed as non-inferiority trials with an upper 95% CI bound of HR = 1.3 for MACE. Understanding this is critical for meta-analysis because: (1) many CVOTs were powered for non-inferiority, not superiority; (2) the HR = 1.3 threshold affects interpretation; (3) pre-2008 trials were not designed with MACE as a primary endpoint."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I handle background therapy differences across diabetes trials?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Background therapy in diabetes trials has evolved significantly over time. Older trials may have used sulfonylureas or thiazolidinediones as standard care, while newer trials often include SGLT2 inhibitors or GLP-1 RAs as background. This evolution means the 'placebo' arm in a 2023 trial may receive more effective background treatment than in a 2010 trial, potentially attenuating the observed treatment effect. Document background therapy for each included study, consider restricting to studies with similar background therapy eras, and discuss this as a source of heterogeneity."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many studies do I need for a meaningful diabetes meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There is no strict minimum, but practical considerations apply. With 2-3 studies, you can calculate a pooled effect but heterogeneity assessment (I-squared) has very low power. Funnel plots and Egger's test require at least 10 studies to be informative. For HbA1c meta-analyses, 5-20 RCTs per drug class comparison is common. For CVOT meta-analyses, the number of available trials is inherently limited (typically 3-8 per drug class), but these trials are large (5,000-17,000 patients each), providing substantial statistical power despite fewer studies."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Conduct a Diabetes Meta-Analysis with MetaReview",
+    "description": "Step-by-step guide to performing a diabetes meta-analysis covering HbA1c, MACE, heart failure, and renal endpoints.",
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "Define your diabetes research question using PICO", "text": "Define Population (type 2 diabetes, with or without established ASCVD, specific eGFR range), Intervention (SGLT2 inhibitor, GLP-1 RA, DPP-4 inhibitor, or specific drug), Comparator (placebo, active comparator, or standard of care), and Outcomes (HbA1c change, MACE-3, heart failure hospitalization, renal composite, hypoglycemia)."},
+      {"@type": "HowToStep", "position": 2, "name": "Search diabetes literature databases", "text": "Search PubMed, Embase, Cochrane CENTRAL, and ClinicalTrials.gov. Use MeSH terms (Diabetes Mellitus Type 2, Hypoglycemic Agents, Cardiovascular Diseases) combined with drug class terms. Also search ADA and EASD conference abstracts for unpublished CVOT data."},
+      {"@type": "HowToStep", "position": 3, "name": "Select the appropriate effect measure", "text": "Choose MD for HbA1c change from baseline, HR for MACE-3 and time-to-event endpoints (heart failure hospitalization, renal composite), and OR or RR for binary safety endpoints (hypoglycemia, DKA, amputations). Verify all studies use the same MACE definition."},
+      {"@type": "HowToStep", "position": 4, "name": "Extract data from included studies", "text": "Record HR and 95% CI for cardiovascular and renal endpoints, MD and SD for HbA1c, drug name and dose, sample size, baseline HbA1c, baseline eGFR, percentage with established ASCVD, median follow-up, and background therapy. Use a standardized extraction form."},
+      {"@type": "HowToStep", "position": 5, "name": "Enter data in MetaReview and run analysis", "text": "Select the effect measure (HR for MACE, MD for HbA1c), enter study data or paste from Excel/Google Sheets, assign subgroups by drug class or baseline characteristic, and click Run Meta-Analysis. MetaReview automatically generates forest plot, funnel plot, and heterogeneity statistics."},
+      {"@type": "HowToStep", "position": 6, "name": "Perform subgroup and sensitivity analyses", "text": "Assign subgroups (by drug class, baseline HbA1c strata, eGFR categories, established ASCVD vs risk factors only) and re-run. Use leave-one-out sensitivity analysis to check robustness. Examine whether results differ when restricted to superiority-positive CVOTs only."},
+      {"@type": "HowToStep", "position": 7, "name": "Assess publication bias and evidence quality", "text": "Examine funnel plot symmetry, run Egger's and Begg's tests. Note that CVOT publication bias is minimal because FDA mandates reporting of all CVOT results. Apply GRADE framework to rate the certainty of evidence."},
+      {"@type": "HowToStep", "position": 8, "name": "Export the complete report", "text": "Generate an HTML or DOCX report with all figures, tables, auto-generated Methods paragraph following PRISMA 2020 guidelines, and narrative interpretation of glycemic and cardiovascular findings."}
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .decision-tree { background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; overflow-x: auto; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">Open Tool</a>
+      <a href="/guides/how-to-meta-analysis">How-To Guide</a>
+      <a href="/guides/hazard-ratio-meta-analysis-guide">HR Guide</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Diabetes Meta-Analysis Guide: From HbA1c to Cardiovascular Outcomes</h1>
+  <p>Navigate CVOT design, MACE definitions, glycemic and cardiorenal endpoints. Everything you need to synthesize evidence from diabetes clinical trials.</p>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#why" style="color:#1e40af">Why Meta-Analysis Matters in Diabetes Research</a></li>
+      <li><a href="#pico" style="color:#1e40af">Defining Your Diabetes Research Question (PICO)</a></li>
+      <li><a href="#effect-size" style="color:#1e40af">Choosing the Right Effect Size</a></li>
+      <li><a href="#cvot" style="color:#1e40af">Understanding CVOT Design and MACE Endpoints</a></li>
+      <li><a href="#data-extraction" style="color:#1e40af">Data Extraction Checklist for Diabetes Studies</a></li>
+      <li><a href="#heterogeneity" style="color:#1e40af">Handling Heterogeneity in Diabetes Trials</a></li>
+      <li><a href="#subgroup" style="color:#1e40af">Subgroup Analysis Strategies</a></li>
+      <li><a href="#metareview" style="color:#1e40af">Step-by-Step: Diabetes Meta-Analysis in MetaReview</a></li>
+      <li><a href="#pitfalls" style="color:#1e40af">Common Pitfalls in Diabetes Meta-Analysis</a></li>
+    </ol>
+  </div>
+
+  <div class="section" id="why">
+    <h2>1. Why Meta-Analysis Matters in Diabetes Research</h2>
+    <p>Type 2 diabetes affects over 500 million people worldwide and is treated with a rapidly expanding arsenal of drug classes. Since the FDA's 2008 guidance mandating cardiovascular outcome trials (CVOTs), the evidence landscape has transformed. Meta-analysis is essential because:</p>
+    <ul>
+      <li><strong>Resolving drug class questions</strong> &mdash; Do SGLT2 inhibitors as a class reduce MACE, or is the benefit drug-specific? Pooling EMPA-REG OUTCOME, DECLARE-TIMI 58, and CANVAS provides the statistical power individual trials lack.</li>
+      <li><strong>Comparing across drug classes</strong> &mdash; GLP-1 receptor agonists (semaglutide, liraglutide, dulaglutide) and SGLT2 inhibitors (empagliflozin, dapagliflozin, canagliflozin) have different cardiorenal benefit profiles. Network meta-analysis enables indirect comparisons when head-to-head trials are scarce.</li>
+      <li><strong>Identifying subgroup-specific benefits</strong> &mdash; SGLT2 inhibitors show stronger heart failure and renal benefits regardless of diabetes status, while GLP-1 RAs show greater atherosclerotic event reduction. Subgroup analyses by eGFR, baseline HbA1c, and established ASCVD clarify which patients benefit most.</li>
+      <li><strong>Informing clinical guidelines</strong> &mdash; ADA Standards of Care, EASD/ADA consensus reports, and KDIGO guidelines rely heavily on CVOT meta-analyses to recommend drug sequencing after metformin.</li>
+    </ul>
+    <div class="tip"><strong>Key areas where diabetes meta-analyses have shaped practice:</strong> SGLT2 inhibitor class effect on heart failure hospitalization, GLP-1 RA class effect on MACE-3, renal protection by SGLT2 inhibitors across eGFR strata (CREDENCE, DAPA-CKD, EMPA-KIDNEY), and DPP-4 inhibitor cardiovascular neutrality.</div>
+  </div>
+
+  <div class="section" id="pico">
+    <h2>2. Defining Your Diabetes Research Question (PICO)</h2>
+    <p>A well-structured PICO framework is the foundation of a focused, reproducible diabetes meta-analysis. Diabetes trials vary enormously in design, population, and endpoints, so precision here prevents downstream problems.</p>
+
+    <table class="data-table">
+      <tr><th>Element</th><th>Description</th><th>Diabetes Examples</th></tr>
+      <tr><td><strong>P</strong> (Population)</td><td>Diabetes type, CV risk, renal function</td><td>Type 2 diabetes with established ASCVD; T2D with eGFR 25-60 mL/min; T2D with HbA1c 7.0-10.5% on metformin</td></tr>
+      <tr><td><strong>I</strong> (Intervention)</td><td>Drug or drug class being evaluated</td><td>Empagliflozin 10/25 mg; Semaglutide 0.5/1.0 mg SC weekly; SGLT2 inhibitors as a class</td></tr>
+      <tr><td><strong>C</strong> (Comparator)</td><td>Control arm</td><td>Placebo + standard of care; Active comparator (glimepiride, sitagliptin); Insulin glargine</td></tr>
+      <tr><td><strong>O</strong> (Outcomes)</td><td>Primary and secondary endpoints</td><td>MACE-3 (HR), HbA1c change from baseline (MD), HF hospitalization (HR), renal composite (HR), severe hypoglycemia (OR/RR)</td></tr>
+    </table>
+
+    <div class="warn"><strong>Scope warning:</strong> Combining glycemic efficacy trials (12-52 week HbA1c studies) with CVOTs (median 2-5 year event-driven trials) in the same analysis is methodologically problematic. These trial types differ in design, duration, endpoints, and patient populations. Define whether your meta-analysis addresses glycemic efficacy or cardiovascular/renal outcomes, then select studies accordingly.</div>
+
+    <h3>Search Strategy Tips for Diabetes</h3>
+    <ul>
+      <li><strong>Databases:</strong> PubMed, Embase, Cochrane CENTRAL, ClinicalTrials.gov</li>
+      <li><strong>MeSH terms:</strong> "Diabetes Mellitus, Type 2"[Mesh], "Hypoglycemic Agents"[Mesh], "Sodium-Glucose Transporter 2 Inhibitors"[Mesh], "Glucagon-Like Peptide-1 Receptor"[Mesh]</li>
+      <li><strong>Conference abstracts:</strong> ADA Scientific Sessions (diabetes.org), EASD Annual Meeting (easd.org), AHA (for CVOT results often presented at cardiology meetings)</li>
+      <li><strong>Regulatory sources:</strong> FDA Briefing Documents and AdComm presentations often contain data not in published papers</li>
+    </ul>
+  </div>
+
+  <div class="section" id="effect-size">
+    <h2>3. Choosing the Right Effect Size</h2>
+    <p>Diabetes meta-analyses span a wide range of outcome types. Selecting the correct effect measure is the single most important methodological decision.</p>
+
+    <div class="decision-tree">
+What is your diabetes outcome?
+&#x251c;&#x2500; Glycemic efficacy (HbA1c change from baseline)
+&#x2502;   &#x2514;&#x2500; Use <strong>Mean Difference (MD)</strong>
+&#x2502;       &#x2514;&#x2500; All studies report HbA1c on the same % scale
+&#x251c;&#x2500; Body weight change (kg from baseline)
+&#x2502;   &#x2514;&#x2500; Use <strong>Mean Difference (MD)</strong>
+&#x251c;&#x2500; Cardiovascular events (MACE, HF hospitalization)
+&#x2502;   &#x2514;&#x2500; Use <strong>Hazard Ratio (HR)</strong>
+&#x2502;       &#x2514;&#x2500; Time-to-first-event from Cox regression
+&#x251c;&#x2500; Renal composite (sustained eGFR decline, ESKD, renal death)
+&#x2502;   &#x2514;&#x2500; Use <strong>Hazard Ratio (HR)</strong>
+&#x2514;&#x2500; Binary safety (hypoglycemia, DKA, UTI, amputation)
+    &#x251c;&#x2500; Common events (&gt;20%) &#x2192; <strong>Risk Ratio (RR)</strong>
+    &#x2514;&#x2500; Rare events (&lt;20%) &#x2192; <strong>Odds Ratio (OR)</strong>
+    </div>
+
+    <table class="data-table">
+      <tr><th>Endpoint</th><th>Type</th><th>Effect Size</th><th>Null Value</th><th>Interpretation</th></tr>
+      <tr><td>HbA1c change from baseline</td><td>Continuous</td><td>MD</td><td>0</td><td>MD &lt; 0 = greater HbA1c reduction with treatment</td></tr>
+      <tr><td>Body weight change</td><td>Continuous</td><td>MD</td><td>0</td><td>MD &lt; 0 = greater weight loss with treatment</td></tr>
+      <tr><td>MACE-3 (CV death, MI, stroke)</td><td>Time-to-event</td><td>HR</td><td>1.0</td><td>HR &lt; 1 = treatment reduces MACE risk</td></tr>
+      <tr><td>Heart failure hospitalization</td><td>Time-to-event</td><td>HR</td><td>1.0</td><td>HR &lt; 1 = treatment reduces HF risk</td></tr>
+      <tr><td>Renal composite endpoint</td><td>Time-to-event</td><td>HR</td><td>1.0</td><td>HR &lt; 1 = treatment slows renal decline</td></tr>
+      <tr><td>Severe hypoglycemia</td><td>Binary</td><td>OR or RR</td><td>1.0</td><td>OR/RR &lt; 1 = less hypoglycemia with treatment</td></tr>
+      <tr><td>Diabetic ketoacidosis</td><td>Binary</td><td>OR or RR</td><td>1.0</td><td>OR/RR &gt; 1 = higher DKA risk with treatment</td></tr>
+    </table>
+
+    <div class="warn"><strong>Critical rule:</strong> Never combine HbA1c (MD) and MACE (HR) in the same pooled analysis. They measure fundamentally different outcomes using incompatible statistical frameworks. Always run separate analyses for glycemic efficacy and cardiovascular outcomes.</div>
+  </div>
+
+  <div class="section" id="cvot">
+    <h2>4. Understanding CVOT Design and MACE Endpoints</h2>
+
+    <h3>The FDA 2008 Guidance</h3>
+    <p>In December 2008, the FDA issued guidance requiring that new antidiabetic drugs demonstrate cardiovascular safety. Specifically:</p>
+    <ul>
+      <li>Pre-approval: the upper bound of the 95% CI for MACE risk must exclude <strong>HR = 1.8</strong></li>
+      <li>Post-approval: must exclude <strong>HR = 1.3</strong> (achievable through a dedicated CVOT)</li>
+      <li>This led to a generation of large, event-driven CVOTs enrolling 3,000-17,000 patients with median follow-up of 1.5-5 years</li>
+    </ul>
+    <p>Understanding this context is critical: most CVOTs were initially <strong>designed for non-inferiority</strong> (ruling out HR &gt; 1.3), not to prove superiority. Some drugs subsequently demonstrated superiority, but the design implications affect your meta-analysis interpretation.</p>
+
+    <h3>MACE-3 vs MACE-4 Definitions</h3>
+    <table class="data-table">
+      <tr><th>Definition</th><th>Components</th><th>Trials Using This</th></tr>
+      <tr><td><strong>MACE-3</strong></td><td>CV death + non-fatal MI + non-fatal stroke</td><td>EMPA-REG OUTCOME, LEADER, SUSTAIN-6, DECLARE-TIMI 58, CANVAS, HARMONY, REWIND, PIONEER-6, AMPLITUDE-O</td></tr>
+      <tr><td><strong>MACE-4</strong></td><td>MACE-3 + hospitalization for unstable angina</td><td>EXAMINE, ELIXA, TECOS (some used as secondary endpoint)</td></tr>
+    </table>
+
+    <div class="warn"><strong>Definition mismatch:</strong> Pooling MACE-3 and MACE-4 trials without adjustment introduces bias because MACE-4 captures more events (unstable angina), diluting the HR toward null. Either restrict to MACE-3 trials or extract MACE-3 components separately from MACE-4 trials when available.</div>
+
+    <h3>Key CVOTs for Meta-Analysis</h3>
+    <table class="data-table">
+      <tr><th>Trial</th><th>Drug</th><th>Class</th><th>N</th><th>MACE-3 HR (95% CI)</th><th>Result</th></tr>
+      <tr><td>EMPA-REG OUTCOME</td><td>Empagliflozin</td><td>SGLT2i</td><td>7,020</td><td>0.86 (0.74-0.99)</td><td>Superior</td></tr>
+      <tr><td>CANVAS Program</td><td>Canagliflozin</td><td>SGLT2i</td><td>10,142</td><td>0.86 (0.75-0.97)</td><td>Superior</td></tr>
+      <tr><td>DECLARE-TIMI 58</td><td>Dapagliflozin</td><td>SGLT2i</td><td>17,160</td><td>0.93 (0.84-1.03)</td><td>Non-inferior</td></tr>
+      <tr><td>LEADER</td><td>Liraglutide</td><td>GLP-1 RA</td><td>9,340</td><td>0.87 (0.78-0.97)</td><td>Superior</td></tr>
+      <tr><td>SUSTAIN-6</td><td>Semaglutide SC</td><td>GLP-1 RA</td><td>3,297</td><td>0.74 (0.58-0.95)</td><td>Superior</td></tr>
+      <tr><td>REWIND</td><td>Dulaglutide</td><td>GLP-1 RA</td><td>9,901</td><td>0.88 (0.79-0.99)</td><td>Superior</td></tr>
+    </table>
+
+    <div class="tip"><strong>Beyond MACE:</strong> Many CVOTs also reported heart failure hospitalization and renal composite endpoints as pre-specified secondary outcomes. SGLT2 inhibitors showed particular strength in heart failure (DAPA-HF, EMPEROR-Reduced) and renal outcomes (CREDENCE), while GLP-1 RAs showed greater benefit on atherosclerotic MACE components.</div>
+  </div>
+
+  <div class="section" id="data-extraction">
+    <h2>5. Data Extraction Checklist for Diabetes Studies</h2>
+    <p>Use a standardized extraction form to ensure consistency across included studies. Diabetes trials have unique data elements that must be captured.</p>
+
+    <h3>Study Characteristics</h3>
+    <ul>
+      <li>First author, publication year, journal, NCT registration number</li>
+      <li>Study design: CVOT (event-driven) vs glycemic efficacy trial (fixed duration)</li>
+      <li>Non-inferiority vs superiority design and margin</li>
+      <li>Sponsor (pharmaceutical company, academic)</li>
+    </ul>
+
+    <h3>Patient Population</h3>
+    <ul>
+      <li>Sample size per arm (ITT and safety populations)</li>
+      <li>Diabetes type (T2D, T1D, pre-diabetes in some studies)</li>
+      <li>Mean baseline HbA1c and range</li>
+      <li>Mean baseline eGFR and CKD stage distribution</li>
+      <li>Percentage with established ASCVD vs multiple risk factors only</li>
+      <li>Percentage with prior heart failure</li>
+      <li>Diabetes duration (mean/median)</li>
+      <li>Median age, sex distribution, BMI</li>
+    </ul>
+
+    <h3>Treatment Details</h3>
+    <ul>
+      <li>Drug name, dose(s), route of administration</li>
+      <li>Background therapy allowed (metformin, insulin, sulfonylureas, other)</li>
+      <li>Rescue therapy protocol (criteria for glycemic rescue, open-label additions)</li>
+      <li>Median treatment duration and follow-up duration</li>
+    </ul>
+
+    <h3>Outcomes Data</h3>
+    <ul>
+      <li>HbA1c: change from baseline (mean difference and SD/SE) at primary timepoint</li>
+      <li>MACE-3 or MACE-4: HR + 95% CI, number of events per arm, event rate per 1,000 patient-years</li>
+      <li>Heart failure hospitalization: HR + 95% CI</li>
+      <li>Renal composite: HR + 95% CI (note exact definition varies by trial)</li>
+      <li>Safety: severe hypoglycemia, DKA, genital mycotic infections, amputations (events/total per arm)</li>
+    </ul>
+
+    <div class="warn"><strong>Renal composite variation:</strong> The renal composite endpoint definition varies substantially across trials. CREDENCE used sustained doubling of serum creatinine, ESKD, or renal/CV death. DECLARE-TIMI 58 used sustained eGFR decline &ge;40%. Always document the exact renal endpoint definition and consider whether heterogeneous definitions warrant separate analyses.</div>
+  </div>
+
+  <div class="section" id="heterogeneity">
+    <h2>6. Handling Heterogeneity in Diabetes Trials</h2>
+    <p>Heterogeneity is a major challenge in diabetes meta-analyses because included trials often differ in drug class, patient risk profile, background therapy, and endpoint definitions.</p>
+
+    <h3>Sources of Heterogeneity in Diabetes Meta-Analysis</h3>
+    <table class="data-table">
+      <tr><th>Source</th><th>Examples</th><th>Impact</th></tr>
+      <tr><td>Drug class</td><td>SGLT2i vs GLP-1 RA vs DPP-4i vs insulin</td><td>Different mechanisms yield different cardiorenal benefit profiles</td></tr>
+      <tr><td>Baseline HbA1c</td><td>Mean 7.2% vs 8.7% across trials</td><td>Higher baseline = larger absolute HbA1c reduction; may also affect CV benefit</td></tr>
+      <tr><td>Baseline eGFR</td><td>eGFR &gt;60 vs 30-60 vs &lt;30 mL/min</td><td>SGLT2i glycemic efficacy diminishes at lower eGFR, but cardiorenal benefits persist</td></tr>
+      <tr><td>CV risk profile</td><td>100% established ASCVD vs 40% ASCVD + 60% risk factors only</td><td>Higher CV risk = more events = greater absolute benefit; relative benefit may differ</td></tr>
+      <tr><td>Background therapy era</td><td>2010 trial (metformin + SU) vs 2022 trial (metformin + SGLT2i + GLP-1 RA)</td><td>Better background therapy attenuates the incremental benefit of the study drug</td></tr>
+      <tr><td>Trial duration</td><td>12-week HbA1c study vs 5-year CVOT</td><td>Short-term glycemic trials vs long-term event-driven trials should not be pooled for CV outcomes</td></tr>
+    </table>
+
+    <h3>Quantifying Heterogeneity</h3>
+    <ul>
+      <li><strong>I&sup2;</strong>: 0% = no heterogeneity, 25% = low, 50% = moderate, 75% = high</li>
+      <li><strong>Q-test p-value</strong>: p &lt; 0.10 indicates significant heterogeneity (note: low power with few CVOTs)</li>
+      <li><strong>&tau;&sup2;</strong>: Between-study variance; particularly useful when comparing heterogeneity across different endpoint analyses</li>
+    </ul>
+
+    <h3>Strategies When I&sup2; Is High</h3>
+    <ol>
+      <li><strong>Pre-specified subgroup analysis</strong> &mdash; by drug class, baseline HbA1c category, eGFR strata, established ASCVD status</li>
+      <li><strong>Meta-regression</strong> &mdash; test whether baseline HbA1c, percentage with ASCVD, or trial duration explains heterogeneity</li>
+      <li><strong>Sensitivity analysis</strong> &mdash; leave-one-out, restrict to superiority-positive CVOTs, exclude trials with &lt;3,000 patients</li>
+      <li><strong>Separate drug-class analyses</strong> &mdash; if pooling across SGLT2i, GLP-1 RA, and DPP-4i produces high I&sup2;, analyze each class separately</li>
+    </ol>
+
+    <div class="tip"><strong>Use random-effects models</strong> for diabetes meta-analyses unless pooling studies of the exact same drug at the same dose in similar populations (e.g., three trials of empagliflozin 25 mg in established ASCVD).</div>
+  </div>
+
+  <div class="section" id="subgroup">
+    <h2>7. Subgroup Analysis Strategies</h2>
+    <p>Subgroup analysis is where diabetes meta-analyses deliver the most clinical value. Treatment guidelines now recommend drug selection based on patient-specific factors, and pooled subgroup data directly informs these decisions.</p>
+
+    <h3>Pre-Specified Subgroup Categories</h3>
+    <table class="data-table">
+      <tr><th>Subgroup</th><th>Strata</th><th>Clinical Relevance</th></tr>
+      <tr><td>Baseline HbA1c</td><td>&lt;8.0% vs 8.0-9.0% vs &gt;9.0%</td><td>Higher baseline HbA1c yields larger absolute reduction; CV benefit may be independent of glycemic effect</td></tr>
+      <tr><td>eGFR category</td><td>&ge;60, 45-59, 30-44, &lt;30 mL/min/1.73m&sup2;</td><td>SGLT2i renal benefit persists at low eGFR (DAPA-CKD enrolled eGFR 25-75); GLP-1 RA can be used at lower eGFR than SGLT2i</td></tr>
+      <tr><td>Established ASCVD</td><td>Yes vs multiple risk factors only</td><td>EMPA-REG OUTCOME enrolled 99% ASCVD; DECLARE-TIMI 58 enrolled 41% ASCVD. Benefit may differ by baseline CV risk</td></tr>
+      <tr><td>Heart failure history</td><td>HFrEF, HFpEF, no HF</td><td>SGLT2i benefit on HF hospitalization is robust across HF subtypes (DAPA-HF, EMPEROR-Reduced, EMPEROR-Preserved)</td></tr>
+      <tr><td>Drug class</td><td>SGLT2i vs GLP-1 RA vs DPP-4i</td><td>Allows assessment of class effects and identification of class-specific benefits</td></tr>
+      <tr><td>Individual drug</td><td>Empagliflozin vs dapagliflozin vs canagliflozin</td><td>Tests whether benefit is a true class effect or driven by one drug</td></tr>
+    </table>
+
+    <h3>Statistical Considerations for Subgroup Analysis</h3>
+    <ul>
+      <li>Use <strong>Q-between test</strong> (interaction test) to determine whether treatment effects significantly differ across subgroups</li>
+      <li><strong>Never treat subgroup results from the same CVOT as independent studies</strong> &mdash; this causes unit-of-analysis error and inflates the total sample size</li>
+      <li>Pre-specify all subgroups in your PROSPERO registration before data extraction</li>
+      <li>With only 3-6 CVOTs per drug class, subgroup analyses are inherently exploratory and should be interpreted cautiously</li>
+      <li>Consider patient-level meta-analysis (IPD-MA) when available for more reliable subgroup estimates</li>
+    </ul>
+
+    <div class="tip"><strong>In MetaReview:</strong> Assign subgroup labels in the "Subgroup" column (e.g., "SGLT2i" or "GLP-1 RA"), then run the analysis. The tool generates a grouped forest plot with subgroup subtotals and Q-between significance test automatically.</div>
+  </div>
+
+  <div class="section" id="metareview">
+    <h2>8. Step-by-Step: Diabetes Meta-Analysis in MetaReview</h2>
+
+    <h3>Step 1: Select Effect Measure</h3>
+    <p>Open MetaReview and choose the appropriate effect measure from the dropdown:</p>
+    <ul>
+      <li><strong>Hazard Ratio</strong> for MACE-3, heart failure hospitalization, renal composite</li>
+      <li><strong>Mean Difference</strong> for HbA1c change from baseline, weight change</li>
+      <li><strong>Odds Ratio</strong> or <strong>Risk Ratio</strong> for hypoglycemia, DKA, other binary safety endpoints</li>
+    </ul>
+
+    <h3>Step 2: Enter Study Data</h3>
+    <p>For HR analysis: enter Study name, Year, HR, CI Lower, CI Upper for each CVOT.</p>
+    <p>For MD analysis: enter Study name, Year, Mean, SD, and N for both Treatment and Control arms.</p>
+    <div class="tip"><strong>Batch entry:</strong> Organize your CVOT data in Excel or Google Sheets (columns: Study, Year, HR, CI_Lower, CI_Upper), then copy and paste directly into MetaReview. The tool auto-detects tabular data and maps columns.</div>
+
+    <h3>Step 3: Assign Subgroups</h3>
+    <p>Use the "Subgroup" column to label each study by drug class (SGLT2i, GLP-1 RA, DPP-4i), baseline ASCVD status, or eGFR category. This enables stratified analysis and Q-between interaction testing.</p>
+
+    <h3>Step 4: Run the Analysis</h3>
+    <p>Click <strong>"Run Meta-Analysis"</strong>. Results appear within seconds:</p>
+    <ul>
+      <li>Forest plot with individual study effects and pooled estimate (overall and per subgroup)</li>
+      <li>Funnel plot for publication bias assessment</li>
+      <li>Heterogeneity statistics (I&sup2;, Q, &tau;&sup2;)</li>
+      <li>Sensitivity analysis (leave-one-out)</li>
+    </ul>
+
+    <h3>Step 5: Advanced Diagnostics</h3>
+    <ul>
+      <li><strong>Egger's / Begg's test</strong> &mdash; Quantitative publication bias assessment (note: limited utility with &lt;10 CVOTs)</li>
+      <li><strong>Trim-and-Fill</strong> &mdash; Estimate the impact of potentially missing studies</li>
+      <li><strong>Meta-Regression</strong> &mdash; Test whether baseline HbA1c, proportion with ASCVD, or mean eGFR explains between-study heterogeneity</li>
+      <li><strong>Influence diagnostics</strong> &mdash; Cook's distance, DFFITS to identify whether one large CVOT drives the overall result</li>
+      <li><strong>GRADE assessment</strong> &mdash; Rate the certainty of evidence across 5 domains</li>
+    </ul>
+
+    <h3>Step 6: Export Report</h3>
+    <p>Generate a complete HTML or DOCX report with all figures, tables, auto-generated Methods paragraph (PRISMA 2020 format), and narrative interpretation of glycemic and cardiovascular findings.</p>
+  </div>
+
+  <div class="section" id="pitfalls">
+    <h2>9. Common Pitfalls in Diabetes Meta-Analysis</h2>
+
+    <h3>Pitfall 1: Mixing HbA1c and MACE Outcomes</h3>
+    <p>HbA1c change is a continuous outcome (Mean Difference), while MACE is a time-to-event outcome (Hazard Ratio). These cannot be pooled in the same analysis. More subtly, demonstrating HbA1c superiority does not imply cardiovascular superiority. DPP-4 inhibitors lower HbA1c effectively but have shown no CV benefit in CVOTs (SAVOR-TIMI 53, EXAMINE, TECOS).</p>
+    <p><strong>Solution:</strong> Always conduct separate analyses for glycemic efficacy and cardiovascular outcomes. Discuss the disconnect between glycemic and CV effects when relevant.</p>
+
+    <h3>Pitfall 2: Ignoring MACE Definition Differences</h3>
+    <p>MACE-3 (CV death, non-fatal MI, non-fatal stroke) and MACE-4 (adds unstable angina hospitalization) capture different event rates. MACE-4 is broader and typically has more events, potentially diluting the HR toward the null. Some trials also report expanded MACE including revascularization.</p>
+    <p><strong>Solution:</strong> Standardize on MACE-3, which is the most commonly used primary endpoint in post-2008 CVOTs. If a trial reports only MACE-4, extract MACE-3 components separately when available, or conduct sensitivity analysis with and without such trials.</p>
+
+    <h3>Pitfall 3: Background Therapy Evolution</h3>
+    <p>The standard of care for type 2 diabetes has changed dramatically. A trial enrolling in 2010 might have had metformin + sulfonylurea as background, while a 2022 trial might include SGLT2 inhibitors and GLP-1 RAs as background therapy. This means the "placebo" arm in newer trials receives more effective treatment, attenuating the apparent benefit of the study drug.</p>
+    <p><strong>Solution:</strong> Document the background therapy era for each trial. Consider stratifying by enrollment period or conducting meta-regression with enrollment year as a covariate. Discuss the evolving background therapy landscape as a limitation.</p>
+
+    <h3>Pitfall 4: Multiple Publication Double-Counting</h3>
+    <p>Major CVOTs generate multiple publications: primary results, extended follow-up, subgroup analyses, post-hoc analyses. EMPA-REG OUTCOME alone has generated dozens of publications. Including both the 2015 primary results and the 2020 long-term follow-up as separate studies would double-count the same patients.</p>
+    <p><strong>Solution:</strong> Use the most complete dataset from each trial. If multiple data cutoffs exist, use the most mature follow-up. Map all publications to their parent trial using the NCT registration number. Create a list linking all publications to each unique trial.</p>
+
+    <h3>Pitfall 5: Class Effect Assumption</h3>
+    <p>Assuming that all drugs within a class have identical effects is tempting but dangerous. Within SGLT2 inhibitors: empagliflozin (EMPA-REG OUTCOME) showed a dramatic CV death reduction, while dapagliflozin (DECLARE-TIMI 58) did not reach superiority for MACE-3 but showed HF benefit. Canagliflozin (CANVAS) showed an amputation signal not seen with other SGLT2 inhibitors.</p>
+    <p><strong>Solution:</strong> Always present individual-drug results alongside the pooled class effect. Use Q-between test to assess whether the treatment effect is homogeneous across drugs within a class. If significant heterogeneity exists within a class, report the class effect with appropriate caveats.</p>
+
+    <h3>Pitfall 6: Non-Inferiority Margin Confusion</h3>
+    <p>Most CVOTs were designed for non-inferiority with an upper 95% CI bound of HR = 1.3. A trial with HR = 0.95 (95% CI 0.82-1.10) is non-inferior (upper CI &lt; 1.3) but not superior (CI includes 1.0). Reporting this as "no cardiovascular benefit" is technically correct for superiority but ignores the non-inferiority context.</p>
+    <p><strong>Solution:</strong> Distinguish between non-inferiority and superiority in your results interpretation. When pooling, the meta-analytic estimate may achieve superiority even if individual trials did not, because pooling increases statistical power. Clearly state the hierarchy of testing (non-inferiority first, then superiority) used by each trial.</p>
+  </div>
+
+  <div class="cta">
+    <h2>Start Your Diabetes Meta-Analysis Now</h2>
+    <p>Enter HR and 95% CI for CVOT endpoints, or MD for HbA1c outcomes. MetaReview handles the statistics, forest plots, and report generation. Free, no coding required.</p>
+    <a href="/">Open MetaReview</a>
+    <p style="margin-top:12px"><a href="/?s=6ae5971c" style="color:#93c5fd;font-size:14px;text-decoration:underline;">See live demo: Aspirin vs Placebo meta-analysis (7 RCTs) &rarr;</a></p>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">Stay Updated</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">Get notified about new features and meta-analysis tips.</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="Enter your email" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Subscribe</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">No spam. Unsubscribe anytime.</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='Submitting...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-diabetes-en',lang:'en'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'You are already subscribed!':'Subscribed! We will notify you about new features.';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Please enter a valid email address.';btn.textContent='Subscribe';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Submission failed. Please try again later.';btn.textContent='Subscribe';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="related">
+    <h2>Related Guides</h2>
+    <ul>
+      <li><a href="/guides/how-to-meta-analysis">How to Do a Meta-Analysis: Step-by-Step Guide</a></li>
+      <li><a href="/guides/free-forest-plot-generator">Free Forest Plot Generator Online</a></li>
+      <li><a href="/guides/free-funnel-plot-maker">Free Funnel Plot Maker Online</a></li>
+      <li><a href="/guides/meta-analysis-calculator">Meta-Analysis Calculator Online</a></li>
+      <li><a href="/guides/best-meta-analysis-software">Best Free Meta-Analysis Software Compared</a></li>
+      <li><a href="/guides/free-prisma-flow-diagram-generator">Free PRISMA Flow Diagram Generator</a></li>
+      <li><a href="/guides/meta-analysis-effect-size-guide">Meta-Analysis Effect Size Guide: OR vs RR vs HR vs MD vs SMD</a></li>
+      <li><a href="/guides/hazard-ratio-meta-analysis-guide">Hazard Ratio Meta-Analysis Guide: HR Extraction & Forest Plot</a></li>
+      <li><a href="/guides/cancer-meta-analysis-guide">Cancer & Oncology Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis-guide">Cardiovascular Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/covid-meta-analysis-guide">COVID-19 Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis-guide">Psychiatric Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/diabetes-meta-analysis">糖尿病 Meta 分析指南（中文版）</a></li>
+      <li><a href="/guides/tumor-meta-analysis">肿瘤 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">心血管 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/covid-meta-analysis">COVID-19 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis">精神科 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/effect-size-selection">效应量选择指南（中文）</a></li>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤（中文）</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图指南（中文）</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 流程图指南（中文）</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta 分析软件对比（中文）</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> &mdash; Free Online Meta-Analysis Tool</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

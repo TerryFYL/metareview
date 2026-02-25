@@ -10,9 +10,9 @@
 </p>
 
 <p align="center">
-  <a href="https://metareview-8c1.pages.dev/">Live Demo</a> ·
-  <a href="https://metareview-8c1.pages.dev/guides/meta-analysis-steps">Tutorial</a> ·
-  <a href="https://metareview-8c1.pages.dev/guides/meta-analysis-software-comparison">Compare Tools</a>
+  <a href="https://metareview.cc/">Live Demo</a> ·
+  <a href="https://metareview.cc/guides/meta-analysis-steps">Tutorial</a> ·
+  <a href="https://metareview.cc/guides/meta-analysis-software-comparison">Compare Tools</a>
 </p>
 
 <p align="center">
@@ -112,7 +112,7 @@ Meta-analysis is the gold standard for evidence synthesis in medical research, b
 
 ### Use Online (Recommended)
 
-Visit **[metareview-8c1.pages.dev](https://metareview-8c1.pages.dev/)** — no installation required.
+Visit **[metareview.cc](https://metareview.cc/)** — no installation required.
 
 Click "Load Demo Data" to explore with a sample dataset (Aspirin vs Placebo, 7 RCTs).
 

@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Psychiatry Meta-Analysis Guide: From Scale Selection to Network Meta-Analysis (2026) | MetaReview</title>
+  <meta name="description" content="Complete guide to psychiatric meta-analysis. Learn how to handle rating scale differences (HAMD vs MADRS vs PHQ-9), manage the placebo effect problem, choose SMD vs OR for depression/anxiety/schizophrenia outcomes, and perform network meta-analysis." />
+  <meta name="keywords" content="psychiatry meta analysis, antidepressant meta analysis, SSRI meta analysis, psychiatric systematic review, depression meta analysis, schizophrenia meta analysis, anxiety meta analysis, psychotherapy meta analysis, network meta analysis psychiatry" />
+  <meta name="author" content="MetaReview" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://metareview.cc/guides/psychiatric-meta-analysis-guide" />
+  <link rel="alternate" hreflang="en" href="https://metareview.cc/guides/psychiatric-meta-analysis-guide" />
+  <link rel="alternate" hreflang="zh-CN" href="https://metareview.cc/guides/psychiatric-meta-analysis" />
+  <link rel="alternate" hreflang="x-default" href="https://metareview.cc/guides/psychiatric-meta-analysis-guide" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://metareview.cc/guides/psychiatric-meta-analysis-guide" />
+  <meta property="og:title" content="Psychiatry Meta-Analysis Guide: Scale Selection to Network Meta-Analysis" />
+  <meta property="og:description" content="How to conduct a psychiatric meta-analysis: SMD for rating scales, placebo response handling, NMA for antidepressant comparisons, publication bias detection." />
+  <meta property="og:image" content="https://metareview.cc/og-image.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MetaReview" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Psychiatry Meta-Analysis Guide: Scale Selection to Network Meta-Analysis" />
+  <meta name="twitter:description" content="How to conduct a psychiatric meta-analysis: SMD for rating scales, placebo response, NMA for drug comparisons." />
+  <meta name="twitter:image" content="https://metareview.cc/og-image.png" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1f52c;</text></svg>" />
+  <meta name="theme-color" content="#1e40af" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "MetaReview", "item": "https://metareview.cc/"},
+      {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://metareview.cc/#guides"},
+      {"@type": "ListItem", "position": 3, "name": "Psychiatry Meta-Analysis Guide"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Psychiatry Meta-Analysis Guide: From Scale Selection to Network Meta-Analysis (2026)",
+    "description": "Complete guide to conducting psychiatric meta-analysis covering rating scale harmonization, placebo effect management, effect size selection for depression, anxiety, and schizophrenia trials, and network meta-analysis methodology.",
+    "author": {"@type": "Organization", "name": "MetaReview"},
+    "publisher": {"@type": "Organization", "name": "MetaReview"},
+    "datePublished": "2026-02-25",
+    "dateModified": "2026-02-25"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Which effect size should I use for a depression meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use Standardized Mean Difference (SMD, typically Hedges' g) when studies use different depression rating scales (e.g., HAMD-17 vs MADRS vs PHQ-9). Use Mean Difference (MD) only if all studies use the same scale and version. For binary outcomes such as response (>=50% reduction) or remission, use Odds Ratio (OR) or Risk Ratio (RR). SMD is the default choice in psychiatric meta-analyses because rating scale heterogeneity is nearly universal."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I handle different depression rating scales in a meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The standard approach is to use Standardized Mean Difference (SMD), which divides the mean difference by the pooled standard deviation, making results comparable across scales. Important considerations: never mix clinician-rated (HAMD, MADRS) and self-rated (PHQ-9, BDI-II) scales without sensitivity analysis, as they measure different constructs. Also consider that HAMD-17 and HAMD-21 have different score ranges and should not be treated as interchangeable in MD analyses."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is the placebo effect a problem in psychiatric meta-analyses?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Placebo response rates in antidepressant trials typically range from 30-50%, which compresses the drug-placebo difference and makes true treatment effects harder to detect. Placebo response has also increased over time (a secular trend documented since the 1980s), meaning older trials tend to show larger drug-placebo differences than newer ones. This creates heterogeneity when pooling studies across decades. Additionally, high placebo response is a leading cause of failed trials, introducing selection bias if only successful trials are published."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is network meta-analysis and why is it important in psychiatry?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Network meta-analysis (NMA) simultaneously compares multiple treatments even when they have not been directly compared in head-to-head trials. This is critical in psychiatry because most antidepressant and antipsychotic trials compare a single drug to placebo, making direct comparisons between active drugs rare. The landmark Cipriani et al. 2018 Lancet NMA compared 21 antidepressants using 522 trials, providing the most comprehensive efficacy and acceptability ranking. NMA relies on the consistency assumption: indirect comparisons (A vs B via A vs C and B vs C) must agree with available direct comparisons."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How big is the publication bias problem in psychiatric research?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Publication bias is severe in psychiatry. Turner et al. (2008, NEJM) examined FDA-registered antidepressant trials and found that 94% of published trials were positive, while FDA records showed only 51% were actually positive. Negative trials were either not published or published in a way that conveyed a positive outcome. This inflates pooled effect sizes by approximately 32%. Always search ClinicalTrials.gov for unpublished trials, use funnel plots and Egger's test, and apply Trim-and-Fill correction."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I use LOCF or MMRM data when extracting outcomes from psychiatric trials?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Prefer Mixed-Model Repeated Measures (MMRM) over Last Observation Carried Forward (LOCF) when both are reported. LOCF assumes that a patient's last observed score remains unchanged, which biases results (usually toward the drug in depression trials, because early dropouts may have been improving). MMRM uses all available data without imputation and is now the FDA-preferred approach. If some studies only report LOCF, conduct a sensitivity analysis comparing results with and without LOCF-only studies."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do diagnostic criteria differences (DSM-IV vs DSM-5 vs ICD) affect psychiatric meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Diagnostic criteria affect who is included in trials. For example, DSM-5 removed the bereavement exclusion for major depressive disorder, potentially broadening the study population. DSM-IV and DSM-5 criteria for schizophrenia differ in symptom duration requirements. ICD-10 and ICD-11 definitions may also differ from DSM. These differences create clinical heterogeneity. Record which diagnostic system each study used, and consider subgroup analysis by diagnostic criteria if sufficient studies exist. In practice, DSM-IV and DSM-5 depression criteria are similar enough to pool, but document this decision."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many studies do I need for a psychiatric network meta-analysis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There is no strict minimum, but the network must be connected (every treatment linked to at least one other treatment through direct or indirect evidence). For a meaningful NMA, you typically need at least 2-3 studies per comparison to assess consistency. The Cipriani 2018 antidepressant NMA included 522 trials across 21 drugs. Smaller NMAs with 20-50 trials comparing 5-8 treatments are common and publishable. Ensure you assess the transitivity assumption (study characteristics are similar across comparisons) and run node-splitting to check consistency between direct and indirect evidence."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Conduct a Psychiatry Meta-Analysis with MetaReview",
+    "description": "Step-by-step guide to performing a psychiatric meta-analysis covering depression, anxiety, schizophrenia, and other mental health conditions.",
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "Define your psychiatric research question using PICO", "text": "Define Population (MDD, GAD, schizophrenia, bipolar, PTSD, OCD, or ADHD with specific diagnostic criteria), Intervention (SSRI, SNRI, antipsychotic, psychotherapy, or combination), Comparator (placebo, active comparator, or waitlist), and Outcomes (symptom reduction on validated scales, response rate, remission rate, dropout rate)."},
+      {"@type": "HowToStep", "position": 2, "name": "Search psychiatric literature databases", "text": "Search PubMed, Embase, PsycINFO, Cochrane CENTRAL, and ClinicalTrials.gov. Use MeSH terms (Depressive Disorder Major, Antidepressive Agents) combined with free-text drug names. Check FDA medical reviews for unpublished trial data."},
+      {"@type": "HowToStep", "position": 3, "name": "Select the appropriate effect measure", "text": "Choose SMD (Hedges' g) when studies use different rating scales (HAMD vs MADRS vs PHQ-9). Use MD when all studies use the same scale. Use OR or RR for response/remission rates. Use HR for time-to-relapse analyses."},
+      {"@type": "HowToStep", "position": 4, "name": "Extract data from included studies", "text": "Record mean change scores and SDs (or endpoint means), sample sizes per arm, rating scale used, diagnostic criteria, drug doses, trial duration, and dropout rates. Note whether LOCF or MMRM was used for the primary analysis."},
+      {"@type": "HowToStep", "position": 5, "name": "Enter data in MetaReview and run analysis", "text": "Select the effect measure (SMD for continuous, OR for binary), enter study data or paste from a spreadsheet. MetaReview automatically generates forest plot, funnel plot, and heterogeneity statistics."},
+      {"@type": "HowToStep", "position": 6, "name": "Perform subgroup and sensitivity analyses", "text": "Assign subgroups by drug class (SSRI vs SNRI vs atypical), severity (mild vs moderate vs severe), scale type (clinician-rated vs self-rated), or trial duration. Run leave-one-out sensitivity analysis to check robustness."},
+      {"@type": "HowToStep", "position": 7, "name": "Assess publication bias", "text": "Examine funnel plot asymmetry, run Egger's and Begg's tests. Given the documented severity of publication bias in psychiatry (Turner 2008), apply Trim-and-Fill and compare corrected vs uncorrected estimates."},
+      {"@type": "HowToStep", "position": 8, "name": "Export the complete report", "text": "Generate an HTML or DOCX report with forest plots, funnel plots, sensitivity analyses, and an auto-generated Methods paragraph following PRISMA 2020 guidelines. Include a statement about the rating scales pooled and SMD interpretation."}
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #374151; line-height: 1.8; background: #f9fafb; }
+    .header { background: #1e40af; color: white; padding: 16px 0; }
+    .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header a { color: white; text-decoration: none; font-weight: 600; font-size: 18px; }
+    .header .nav-links a { font-weight: 400; font-size: 14px; margin-left: 20px; opacity: 0.9; }
+    .header .nav-links a:hover { opacity: 1; text-decoration: underline; }
+    .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 60px 24px 48px; text-align: center; }
+    .hero h1 { font-size: 28px; font-weight: 700; max-width: 700px; margin: 0 auto 16px; line-height: 1.4; }
+    .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 60px; }
+    .section { background: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; border: 1px solid #e5e7eb; }
+    .section h2 { font-size: 20px; color: #111827; margin-bottom: 16px; }
+    .section h3 { font-size: 16px; color: #374151; margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #4b5563; }
+    .section ul, .section ol { padding-left: 20px; margin: 8px 0; }
+    .section li { margin-bottom: 4px; }
+    .tip { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #1e40af; }
+    .warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: #92400e; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th, .data-table td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f3f4f6; font-weight: 600; color: #111827; }
+    .data-table td { color: #4b5563; }
+    .decision-tree { background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; overflow-x: auto; }
+    .formula { background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 14px; color: #374151; text-align: center; }
+    .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 12px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+    .cta h2 { font-size: 22px; margin-bottom: 12px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a { display: inline-block; background: white; color: #1e40af; padding: 12px 32px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 16px; }
+    .cta a:hover { background: #f0f0f0; }
+    .related { background: white; border-radius: 12px; padding: 24px 32px; margin-top: 40px; border: 1px solid #e5e7eb; }
+    .related h2 { font-size: 18px; color: #111827; margin-bottom: 12px; }
+    .related ul { list-style: none; padding: 0; }
+    .related li { margin-bottom: 8px; }
+    .related a { color: #1e40af; text-decoration: none; font-size: 15px; }
+    .related a:hover { text-decoration: underline; }
+    .footer { text-align: center; padding: 32px 24px; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+    .footer a { color: #6b7280; text-decoration: none; }
+    @media (max-width: 640px) { .hero h1 { font-size: 22px; } .section, .related { padding: 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/">MetaReview</a>
+    <div class="nav-links">
+      <a href="/">Open Tool</a>
+      <a href="/guides/how-to-meta-analysis">How-To Guide</a>
+      <a href="/guides/hazard-ratio-meta-analysis-guide">HR Guide</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Psychiatry Meta-Analysis Guide</h1>
+  <p>From rating scale harmonization to network meta-analysis. Everything you need to synthesize evidence from depression, anxiety, schizophrenia, and psychotherapy trials.</p>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#why" style="color:#1e40af">Why Meta-Analysis Is Critical in Psychiatry</a></li>
+      <li><a href="#pico" style="color:#1e40af">Defining Your Psychiatric Research Question (PICO)</a></li>
+      <li><a href="#effect-size" style="color:#1e40af">Choosing the Right Effect Size</a></li>
+      <li><a href="#scales" style="color:#1e40af">Handling Rating Scale Differences</a></li>
+      <li><a href="#placebo" style="color:#1e40af">The Placebo Effect Problem</a></li>
+      <li><a href="#data-extraction" style="color:#1e40af">Data Extraction Checklist for Psychiatric Studies</a></li>
+      <li><a href="#heterogeneity" style="color:#1e40af">Handling Heterogeneity in Psychiatric Trials</a></li>
+      <li><a href="#nma" style="color:#1e40af">Subgroup and Network Meta-Analysis</a></li>
+      <li><a href="#metareview" style="color:#1e40af">Step-by-Step: Psychiatry Meta-Analysis in MetaReview</a></li>
+      <li><a href="#pitfalls" style="color:#1e40af">Common Pitfalls in Psychiatric Meta-Analysis</a></li>
+    </ol>
+  </div>
+
+  <div class="section" id="why">
+    <h2>1. Why Meta-Analysis Is Critical in Psychiatry</h2>
+    <p>Psychiatric disorders affect hundreds of millions of people worldwide, yet individual trials frequently produce conflicting results. Effect sizes are typically small to moderate (SMD 0.2&ndash;0.5 for antidepressants), placebo response rates are high, and dozens of competing treatments exist without head-to-head comparisons. Meta-analysis addresses these challenges by:</p>
+    <ul>
+      <li><strong>Increasing statistical power</strong> &mdash; Small drug-placebo differences become detectable only when pooling thousands of patients across trials.</li>
+      <li><strong>Resolving the "do antidepressants work?" debate</strong> &mdash; Kirsch et al. (2008) and Cipriani et al. (2018, Lancet) reached different conclusions partly due to methodological choices in their meta-analyses. Understanding these choices is essential.</li>
+      <li><strong>Comparing treatments that were never directly compared</strong> &mdash; Network meta-analysis (NMA) allows ranking of 21 antidepressants or 15 antipsychotics despite most trials only comparing one drug to placebo.</li>
+      <li><strong>Quantifying publication bias</strong> &mdash; Turner et al. (2008, NEJM) showed that 94% of published antidepressant trials were positive, while FDA records revealed only 51% were truly positive. Meta-analysis with bias correction provides a more honest estimate.</li>
+    </ul>
+    <div class="tip"><strong>Key psychiatric meta-analyses that shaped clinical practice:</strong> Cipriani 2018 (21 antidepressants NMA, Lancet), Leucht 2013 (antipsychotic efficacy, Lancet), Turner 2008 (publication bias, NEJM), Cuijpers 2019 (psychotherapy vs pharmacotherapy).</div>
+  </div>
+
+  <div class="section" id="pico">
+    <h2>2. Defining Your Psychiatric Research Question (PICO)</h2>
+    <p>A precise PICO framework prevents scope creep and unmanageable heterogeneity. Psychiatric populations are highly variable, so specificity at this stage saves enormous effort later.</p>
+
+    <table class="data-table">
+      <tr><th>Element</th><th>Description</th><th>Psychiatry Examples</th></tr>
+      <tr><td><strong>P</strong> (Population)</td><td>Disorder, diagnostic criteria, severity</td><td>Adults with MDD (DSM-5), moderate-to-severe; Adolescents with GAD; Treatment-resistant schizophrenia (DSM-5); PTSD in veterans</td></tr>
+      <tr><td><strong>I</strong> (Intervention)</td><td>Treatment being evaluated</td><td>SSRIs (escitalopram, sertraline); SNRIs (venlafaxine, duloxetine); CBT; Combination (SSRI + CBT); Aripiprazole augmentation</td></tr>
+      <tr><td><strong>C</strong> (Comparator)</td><td>Control condition</td><td>Placebo (pill placebo); Active comparator (fluoxetine); Waitlist; TAU (treatment as usual)</td></tr>
+      <tr><td><strong>O</strong> (Outcomes)</td><td>Primary and secondary endpoints</td><td>Mean change on HAMD-17; Response rate (&ge;50% reduction); Remission (HAMD &le;7); Dropout due to AE; CGI-I responder rate</td></tr>
+    </table>
+
+    <h3>Disorder-Specific Considerations</h3>
+    <table class="data-table">
+      <tr><th>Disorder</th><th>Common Scales</th><th>Typical Comparators</th><th>Key Challenges</th></tr>
+      <tr><td>MDD</td><td>HAMD-17, MADRS, PHQ-9, BDI-II</td><td>Placebo, active drug</td><td>High placebo response, scale heterogeneity</td></tr>
+      <tr><td>GAD</td><td>HAM-A, GAD-7</td><td>Placebo, active drug</td><td>High comorbidity with MDD</td></tr>
+      <tr><td>Schizophrenia</td><td>PANSS, BPRS, CGI-S</td><td>Placebo, haloperidol, active drug</td><td>Dose equivalence, chronicity</td></tr>
+      <tr><td>Bipolar</td><td>YMRS, MADRS, CGI-BP</td><td>Placebo, lithium</td><td>Separate mania vs depression phases</td></tr>
+      <tr><td>PTSD</td><td>CAPS-5, PCL-5</td><td>Placebo, waitlist</td><td>Trauma type variability</td></tr>
+      <tr><td>OCD</td><td>Y-BOCS</td><td>Placebo, active drug</td><td>Higher SSRI doses needed</td></tr>
+      <tr><td>ADHD</td><td>ADHD-RS, CGI-S</td><td>Placebo</td><td>Stimulant vs non-stimulant classes</td></tr>
+    </table>
+
+    <div class="warn"><strong>Scope warning:</strong> Combining different disorders (e.g., MDD + GAD + PTSD) in a single pooled analysis is almost never appropriate. Even within MDD, mixing treatment-resistant depression with first-episode depression introduces extreme heterogeneity.</div>
+  </div>
+
+  <div class="section" id="effect-size">
+    <h2>3. Choosing the Right Effect Size</h2>
+    <p>This is the most critical decision in psychiatric meta-analysis. Because studies use different rating scales for the same construct, Standardized Mean Difference (SMD) is the default choice &mdash; unlike most other medical fields where Mean Difference (MD) is common.</p>
+
+    <div class="decision-tree">
+What is your outcome type?
+&#x251c;&#x2500; Continuous (symptom severity scores)
+&#x2502;   &#x251c;&#x2500; All studies use the SAME scale and version
+&#x2502;   &#x2502;   &#x2514;&#x2500; Use <strong>Mean Difference (MD)</strong>
+&#x2502;   &#x2514;&#x2500; Studies use DIFFERENT scales (HAMD vs MADRS vs PHQ-9)
+&#x2502;       &#x2514;&#x2500; Use <strong>Standardized Mean Difference (SMD / Hedges' g)</strong>
+&#x251c;&#x2500; Binary (response, remission, dropout)
+&#x2502;   &#x251c;&#x2500; Response (&ge;50% score reduction) &#x2192; <strong>OR or RR</strong>
+&#x2502;   &#x251c;&#x2500; Remission (below threshold, e.g., HAMD &le;7) &#x2192; <strong>OR or RR</strong>
+&#x2502;   &#x2514;&#x2500; Dropout (all-cause or AE-related) &#x2192; <strong>OR or RR</strong>
+&#x2514;&#x2500; Time-to-event (relapse prevention)
+    &#x2514;&#x2500; Use <strong>Hazard Ratio (HR)</strong>
+    </div>
+
+    <table class="data-table">
+      <tr><th>Outcome</th><th>Effect Size</th><th>Null Value</th><th>Interpretation Example</th></tr>
+      <tr><td>Symptom reduction (mixed scales)</td><td>SMD (Hedges' g)</td><td>0</td><td>SMD = &minus;0.30 means drug reduces symptoms by 0.3 SD more than placebo</td></tr>
+      <tr><td>Symptom reduction (same scale)</td><td>MD</td><td>0</td><td>MD = &minus;3.0 on HAMD-17 means 3-point greater improvement with drug</td></tr>
+      <tr><td>Response rate (&ge;50% reduction)</td><td>OR or RR</td><td>1.0</td><td>OR = 1.5 means 50% higher odds of response with drug</td></tr>
+      <tr><td>Remission rate</td><td>OR or RR</td><td>1.0</td><td>RR = 1.4 means 40% more likely to remit with drug</td></tr>
+      <tr><td>Dropout due to adverse events</td><td>OR or RR</td><td>1.0</td><td>OR = 2.0 means twice the odds of discontinuing due to side effects</td></tr>
+      <tr><td>Time to relapse</td><td>HR</td><td>1.0</td><td>HR = 0.60 means drug reduces relapse hazard by 40%</td></tr>
+    </table>
+
+    <div class="formula">
+SMD (Hedges' g) = (M_treatment &minus; M_control) / SD_pooled &times; J(df)
+    </div>
+    <p style="font-size:13px;color:#6b7280;text-align:center;">J(df) is the small-sample correction factor, approximately 1 &minus; 3/(4df &minus; 1)</p>
+
+    <div class="tip"><strong>MetaReview supports all psychiatric effect sizes.</strong> Select SMD from the dropdown, enter mean, SD, and N for each arm. The tool calculates Hedges' g, pools using random effects, and generates the forest plot automatically.</div>
+  </div>
+
+  <div class="section" id="scales">
+    <h2>4. Handling Rating Scale Differences</h2>
+    <p>Rating scale heterogeneity is the defining challenge of psychiatric meta-analysis. Unlike blood pressure or tumor size, psychiatric symptoms are measured through subjective scales with different items, scoring ranges, and rater perspectives.</p>
+
+    <h3>Major Depression Scales</h3>
+    <table class="data-table">
+      <tr><th>Scale</th><th>Type</th><th>Items</th><th>Score Range</th><th>Response Threshold</th><th>Remission Threshold</th></tr>
+      <tr><td>HAMD-17</td><td>Clinician-rated</td><td>17</td><td>0&ndash;52</td><td>&ge;50% reduction</td><td>&le;7</td></tr>
+      <tr><td>HAMD-21</td><td>Clinician-rated</td><td>21</td><td>0&ndash;66</td><td>&ge;50% reduction</td><td>&le;7 (first 17 items)</td></tr>
+      <tr><td>MADRS</td><td>Clinician-rated</td><td>10</td><td>0&ndash;60</td><td>&ge;50% reduction</td><td>&le;10</td></tr>
+      <tr><td>PHQ-9</td><td>Self-rated</td><td>9</td><td>0&ndash;27</td><td>&ge;50% reduction</td><td>&le;4</td></tr>
+      <tr><td>BDI-II</td><td>Self-rated</td><td>21</td><td>0&ndash;63</td><td>&ge;50% reduction</td><td>&le;12</td></tr>
+    </table>
+
+    <h3>Other Key Psychiatric Scales</h3>
+    <table class="data-table">
+      <tr><th>Disorder</th><th>Scale</th><th>Type</th><th>Score Range</th></tr>
+      <tr><td>Schizophrenia</td><td>PANSS</td><td>Clinician-rated</td><td>30&ndash;210</td></tr>
+      <tr><td>Schizophrenia</td><td>BPRS</td><td>Clinician-rated</td><td>18&ndash;126</td></tr>
+      <tr><td>Anxiety (GAD)</td><td>GAD-7</td><td>Self-rated</td><td>0&ndash;21</td></tr>
+      <tr><td>OCD</td><td>Y-BOCS</td><td>Clinician-rated</td><td>0&ndash;40</td></tr>
+    </table>
+
+    <div class="warn"><strong>Critical rule: Do not mix clinician-rated and self-rated scales without sensitivity analysis.</strong> Clinician-rated scales (HAMD, MADRS) tend to show larger drug-placebo differences than self-rated scales (PHQ-9, BDI-II). If you pool both types, conduct a subgroup analysis by rater type and report results separately.</div>
+
+    <h3>Practical Recommendations</h3>
+    <ul>
+      <li><strong>Use SMD</strong> whenever studies use more than one scale &mdash; this is nearly always the case in psychiatry</li>
+      <li><strong>Prefer change scores</strong> over endpoint scores when available, as they reduce between-subject variability</li>
+      <li><strong>Never convert HAMD-17 to HAMD-21</strong> by adding estimated points for the extra 4 items &mdash; this introduces noise</li>
+      <li><strong>Run sensitivity analysis</strong> restricting to the most commonly used scale (usually HAMD-17) to check robustness</li>
+    </ul>
+  </div>
+
+  <div class="section" id="placebo">
+    <h2>5. The Placebo Effect Problem</h2>
+    <p>No other medical field faces the placebo challenge quite like psychiatry. The placebo response in antidepressant trials typically ranges from 30% to 50%, dwarfing the drug-specific effect and creating unique analytical difficulties.</p>
+
+    <h3>Key Facts About the Psychiatric Placebo Response</h3>
+    <ul>
+      <li><strong>Magnitude:</strong> Placebo arms in MDD trials show a mean improvement of ~10 points on HAMD-17. Drug arms improve ~13 points. The drug-specific effect is only ~3 points.</li>
+      <li><strong>Temporal trend:</strong> Placebo response has increased over decades. Trials from the 1980s showed lower placebo response than trials from the 2010s, creating a confound when pooling across eras.</li>
+      <li><strong>Failed trials:</strong> Approximately 50% of antidepressant trials "fail" (do not separate drug from placebo), not because drugs are ineffective but because placebo response was unusually high in that trial.</li>
+      <li><strong>Site variability:</strong> Multi-site trials show enormous variability in placebo response across sites (20%&ndash;70%), often driven by rater training differences and patient selection.</li>
+    </ul>
+
+    <h3>How the Placebo Effect Impacts Your Meta-Analysis</h3>
+    <table class="data-table">
+      <tr><th>Impact</th><th>Mechanism</th><th>Mitigation Strategy</th></tr>
+      <tr><td>Compressed effect sizes</td><td>High placebo response leaves little room for drug superiority</td><td>Report both absolute and relative effect sizes; use NNT for clinical interpretation</td></tr>
+      <tr><td>Heterogeneity inflation</td><td>Variable placebo response across trials increases I&sup2;</td><td>Meta-regression with placebo response rate as covariate</td></tr>
+      <tr><td>Publication year confound</td><td>Newer trials have higher placebo rates and smaller effects</td><td>Subgroup by decade or meta-regression on publication year</td></tr>
+      <tr><td>Selection bias</td><td>Failed trials less likely to be published</td><td>Include FDA review data and ClinicalTrials.gov results</td></tr>
+    </table>
+
+    <div class="tip"><strong>Severity matters:</strong> Kirsch et al. (2008) argued that antidepressant effects were clinically significant only in severely depressed patients (baseline HAMD &ge;28). Fournier et al. (2010) confirmed a severity-response gradient. Consider subgroup analysis by baseline severity.</div>
+  </div>
+
+  <div class="section" id="data-extraction">
+    <h2>6. Data Extraction Checklist for Psychiatric Studies</h2>
+    <p>Psychiatric trials have unique reporting patterns. Use this checklist to ensure complete, consistent extraction.</p>
+
+    <h3>Study Characteristics</h3>
+    <ul>
+      <li>First author, publication year, journal, NCT registration number</li>
+      <li>Study design (RCT, crossover, open-label), phase, sponsor (industry vs academic)</li>
+      <li>Region/country, number of sites</li>
+    </ul>
+
+    <h3>Patient Population</h3>
+    <ul>
+      <li>Diagnosis and diagnostic criteria (DSM-IV, DSM-5, ICD-10, ICD-11)</li>
+      <li>Baseline severity (mean HAMD or MADRS score, severity category)</li>
+      <li>Episode characteristics (first episode vs recurrent, duration of current episode)</li>
+      <li>Comorbidities (anxiety, substance use, personality disorder)</li>
+      <li>Sample size per arm (ITT and completer populations)</li>
+      <li>Age, sex, treatment history (treatment-naive vs treatment-resistant)</li>
+    </ul>
+
+    <h3>Intervention Details</h3>
+    <ul>
+      <li>Drug name, dose (fixed vs flexible dosing), titration schedule</li>
+      <li>For psychotherapy: modality (CBT, IPT, DBT), number and frequency of sessions, therapist qualifications</li>
+      <li>Placebo type (pill placebo, psychological placebo, waitlist)</li>
+      <li>Trial duration (acute phase: typically 6&ndash;12 weeks for MDD)</li>
+      <li>Concomitant medications allowed (especially benzodiazepines, sleep aids)</li>
+    </ul>
+
+    <h3>Outcomes Data</h3>
+    <ul>
+      <li>Primary scale and version (HAMD-17 vs HAMD-21 vs MADRS)</li>
+      <li>Mean and SD of change scores (or endpoint scores) per arm</li>
+      <li>Response and remission rates (events/total per arm)</li>
+      <li>Dropout rates (all-cause and AE-related, per arm)</li>
+      <li>Analysis method: <strong>LOCF vs MMRM vs observed cases</strong></li>
+    </ul>
+
+    <div class="warn"><strong>LOCF vs MMRM matters enormously.</strong> LOCF (Last Observation Carried Forward) biases results in unpredictable directions. MMRM (Mixed-Model Repeated Measures) is preferred by the FDA and EMA since ~2008. Record which method each study used and plan a sensitivity analysis.</div>
+  </div>
+
+  <div class="section" id="heterogeneity">
+    <h2>7. Handling Heterogeneity in Psychiatric Trials</h2>
+    <p>Psychiatric meta-analyses almost always show moderate to high heterogeneity (I&sup2; 40%&ndash;80%). Understanding and accounting for the sources is essential for credible results.</p>
+
+    <h3>Sources of Heterogeneity Specific to Psychiatry</h3>
+    <table class="data-table">
+      <tr><th>Source</th><th>Examples</th><th>Impact on Effect Size</th></tr>
+      <tr><td>Diagnostic criteria</td><td>DSM-IV vs DSM-5 vs ICD-10/11</td><td>Different patient populations enrolled</td></tr>
+      <tr><td>Baseline severity</td><td>Mild (HAMD 8&ndash;13) vs moderate (14&ndash;18) vs severe (19&ndash;22) vs very severe (&ge;23)</td><td>Larger drug-placebo difference in severe patients</td></tr>
+      <tr><td>Rating scale</td><td>HAMD-17 vs MADRS vs PHQ-9</td><td>Different sensitivity to change; managed by SMD but adds noise</td></tr>
+      <tr><td>Drug dose</td><td>Sub-therapeutic vs therapeutic vs supra-therapeutic</td><td>Dose-response relationship varies by drug</td></tr>
+      <tr><td>Trial duration</td><td>4 weeks vs 8 weeks vs 12 weeks</td><td>Longer trials: larger placebo response, potentially larger drug effect</td></tr>
+      <tr><td>Publication year</td><td>1990s vs 2000s vs 2010s vs 2020s</td><td>Secular increase in placebo response; changes in trial methodology</td></tr>
+      <tr><td>Comorbidity</td><td>MDD alone vs MDD + anxiety vs MDD + substance use</td><td>Comorbid patients may respond differently</td></tr>
+      <tr><td>Sponsor type</td><td>Industry vs academic vs government</td><td>Industry trials may have allegiance effects</td></tr>
+    </table>
+
+    <h3>Recommended Strategies</h3>
+    <ol>
+      <li><strong>Always use random-effects models</strong> &mdash; Fixed-effect is almost never appropriate in psychiatry given the clinical diversity</li>
+      <li><strong>Pre-specify subgroup analyses</strong> by drug class, severity, scale type, and trial duration</li>
+      <li><strong>Meta-regression</strong> on baseline severity, publication year, and placebo response rate (if &ge;10 studies)</li>
+      <li><strong>Sensitivity analysis</strong> &mdash; Leave-one-out; restrict to HAMD-17 only; exclude studies with high risk of bias; MMRM-only vs all studies</li>
+    </ol>
+
+    <div class="tip"><strong>In MetaReview:</strong> Heterogeneity statistics (I&sup2;, Q, &tau;&sup2;) are automatically calculated. Use the subgroup column and meta-regression feature to explore sources of heterogeneity.</div>
+  </div>
+
+  <div class="section" id="nma">
+    <h2>8. Subgroup and Network Meta-Analysis</h2>
+
+    <h3>Subgroup Analysis</h3>
+    <p>Pre-specified subgroup analyses are essential for interpreting psychiatric meta-analyses. Common subgroup variables include:</p>
+    <ul>
+      <li><strong>Drug class:</strong> SSRIs (fluoxetine, sertraline, escitalopram, paroxetine, citalopram) vs SNRIs (venlafaxine, duloxetine) vs atypicals (mirtazapine, bupropion, vortioxetine)</li>
+      <li><strong>Severity:</strong> Mild vs moderate vs severe depression (based on baseline HAMD or MADRS)</li>
+      <li><strong>Age group:</strong> Adolescents vs adults vs elderly (antidepressant efficacy and safety differ by age)</li>
+      <li><strong>Treatment modality:</strong> Pharmacotherapy vs psychotherapy vs combination</li>
+      <li><strong>Scale type:</strong> Clinician-rated vs self-rated instruments</li>
+    </ul>
+
+    <h3>Network Meta-Analysis (NMA)</h3>
+    <p>NMA is arguably the most impactful analytical method in psychiatric research. Because head-to-head trials between active drugs are rare, NMA uses indirect comparisons through a common comparator (usually placebo) to rank multiple treatments simultaneously.</p>
+
+    <h3>The Cipriani 2018 Landmark Study</h3>
+    <p>Cipriani et al. (Lancet, 2018) conducted the largest NMA of antidepressants ever performed: 522 double-blind RCTs, 116,477 patients, 21 antidepressants. Key findings:</p>
+    <ul>
+      <li><strong>All 21 antidepressants</strong> were more effective than placebo for acute MDD treatment</li>
+      <li><strong>Most effective:</strong> amitriptyline, mirtazapine, venlafaxine, escitalopram</li>
+      <li><strong>Best tolerated (lowest dropout):</strong> agomelatine, fluoxetine, escitalopram, citalopram</li>
+      <li><strong>Overall best balance of efficacy and acceptability:</strong> escitalopram, sertraline, mirtazapine, venlafaxine</li>
+    </ul>
+
+    <h3>NMA Requirements and Assumptions</h3>
+    <table class="data-table">
+      <tr><th>Requirement</th><th>Description</th><th>How to Check</th></tr>
+      <tr><td>Connected network</td><td>Every treatment must link to at least one other via direct or indirect evidence</td><td>Draw the network graph; check for disconnected nodes</td></tr>
+      <tr><td>Transitivity</td><td>Study characteristics must be similar across comparisons</td><td>Compare baseline severity, duration, year across different comparison sets</td></tr>
+      <tr><td>Consistency</td><td>Direct and indirect estimates must agree</td><td>Node-splitting test; design-by-treatment interaction test</td></tr>
+    </table>
+
+    <div class="tip"><strong>Antipsychotic NMA:</strong> Leucht et al. (Lancet, 2013) performed a similar NMA for 15 antipsychotics in schizophrenia, comparing efficacy (PANSS/BPRS reduction), all-cause discontinuation, and specific side effects (weight gain, sedation, EPS). Clozapine was most effective; aripiprazole had the most favorable side-effect profile.</div>
+  </div>
+
+  <div class="section" id="metareview">
+    <h2>9. Step-by-Step: Psychiatry Meta-Analysis in MetaReview</h2>
+
+    <h3>Step 1: Select Effect Measure</h3>
+    <p>Open MetaReview and choose the appropriate measure:</p>
+    <ul>
+      <li><strong>SMD (Hedges' g)</strong> for continuous symptom scores across different scales (most common)</li>
+      <li><strong>Mean Difference</strong> if all studies use the same scale version</li>
+      <li><strong>Odds Ratio</strong> for response/remission rates</li>
+    </ul>
+
+    <h3>Step 2: Enter Study Data</h3>
+    <p>For SMD analysis: enter Study name, Year, Mean, SD, and N for both Treatment and Control arms.</p>
+    <p>For OR analysis: enter Study name, Year, Events and Total for both arms.</p>
+    <div class="tip"><strong>Batch entry:</strong> Organize your data in Excel or Google Sheets, then copy and paste directly into MetaReview. The tool auto-detects tabular data.</div>
+
+    <h3>Step 3: Assign Subgroups</h3>
+    <p>Use the Subgroup column to label studies by drug class (SSRI, SNRI, atypical), severity level, or scale type. This enables stratified forest plots with Q-between tests.</p>
+
+    <h3>Step 4: Run the Analysis</h3>
+    <p>Click <strong>"Run Meta-Analysis"</strong>. Results appear within seconds:</p>
+    <ul>
+      <li>Forest plot with individual and pooled SMD (or OR)</li>
+      <li>Subgroup forest plot with Q-between significance test</li>
+      <li>Funnel plot for publication bias assessment</li>
+      <li>Heterogeneity statistics (I&sup2;, Q, &tau;&sup2;)</li>
+    </ul>
+
+    <h3>Step 5: Advanced Diagnostics</h3>
+    <ul>
+      <li><strong>Egger's / Begg's test</strong> &mdash; Quantitative publication bias assessment (critical for psychiatric data)</li>
+      <li><strong>Trim-and-Fill</strong> &mdash; Estimate impact of missing negative studies</li>
+      <li><strong>Leave-one-out sensitivity analysis</strong> &mdash; Check whether any single trial drives the result</li>
+      <li><strong>Meta-regression</strong> &mdash; Test baseline severity or publication year as moderators</li>
+    </ul>
+
+    <h3>Step 6: Export Report</h3>
+    <p>Generate an HTML or DOCX report with all figures, tables, auto-generated Methods paragraph (PRISMA 2020 format), and narrative interpretation including SMD-to-clinical-meaning conversion.</p>
+  </div>
+
+  <div class="section" id="pitfalls">
+    <h2>10. Common Pitfalls in Psychiatric Meta-Analysis</h2>
+
+    <h3>Pitfall 1: Ignoring Publication Bias</h3>
+    <p>Turner et al. (2008, NEJM) demonstrated that publication bias inflates antidepressant effect sizes by approximately 32%. Relying only on published literature produces an overly optimistic estimate of drug efficacy.</p>
+    <p><strong>Solution:</strong> Search ClinicalTrials.gov and FDA medical reviews for unpublished data. Use funnel plots, Egger's test, and Trim-and-Fill. Always report both corrected and uncorrected pooled estimates.</p>
+
+    <h3>Pitfall 2: The Kirsch Debate &mdash; Clinical vs Statistical Significance</h3>
+    <p>Kirsch et al. (2008) reported a pooled SMD of &minus;0.32 for SSRIs vs placebo, arguing this was below the NICE threshold of 0.50 for clinical significance. Others argued the 0.50 threshold was arbitrary and that even SMD = 0.30 translates to meaningful symptom relief for many patients.</p>
+    <p><strong>Solution:</strong> Report SMD alongside clinically interpretable metrics: NNT (number needed to treat), HAMD-point equivalents (SMD &times; SD_placebo), and response/remission rate differences.</p>
+
+    <h3>Pitfall 3: Mixing Scales Without Using SMD</h3>
+    <p>Pooling raw mean differences from HAMD-17 (range 0&ndash;52) and MADRS (range 0&ndash;60) produces nonsensical results because a 3-point change means entirely different things on each scale.</p>
+    <p><strong>Solution:</strong> Always use SMD (Hedges' g) when combining data from different rating scales. This is not optional &mdash; it is a fundamental methodological requirement.</p>
+
+    <h3>Pitfall 4: LOCF vs MMRM Confusion</h3>
+    <p>Many older trials report only LOCF results. LOCF carries forward the last observed score for patients who drop out, which can bias results in either direction. MMRM uses all available data without imputation and is now the regulatory standard.</p>
+    <p><strong>Solution:</strong> Prefer MMRM data when available. Record the analysis method for each study. Run a sensitivity analysis excluding LOCF-only studies.</p>
+
+    <h3>Pitfall 5: Not Accounting for Active Placebo</h3>
+    <p>Standard pill placebos may be "unblinded" because patients can tell they are not experiencing side effects. Studies using active placebos (substances that mimic side effects without therapeutic action) show smaller drug-placebo differences.</p>
+    <p><strong>Solution:</strong> Record whether the trial used an active or inert placebo. Consider subgroup analysis or at minimum discuss as a limitation.</p>
+
+    <h3>Pitfall 6: Allegiance Effects</h3>
+    <p>The researcher's theoretical allegiance (favoring psychotherapy vs pharmacotherapy, or one drug over another) can influence trial outcomes through subtle methodological choices. Industry-sponsored trials tend to favor the sponsor's drug.</p>
+    <p><strong>Solution:</strong> Record sponsor type and declared conflicts of interest. Run subgroup analysis by sponsor (industry vs academic vs government). Use GRADE to downgrade certainty if most evidence comes from a single sponsor.</p>
+  </div>
+
+  <div class="cta">
+    <h2>Start Your Psychiatry Meta-Analysis Now</h2>
+    <p>Enter mean, SD, and N for each arm (or response/remission events). MetaReview computes SMD, generates forest plots, and detects publication bias. Free, no coding required.</p>
+    <a href="/">Open MetaReview</a>
+    <p style="margin-top:12px"><a href="/?s=6ae5971c" style="color:#93c5fd;font-size:14px;text-decoration:underline;">See live demo: Aspirin vs Placebo meta-analysis (7 RCTs) &rarr;</a></p>
+  </div>
+
+  <div id="email-section" style="max-width:520px;margin:0 auto 40px;padding:28px 24px;background:#f0f9ff;border-radius:16px;border:1px solid #bfdbfe;text-align:center;">
+    <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 8px;">Stay Updated</h3>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px;line-height:1.5;">Get notified about new features and meta-analysis tips.</p>
+    <form id="email-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="email-input" type="email" placeholder="Enter your email" required style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;width:240px;max-width:100%;outline:none;">
+      <button type="submit" style="padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Subscribe</button>
+    </form>
+    <div id="email-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
+    <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">No spam. Unsubscribe anytime.</p>
+  </div>
+  <script>
+  document.getElementById('email-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email-input').value;
+    var msg=document.getElementById('email-msg');
+    var btn=this.querySelector('button');
+    btn.textContent='Submitting...';btn.disabled=true;
+    fetch('/api/emails/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'guide-psychiatric-en',lang:'en'})})
+    .then(function(r){return r.json()}).then(function(d){
+      msg.style.display='block';
+      if(d.ok){msg.style.background='#ecfdf5';msg.style.color='#065f46';msg.textContent=d.already?'You are already subscribed!':'Subscribed! We will notify you about new features.';document.getElementById('email-form').style.display='none';}
+      else{msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Please enter a valid email address.';btn.textContent='Subscribe';btn.disabled=false;}
+    }).catch(function(){msg.style.display='block';msg.style.background='#fef2f2';msg.style.color='#dc2626';msg.textContent='Submission failed. Please try again later.';btn.textContent='Subscribe';btn.disabled=false;});
+  });
+  </script>
+
+  <div class="related">
+    <h2>Related Guides</h2>
+    <ul>
+      <li><a href="/guides/how-to-meta-analysis">How to Do a Meta-Analysis: Step-by-Step Guide</a></li>
+      <li><a href="/guides/free-forest-plot-generator">Free Forest Plot Generator Online</a></li>
+      <li><a href="/guides/free-funnel-plot-maker">Free Funnel Plot Maker Online</a></li>
+      <li><a href="/guides/meta-analysis-calculator">Meta-Analysis Calculator Online</a></li>
+      <li><a href="/guides/best-meta-analysis-software">Best Free Meta-Analysis Software Compared</a></li>
+      <li><a href="/guides/free-prisma-flow-diagram-generator">Free PRISMA Flow Diagram Generator</a></li>
+      <li><a href="/guides/meta-analysis-effect-size-guide">Meta-Analysis Effect Size Guide: OR vs RR vs HR vs MD vs SMD</a></li>
+      <li><a href="/guides/hazard-ratio-meta-analysis-guide">Hazard Ratio Meta-Analysis Guide: HR Extraction & Forest Plot</a></li>
+      <li><a href="/guides/cancer-meta-analysis-guide">Cancer & Oncology Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis-guide">Cardiovascular Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/diabetes-meta-analysis-guide">Diabetes Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/covid-meta-analysis-guide">COVID-19 Meta-Analysis Guide (English)</a></li>
+      <li><a href="/guides/psychiatric-meta-analysis">精神科 Meta 分析指南（中文版）</a></li>
+      <li><a href="/guides/tumor-meta-analysis">肿瘤 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/cardiovascular-meta-analysis">心血管 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/diabetes-meta-analysis">糖尿病 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/covid-meta-analysis">COVID-19 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/survival-analysis-meta">生存数据 Meta 分析指南（中文）</a></li>
+      <li><a href="/guides/effect-size-selection">效应量选择指南（中文）</a></li>
+      <li><a href="/guides/meta-analysis-steps">Meta 分析完整步骤（中文）</a></li>
+      <li><a href="/guides/forest-plot-generator">森林图指南（中文）</a></li>
+      <li><a href="/guides/prisma-flow-diagram">PRISMA 流程图指南（中文）</a></li>
+      <li><a href="/guides/meta-analysis-software-comparison">Meta 分析软件对比（中文）</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p><a href="/">MetaReview</a> &mdash; Free Online Meta-Analysis Tool</p>
+    <p style="margin-top:8px">&copy; 2026 MetaReview. All rights reserved.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
