@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Study, EffectMeasure, ModelType, PICO, MetaAnalysisResult, EggersTest, BeggsTest, MetaRegressionResult } from './lib/types';
+import type { Study, EffectMeasure, ModelType, PICO, MetaAnalysisResult, EggersTest, BeggsTest, MetaRegressionResult, RobAssessments } from './lib/types';
 import { isBinaryData, isContinuousData, isGenericData, isHRData } from './lib/statistics/effect-size';
 import type { Lang } from './lib/i18n';
 import type { PRISMAData } from './components/PRISMAFlow';
@@ -30,6 +30,7 @@ interface ProjectStore {
   model: ModelType;
   studies: Study[];
   prisma: PRISMAData;
+  robAssessments: RobAssessments;
 
   // Undo/redo history (not persisted)
   _history: Study[][];
@@ -42,6 +43,7 @@ interface ProjectStore {
   setModel: (model: ModelType) => void;
   setStudies: (studies: Study[]) => void;
   setPRISMA: (prisma: PRISMAData) => void;
+  setRobAssessments: (rob: RobAssessments) => void;
   reset: () => void;
   loadDemo: () => void;
   undo: () => void;
@@ -66,6 +68,7 @@ export const useProjectStore = create<ProjectStore>()(
       model: 'random' as ModelType,
       studies: [],
       prisma: emptyPRISMA,
+      robAssessments: {} as RobAssessments,
       _history: [[]] as Study[][],
       _historyIndex: 0,
 
@@ -91,6 +94,7 @@ export const useProjectStore = create<ProjectStore>()(
         return { studies, _history: newHistory, _historyIndex: newHistory.length - 1 };
       }),
       setPRISMA: (prisma) => set({ prisma }),
+      setRobAssessments: (robAssessments) => set({ robAssessments }),
       undo: () => set((state) => {
         if (state._historyIndex <= 0) return {};
         const newIndex = state._historyIndex - 1;
@@ -117,6 +121,7 @@ export const useProjectStore = create<ProjectStore>()(
           model: 'random',
           studies: [],
           prisma: emptyPRISMA,
+          robAssessments: {} as RobAssessments,
           _history: [[]],
           _historyIndex: 0,
         }),
@@ -231,7 +236,7 @@ interface UIStore {
   beggs: BeggsTest | null;
   metaRegression: MetaRegressionResult | null;
   error: string | null;
-  activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'galbraith' | 'labbe' | 'baujat' | 'cumulative' | 'sensitivity' | 'influence' | 'subgroup' | 'metareg' | 'grade' | 'prisma' | 'search' | 'extract' | 'loo' | 'network' | 'doseresponse';
+  activeTab: 'input' | 'results' | 'forest' | 'funnel' | 'galbraith' | 'labbe' | 'baujat' | 'cumulative' | 'sensitivity' | 'influence' | 'subgroup' | 'metareg' | 'grade' | 'rob' | 'prisma' | 'search' | 'extract' | 'loo' | 'network' | 'doseresponse';
   plotSettings: PlotSettings;
   setLang: (lang: Lang) => void;
   setHeroSeen: (seen: boolean) => void;

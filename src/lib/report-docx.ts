@@ -14,7 +14,7 @@ import {
   ShadingType,
   convertInchesToTwip,
 } from 'docx';
-import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult, CumulativeResult, Study } from './types';
+import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult, CumulativeResult, Study, RobAssessments, RobDomain, RobJudgment } from './types';
 import type { PRISMAData } from '../components/PRISMAFlow';
 import type { ReportSections } from './report-export';
 import { defaultReportSections } from './report-export';
@@ -32,6 +32,7 @@ interface ReportData {
   metaRegression?: MetaRegressionResult | null;
   influenceDiagnostics?: InfluenceDiagnostic[];
   gradeAssessment?: GradeAssessment | null;
+  robAssessments?: RobAssessments;
   doseResponseResult?: DoseResponseResult | null;
   cumulativeResults?: CumulativeResult[];
   studies?: Study[];
@@ -467,6 +468,63 @@ function gradeAssessmentTable(grade: GradeAssessment): Table {
   });
 }
 
+const ROB_DOMAIN_LABELS_DOCX: Record<RobDomain, string> = {
+  d1_randomization: 'D1: Randomization',
+  d2_deviations: 'D2: Deviations',
+  d3_missing: 'D3: Missing data',
+  d4_measurement: 'D4: Measurement',
+  d5_selection: 'D5: Reporting',
+};
+const ROB_JUDGMENT_LABELS_DOCX: Record<RobJudgment, string> = { low: 'Low', some_concerns: 'Some concerns', high: 'High' };
+const ROB_JUDGMENT_COLORS_DOCX: Record<RobJudgment, string> = { low: '228B22', some_concerns: 'CC9900', high: 'CC0000' };
+const ROB_JUDGMENT_BG_DOCX: Record<RobJudgment, string> = { low: 'DCFCE7', some_concerns: 'FEF9C3', high: 'FEE2E2' };
+const ROB_SYMBOLS_DOCX: Record<RobJudgment, string> = { low: '+', some_concerns: '?', high: '\u2212' };
+
+function robAssessmentTable(robData: RobAssessments, studyList: Study[]): Table {
+  const domains: RobDomain[] = ['d1_randomization', 'd2_deviations', 'd3_missing', 'd4_measurement', 'd5_selection'];
+  const assessed = studyList.filter(s => robData[s.id]);
+
+  return new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: [
+      new TableRow({
+        children: [
+          makeHeaderCell('Study'),
+          ...domains.map(d => makeHeaderCell(ROB_DOMAIN_LABELS_DOCX[d])),
+          makeHeaderCell('Overall'),
+        ],
+      }),
+      ...assessed.map(study => {
+        const a = robData[study.id]!;
+        return new TableRow({
+          children: [
+            makeCell(`${study.name}${study.year ? ` (${study.year})` : ''}`, { bold: true }),
+            ...domains.map(d => {
+              const j = a.domains[d];
+              return new TableCell({
+                children: [new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [new TextRun({ text: `${ROB_SYMBOLS_DOCX[j]} ${ROB_JUDGMENT_LABELS_DOCX[j]}`, bold: true, size: 20, font: 'Times New Roman', color: ROB_JUDGMENT_COLORS_DOCX[j] })],
+                })],
+                shading: { type: ShadingType.SOLID, color: ROB_JUDGMENT_BG_DOCX[j] },
+                width: { size: 0, type: WidthType.AUTO },
+              });
+            }),
+            new TableCell({
+              children: [new Paragraph({
+                alignment: AlignmentType.CENTER,
+                children: [new TextRun({ text: `${ROB_SYMBOLS_DOCX[a.overall]} ${ROB_JUDGMENT_LABELS_DOCX[a.overall]}`, bold: true, size: 20, font: 'Times New Roman', color: ROB_JUDGMENT_COLORS_DOCX[a.overall] })],
+              })],
+              shading: { type: ShadingType.SOLID, color: ROB_JUDGMENT_BG_DOCX[a.overall] },
+              width: { size: 0, type: WidthType.AUTO },
+            }),
+          ],
+        });
+      }),
+    ],
+  });
+}
+
 function doseResponseResultTable(dr: DoseResponseResult): Table {
   const rows: [string, string, boolean?][] = [
     ['Model', `Weighted ${dr.modelType === 'linear' ? 'Linear' : 'Quadratic Polynomial'} Regression (WLS)`],
@@ -488,7 +546,7 @@ function doseResponseResultTable(dr: DoseResponseResult): Table {
 }
 
 export async function generateReportDOCX(data: ReportData): Promise<Blob> {
-  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, influenceDiagnostics: influenceData, gradeAssessment: gradeData, doseResponseResult: drData, cumulativeResults: cumResults, studies: rawStudies, prisma } = data;
+  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, influenceDiagnostics: influenceData, gradeAssessment: gradeData, robAssessments: robData, doseResponseResult: drData, cumulativeResults: cumResults, studies: rawStudies, prisma } = data;
   const s = data.sections || defaultReportSections;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -1066,6 +1124,38 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
         spacing: { before: 100 },
       }),
     );
+  }
+
+  // Risk of Bias Assessment (Cochrane RoB 2.0)
+  if (s.rob && robData && rawStudies && rawStudies.length > 0 && Object.keys(robData).length > 0) {
+    const assessed = rawStudies.filter(st => robData[st.id]);
+    if (assessed.length > 0) {
+      const lowCount = assessed.filter(st => robData[st.id]?.overall === 'low').length;
+      const someCount = assessed.filter(st => robData[st.id]?.overall === 'some_concerns').length;
+      const highCount = assessed.filter(st => robData[st.id]?.overall === 'high').length;
+      children.push(
+        new Paragraph({ text: 'Risk of Bias Assessment (Cochrane RoB 2.0)', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
+        new Paragraph({
+          children: [new TextRun({
+            text: `Risk of bias was assessed for ${assessed.length} studies using the Cochrane RoB 2.0 tool (Sterne et al., 2019). Overall: ${lowCount} low risk, ${someCount} some concerns, ${highCount} high risk.`,
+            size: 20,
+            font: 'Times New Roman',
+          })],
+          spacing: { after: 200 },
+        }),
+        robAssessmentTable(robData, rawStudies),
+        new Paragraph({
+          children: [new TextRun({
+            text: 'Note: Overall risk of bias judgment follows the worst-case domain rule (Cochrane RoB 2.0).',
+            italics: true,
+            size: 18,
+            color: '666666',
+            font: 'Times New Roman',
+          })],
+          spacing: { before: 100 },
+        }),
+      );
+    }
   }
 
   // Sensitivity Analysis

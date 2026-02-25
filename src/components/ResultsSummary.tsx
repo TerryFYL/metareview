@@ -35,7 +35,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     setSections({
       pico: newVal, prisma: newVal, overall: newVal, interpretation: newVal, studyTable: newVal,
       eggers: newVal, beggs: newVal, plots: newVal, galbraith: newVal, labbe: newVal, contourFunnel: newVal, subgroup: newVal, sensitivity: newVal,
-      metaReg: newVal, baujat: newVal, influence: newVal, loo: newVal, network: newVal, grade: newVal, cumulative: newVal, doseResponse: newVal, methods: newVal, narrative: newVal,
+      metaReg: newVal, baujat: newVal, influence: newVal, loo: newVal, network: newVal, grade: newVal, rob: newVal, cumulative: newVal, doseResponse: newVal, methods: newVal, narrative: newVal,
     });
   };
 
@@ -78,6 +78,7 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     { key: 'cumulative', labelKey: 'report.section.cumulative' },
     // Evidence & summary
     { key: 'grade', labelKey: 'report.section.grade' },
+    { key: 'rob', labelKey: 'report.section.rob' },
     { key: 'sensitivity', labelKey: 'report.section.sensitivity' },
     { key: 'methods', labelKey: 'report.section.methods' },
     { key: 'narrative', labelKey: 'report.section.narrative' },

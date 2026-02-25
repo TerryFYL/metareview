@@ -360,6 +360,22 @@ export interface DoseResponseResult {
   curve: { dose: number; effect: number; ciLower: number; ciUpper: number }[];
 }
 
+/** Cochrane RoB 2.0 domain judgment */
+export type RobJudgment = 'low' | 'some_concerns' | 'high';
+
+/** RoB 2.0 domains */
+export type RobDomain = 'd1_randomization' | 'd2_deviations' | 'd3_missing' | 'd4_measurement' | 'd5_selection';
+
+/** Per-study Risk of Bias assessment */
+export interface StudyRobAssessment {
+  domains: Record<RobDomain, RobJudgment>;
+  overall: RobJudgment;
+  notes: string;
+}
+
+/** Complete Risk of Bias data for all studies */
+export type RobAssessments = Record<string, StudyRobAssessment>;
+
 /** PICO-based screening score */
 export interface ScreeningScore {
   score: number; // 0-100

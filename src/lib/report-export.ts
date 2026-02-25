@@ -1,5 +1,5 @@
 // Report export — generates a printable HTML report
-import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult, CumulativeResult } from './types';
+import type { MetaAnalysisResult, EggersTest, BeggsTest, SubgroupAnalysisResult, SensitivityResult, PICO, MetaRegressionResult, GradeAssessment, InfluenceDiagnostic, DoseResponseResult, CumulativeResult, RobAssessments, RobJudgment, RobDomain, Study } from './types';
 import type { PRISMAData } from '../components/PRISMAFlow';
 import type { TrimAndFillResult } from './statistics/publication-bias';
 
@@ -22,6 +22,7 @@ export interface ReportSections {
   loo: boolean;
   network: boolean;
   grade: boolean;
+  rob: boolean;
   contourFunnel: boolean;
   cumulative: boolean;
   doseResponse: boolean;
@@ -48,6 +49,7 @@ export const defaultReportSections: ReportSections = {
   loo: true,
   network: true,
   grade: true,
+  rob: true,
   contourFunnel: true,
   cumulative: true,
   doseResponse: true,
@@ -75,6 +77,8 @@ interface ReportData {
   networkSvg?: string | null;
   influenceDiagnostics?: InfluenceDiagnostic[];
   gradeAssessment?: GradeAssessment | null;
+  robAssessments?: RobAssessments;
+  studies?: Study[];
   doseResponseResult?: DoseResponseResult | null;
   doseResponseSvg?: string | null;
   cumulativeResults?: CumulativeResult[];
@@ -542,6 +546,62 @@ function gradeSection(grade: GradeAssessment): string {
     <p class="note">Note: Risk of bias and indirectness require manual assessment. Auto-assessed factors can be overridden in the GRADE tab.</p>`;
 }
 
+const ROB_DOMAIN_LABELS: Record<RobDomain, string> = {
+  d1_randomization: 'D1: Randomization process',
+  d2_deviations: 'D2: Deviations from intended interventions',
+  d3_missing: 'D3: Missing outcome data',
+  d4_measurement: 'D4: Measurement of the outcome',
+  d5_selection: 'D5: Selection of the reported result',
+};
+const ROB_JUDGMENT_COLORS: Record<RobJudgment, string> = { low: '#22c55e', some_concerns: '#eab308', high: '#ef4444' };
+const ROB_JUDGMENT_BG: Record<RobJudgment, string> = { low: '#dcfce7', some_concerns: '#fef9c3', high: '#fee2e2' };
+const ROB_SYMBOLS: Record<RobJudgment, string> = { low: '+', some_concerns: '?', high: '\u2212' };
+
+function robSection(robData: RobAssessments, studyList: Study[]): string {
+  const domains: RobDomain[] = ['d1_randomization', 'd2_deviations', 'd3_missing', 'd4_measurement', 'd5_selection'];
+  const assessed = studyList.filter(s => robData[s.id]);
+  if (assessed.length === 0) return '';
+
+  // Summary counts per domain
+  const summaryRows = domains.map(d => {
+    const low = assessed.filter(s => robData[s.id]?.domains[d] === 'low').length;
+    const some = assessed.filter(s => robData[s.id]?.domains[d] === 'some_concerns').length;
+    const high = assessed.filter(s => robData[s.id]?.domains[d] === 'high').length;
+    return `<tr><td>${ROB_DOMAIN_LABELS[d]}</td><td style="text-align:center;color:#166534">${low}</td><td style="text-align:center;color:#854d0e">${some}</td><td style="text-align:center;color:#991b1b">${high}</td></tr>`;
+  }).join('');
+
+  // Traffic light table
+  const headerCells = domains.map(d => `<th style="text-align:center;font-size:9pt;padding:4px 6px;">${d.split('_')[0].toUpperCase()}</th>`).join('');
+  const bodyRows = assessed.map(s => {
+    const a = robData[s.id]!;
+    const cells = domains.map(d => {
+      const j = a.domains[d];
+      return `<td style="text-align:center;background:${ROB_JUDGMENT_BG[j]};color:${ROB_JUDGMENT_COLORS[j]};font-weight:700;font-size:14pt;padding:4px;">${ROB_SYMBOLS[j]}</td>`;
+    }).join('');
+    const ov = a.overall;
+    return `<tr><td style="white-space:nowrap;font-size:10pt;">${esc(s.name)}${s.year ? ` (${s.year})` : ''}</td>${cells}<td style="text-align:center;background:${ROB_JUDGMENT_BG[ov]};color:${ROB_JUDGMENT_COLORS[ov]};font-weight:700;font-size:14pt;padding:4px;">${ROB_SYMBOLS[ov]}</td></tr>`;
+  }).join('');
+
+  return `
+    <h2>Risk of Bias Assessment (Cochrane RoB 2.0)</h2>
+    <p class="note">Assessed using the Cochrane Risk of Bias tool 2.0 (Sterne et al., 2019). Each study was evaluated across 5 bias domains. Overall judgment follows the worst-case domain rule.</p>
+    <h3 style="font-size:11pt;margin-top:16px;">Summary of Risk of Bias Across Studies</h3>
+    <table class="full-table">
+      <thead><tr><th>Domain</th><th style="text-align:center">Low risk</th><th style="text-align:center">Some concerns</th><th style="text-align:center">High risk</th></tr></thead>
+      <tbody>${summaryRows}</tbody>
+    </table>
+    <h3 style="font-size:11pt;margin-top:16px;">Traffic Light Table</h3>
+    <table class="full-table">
+      <thead><tr><th>Study</th>${headerCells}<th style="text-align:center;font-size:9pt;padding:4px 6px;">Overall</th></tr></thead>
+      <tbody>${bodyRows}</tbody>
+    </table>
+    <p class="note" style="margin-top:8px;">
+      <span style="display:inline-block;width:16px;height:16px;background:#dcfce7;border-radius:2px;vertical-align:middle;margin-right:3px;"></span> + Low risk
+      &nbsp;&nbsp;<span style="display:inline-block;width:16px;height:16px;background:#fef9c3;border-radius:2px;vertical-align:middle;margin-right:3px;"></span> ? Some concerns
+      &nbsp;&nbsp;<span style="display:inline-block;width:16px;height:16px;background:#fee2e2;border-radius:2px;vertical-align:middle;margin-right:3px;"></span> &minus; High risk
+    </p>`;
+}
+
 function doseResponseSection(dr: DoseResponseResult): string {
   return `
     <h2>Dose-Response Meta-Analysis</h2>
@@ -601,7 +661,7 @@ function cumulativeSection(results: CumulativeResult[], measure: string): string
 }
 
 export function generateReportHTML(data: ReportData): string {
-  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, forestSvg, funnelSvg, galbraithSvg, labbeSvg, baujatSvg, looSvg, networkSvg, trimFillResult, metaRegression, metaRegSvg, influenceDiagnostics: influenceData, gradeAssessment: gradeData, doseResponseResult: drData, doseResponseSvg: drSvg, contourFunnelSvg: contourSvg, cumulativeResults: cumResults, cumulativeSvg: cumSvg, prisma } = data;
+  const { title, pico, result, eggers, beggs, subgroupResult, sensitivityResults, forestSvg, funnelSvg, galbraithSvg, labbeSvg, baujatSvg, looSvg, networkSvg, trimFillResult, metaRegression, metaRegSvg, influenceDiagnostics: influenceData, gradeAssessment: gradeData, robAssessments: robData, studies: studyList, doseResponseResult: drData, doseResponseSvg: drSvg, contourFunnelSvg: contourSvg, cumulativeResults: cumResults, cumulativeSvg: cumSvg, prisma } = data;
   const s = data.sections || defaultReportSections;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -711,6 +771,7 @@ export function generateReportHTML(data: ReportData): string {
     if (s.cumulative && cumSvg) figs.push(`<div class="figure">${cumSvg}<p class="figure-caption">Figure ${++figNum}. Cumulative meta-analysis forest plot</p></div>`);
     // Evidence quality assessment
     if (s.grade && gradeData) figs.push(gradeSection(gradeData));
+    if (s.rob && robData && studyList && studyList.length > 0) figs.push(robSection(robData, studyList));
     return figs.join('\n  ');
   })()}
   ${s.sensitivity ? sensitivitySection(sensitivityResults, result) : ''}

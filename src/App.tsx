@@ -19,6 +19,7 @@ import LabbePlot from './components/LabbePlot';
 import BaujatPlot from './components/BaujatPlot';
 import InfluenceDiagnostics from './components/InfluenceDiagnostics';
 import GradeAssessment from './components/GradeAssessment';
+import RobAssessment from './components/RobAssessment';
 import MetaRegressionPlot from './components/MetaRegressionPlot';
 import LeaveOneOutPlot from './components/LeaveOneOutPlot';
 import NetworkGraph from './components/NetworkGraph';
@@ -43,7 +44,7 @@ const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
   { value: 'SMD', label: "Hedges' g (SMD)", desc: 'Continuous, different scales' },
 ];
 
-const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'galbraith', 'labbe', 'baujat', 'cumulative', 'sensitivity', 'influence', 'loo', 'network', 'doseresponse', 'subgroup', 'metareg', 'grade', 'prisma'] as const;
+const TAB_KEYS = ['search', 'extract', 'input', 'results', 'forest', 'funnel', 'galbraith', 'labbe', 'baujat', 'cumulative', 'sensitivity', 'influence', 'loo', 'network', 'doseresponse', 'subgroup', 'metareg', 'grade', 'rob', 'prisma'] as const;
 
 function ForestPlotControls({ lang, onDownloadSVG, onDownloadPNG }: { lang: Lang; onDownloadSVG: () => void; onDownloadPNG: () => void }) {
   const { plotSettings, setPlotSettings } = useUIStore();
@@ -252,8 +253,8 @@ const settingsInputStyle: React.CSSProperties = { width: '100%', padding: '5px 8
 
 export default function App() {
   const {
-    title, pico, measure, model, studies, prisma,
-    setTitle, setPICO, setMeasure, setModel, setStudies, setPRISMA, reset, loadDemo,
+    title, pico, measure, model, studies, prisma, robAssessments,
+    setTitle, setPICO, setMeasure, setModel, setStudies, setPRISMA, setRobAssessments, reset, loadDemo,
   } = useProjectStore();
 
   const {
@@ -578,6 +579,8 @@ export default function App() {
       metaRegSvg,
       influenceDiagnostics: influenceData,
       gradeAssessment: gradeData,
+      robAssessments,
+      studies,
       doseResponseResult: drData,
       doseResponseSvg,
       contourFunnelSvg,
@@ -590,7 +593,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
     setTimeout(() => URL.revokeObjectURL(url), 10000);
-  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, measure, model, studies, cumulativeResults]);
+  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, measure, model, studies, cumulativeResults, robAssessments]);
 
   const exportDOCX = useCallback(async (sections?: ReportSections) => {
     if (!result) return;
@@ -609,6 +612,7 @@ export default function App() {
       metaRegression,
       influenceDiagnostics: influenceData,
       gradeAssessment: gradeData,
+      robAssessments,
       doseResponseResult: drData,
       cumulativeResults,
       studies,
@@ -621,7 +625,7 @@ export default function App() {
     a.download = `${title || 'metareview-report'}.docx`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 10000);
-  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, cumulativeResults, measure, model, studies]);
+  }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, cumulativeResults, measure, model, studies, robAssessments]);
 
   const exportJSONHandler = useCallback(() => {
     if (!result) return;
@@ -775,7 +779,7 @@ export default function App() {
             e.preventDefault();
             const visibleTabs = readOnly ? TAB_KEYS.filter(t => t !== 'search' && t !== 'extract') : TAB_KEYS;
             const enabledTabs = visibleTabs.filter((tab) => {
-              const isAlwaysEnabled = tab === 'prisma' || tab === 'search' || tab === 'input' || tab === 'extract';
+              const isAlwaysEnabled = tab === 'prisma' || tab === 'rob' || tab === 'search' || tab === 'input' || tab === 'extract';
               if (isAlwaysEnabled) return true;
               if (!result) return false;
               if (tab === 'sensitivity' && studies.length < 3) return false;
@@ -800,7 +804,7 @@ export default function App() {
         }}
       >
         {TAB_KEYS.filter(tab => !(readOnly && (tab === 'search' || tab === 'extract'))).map((tab) => {
-          const isAlwaysEnabled = tab === 'prisma' || tab === 'search' || tab === 'input' || tab === 'extract';
+          const isAlwaysEnabled = tab === 'prisma' || tab === 'rob' || tab === 'search' || tab === 'input' || tab === 'extract';
           const isSubgroup = tab === 'subgroup';
           const isSensitivity = tab === 'sensitivity';
           const isInfluence = tab === 'influence';
@@ -1170,6 +1174,11 @@ export default function App() {
       {/* GRADE Assessment Tab */}
       {activeTab === 'grade' && result && (
         <GradeAssessment result={result} eggers={eggers} beggs={beggs} trimFillResult={trimFillResult} lang={lang} />
+      )}
+
+      {/* Risk of Bias (RoB 2.0) Tab */}
+      {activeTab === 'rob' && (
+        <RobAssessment studies={studies} robAssessments={robAssessments} onUpdate={setRobAssessments} lang={lang} />
       )}
 
       {/* PRISMA Flow Tab */}
