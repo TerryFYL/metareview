@@ -1709,6 +1709,32 @@ const translations = {
   'footer.text.en': 'MetaReview — Open-source meta-analysis platform for medical research',
   'footer.feedback.zh': '意见反馈',
   'footer.feedback.en': 'Feedback',
+
+  // Feedback widget
+  'feedback.trigger.zh': '意见反馈',
+  'feedback.trigger.en': 'Feedback',
+  'feedback.title.zh': '帮助我们改进',
+  'feedback.title.en': 'Help us improve',
+  'feedback.q1.zh': '你的角色',
+  'feedback.q1.en': 'Your role',
+  'feedback.selectRole.zh': '请选择…',
+  'feedback.selectRole.en': 'Select…',
+  'feedback.q2.zh': '你用 MetaReview 完成了什么？',
+  'feedback.q2.en': 'What did you accomplish with MetaReview?',
+  'feedback.q2Placeholder.zh': '例如：完成了森林图分析并导出报告',
+  'feedback.q2Placeholder.en': 'e.g., Completed a forest plot analysis and exported a report',
+  'feedback.q3.zh': '哪里遇到了困难？',
+  'feedback.q3.en': 'Where did you get stuck?',
+  'feedback.q3Placeholder.zh': '例如：不知道如何导入 PDF 数据',
+  'feedback.q3Placeholder.en': 'e.g., Couldn\'t figure out how to import PDF data',
+  'feedback.submit.zh': '提交反馈',
+  'feedback.submit.en': 'Submit feedback',
+  'feedback.sending.zh': '提交中…',
+  'feedback.sending.en': 'Sending…',
+  'feedback.thanks.zh': '感谢你的反馈！',
+  'feedback.thanks.en': 'Thanks for your feedback!',
+  'feedback.error.zh': '提交失败，请稍后再试',
+  'feedback.error.en': 'Failed to send. Please try again.',
 } as const;
 
 export function t(key: string, lang: Lang): string {

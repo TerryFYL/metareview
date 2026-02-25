@@ -25,6 +25,7 @@ import MetaRegressionPlot from './components/MetaRegressionPlot';
 import LeaveOneOutPlot from './components/LeaveOneOutPlot';
 import NetworkGraph from './components/NetworkGraph';
 import DoseResponsePlot from './components/DoseResponsePlot';
+import FeedbackButton from './components/FeedbackButton';
 import { metaAnalysis, eggersTest, beggsTest, metaRegression as runMetaRegression, sensitivityAnalysis, subgroupAnalysis, cumulativeMetaAnalysis, isBinaryData, isContinuousData, isHRData, isGenericData, trimAndFill, isLogScale, influenceDiagnostics as computeInfluence, gradeAssessment as computeGrade, doseResponseAnalysis } from './lib/statistics';
 import type { TrimAndFillResult } from './lib/statistics';
 import { generateReportHTML, type ReportSections } from './lib/report-export';
@@ -1372,6 +1373,9 @@ export default function App() {
           {t('footer.feedback', lang)}
         </a>
       </footer>
+
+      {/* Floating feedback widget */}
+      {!readOnly && <FeedbackButton lang={lang} />}
     </div>
   );
 }
