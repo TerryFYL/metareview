@@ -181,10 +181,46 @@ export default function OnboardingTour({ lang, onComplete, onTabSwitch }: Onboar
     }
   };
 
-  const handleSkip = () => {
+  const handleSkip = useCallback(() => {
     trackFeature('tour_skipped');
     onComplete();
-  };
+  }, [onComplete]);
+
+  // Focus trap: Escape to close + Tab cycling within tooltip
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleSkip();
+        return;
+      }
+      if (e.key === 'Tab') {
+        const tooltip = tooltipRef.current;
+        if (!tooltip) return;
+        const focusable = tooltip.querySelectorAll<HTMLElement>('button, [href], input, [tabindex]:not([tabindex="-1"])');
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+        } else {
+          if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleSkip]);
+
+  // Auto-focus tooltip on step change
+  useEffect(() => {
+    const tooltip = tooltipRef.current;
+    if (!tooltip) return;
+    const timer = setTimeout(() => {
+      const firstBtn = tooltip.querySelector<HTMLElement>('button');
+      firstBtn?.focus();
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [step]);
 
   if (!currentStep) return null;
 
@@ -229,7 +265,7 @@ export default function OnboardingTour({ lang, onComplete, onTabSwitch }: Onboar
       <div style={{ ...arrowStyle, width: 0, height: 0, ...arrowBorders[arrowDir] }} />
 
       {/* Tooltip */}
-      <div ref={tooltipRef} style={{ ...tooltipStyle, background: '#fff', borderRadius: 10, padding: '18px 20px', boxShadow: '0 8px 30px rgba(0,0,0,0.15)' }}>
+      <div ref={tooltipRef} role="dialog" aria-modal="true" aria-label={t(currentStep.titleKey, lang)} style={{ ...tooltipStyle, background: '#fff', borderRadius: 10, padding: '18px 20px', boxShadow: '0 8px 30px rgba(0,0,0,0.15)' }}>
         {/* Step indicator */}
         <div style={{ display: 'flex', gap: 4, marginBottom: 10 }}>
           {TOUR_STEPS.map((_, i) => (

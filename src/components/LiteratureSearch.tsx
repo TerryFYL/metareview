@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { t } from '../lib/i18n';
 import type { Lang } from '../lib/i18n';
 import type { Study, PICO, ScreeningScore } from '../lib/types';
@@ -105,6 +105,10 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
 
   // PICO scoring: compute scores for all results
   const hasPICO = !!(pico.population.trim() || pico.intervention.trim() || pico.comparison.trim() || pico.outcome.trim());
+
+  // Debounce timer for AL rerank — avoids repeated TF-IDF computation during rapid labeling
+  const rerankTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (rerankTimerRef.current) clearTimeout(rerankTimerRef.current); }, []);
 
   // Incremental PICO scoring cache — avoids re-scoring all articles when only one abstract changes
   const scoreCacheRef = useRef<Map<string, { picoKey: string; absLen: number; score: ScreeningScore }>>(new Map());
@@ -219,15 +223,16 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
     return count;
   }, [alDecisions]);
 
-  // AL: label an article
+  // AL: label an article (rerank debounced to avoid repeated TF-IDF on rapid labeling)
   const alLabel = useCallback((pmid: string, decision: ScreeningDecision) => {
     setAlDecisions(prev => {
       const next = new Map(prev);
       next.set(pmid, decision);
       return next;
     });
-    // Auto re-rank after labeling
-    setAlRanked(true);
+    // Debounce rerank by 500ms — coalesces rapid decisions into one TF-IDF pass
+    if (rerankTimerRef.current) clearTimeout(rerankTimerRef.current);
+    rerankTimerRef.current = setTimeout(() => { setAlRanked(true); }, 500);
     trackEvent('al_label', { decision });
   }, []);
 
