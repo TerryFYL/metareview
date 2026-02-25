@@ -527,7 +527,6 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
       onStudiesChange([...studies, ...newStudies]);
       setImportedCount(newStudies.length);
       setSelected(new Set());
-      setTimeout(() => setImportedCount(0), 3000);
 
       // Auto-update PRISMA flowchart
       if (onPRISMAUpdate && totalCount > 0) {
@@ -535,8 +534,14 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
         setPrismaNotice(true);
         setTimeout(() => setPrismaNotice(false), 3000);
       }
+
+      // Auto-switch to Input tab after brief delay so user sees the imported studies
+      setTimeout(() => {
+        setImportedCount(0);
+        onSwitchToInput();
+      }, 1500);
     }
-  }, [results, selected, studies, measure, onStudiesChange, onPRISMAUpdate, totalCount]);
+  }, [results, selected, studies, measure, onStudiesChange, onPRISMAUpdate, totalCount, onSwitchToInput]);
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
   const hasResults = results.length > 0;

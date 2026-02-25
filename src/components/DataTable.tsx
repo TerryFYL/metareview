@@ -123,6 +123,12 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
   const pdfInputRef = useRef<HTMLInputElement>(null);
   const extractTargetId = useRef<string | null>(null);
 
+  // Batch PDF extraction state
+  const [batchExtracting, setBatchExtracting] = useState(false);
+  const [batchProgress, setBatchProgress] = useState({ done: 0, total: 0, success: 0, fail: 0 });
+  const batchInputRef = useRef<HTMLInputElement>(null);
+  const batchAbortRef = useRef(false);
+
   // Count studies needing data entry
   const emptyDataCount = useMemo(
     () => studies.filter(s => isStudyDataEmpty(s, measure)).length,
@@ -369,6 +375,71 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
     }
   }, [studies, measure, onStudiesChange, lang]);
 
+  // Batch PDF extraction: upload multiple PDFs, extract into empty studies sequentially
+  const handleBatchPdfFiles = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []).filter(f => f.name.toLowerCase().endsWith('.pdf'));
+    e.target.value = '';
+    if (files.length === 0) return;
+
+    const emptyStudies = studies.filter(s => isStudyDataEmpty(s, measure));
+    const toProcess = Math.min(files.length, emptyStudies.length);
+    if (toProcess === 0) return;
+
+    setBatchExtracting(true);
+    batchAbortRef.current = false;
+    setBatchProgress({ done: 0, total: toProcess, success: 0, fail: 0 });
+
+    const { extractStudyFromPDF } = await import('../lib/extraction/inline-extract');
+    trackFeature('batch_inline_extract');
+
+    let updatedStudies = [...studies];
+    let success = 0;
+    let fail = 0;
+
+    for (let i = 0; i < toProcess; i++) {
+      if (batchAbortRef.current) break;
+
+      const targetStudy = emptyStudies[i];
+      setExtractingId(targetStudy.id);
+
+      try {
+        const result = await extractStudyFromPDF(
+          files[i],
+          measure,
+          (progress) => setExtractProgress(progress),
+        );
+
+        if (result.success && result.data) {
+          updatedStudies = updatedStudies.map(s =>
+            s.id === targetStudy.id ? { ...s, data: result.data! } : s
+          );
+          success++;
+        } else {
+          fail++;
+        }
+      } catch {
+        fail++;
+      }
+
+      setBatchProgress({ done: i + 1, total: toProcess, success, fail });
+      setExtractProgress(null);
+    }
+
+    onStudiesChange(updatedStudies);
+    setExtractingId(null);
+    setBatchExtracting(false);
+
+    const msg = t('table.batchExtractDone', lang)
+      .replace('{success}', String(success))
+      .replace('{fail}', String(fail));
+    setExtractToast({ type: success > 0 ? 'success' : 'error', message: msg });
+    setTimeout(() => setExtractToast(null), 5000);
+  }, [studies, measure, onStudiesChange, lang]);
+
+  const cancelBatchExtract = useCallback(() => {
+    batchAbortRef.current = true;
+  }, []);
+
   /** Navigate to adjacent cell via keyboard */
   const navigateCell = useCallback((currentInput: HTMLInputElement, direction: 'up' | 'down' | 'left' | 'right') => {
     if (!tableRef.current) return;
@@ -512,6 +583,15 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
         onChange={handlePdfFile}
         style={{ display: 'none' }}
       />
+      {/* Hidden multi-file input for batch extraction */}
+      <input
+        ref={batchInputRef}
+        type="file"
+        accept=".pdf"
+        multiple
+        onChange={handleBatchPdfFiles}
+        style={{ display: 'none' }}
+      />
 
       {pasteToast && (
         <div style={toastStyle}>{pasteToast}</div>
@@ -530,14 +610,56 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
       )}
 
       {/* Data completeness banner — shows when imported studies need data */}
-      {emptyDataCount > 0 && (
+      {emptyDataCount > 0 && !batchExtracting && (
         <div style={needsDataBannerStyle}>
-          <span style={{ fontSize: 12, fontWeight: 500, color: '#92400e' }}>
-            {t('table.needsData', lang).replace('{n}', String(emptyDataCount))}
-          </span>
-          <span style={{ fontSize: 11, color: '#b45309' }}>
-            {t('table.needsDataHint', lang)}
-          </span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: 8 }}>
+            <div>
+              <span style={{ fontSize: 12, fontWeight: 600, color: '#92400e' }}>
+                {t('table.needsData', lang).replace('{n}', String(emptyDataCount))}
+              </span>
+              <span style={{ fontSize: 11, color: '#b45309', display: 'block', marginTop: 2 }}>
+                {t('table.needsDataHint', lang)}
+              </span>
+            </div>
+            <button
+              onClick={() => batchInputRef.current?.click()}
+              disabled={!!extractingId}
+              style={{
+                padding: '6px 14px',
+                background: '#fef3c7',
+                border: '1px solid #f59e0b',
+                borderRadius: 6,
+                cursor: extractingId ? 'default' : 'pointer',
+                fontSize: 12,
+                fontWeight: 600,
+                color: '#92400e',
+                opacity: extractingId ? 0.5 : 1,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {t('table.batchExtract', lang)}
+            </button>
+          </div>
+        </div>
+      )}
+      {/* Batch extraction progress */}
+      {batchExtracting && (
+        <div style={{ ...needsDataBannerStyle, background: '#eff6ff', borderColor: '#bfdbfe' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: 8 }}>
+            <div>
+              <span style={{ fontSize: 12, fontWeight: 500, color: '#1e40af' }}>
+                {t('table.batchExtractProgress', lang)
+                  .replace('{done}', String(batchProgress.done))
+                  .replace('{total}', String(batchProgress.total))}
+              </span>
+              <div style={{ height: 4, background: '#dbeafe', borderRadius: 2, marginTop: 4, width: 200 }}>
+                <div style={{ height: '100%', background: '#2563eb', borderRadius: 2, width: `${batchProgress.total > 0 ? (batchProgress.done / batchProgress.total) * 100 : 0}%`, transition: 'width 0.3s' }} />
+              </div>
+            </div>
+            <button onClick={cancelBatchExtract} style={{ padding: '4px 10px', background: '#fff', border: '1px solid #d1d5db', borderRadius: 4, fontSize: 11, cursor: 'pointer', color: '#374151' }}>
+              {lang === 'zh' ? '取消' : 'Cancel'}
+            </button>
+          </div>
         </div>
       )}
 
@@ -670,7 +792,10 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
                             {extractProgress ? `${extractProgress.percent}%` : '...'}
                           </span>
                         ) : (
-                          '\uD83D\uDCC4'
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 2 }}>
+                            📄
+                            <span style={{ fontSize: 10 }}>PDF</span>
+                          </span>
                         )}
                       </button>
                     )}
