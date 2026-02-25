@@ -118,6 +118,14 @@ export default function HeroSection({ lang, onGetStarted, onLoadDemo, onSwitchLa
         </div>
       </section>
 
+      {/* Validation badge */}
+      <section style={{ maxWidth: 800, margin: '0 auto', padding: '0 16px 16px', textAlign: 'center' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 18px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 24, fontSize: 13, color: '#166534', fontWeight: 500 }}>
+          <span style={{ fontSize: 15 }}>{'\u2705'}</span>
+          {t('hero.validated', lang)}
+        </div>
+      </section>
+
       {/* Comparison */}
       <section style={{ maxWidth: 800, margin: '0 auto', padding: '0 16px 64px', textAlign: 'center' }}>
         <p style={{ fontSize: 14, color: '#9ca3af', margin: '0 0 32px' }}>
