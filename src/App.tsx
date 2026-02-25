@@ -1065,7 +1065,7 @@ export default function App() {
           {/* Data Table */}
           <section style={sectionStyle} data-tour="import-csv">
             <h2 style={h2Style}>{t('input.studyData', lang)}</h2>
-            <DataTable studies={studies} measure={measure} onStudiesChange={setStudies} lang={lang} onUndo={undo} onRedo={redo} canUndo={canUndo()} canRedo={canRedo()} />
+            <DataTable studies={studies} measure={measure} onStudiesChange={setStudies} lang={lang} onUndo={undo} onRedo={redo} canUndo={canUndo()} canRedo={canRedo()} onLoadDemo={loadDemo} />
           </section>
 
           {/* Error */}

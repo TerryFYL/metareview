@@ -567,15 +567,24 @@ function Row({ label, value, highlight }: { label: string; value: string; highli
 function HeterogeneityInterpretation({ I2, lang }: { I2: number; lang: Lang }) {
   let key: string;
   let color: string;
-  if (I2 < 25) { key = 'het.low'; color = '#16a34a'; }
-  else if (I2 < 50) { key = 'het.moderate'; color = '#ca8a04'; }
-  else if (I2 < 75) { key = 'het.substantial'; color = '#ea580c'; }
-  else { key = 'het.considerable'; color = '#dc2626'; }
+  let bg: string;
+  if (I2 < 25) { key = 'het.low'; color = '#16a34a'; bg = '#f0fdf4'; }
+  else if (I2 < 50) { key = 'het.moderate'; color = '#ca8a04'; bg = '#fefce8'; }
+  else if (I2 < 75) { key = 'het.substantial'; color = '#ea580c'; bg = '#fff7ed'; }
+  else { key = 'het.considerable'; color = '#dc2626'; bg = '#fef2f2'; }
 
   return (
-    <p style={{ fontSize: 12, color, fontWeight: 500, marginTop: 8 }}>
-      {t(key, lang)} (Higgins et al., 2003)
-    </p>
+    <div style={{ marginTop: 8, padding: '8px 12px', background: bg, borderRadius: 6, borderLeft: `3px solid ${color}` }}>
+      <p style={{ fontSize: 12, color, fontWeight: 600, margin: 0 }}>
+        {t(key, lang)} (I² = {I2.toFixed(1)}%)
+      </p>
+      <p style={{ fontSize: 11, color: '#4b5563', margin: '4px 0 0 0' }}>
+        {t(`${key}.desc`, lang)}
+      </p>
+      <p style={{ fontSize: 10, color: '#9ca3af', margin: '4px 0 0 0', fontStyle: 'italic' }}>
+        Higgins et al., 2003
+      </p>
+    </div>
   );
 }
 

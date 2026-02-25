@@ -15,6 +15,7 @@ interface DataTableProps {
   onRedo?: () => void;
   canUndo?: boolean;
   canRedo?: boolean;
+  onLoadDemo?: () => void;
 }
 
 function generateId() {
@@ -106,7 +107,7 @@ function getCellIssue(study: Study, key: string, measure: EffectMeasure): CellIs
   return null;
 }
 
-export default function DataTable({ studies, measure, onStudiesChange, lang, onUndo, onRedo, canUndo, canRedo }: DataTableProps) {
+export default function DataTable({ studies, measure, onStudiesChange, lang, onUndo, onRedo, canUndo, canRedo, onLoadDemo }: DataTableProps) {
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [pasteToast, setPasteToast] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -134,6 +135,27 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
     () => studies.filter(s => isStudyDataEmpty(s, measure)).length,
     [studies, measure]
   );
+
+  // Real-time validation: count errors and warnings across all studies
+  const validationSummary = useMemo(() => {
+    let errors = 0;
+    let warnings = 0;
+    const dataKeys = isHR(measure)
+      ? ['hr', 'ciLower', 'ciUpper']
+      : isBinary(measure)
+      ? ['events1', 'total1', 'events2', 'total2']
+      : ['mean1', 'sd1', 'n1', 'mean2', 'sd2', 'n2'];
+    for (const s of studies) {
+      if (isStudyDataEmpty(s, measure)) continue; // skip empty stubs
+      if (!s.name.trim()) errors++;
+      for (const key of dataKeys) {
+        const issue = getCellIssue(s, key, measure);
+        if (issue === 'error') errors++;
+        else if (issue === 'warning') warnings++;
+      }
+    }
+    return { errors, warnings };
+  }, [studies, measure]);
 
   const handleExportCSV = () => {
     const csv = exportCSV(studies, measure);
@@ -711,6 +733,32 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
         </div>
       )}
 
+      {/* Validation summary — real-time error/warning count */}
+      {studies.length > 0 && (validationSummary.errors > 0 || validationSummary.warnings > 0) && (
+        <div style={{
+          display: 'flex',
+          gap: 12,
+          alignItems: 'center',
+          padding: '6px 12px',
+          background: validationSummary.errors > 0 ? '#fef2f2' : '#fffbeb',
+          border: `1px solid ${validationSummary.errors > 0 ? '#fecaca' : '#fde68a'}`,
+          borderRadius: 6,
+          marginBottom: 8,
+          fontSize: 12,
+        }}>
+          {validationSummary.errors > 0 && (
+            <span style={{ color: '#dc2626', fontWeight: 500 }}>
+              {t('table.validationErrors', lang).replace('{n}', String(validationSummary.errors))}
+            </span>
+          )}
+          {validationSummary.warnings > 0 && (
+            <span style={{ color: '#d97706', fontWeight: 500 }}>
+              {t('table.validationWarnings', lang).replace('{n}', String(validationSummary.warnings))}
+            </span>
+          )}
+        </div>
+      )}
+
       <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
         <table ref={tableRef} style={{ borderCollapse: 'collapse', width: '100%', fontSize: 13, minWidth: 520 }}>
           <thead>
@@ -879,9 +927,35 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
       </div>
 
       {studies.length === 0 && (
-        <p style={{ color: '#9ca3af', textAlign: 'center', marginTop: 24, fontSize: 13 }}>
-          {t('table.empty', lang)}
-        </p>
+        <div style={emptyGuideContainerStyle}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: '#374151', marginBottom: 12 }}>
+            {t('table.emptyGuide.title', lang)}
+          </div>
+          <div style={emptyGuideGridStyle}>
+            <button onClick={addStudy} style={emptyGuideCardStyle}>
+              <span style={{ fontSize: 20 }}>+</span>
+              <span style={{ fontWeight: 600, fontSize: 13 }}>{t('table.emptyGuide.manual', lang)}</span>
+              <span style={{ fontSize: 11, color: '#6b7280' }}>{t('table.emptyGuide.manualDesc', lang)}</span>
+            </button>
+            <div style={{ ...emptyGuideCardStyle, cursor: 'default', borderStyle: 'dashed' }}>
+              <span style={{ fontSize: 20 }}>📋</span>
+              <span style={{ fontWeight: 600, fontSize: 13 }}>{t('table.emptyGuide.paste', lang)}</span>
+              <span style={{ fontSize: 11, color: '#6b7280' }}>{t('table.emptyGuide.pasteDesc', lang)}</span>
+            </div>
+            <button onClick={() => fileInputRef.current?.click()} style={emptyGuideCardStyle}>
+              <span style={{ fontSize: 20 }}>📁</span>
+              <span style={{ fontWeight: 600, fontSize: 13 }}>{t('table.emptyGuide.csv', lang)}</span>
+              <span style={{ fontSize: 11, color: '#6b7280' }}>{t('table.emptyGuide.csvDesc', lang)}</span>
+            </button>
+            {onLoadDemo && (
+              <button onClick={onLoadDemo} style={emptyGuideCardStyle}>
+                <span style={{ fontSize: 20 }}>📊</span>
+                <span style={{ fontWeight: 600, fontSize: 13 }}>{t('table.emptyGuide.demo', lang)}</span>
+                <span style={{ fontSize: 11, color: '#6b7280' }}>{t('table.emptyGuide.demoDesc', lang)}</span>
+              </button>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
@@ -1021,4 +1095,35 @@ const extractBtnStyle: React.CSSProperties = {
   cursor: 'pointer',
   marginRight: 2,
   lineHeight: 1,
+};
+
+const emptyGuideContainerStyle: React.CSSProperties = {
+  textAlign: 'center',
+  marginTop: 24,
+  padding: '24px 16px',
+  background: '#f9fafb',
+  borderRadius: 8,
+  border: '1px solid #e5e7eb',
+};
+
+const emptyGuideGridStyle: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+  gap: 12,
+  maxWidth: 600,
+  margin: '0 auto',
+};
+
+const emptyGuideCardStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: 4,
+  padding: '16px 12px',
+  background: '#fff',
+  border: '1px solid #e5e7eb',
+  borderRadius: 8,
+  cursor: 'pointer',
+  color: '#374151',
+  transition: 'border-color 0.15s, box-shadow 0.15s',
 };

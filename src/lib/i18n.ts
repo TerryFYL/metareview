@@ -123,6 +123,24 @@ const translations = {
   'table.importCSV.en': 'Import CSV',
   'table.empty.zh': '尚未添加研究。点击"+ 添加研究"开始录入数据。',
   'table.empty.en': 'No studies added yet. Click "+ Add Study" to begin.',
+  'table.emptyGuide.title.zh': '快速开始',
+  'table.emptyGuide.title.en': 'Quick Start',
+  'table.emptyGuide.manual.zh': '手动输入',
+  'table.emptyGuide.manual.en': 'Manual Entry',
+  'table.emptyGuide.manualDesc.zh': '逐行添加研究数据',
+  'table.emptyGuide.manualDesc.en': 'Add study data row by row',
+  'table.emptyGuide.paste.zh': '从 Excel 粘贴',
+  'table.emptyGuide.paste.en': 'Paste from Excel',
+  'table.emptyGuide.pasteDesc.zh': '复制 Excel / Sheets 数据，直接粘贴到此处',
+  'table.emptyGuide.pasteDesc.en': 'Copy data from Excel / Sheets and paste here',
+  'table.emptyGuide.csv.zh': '导入文件',
+  'table.emptyGuide.csv.en': 'Import File',
+  'table.emptyGuide.csvDesc.zh': '支持 CSV 和 RIS 格式',
+  'table.emptyGuide.csvDesc.en': 'Supports CSV and RIS formats',
+  'table.emptyGuide.demo.zh': '加载示例',
+  'table.emptyGuide.demo.en': 'Load Demo',
+  'table.emptyGuide.demoDesc.zh': 'Aspirin vs Placebo 示例数据',
+  'table.emptyGuide.demoDesc.en': 'Aspirin vs Placebo sample data',
 
   // Results
   'results.title.zh': '结果汇总',
@@ -149,8 +167,8 @@ const translations = {
   'results.narrative.en': 'Narrative Summary',
   'results.noAsymmetry.zh': '未检测到显著的漏斗图不对称性。',
   'results.noAsymmetry.en': 'No significant funnel plot asymmetry detected.',
-  'results.asymmetryDetected.zh': '检测到显著不对称性 — 可能存在发表偏倚。',
-  'results.asymmetryDetected.en': 'Significant asymmetry detected — potential publication bias.',
+  'results.asymmetryDetected.zh': '检测到显著不对称性 — 可能存在发表偏倚。建议查看漏斗图的 Trim-and-Fill 校正，并检查纳入研究的质量。',
+  'results.asymmetryDetected.en': 'Significant asymmetry detected — potential publication bias. Consider using Trim-and-Fill correction in the Funnel Plot tab and reviewing study quality.',
 
   // Heterogeneity levels
   'het.low.zh': '低异质性',
@@ -161,6 +179,14 @@ const translations = {
   'het.substantial.en': 'Substantial heterogeneity',
   'het.considerable.zh': '高异质性',
   'het.considerable.en': 'Considerable heterogeneity',
+  'het.low.desc.zh': '研究间差异较小，合并效应量可信度高。',
+  'het.low.desc.en': 'Little variation between studies. The pooled effect is reliable.',
+  'het.moderate.desc.zh': '研究间存在一定差异。建议检查亚组或敏感性分析。',
+  'het.moderate.desc.en': 'Some variation between studies. Consider subgroup or sensitivity analysis.',
+  'het.substantial.desc.zh': '研究间差异较大。建议使用随机效应模型，并探索异质性来源（亚组分析、Meta 回归）。',
+  'het.substantial.desc.en': 'Substantial variation. Use random-effects model and explore sources via subgroup analysis or meta-regression.',
+  'het.considerable.desc.zh': '研究间差异很大，合并效应量需谨慎解读。强烈建议进行亚组分析和敏感性分析以探索异质性来源。',
+  'het.considerable.desc.en': 'Very high variation. Interpret the pooled effect with caution. Strongly consider subgroup and sensitivity analyses to explore sources.',
 
   // Sensitivity
   'sensitivity.title.zh': '逐一剔除敏感性分析',
@@ -817,6 +843,12 @@ const translations = {
   'table.batchSubgroupPrompt.en': 'Enter subgroup name',
   'table.batchSubgroupApply.zh': '应用',
   'table.batchSubgroupApply.en': 'Apply',
+
+  // Data validation
+  'table.validationErrors.zh': '{n} 个数据问题需要修复',
+  'table.validationErrors.en': '{n} data issue(s) to fix',
+  'table.validationWarnings.zh': '{n} 个警告',
+  'table.validationWarnings.en': '{n} warning(s)',
 
   // PRISMA DOCX Export
   'prisma.downloadDOCX.zh': '导出 Word',
