@@ -24,11 +24,93 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
   const k = result.studies.length;
   const beggs = useUIStore((s) => s.beggs);
   const metaRegression = useUIStore((s) => s.metaRegression);
+  const { pico, prisma, robAssessments, studies } = useProjectStore();
   const [showSections, setShowSections] = useState(false);
   const [sections, setSections] = useState<ReportSections>({ ...defaultReportSections });
 
+  // Data availability — false means section will produce empty content
+  const dataAvailable: Partial<Record<keyof ReportSections, boolean>> = {
+    pico: !!(pico.population || pico.intervention || pico.comparison || pico.outcome),
+    prisma: !!(prisma && (prisma.dbRecords || prisma.otherRecords)),
+    eggers: !!eggers,
+    beggs: !!beggs,
+    subgroup: !!subgroupResult && subgroupResult.subgroups.length > 1,
+    sensitivity: sensitivityResults.length > 0,
+    metaReg: !!metaRegression,
+    rob: !!robAssessments && Object.keys(robAssessments).length > 0,
+    labbe: measure === 'OR' || measure === 'RR',
+    doseResponse: studies.some(s => s.dose != null && !isNaN(s.dose)),
+  };
+
+  const sectionGroups: { labelKey: string; keys: { key: keyof ReportSections; labelKey: string }[] }[] = [
+    {
+      labelKey: 'report.group.core',
+      keys: [
+        { key: 'pico', labelKey: 'report.section.pico' },
+        { key: 'prisma', labelKey: 'report.section.prisma' },
+        { key: 'overall', labelKey: 'report.section.overall' },
+        { key: 'interpretation', labelKey: 'report.section.interpretation' },
+        { key: 'studyTable', labelKey: 'report.section.studyTable' },
+        { key: 'plots', labelKey: 'report.section.plots' },
+      ],
+    },
+    {
+      labelKey: 'report.group.pubBias',
+      keys: [
+        { key: 'contourFunnel', labelKey: 'report.section.contourFunnel' },
+        { key: 'eggers', labelKey: 'report.section.eggers' },
+        { key: 'beggs', labelKey: 'report.section.beggs' },
+      ],
+    },
+    {
+      labelKey: 'report.group.heterogeneity',
+      keys: [
+        { key: 'galbraith', labelKey: 'report.section.galbraith' },
+        { key: 'baujat', labelKey: 'report.section.baujat' },
+        { key: 'influence', labelKey: 'report.section.influence' },
+        { key: 'loo', labelKey: 'report.section.loo' },
+      ],
+    },
+    {
+      labelKey: 'report.group.additional',
+      keys: [
+        { key: 'subgroup', labelKey: 'report.section.subgroup' },
+        { key: 'metaReg', labelKey: 'report.section.metaRegression' },
+        { key: 'sensitivity', labelKey: 'report.section.sensitivity' },
+        { key: 'labbe', labelKey: 'report.section.labbe' },
+        { key: 'network', labelKey: 'report.section.network' },
+        { key: 'doseResponse', labelKey: 'report.section.doseResponse' },
+        { key: 'cumulative', labelKey: 'report.section.cumulative' },
+      ],
+    },
+    {
+      labelKey: 'report.group.evidence',
+      keys: [
+        { key: 'grade', labelKey: 'report.section.grade' },
+        { key: 'rob', labelKey: 'report.section.rob' },
+      ],
+    },
+    {
+      labelKey: 'report.group.writing',
+      keys: [
+        { key: 'methods', labelKey: 'report.section.methods' },
+        { key: 'narrative', labelKey: 'report.section.narrative' },
+      ],
+    },
+  ];
+
   const toggleSection = (key: keyof ReportSections) => {
     setSections(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const toggleGroup = (groupKeys: (keyof ReportSections)[]) => {
+    const allOn = groupKeys.every(k => sections[k]);
+    const newVal = !allOn;
+    setSections(prev => {
+      const next = { ...prev };
+      groupKeys.forEach(k => { next[k] = newVal; });
+      return next;
+    });
   };
 
   const toggleAllSections = () => {
@@ -61,37 +143,6 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
       onExportMarkdown(sections);
     }
   };
-
-  const sectionKeys: { key: keyof ReportSections; labelKey: string }[] = [
-    { key: 'pico', labelKey: 'report.section.pico' },
-    { key: 'prisma', labelKey: 'report.section.prisma' },
-    { key: 'overall', labelKey: 'report.section.overall' },
-    { key: 'interpretation', labelKey: 'report.section.interpretation' },
-    { key: 'studyTable', labelKey: 'report.section.studyTable' },
-    { key: 'plots', labelKey: 'report.section.plots' },
-    // Publication bias group
-    { key: 'contourFunnel', labelKey: 'report.section.contourFunnel' },
-    { key: 'eggers', labelKey: 'report.section.eggers' },
-    { key: 'beggs', labelKey: 'report.section.beggs' },
-    // Heterogeneity diagnostics group
-    { key: 'galbraith', labelKey: 'report.section.galbraith' },
-    { key: 'baujat', labelKey: 'report.section.baujat' },
-    { key: 'influence', labelKey: 'report.section.influence' },
-    { key: 'loo', labelKey: 'report.section.loo' },
-    // Additional analyses group
-    { key: 'subgroup', labelKey: 'report.section.subgroup' },
-    { key: 'metaReg', labelKey: 'report.section.metaRegression' },
-    { key: 'labbe', labelKey: 'report.section.labbe' },
-    { key: 'network', labelKey: 'report.section.network' },
-    { key: 'doseResponse', labelKey: 'report.section.doseResponse' },
-    { key: 'cumulative', labelKey: 'report.section.cumulative' },
-    // Evidence & summary
-    { key: 'grade', labelKey: 'report.section.grade' },
-    { key: 'rob', labelKey: 'report.section.rob' },
-    { key: 'sensitivity', labelKey: 'report.section.sensitivity' },
-    { key: 'methods', labelKey: 'report.section.methods' },
-    { key: 'narrative', labelKey: 'report.section.narrative' },
-  ];
 
   const formatP = (p: number) => {
     if (p < 0.001) return '< 0.001';
@@ -134,21 +185,37 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
       {/* Section selection panel */}
       {showSections && (
         <div style={{ background: '#f0f9ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '12px 16px', marginBottom: 12 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
             <span style={{ fontSize: 12, fontWeight: 600, color: '#374151' }}>{t('report.customize', lang)}</span>
             <label style={{ fontSize: 11, color: '#6b7280', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
               <input type="checkbox" checked={Object.values(sections).every(v => v)} onChange={toggleAllSections} />
               {t('report.selectAll', lang)}
             </label>
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 16px' }}>
-            {sectionKeys.map(({ key, labelKey }) => (
-              <label key={key} style={{ fontSize: 12, color: '#374151', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, minWidth: 140 }}>
-                <input type="checkbox" checked={sections[key]} onChange={() => toggleSection(key)} />
-                {t(labelKey, lang)}
-              </label>
-            ))}
-          </div>
+          {sectionGroups.map((group) => {
+            const groupKeyList = group.keys.map(k => k.key);
+            const allGroupOn = groupKeyList.every(k => sections[k]);
+            return (
+              <div key={group.labelKey} style={{ marginBottom: 8 }}>
+                <label style={{ fontSize: 11, fontWeight: 600, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.03em', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, marginBottom: 4 }}>
+                  <input type="checkbox" checked={allGroupOn} onChange={() => toggleGroup(groupKeyList)} />
+                  {t(group.labelKey, lang)}
+                </label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px 14px', paddingLeft: 18 }}>
+                  {group.keys.map(({ key, labelKey }) => {
+                    const available = dataAvailable[key] !== false;
+                    return (
+                      <label key={key} style={{ fontSize: 12, color: available ? '#374151' : '#9ca3af', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, minWidth: 130 }}>
+                        <input type="checkbox" checked={sections[key]} onChange={() => toggleSection(key)} />
+                        {t(labelKey, lang)}
+                        {!available && <span style={{ fontSize: 10, color: '#d1d5db', marginLeft: 2 }}>({t('report.noData', lang)})</span>}
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
