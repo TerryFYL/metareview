@@ -109,7 +109,9 @@ export function baujatPlotData(
 
     // Leave-one-out pooled estimate
     const W_minus_i = W - weights[i];
-    const theta_minus_i = (W * summaryEffect - weights[i] * s.yi) / W_minus_i;
+    const theta_minus_i = Math.abs(W_minus_i) < 1e-10
+      ? summaryEffect // Degenerate case: single dominant weight
+      : (W * summaryEffect - weights[i] * s.yi) / W_minus_i;
 
     // Squared standardized shift: (θ̂ - θ̂_{-i})² × W
     const influence = (summaryEffect - theta_minus_i) ** 2 * W;
@@ -166,6 +168,7 @@ export function eggersTest(studies: StudyEffect[]): EggersTest | null {
   const meanY = sumY / n;
 
   const Sxx = sumX2 - n * meanX * meanX;
+  if (Math.abs(Sxx) < 1e-10) return null; // All studies have identical precision — regression undefined
   const Sxy = sumXY - n * meanX * meanY;
 
   const slope = Sxy / Sxx;

@@ -41,7 +41,9 @@ interface ReportData {
   sections?: ReportSections;
 }
 
-const formatP = (p: number) => (p < 0.001 ? '< 0.001' : p.toFixed(3));
+/** Safe number formatter — returns '—' for NaN/Infinity */
+const fmt = (n: number, d = 2): string => isFinite(n) ? n.toFixed(d) : '—';
+const fmtP = (p: number): string => !isFinite(p) ? '—' : p < 0.001 ? '< 0.001' : p.toFixed(3);
 
 function makeHeaderCell(text: string): TableCell {
   return new TableCell({
@@ -99,21 +101,21 @@ function overallEffectTable(r: MetaAnalysisResult): Table {
     ['Model', r.model === 'random' ? 'Random Effects (DerSimonian-Laird)' : 'Fixed Effects (Inverse Variance)'],
     ['Effect measure', r.measure],
     ['Number of studies', r.studies.length.toString()],
-    [`Pooled ${r.measure}`, r.effect.toFixed(4)],
-    ['95% CI', `[${r.ciLower.toFixed(4)}, ${r.ciUpper.toFixed(4)}]`],
-    ['Z', r.z.toFixed(4)],
-    ['P-value', formatP(r.pValue), r.pValue < 0.05],
+    [`Pooled ${r.measure}`, fmt(r.effect, 4)],
+    ['95% CI', `[${fmt(r.ciLower, 4)}, ${fmt(r.ciUpper, 4)}]`],
+    ['Z', fmt(r.z, 4)],
+    ['P-value', fmtP(r.pValue), r.pValue < 0.05],
   ];
   if (r.predictionInterval) {
-    rows.push(['95% Prediction Interval', `[${r.predictionInterval.lower.toFixed(4)}, ${r.predictionInterval.upper.toFixed(4)}]`]);
+    rows.push(['95% Prediction Interval', `[${fmt(r.predictionInterval.lower, 4)}, ${fmt(r.predictionInterval.upper, 4)}]`]);
   }
   rows.push(
-    ["Cochran's Q", `${het.Q.toFixed(2)} (df = ${het.df})`],
-    ['P-value (Q)', formatP(het.pValue), het.pValue < 0.1],
-    ['I\u00B2', `${het.I2.toFixed(1)}%`, het.I2 > 50],
-    ['\u03C4\u00B2', het.tau2.toFixed(4)],
-    ['\u03C4', het.tau.toFixed(4)],
-    ['H\u00B2', het.H2.toFixed(2)],
+    ["Cochran's Q", `${fmt(het.Q)} (df = ${het.df})`],
+    ['P-value (Q)', fmtP(het.pValue), het.pValue < 0.1],
+    ['I\u00B2', `${fmt(het.I2, 1)}%`, het.I2 > 50],
+    ['\u03C4\u00B2', fmt(het.tau2, 4)],
+    ['\u03C4', fmt(het.tau, 4)],
+    ['H\u00B2', fmt(het.H2)],
   );
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -169,7 +171,7 @@ function interpretationRows(r: MetaAnalysisResult): Paragraph[] {
 
 function studyResultsTable(r: MetaAnalysisResult): Table {
   const model = r.model;
-  const totalW = r.studies.reduce((sum, s) => sum + (model === 'random' ? s.weightRandom : s.weightFixed), 0);
+  const totalW = r.studies.reduce((sum, s) => sum + (model === 'random' ? s.weightRandom : s.weightFixed), 0) || 1;
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     rows: [
@@ -186,9 +188,9 @@ function studyResultsTable(r: MetaAnalysisResult): Table {
         return new TableRow({
           children: [
             makeCell(`${s.name}${s.year ? ` (${s.year})` : ''}`),
-            makeCell(s.effect.toFixed(4)),
-            makeCell(`[${s.ciLower.toFixed(4)}, ${s.ciUpper.toFixed(4)}]`),
-            makeCell(`${((w / totalW) * 100).toFixed(1)}%`),
+            makeCell(fmt(s.effect, 4)),
+            makeCell(`[${fmt(s.ciLower, 4)}, ${fmt(s.ciUpper, 4)}]`),
+            makeCell(`${fmt((w / totalW) * 100, 1)}%`),
           ],
         });
       }),
@@ -200,10 +202,10 @@ function eggersTable(eggers: EggersTest): Table {
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     rows: makeLabelValueRows([
-      ['Intercept', eggers.intercept.toFixed(4)],
-      ['SE', eggers.se.toFixed(4)],
-      ['t-value', eggers.tValue.toFixed(4)],
-      ['P-value', formatP(eggers.pValue), eggers.pValue < 0.05],
+      ['Intercept', fmt(eggers.intercept, 4)],
+      ['SE', fmt(eggers.se, 4)],
+      ['t-value', fmt(eggers.tValue, 4)],
+      ['P-value', fmtP(eggers.pValue), eggers.pValue < 0.05],
       ['df', eggers.df.toString()],
     ]),
   });
@@ -213,9 +215,9 @@ function beggsTable(beggs: BeggsTest): Table {
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     rows: makeLabelValueRows([
-      ["Kendall's \u03C4", beggs.tau.toFixed(4)],
-      ['Z', beggs.z.toFixed(4)],
-      ['P-value', formatP(beggs.pValue), beggs.pValue < 0.05],
+      ["Kendall's \u03C4", fmt(beggs.tau, 4)],
+      ['Z', fmt(beggs.z, 4)],
+      ['P-value', fmtP(beggs.pValue), beggs.pValue < 0.05],
       ['k', beggs.k.toString()],
     ]),
   });
@@ -226,13 +228,13 @@ function metaRegressionTable(mr: MetaRegressionResult): Table {
     width: { size: 100, type: WidthType.PERCENTAGE },
     rows: makeLabelValueRows([
       ['Covariate', `${mr.covariate} (k = ${mr.k})`],
-      ['Coefficient', `${mr.coefficient.toFixed(4)} (SE = ${mr.se.toFixed(4)})`],
-      ['Z', mr.z.toFixed(4)],
-      ['P-value', formatP(mr.pValue), mr.pValue < 0.05],
-      ['Intercept', mr.intercept.toFixed(4)],
-      ['Q_model', `${mr.QModel.toFixed(2)} (p = ${formatP(mr.QModelP)})`, mr.QModelP < 0.05],
-      ['Q_residual', `${mr.QResidual.toFixed(2)} (df = ${mr.QResidualDf}, p = ${formatP(mr.QResidualP)})`],
-      ['R\u00B2', `${(mr.R2 * 100).toFixed(1)}%`],
+      ['Coefficient', `${fmt(mr.coefficient, 4)} (SE = ${fmt(mr.se, 4)})`],
+      ['Z', fmt(mr.z, 4)],
+      ['P-value', fmtP(mr.pValue), mr.pValue < 0.05],
+      ['Intercept', fmt(mr.intercept, 4)],
+      ['Q_model', `${fmt(mr.QModel)} (p = ${fmtP(mr.QModelP)})`, mr.QModelP < 0.05],
+      ['Q_residual', `${fmt(mr.QResidual)} (df = ${mr.QResidualDf}, p = ${fmtP(mr.QResidualP)})`],
+      ['R\u00B2', `${fmt(isFinite(mr.R2) ? mr.R2 * 100 : NaN, 1)}%`],
     ]),
   });
 }
@@ -255,9 +257,9 @@ function subgroupTable(sg: SubgroupAnalysisResult, measure: string): Table {
           children: [
             makeCell(s.name || 'Ungrouped'),
             makeCell(s.result.studies.length.toString()),
-            makeCell(`${s.result.effect.toFixed(2)} [${s.result.ciLower.toFixed(2)}, ${s.result.ciUpper.toFixed(2)}]`),
-            makeCell(`${s.result.heterogeneity.I2.toFixed(1)}%`),
-            makeCell(formatP(s.result.pValue)),
+            makeCell(`${fmt(s.result.effect)} [${fmt(s.result.ciLower)}, ${fmt(s.result.ciUpper)}]`),
+            makeCell(`${fmt(s.result.heterogeneity.I2, 1)}%`),
+            makeCell(fmtP(s.result.pValue)),
           ],
         })
       ),
@@ -286,16 +288,16 @@ function sensitivityTable(results: SensitivityResult[], full: MetaAnalysisResult
         return new TableRow({
           children: [
             makeCell(`${r.omittedStudy}${highlight ? ' *' : ''}`, { bold: highlight }),
-            makeCell(`${r.effect.toFixed(4)} [${r.ciLower.toFixed(4)}, ${r.ciUpper.toFixed(4)}]`),
-            makeCell(`${r.I2.toFixed(1)}%`),
+            makeCell(`${fmt(r.effect, 4)} [${fmt(r.ciLower, 4)}, ${fmt(r.ciUpper, 4)}]`),
+            makeCell(`${fmt(r.I2, 1)}%`),
           ],
         });
       }),
       new TableRow({
         children: [
           makeCell('Full model', { bold: true }),
-          makeCell(`${full.effect.toFixed(4)} [${full.ciLower.toFixed(4)}, ${full.ciUpper.toFixed(4)}]`, { bold: true }),
-          makeCell(`${full.heterogeneity.I2.toFixed(1)}%`, { bold: true }),
+          makeCell(`${fmt(full.effect, 4)} [${fmt(full.ciLower, 4)}, ${fmt(full.ciUpper, 4)}]`, { bold: true }),
+          makeCell(`${fmt(full.heterogeneity.I2, 1)}%`, { bold: true }),
         ],
       }),
     ],
@@ -305,19 +307,19 @@ function sensitivityTable(results: SensitivityResult[], full: MetaAnalysisResult
 function narrativeText(r: MetaAnalysisResult, eggers: EggersTest | null, sg: SubgroupAnalysisResult | null, sensitivity: SensitivityResult[], beggs?: BeggsTest | null, metaReg?: MetaRegressionResult | null, grade?: GradeAssessment | null, doseResponse?: DoseResponseResult | null, trimFill?: TrimAndFillResult | null, influenceData?: InfluenceDiagnostic[]): string {
   const het = r.heterogeneity;
   const k = r.studies.length;
-  let text = `A ${r.model === 'random' ? 'random-effects' : 'fixed-effect'} meta-analysis of ${k} studies was performed using the ${r.model === 'random' ? 'DerSimonian-Laird' : 'inverse variance'} method. The pooled ${r.measure} was ${r.effect.toFixed(2)} (95% CI: ${r.ciLower.toFixed(2)}\u2013${r.ciUpper.toFixed(2)}; Z = ${r.z.toFixed(2)}, P ${r.pValue < 0.001 ? '< 0.001' : `= ${r.pValue.toFixed(3)}`}), ${r.pValue < 0.05 ? 'indicating a statistically significant effect' : 'showing no statistically significant effect'}. `;
-  text += `Heterogeneity was ${het.I2 < 25 ? 'low' : het.I2 < 50 ? 'moderate' : het.I2 < 75 ? 'substantial' : 'considerable'} (I\u00B2 = ${het.I2.toFixed(1)}%, Q = ${het.Q.toFixed(2)}, df = ${het.df}, P ${het.pValue < 0.001 ? '< 0.001' : `= ${het.pValue.toFixed(3)}`}; \u03C4\u00B2 = ${het.tau2.toFixed(4)}).`;
+  let text = `A ${r.model === 'random' ? 'random-effects' : 'fixed-effect'} meta-analysis of ${k} studies was performed using the ${r.model === 'random' ? 'DerSimonian-Laird' : 'inverse variance'} method. The pooled ${r.measure} was ${fmt(r.effect)} (95% CI: ${fmt(r.ciLower)}\u2013${fmt(r.ciUpper)}; Z = ${fmt(r.z)}, P ${fmtP(r.pValue) === '< 0.001' ? '< 0.001' : `= ${fmtP(r.pValue)}`}), ${r.pValue < 0.05 ? 'indicating a statistically significant effect' : 'showing no statistically significant effect'}. `;
+  text += `Heterogeneity was ${het.I2 < 25 ? 'low' : het.I2 < 50 ? 'moderate' : het.I2 < 75 ? 'substantial' : 'considerable'} (I\u00B2 = ${fmt(het.I2, 1)}%, Q = ${fmt(het.Q)}, df = ${het.df}, P ${fmtP(het.pValue) === '< 0.001' ? '< 0.001' : `= ${fmtP(het.pValue)}`}; \u03C4\u00B2 = ${fmt(het.tau2, 4)}).`;
   if (r.predictionInterval) {
-    text += ` The 95% prediction interval was ${r.predictionInterval.lower.toFixed(2)}\u2013${r.predictionInterval.upper.toFixed(2)}, indicating the range of true effects expected in a new study (Riley et al., 2011).`;
+    text += ` The 95% prediction interval was ${fmt(r.predictionInterval.lower)}\u2013${fmt(r.predictionInterval.upper)}, indicating the range of true effects expected in a new study (Riley et al., 2011).`;
   }
   if (eggers) {
-    text += ` Egger's regression test ${eggers.pValue < 0.05 ? 'indicated significant' : 'did not indicate'} funnel plot asymmetry (intercept = ${eggers.intercept.toFixed(2)}, P = ${formatP(eggers.pValue)}).`;
+    text += ` Egger's regression test ${eggers.pValue < 0.05 ? 'indicated significant' : 'did not indicate'} funnel plot asymmetry (intercept = ${fmt(eggers.intercept)}, P = ${fmtP(eggers.pValue)}).`;
   }
   if (beggs) {
-    text += ` Begg's rank correlation test ${beggs.pValue < 0.05 ? 'revealed significant' : 'showed no significant'} evidence of publication bias (Kendall's \u03C4 = ${beggs.tau.toFixed(3)}, P = ${formatP(beggs.pValue)}).`;
+    text += ` Begg's rank correlation test ${beggs.pValue < 0.05 ? 'revealed significant' : 'showed no significant'} evidence of publication bias (Kendall's \u03C4 = ${fmt(beggs.tau, 3)}, P = ${fmtP(beggs.pValue)}).`;
   }
   if (trimFill && trimFill.k0 > 0) {
-    text += ` Trim-and-Fill analysis (Duval & Tweedie, 2000) estimated ${trimFill.k0} missing ${trimFill.k0 === 1 ? 'study' : 'studies'} on the ${trimFill.side} side; the adjusted ${r.measure} was ${trimFill.adjustedEffect.toFixed(2)} (95% CI: ${trimFill.adjustedCILower.toFixed(2)}\u2013${trimFill.adjustedCIUpper.toFixed(2)}).`;
+    text += ` Trim-and-Fill analysis (Duval & Tweedie, 2000) estimated ${trimFill.k0} missing ${trimFill.k0 === 1 ? 'study' : 'studies'} on the ${trimFill.side} side; the adjusted ${r.measure} was ${fmt(trimFill.adjustedEffect)} (95% CI: ${fmt(trimFill.adjustedCILower)}\u2013${fmt(trimFill.adjustedCIUpper)}).`;
   } else if (trimFill && trimFill.k0 === 0) {
     text += ` Trim-and-Fill analysis detected no funnel plot asymmetry requiring imputation.`;
   }
@@ -345,13 +347,13 @@ function narrativeText(r: MetaAnalysisResult, eggers: EggersTest | null, sg: Sub
   }
   if (sg && sg.subgroups.length > 1) {
     const sgEffects = sg.subgroups.map(s =>
-      `${s.name || 'Ungrouped'} (${r.measure} = ${s.result.effect.toFixed(2)}, 95% CI: ${s.result.ciLower.toFixed(2)}\u2013${s.result.ciUpper.toFixed(2)}, k = ${s.result.studies.length})`
+      `${s.name || 'Ungrouped'} (${r.measure} = ${fmt(s.result.effect)}, 95% CI: ${fmt(s.result.ciLower)}\u2013${fmt(s.result.ciUpper)}, k = ${s.result.studies.length})`
     );
     const testSig = sg.test.pValue < 0.05;
-    text += ` Subgroup analysis by ${sg.subgroups.map(s => s.name || 'Ungrouped').join(' vs ')} revealed ${sgEffects.join('; ')}. The test for subgroup differences ${testSig ? 'was statistically significant' : 'was not statistically significant'} (Q = ${sg.test.Q.toFixed(2)}, df = ${sg.test.df}, P ${sg.test.pValue < 0.001 ? '< 0.001' : `= ${sg.test.pValue.toFixed(3)}`})${testSig ? ', suggesting effect modification across subgroups' : ', indicating no significant effect modification'}.`;
+    text += ` Subgroup analysis by ${sg.subgroups.map(s => s.name || 'Ungrouped').join(' vs ')} revealed ${sgEffects.join('; ')}. The test for subgroup differences ${testSig ? 'was statistically significant' : 'was not statistically significant'} (Q = ${fmt(sg.test.Q)}, df = ${sg.test.df}, P ${fmtP(sg.test.pValue) === '< 0.001' ? '< 0.001' : `= ${fmtP(sg.test.pValue)}`})${testSig ? ', suggesting effect modification across subgroups' : ', indicating no significant effect modification'}.`;
   }
   if (metaReg) {
-    text += ` Meta-regression analysis using ${metaReg.covariate} as the covariate (k = ${metaReg.k}) ${metaReg.pValue < 0.05 ? 'identified a significant moderating effect' : 'did not identify a significant moderating effect'} (coefficient = ${metaReg.coefficient.toFixed(4)}, P = ${formatP(metaReg.pValue)}; R\u00B2 = ${(metaReg.R2 * 100).toFixed(1)}%).`;
+    text += ` Meta-regression analysis using ${metaReg.covariate} as the covariate (k = ${metaReg.k}) ${metaReg.pValue < 0.05 ? 'identified a significant moderating effect' : 'did not identify a significant moderating effect'} (coefficient = ${fmt(metaReg.coefficient, 4)}, P = ${fmtP(metaReg.pValue)}; R\u00B2 = ${fmt(isFinite(metaReg.R2) ? metaReg.R2 * 100 : NaN, 1)}%).`;
   }
   if (grade) {
     const levelLabels: Record<string, string> = { high: 'high', moderate: 'moderate', low: 'low', very_low: 'very low' };
@@ -365,7 +367,7 @@ function narrativeText(r: MetaAnalysisResult, eggers: EggersTest | null, sg: Sub
     text += `.`;
   }
   if (doseResponse) {
-    text += ` Dose-response meta-analysis of ${doseResponse.k} dose levels using weighted ${doseResponse.modelType} regression ${doseResponse.pLinear < 0.05 ? 'revealed a significant' : 'did not reveal a significant'} dose-response relationship (\u03B2\u2081 = ${doseResponse.beta1.toFixed(4)}, P = ${formatP(doseResponse.pLinear)}; R\u00B2 = ${(doseResponse.R2 * 100).toFixed(1)}%).`;
+    text += ` Dose-response meta-analysis of ${doseResponse.k} dose levels using weighted ${doseResponse.modelType} regression ${doseResponse.pLinear < 0.05 ? 'revealed a significant' : 'did not reveal a significant'} dose-response relationship (\u03B2\u2081 = ${fmt(doseResponse.beta1, 4)}, P = ${fmtP(doseResponse.pLinear)}; R\u00B2 = ${fmt(isFinite(doseResponse.R2) ? doseResponse.R2 * 100 : NaN, 1)}%).`;
   }
   return text;
 }
@@ -417,15 +419,15 @@ function influenceDiagnosticsTable(diagnostics: InfluenceDiagnostic[], measure: 
         return new TableRow({
           children: [
             makeCell(`${d.name}${d.year ? ` (${d.year})` : ''}${isInfluential ? ' *' : ''}`, { bold: isInfluential }),
-            makeCell(d.effect.toFixed(4)),
-            makeCell(`${d.weight.toFixed(1)}%`),
-            makeCell(d.hat.toFixed(4)),
-            makeCell(d.rstudent.toFixed(3), { color: Math.abs(d.rstudent) > 2 ? 'CC0000' : undefined }),
-            makeCell(d.cooksDistance.toFixed(4), { color: d.cooksDistance > cooksThreshold ? 'CC0000' : undefined }),
-            makeCell(d.dffits.toFixed(4), { color: Math.abs(d.dffits) > 1 ? 'CC0000' : undefined }),
-            makeCell(d.covRatio.toFixed(4)),
-            makeCell(d.leaveOneOutEffect.toFixed(4)),
-            makeCell(`${d.leaveOneOutI2.toFixed(1)}%`),
+            makeCell(fmt(d.effect, 4)),
+            makeCell(`${fmt(d.weight, 1)}%`),
+            makeCell(fmt(d.hat, 4)),
+            makeCell(fmt(d.rstudent, 3), { color: Math.abs(d.rstudent) > 2 ? 'CC0000' : undefined }),
+            makeCell(fmt(d.cooksDistance, 4), { color: d.cooksDistance > cooksThreshold ? 'CC0000' : undefined }),
+            makeCell(fmt(d.dffits, 4), { color: Math.abs(d.dffits) > 1 ? 'CC0000' : undefined }),
+            makeCell(fmt(d.covRatio, 4)),
+            makeCell(fmt(d.leaveOneOutEffect, 4)),
+            makeCell(`${fmt(d.leaveOneOutI2, 1)}%`),
           ],
         });
       }),
@@ -530,15 +532,15 @@ function doseResponseResultTable(dr: DoseResponseResult): Table {
   const rows: [string, string, boolean?][] = [
     ['Model', `Weighted ${dr.modelType === 'linear' ? 'Linear' : 'Quadratic Polynomial'} Regression (WLS)`],
     ['Dose levels (k)', dr.k.toString()],
-    ['Intercept', dr.intercept.toFixed(4)],
-    ['\u03B2\u2081 (linear)', `${dr.beta1.toFixed(4)} (P = ${formatP(dr.pLinear)})`, dr.pLinear < 0.05],
+    ['Intercept', fmt(dr.intercept, 4)],
+    ['\u03B2\u2081 (linear)', `${fmt(dr.beta1, 4)} (P = ${fmtP(dr.pLinear)})`, dr.pLinear < 0.05],
   ];
   if (dr.modelType === 'quadratic') {
-    rows.push(['\u03B2\u2082 (quadratic)', `${dr.beta2.toFixed(4)} (P = ${formatP(dr.pQuadratic)})`, dr.pQuadratic < 0.05]);
+    rows.push(['\u03B2\u2082 (quadratic)', `${fmt(dr.beta2, 4)} (P = ${fmtP(dr.pQuadratic)})`, dr.pQuadratic < 0.05]);
   }
   rows.push(
-    ['P-value (model)', formatP(dr.pModel), dr.pModel < 0.05],
-    ['R\u00B2', `${(dr.R2 * 100).toFixed(1)}%`],
+    ['P-value (model)', fmtP(dr.pModel), dr.pModel < 0.05],
+    ['R\u00B2', `${fmt(isFinite(dr.R2) ? dr.R2 * 100 : NaN, 1)}%`],
   );
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -648,9 +650,9 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
         new Paragraph({ text: 'Clinical Significance (NNT/NNH)', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
         new Paragraph({ children: [new TextRun({ text: `${label}: `, bold: true }), new TextRun({ text: nntRounded.toString(), bold: true })], spacing: { before: 100 } }),
         new Paragraph({ children: [new TextRun({ text: '95% CI: ', bold: true }), new TextRun(ciStr)], spacing: { before: 60 } }),
-        new Paragraph({ children: [new TextRun({ text: 'Absolute Risk Difference: ', bold: true }), new TextRun(`${(nnt.absoluteRiskDifference * 100).toFixed(2)}%`)], spacing: { before: 60 } }),
-        new Paragraph({ children: [new TextRun({ text: 'Control Event Rate: ', bold: true }), new TextRun(`${(nnt.controlEventRate * 100).toFixed(2)}%`)], spacing: { before: 60 } }),
-        new Paragraph({ children: [new TextRun({ text: 'Experimental Event Rate: ', bold: true }), new TextRun(`${(nnt.experimentalEventRate * 100).toFixed(2)}%`)], spacing: { before: 60 } }),
+        new Paragraph({ children: [new TextRun({ text: 'Absolute Risk Difference: ', bold: true }), new TextRun(`${fmt(isFinite(nnt.absoluteRiskDifference) ? nnt.absoluteRiskDifference * 100 : NaN)}%`)], spacing: { before: 60 } }),
+        new Paragraph({ children: [new TextRun({ text: 'Control Event Rate: ', bold: true }), new TextRun(`${fmt(isFinite(nnt.controlEventRate) ? nnt.controlEventRate * 100 : NaN)}%`)], spacing: { before: 60 } }),
+        new Paragraph({ children: [new TextRun({ text: 'Experimental Event Rate: ', bold: true }), new TextRun(`${fmt(isFinite(nnt.experimentalEventRate) ? nnt.experimentalEventRate * 100 : NaN)}%`)], spacing: { before: 60 } }),
         new Paragraph({ children: [new TextRun({ text: interp, italics: true, color: nnt.isHarm ? 'DC2626' : '16A34A' })], spacing: { before: 100 } }),
         new Paragraph({ children: [new TextRun({ text: 'Based on pooled effect and weighted average control event rate across studies.', italics: true, size: 18, color: '6B7280' })], spacing: { before: 60 } }),
       );
@@ -710,7 +712,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
   if (s.eggers && trimFillResult) {
     const tfText = trimFillResult.k0 === 0
       ? 'Trim-and-Fill (Duval & Tweedie, 2000): No funnel plot asymmetry detected \u2014 no imputation needed.'
-      : `Trim-and-Fill (Duval & Tweedie, 2000): Estimated ${trimFillResult.k0} missing ${trimFillResult.k0 === 1 ? 'study' : 'studies'} on the ${trimFillResult.side} side. Adjusted ${result.measure}: ${trimFillResult.adjustedEffect.toFixed(4)} [${trimFillResult.adjustedCILower.toFixed(4)}, ${trimFillResult.adjustedCIUpper.toFixed(4)}].`;
+      : `Trim-and-Fill (Duval & Tweedie, 2000): Estimated ${trimFillResult.k0} missing ${trimFillResult.k0 === 1 ? 'study' : 'studies'} on the ${trimFillResult.side} side. Adjusted ${result.measure}: ${fmt(trimFillResult.adjustedEffect, 4)} [${fmt(trimFillResult.adjustedCILower, 4)}, ${fmt(trimFillResult.adjustedCIUpper, 4)}].`;
     children.push(
       new Paragraph({
         children: [new TextRun({
@@ -894,7 +896,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
     const effects = sensitivityResults.map(r => r.effect);
     const minEffect = Math.min(...effects);
     const maxEffect = Math.max(...effects);
-    const fmt = (v: number) => isRatio ? v.toFixed(2) : v.toFixed(3);
+    const fmtLoo = (v: number) => !isFinite(v) ? '—' : isRatio ? v.toFixed(2) : v.toFixed(3);
     const influential = sensitivityResults.filter(s => {
       const dirChanged = isRatio ? (s.effect > 1) !== (result.effect > 1) : (s.effect > 0) !== (result.effect > 0);
       const origSig = isRatio ? (result.ciLower > 1 || result.ciUpper < 1) : (result.ciLower > 0 || result.ciUpper < 0);
@@ -905,7 +907,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
       new Paragraph({ text: 'Leave-One-Out Cross-Validation', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
       new Paragraph({
         children: [new TextRun({
-          text: `The leave-one-out analysis shows the pooled ${result.measure} ranged from ${fmt(minEffect)} to ${fmt(maxEffect)} across ${sensitivityResults.length} iterations (full model: ${fmt(result.effect)}).${influential.length > 0 ? ` Removing ${influential.map(s => s.omittedStudy).join(', ')} altered the direction or significance of the pooled estimate.` : ' No single study substantially altered the overall result.'}`,
+          text: `The leave-one-out analysis shows the pooled ${result.measure} ranged from ${fmtLoo(minEffect)} to ${fmtLoo(maxEffect)} across ${sensitivityResults.length} iterations (full model: ${fmtLoo(result.effect)}).${influential.length > 0 ? ` Removing ${influential.map(s => s.omittedStudy).join(', ')} altered the direction or significance of the pooled estimate.` : ' No single study substantially altered the overall result.'}`,
           size: 20,
           font: 'Times New Roman',
         })],
@@ -921,7 +923,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
       subgroupTable(subgroupResult, result.measure),
       new Paragraph({
         children: [new TextRun({
-          text: `Test for Subgroup Differences: Q = ${subgroupResult.test.Q.toFixed(2)}, df = ${subgroupResult.test.df}, p = ${formatP(subgroupResult.test.pValue)}. ${subgroupResult.test.pValue < 0.05 ? 'Significant difference between subgroups.' : 'No significant difference between subgroups.'}`,
+          text: `Test for Subgroup Differences: Q = ${fmt(subgroupResult.test.Q)}, df = ${subgroupResult.test.df}, p = ${fmtP(subgroupResult.test.pValue)}. ${subgroupResult.test.pValue < 0.05 ? 'Significant difference between subgroups.' : 'No significant difference between subgroups.'}`,
           bold: subgroupResult.test.pValue < 0.05,
           size: 20,
           font: 'Times New Roman',
@@ -1040,8 +1042,8 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
       new Paragraph({
         children: [new TextRun({
           text: drData.pLinear < 0.05
-            ? `A significant ${drData.modelType} dose-response relationship was detected (P = ${formatP(drData.pLinear)}).`
-            : `No significant dose-response relationship was detected (P = ${formatP(drData.pLinear)}).`,
+            ? `A significant ${drData.modelType} dose-response relationship was detected (P = ${fmtP(drData.pLinear)}).`
+            : `No significant dose-response relationship was detected (P = ${fmtP(drData.pLinear)}).`,
           italics: true,
           size: 20,
           color: drData.pLinear < 0.05 ? 'CC0000' : '228B22',
@@ -1051,7 +1053,7 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
       }),
       new Paragraph({
         children: [new TextRun({
-          text: `Dose-response analysis used weighted ${drData.modelType} regression across ${drData.k} dose levels. ${drData.pLinear < 0.05 ? `The model explained ${(drData.R2 * 100).toFixed(1)}% of the variance.` : `The model did not reach statistical significance (R\u00B2 = ${(drData.R2 * 100).toFixed(1)}%).`}`,
+          text: `Dose-response analysis used weighted ${drData.modelType} regression across ${drData.k} dose levels. ${drData.pLinear < 0.05 ? `The model explained ${fmt(isFinite(drData.R2) ? drData.R2 * 100 : NaN, 1)}% of the variance.` : `The model did not reach statistical significance (R\u00B2 = ${fmt(isFinite(drData.R2) ? drData.R2 * 100 : NaN, 1)}%).`}`,
           italics: true,
           size: 18,
           color: '666666',
@@ -1065,14 +1067,14 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
   // Cumulative Meta-Analysis
   if (s.cumulative && cumResults && cumResults.length > 0) {
     const isRatio = result.measure === 'OR' || result.measure === 'RR' || result.measure === 'HR';
-    const fmt = (v: number) => isRatio ? v.toFixed(2) : v.toFixed(3);
+    const fmtCum = (v: number) => !isFinite(v) ? '—' : isRatio ? v.toFixed(2) : v.toFixed(3);
     const first = cumResults[0];
     const last = cumResults[cumResults.length - 1];
     children.push(
       new Paragraph({ text: 'Cumulative Meta-Analysis', heading: HeadingLevel.HEADING_1, spacing: { before: 300 } }),
       new Paragraph({
         children: [new TextRun({
-          text: `The cumulative meta-analysis progressed from ${first.studyCount} to ${last.studyCount} studies. The initial pooled ${result.measure} was ${fmt(first.effect)} (95% CI: ${fmt(first.ciLower)}\u2013${fmt(first.ciUpper)}) and the final estimate was ${fmt(last.effect)} (95% CI: ${fmt(last.ciLower)}\u2013${fmt(last.ciUpper)}; I\u00B2 = ${last.I2.toFixed(1)}%).`,
+          text: `The cumulative meta-analysis progressed from ${first.studyCount} to ${last.studyCount} studies. The initial pooled ${result.measure} was ${fmtCum(first.effect)} (95% CI: ${fmtCum(first.ciLower)}\u2013${fmtCum(first.ciUpper)}) and the final estimate was ${fmtCum(last.effect)} (95% CI: ${fmtCum(last.ciLower)}\u2013${fmtCum(last.ciUpper)}; I\u00B2 = ${fmt(last.I2, 1)}%).`,
           size: 20,
           font: 'Times New Roman',
         })],
@@ -1112,9 +1114,9 @@ export async function generateReportDOCX(data: ReportData): Promise<Blob> {
               children: [
                 makeCell(`${r.addedStudy}${r.year ? ` (${r.year})` : ''}`, { bold: i === cumResults.length - 1 }),
                 makeCell(r.studyCount.toString()),
-                makeCell(`${fmt(r.effect)} [${fmt(r.ciLower)}, ${fmt(r.ciUpper)}]`),
-                makeCell(`${r.I2.toFixed(1)}%`),
-                makeCell(formatP(r.pValue), { color: r.pValue < 0.05 ? 'CC0000' : undefined }),
+                makeCell(`${fmtCum(r.effect)} [${fmtCum(r.ciLower)}, ${fmtCum(r.ciUpper)}]`),
+                makeCell(`${fmt(r.I2, 1)}%`),
+                makeCell(fmtP(r.pValue), { color: r.pValue < 0.05 ? 'CC0000' : undefined }),
               ],
             })
           ),

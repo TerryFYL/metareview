@@ -24,7 +24,7 @@ interface MarkdownReportData {
 }
 
 const fmt = (n: number, d = 2) => isFinite(n) ? n.toFixed(d) : '—';
-const fmtP = (p: number) => p < 0.001 ? '< 0.001' : p.toFixed(3);
+const fmtP = (p: number) => !isFinite(p) ? '—' : p < 0.001 ? '< 0.001' : p.toFixed(3);
 /** Escape markdown pipe characters in table cell content */
 const escMd = (s: string) => s.replace(/\|/g, '\\|');
 
