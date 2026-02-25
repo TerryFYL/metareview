@@ -15,10 +15,11 @@ interface ResultsSummaryProps {
   lang: Lang;
   onExportReport?: (sections: ReportSections) => void;
   onExportDOCX?: (sections: ReportSections) => void;
+  onExportMarkdown?: (sections: ReportSections) => void;
   onExportJSON?: () => void;
 }
 
-export default function ResultsSummary({ result, eggers, subgroupResult, sensitivityResults, lang, onExportReport, onExportDOCX, onExportJSON }: ResultsSummaryProps) {
+export default function ResultsSummary({ result, eggers, subgroupResult, sensitivityResults, lang, onExportReport, onExportDOCX, onExportMarkdown, onExportJSON }: ResultsSummaryProps) {
   const { measure, model, heterogeneity: het } = result;
   const k = result.studies.length;
   const beggs = useUIStore((s) => s.beggs);
@@ -51,6 +52,13 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
     if (onExportDOCX) {
       trackFeature('export_docx_custom');
       onExportDOCX(sections);
+    }
+  };
+
+  const handleExportMarkdown = () => {
+    if (onExportMarkdown) {
+      trackFeature('export_md_custom');
+      onExportMarkdown(sections);
     }
   };
 
@@ -100,8 +108,13 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
           <button onClick={() => setShowSections(!showSections)} style={sectionToggleBtnStyle}>
             {t('report.customize', lang)}
           </button>
+          {onExportMarkdown && (
+            <button onClick={handleExportMarkdown} style={exportBtnStyle}>
+              {t('results.exportMD', lang)}
+            </button>
+          )}
           {onExportReport && (
-            <button onClick={handleExportHTML} style={exportBtnStyle}>
+            <button onClick={handleExportHTML} style={docxBtnStyle}>
               {t('results.exportReport', lang)}
             </button>
           )}

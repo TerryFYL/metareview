@@ -10,14 +10,18 @@ import type { AIScreeningResult } from '../lib/screening/ai-screener';
 import { rerank, computeStats } from '../lib/screening/active-learner';
 import type { ALArticle, ScreeningDecision, ScreeningStats } from '../lib/screening/active-learner';
 import { trackFeature, trackEvent } from '../lib/analytics';
+import { getAdapter } from '../lib/search';
+import type { SearchSource } from '../lib/search';
 
 interface PubMedArticle {
   pmid: string;
+  source: SearchSource;
   title: string;
   authors: string[];
   journal: string;
   pubdate: string;
   doi: string;
+  abstract?: string;
 }
 
 interface Props {
@@ -88,6 +92,9 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
 
   // Search history
   const [history, setHistory] = useState<string[]>(loadHistory);
+
+  // Search source
+  const [searchSource, setSearchSource] = useState<SearchSource>('pubmed');
 
   // Advanced search
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -243,31 +250,32 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
     const missing = pmids.filter(p => !abstracts[p]);
     if (missing.length === 0) return abstracts;
 
+    const adapter = getAdapter(searchSource);
     const newAbstracts: Record<string, string> = {};
-    // Fetch in batches of 5
-    for (let i = 0; i < missing.length; i += 5) {
-      const batch = missing.slice(i, i + 5);
-      const fetches = batch.map(async (pmid) => {
-        try {
-          const res = await fetch(`/api/pubmed/efetch.fcgi?db=pubmed&id=${pmid}&rettype=abstract&retmode=text`);
-          if (res.ok) {
-            const text = await res.text();
-            newAbstracts[pmid] = text;
+
+    if (adapter.fetchAbstract) {
+      // Fetch in batches of 5
+      for (let i = 0; i < missing.length; i += 5) {
+        const batch = missing.slice(i, i + 5);
+        const fetches = batch.map(async (pmid) => {
+          try {
+            const text = await adapter.fetchAbstract!(pmid);
+            if (text) newAbstracts[pmid] = text;
+          } catch {
+            // Skip failed abstracts
           }
-        } catch {
-          // Skip failed abstracts
+        });
+        await Promise.all(fetches);
+        if (i + 5 < missing.length) {
+          await new Promise(r => setTimeout(r, 300));
         }
-      });
-      await Promise.all(fetches);
-      if (i + 5 < missing.length) {
-        await new Promise(r => setTimeout(r, 300));
       }
     }
 
     const merged = { ...abstracts, ...newAbstracts };
     setAbstracts(merged);
     return merged;
-  }, [abstracts]);
+  }, [abstracts, searchSource]);
 
   // Start AI screening
   const startAiScreening = useCallback(async () => {
@@ -345,19 +353,25 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
 
   const buildFullQuery = useCallback((baseQuery: string): string => {
     const parts = [baseQuery.trim()];
-    if (dateFrom || dateTo) {
-      const from = dateFrom || '1900';
-      const to = dateTo || '3000';
-      parts.push(`${from}:${to}[dp]`);
+    if (searchSource === 'pubmed') {
+      // PubMed-specific query syntax
+      if (dateFrom || dateTo) {
+        const from = dateFrom || '1900';
+        const to = dateTo || '3000';
+        parts.push(`${from}:${to}[dp]`);
+      }
+      if (articleType) {
+        parts.push(`"${articleType}"[pt]`);
+      }
+      if (langFilter) {
+        parts.push(`${langFilter}[la]`);
+      }
+      return parts.join(' AND ');
     }
-    if (articleType) {
-      parts.push(`"${articleType}"[pt]`);
-    }
-    if (langFilter) {
-      parts.push(`${langFilter}[la]`);
-    }
-    return parts.join(' AND ');
-  }, [dateFrom, dateTo, articleType, langFilter]);
+    // For OpenAlex/Europe PMC, just use the base query
+    // Date filtering is handled via adapter options
+    return baseQuery.trim();
+  }, [dateFrom, dateTo, articleType, langFilter, searchSource]);
 
   const addToHistory = useCallback((q: string) => {
     const trimmed = q.trim();
@@ -380,38 +394,35 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
     setError(null);
 
     try {
-      const searchUrl = `/api/pubmed/esearch.fcgi?db=pubmed&term=${encodeURIComponent(searchQuery)}&retmode=json&retmax=${PAGE_SIZE}&retstart=${retstart}&sort=relevance`;
-      const searchRes = await fetch(searchUrl);
-      if (!searchRes.ok) throw new Error(`PubMed search failed (${searchRes.status})`);
-      const searchData = await searchRes.json();
+      const adapter = getAdapter(searchSource);
+      const response = await adapter.search(searchQuery, {
+        retstart,
+        retmax: PAGE_SIZE,
+        dateFrom: dateFrom || undefined,
+        dateTo: dateTo || undefined,
+      });
 
-      const idList: string[] = searchData.esearchresult?.idlist || [];
-      const count = parseInt(searchData.esearchresult?.count || '0', 10);
-      setTotalCount(count);
+      setTotalCount(response.totalCount);
 
-      if (idList.length === 0) {
-        setResults([]);
-        setLoading(false);
-        return;
+      const articles: PubMedArticle[] = response.results.map((r) => ({
+        pmid: r.pmid || r.id,
+        source: r.source,
+        title: r.title,
+        authors: r.authors,
+        journal: r.journal,
+        pubdate: r.pubdate,
+        doi: r.doi,
+        abstract: r.abstract,
+      }));
+
+      // Pre-fill abstracts cache from sources that return them inline
+      const newAbstracts: Record<string, string> = {};
+      for (const a of articles) {
+        if (a.abstract) newAbstracts[a.pmid] = a.abstract;
       }
-
-      const summaryUrl = `/api/pubmed/esummary.fcgi?db=pubmed&id=${idList.join(',')}&retmode=json`;
-      const summaryRes = await fetch(summaryUrl);
-      if (!summaryRes.ok) throw new Error(`PubMed summary failed (${summaryRes.status})`);
-      const summaryData = await summaryRes.json();
-
-      const articles: PubMedArticle[] = idList.map((pmid) => {
-        const item = summaryData.result?.[pmid];
-        if (!item) return null;
-        return {
-          pmid,
-          title: item.title || '',
-          authors: (item.authors || []).map((a: { name: string }) => a.name),
-          journal: item.source || item.fulljournalname || '',
-          pubdate: item.pubdate || '',
-          doi: item.elocationid || '',
-        };
-      }).filter(Boolean) as PubMedArticle[];
+      if (Object.keys(newAbstracts).length > 0) {
+        setAbstracts(prev => ({ ...prev, ...newAbstracts }));
+      }
 
       setResults(articles);
     } catch (err) {
@@ -420,7 +431,7 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
     } finally {
       setLoading(false);
     }
-  }, [lang]);
+  }, [lang, searchSource, dateFrom, dateTo]);
 
   const handleSearch = useCallback(() => {
     if (!query.trim()) return;
@@ -470,14 +481,15 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
     }
     setExpandedPmid(pmid);
     try {
-      const res = await fetch(`/api/pubmed/efetch.fcgi?db=pubmed&id=${pmid}&rettype=abstract&retmode=text`);
-      if (!res.ok) throw new Error('Failed to fetch abstract');
-      const text = await res.text();
+      const adapter = getAdapter(searchSource);
+      if (!adapter.fetchAbstract) throw new Error('No abstract fetch');
+      const text = await adapter.fetchAbstract(pmid);
+      if (!text) throw new Error('Empty abstract');
       setAbstracts((prev) => ({ ...prev, [pmid]: text }));
     } catch {
       setAbstracts((prev) => ({ ...prev, [pmid]: lang === 'zh' ? '(无法加载摘要)' : '(Failed to load abstract)' }));
     }
-  }, [abstracts, expandedPmid, lang]);
+  }, [abstracts, expandedPmid, lang, searchSource]);
 
   const importSelected = useCallback(() => {
     const selectedArticles = results.filter((r) => selected.has(r.pmid));
@@ -504,7 +516,7 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
         : { mean1: 0, sd1: 0, n1: 0, mean2: 0, sd2: 0, n2: 0 };
 
       return {
-        id: `pubmed-${article.pmid}`,
+        id: `${article.source || 'pubmed'}-${article.pmid}`,
         name,
         year,
         data,
@@ -538,6 +550,16 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
           {t('search.desc', lang)}
         </p>
         <div style={{ display: 'flex', gap: 8 }}>
+          <select
+            value={searchSource}
+            onChange={(e) => setSearchSource(e.target.value as SearchSource)}
+            style={{ padding: '8px 10px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 13, background: '#fff', flexShrink: 0 }}
+          >
+            <option value="pubmed">{t('search.source.pubmed', lang)}</option>
+            <option value="openalex">{t('search.source.openalex', lang)}</option>
+            <option value="europepmc">{t('search.source.europepmc', lang)}</option>
+            <option value="semanticscholar">{t('search.source.semanticscholar', lang)}</option>
+          </select>
           <input
             type="text"
             value={query}
@@ -1082,7 +1104,7 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
                     <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
                       <span>{article.journal}</span>
                       <span>{article.pubdate}</span>
-                      <span>PMID: {article.pmid}</span>
+                      <span>{article.source === 'pubmed' ? 'PMID' : article.source === 'openalex' ? 'OpenAlex' : 'EPMC'}: {article.pmid.replace(/^(pubmed|openalex|europepmc):/, '')}</span>
                       {/* Matched PICO terms */}
                       {score && score.matchedTerms.length > 0 && (
                         <span style={{ color: '#6366f1', fontSize: 11 }}>

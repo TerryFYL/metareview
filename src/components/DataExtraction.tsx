@@ -24,6 +24,13 @@ interface Props {
 
 type StudyType = 'binary' | 'continuous';
 
+interface QueueItem {
+  file: File;
+  status: 'pending' | 'parsing' | 'extracting' | 'done' | 'error';
+  error?: string;
+  results?: ExtractionResult[];
+}
+
 export default function DataExtraction({ lang, measure, studies, onStudiesChange, onSwitchToInput }: Props) {
   // PDF state
   const [pages, setPages] = useState<PageText[]>([]);
@@ -44,6 +51,10 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
   // Inline editing state: maps result index to edited data object
   const [editedValues, setEditedValues] = useState<Record<number, Record<string, unknown>>>({});
   const [editingIdx, setEditingIdx] = useState<string | null>(null);
+
+  // Batch queue state
+  const [queue, setQueue] = useState<QueueItem[]>([]);
+  const [batchProcessing, setBatchProcessing] = useState(false);
 
   const abortRef = useRef<AbortController | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -84,14 +95,100 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
+    const files = Array.from(e.dataTransfer.files).filter(f => f.name.toLowerCase().endsWith('.pdf'));
+    if (files.length === 1) handleFile(files[0]);
+    else if (files.length > 1) startBatch(files);
   }, [handleFile]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) handleFile(file);
+    const files = Array.from(e.target.files || []).filter(f => f.name.toLowerCase().endsWith('.pdf'));
+    if (files.length === 1) handleFile(files[0]);
+    else if (files.length > 1) startBatch(files);
   }, [handleFile]);
+
+  // Batch processing: parse + extract all files sequentially
+  const startBatch = useCallback(async (files: File[]) => {
+    const items: QueueItem[] = files.map(f => ({ file: f, status: 'pending' as const }));
+    setQueue(items);
+    setPages([]);
+    setResults([]);
+    setFileName('');
+    setBatchProcessing(true);
+
+    const abort = new AbortController();
+    abortRef.current = abort;
+
+    for (let i = 0; i < files.length; i++) {
+      if (abort.signal.aborted) break;
+
+      setQueue(prev => prev.map((q, j) => j === i ? { ...q, status: 'parsing' } : q));
+      try {
+        trackFeature('pdf_upload');
+        const parsed = await extractTextFromPDF(files[i]);
+        if (isScannedPDF(parsed)) {
+          setQueue(prev => prev.map((q, j) => j === i ? { ...q, status: 'error', error: t('extract.scannedPdf', lang) } : q));
+          continue;
+        }
+        const text = parsed.map(p => p.text).join('\n\n');
+        if (text.trim().length < 50) {
+          setQueue(prev => prev.map((q, j) => j === i ? { ...q, status: 'error', error: lang === 'zh' ? '文字过少' : 'Too little text' } : q));
+          continue;
+        }
+
+        setQueue(prev => prev.map((q, j) => j === i ? { ...q, status: 'extracting' } : q));
+        trackFeature('extract_start');
+        const extractionResults = await extractFromText(text, studyType, () => {}, abort.signal);
+        setQueue(prev => prev.map((q, j) => j === i ? { ...q, status: 'done', results: extractionResults } : q));
+        trackFeature('extract_complete');
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') break;
+        setQueue(prev => prev.map((q, j) => j === i ? { ...q, status: 'error', error: (err as Error).message } : q));
+      }
+    }
+    setBatchProcessing(false);
+  }, [studyType, lang]);
+
+  // Add all batch results to study table
+  const addBatchToStudies = useCallback(() => {
+    const newStudies: Study[] = [];
+    for (const item of queue) {
+      if (item.status !== 'done' || !item.results) continue;
+      const fName = item.file.name;
+      const sampleResult = item.results.find(r => r.queryType === 'sample_sizes');
+      const sizes = sampleResult?.data as SampleSizesResult | undefined;
+      const outcomes = item.results.filter(r => r.queryType === 'effect_size');
+
+      for (const outcome of outcomes) {
+        const outcomeName = outcome.outcome || 'Outcome';
+        if (studyType === 'binary') {
+          const eventsResult = item.results.find(r => r.queryType === 'events' && r.outcome === outcome.outcome);
+          const events = eventsResult?.data as EventsResult | undefined;
+          if (events?.treatment_events != null && events?.control_events != null && sizes?.treatment_n != null && sizes?.control_n != null) {
+            newStudies.push({
+              id: crypto.randomUUID(),
+              name: `${fName.replace('.pdf', '')} — ${outcomeName}`,
+              data: { events1: events.treatment_events, total1: sizes.treatment_n, events2: events.control_events, total2: sizes.control_n },
+            });
+          }
+        } else {
+          const contResult = item.results.find(r => r.queryType === 'continuous' && r.outcome === outcome.outcome);
+          const cont = contResult?.data as ContinuousResult | undefined;
+          if (cont?.treatment_mean != null && cont?.treatment_sd != null && cont?.control_mean != null && cont?.control_sd != null && sizes?.treatment_n != null && sizes?.control_n != null) {
+            newStudies.push({
+              id: crypto.randomUUID(),
+              name: `${fName.replace('.pdf', '')} — ${outcomeName}`,
+              data: { mean1: cont.treatment_mean, sd1: cont.treatment_sd, n1: sizes.treatment_n, mean2: cont.control_mean, sd2: cont.control_sd, n2: sizes.control_n },
+            });
+          }
+        }
+      }
+    }
+    if (newStudies.length > 0) {
+      onStudiesChange([...studies, ...newStudies]);
+      trackFeature('extract_batch_add');
+      onSwitchToInput();
+    }
+  }, [queue, studyType, studies, onStudiesChange, onSwitchToInput]);
 
   const togglePage = useCallback((pageNum: number) => {
     setSelectedPages(prev => {
@@ -156,6 +253,8 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
     setExtractError(null);
     setEditedValues({});
     setEditingIdx(null);
+    setQueue([]);
+    setBatchProcessing(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   }, []);
 
@@ -264,7 +363,7 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
       </div>
 
       {/* PDF Upload */}
-      {pages.length === 0 && (
+      {pages.length === 0 && queue.length === 0 && (
         <div>
           {/* Study type selector */}
           <div style={{ marginBottom: 16 }}>
@@ -302,6 +401,7 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
               ref={fileInputRef}
               type="file"
               accept=".pdf"
+              multiple
               onChange={handleInputChange}
               style={{ display: 'none' }}
             />
@@ -324,6 +424,52 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
 
           {pdfError && (
             <div style={errorStyle}>{pdfError}</div>
+          )}
+        </div>
+      )}
+
+      {/* Batch Queue */}
+      {queue.length > 0 && (
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <h3 style={{ fontSize: 14, fontWeight: 600, margin: 0 }}>
+              {batchProcessing ? t('extract.batchProgress', lang) : t('extract.batchDone', lang)}
+              {' '}({queue.filter(q => q.status === 'done').length}/{queue.length})
+            </h3>
+            <button onClick={() => { abortRef.current?.abort(); resetAll(); }} style={secondaryBtnStyle}>
+              {batchProcessing ? (lang === 'zh' ? '取消' : 'Cancel') : t('extract.reset', lang)}
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 400, overflowY: 'auto', marginBottom: 16 }}>
+            {queue.map((item, i) => (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '8px 14px', border: '1px solid #e5e7eb', borderRadius: 8,
+                background: item.status === 'done' ? '#f0fdf4' : item.status === 'error' ? '#fef2f2' : item.status === 'pending' ? '#fff' : '#eff6ff',
+              }}>
+                <span style={{ fontSize: 16 }}>
+                  {item.status === 'done' ? '\u2705' : item.status === 'error' ? '\u274c' : item.status === 'pending' ? '\u23f3' : '\u2699\ufe0f'}
+                </span>
+                <span style={{ flex: 1, fontSize: 13, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {item.file.name}
+                </span>
+                <span style={{ fontSize: 12, color: item.status === 'error' ? '#dc2626' : '#6b7280', flexShrink: 0 }}>
+                  {item.status === 'error' ? (item.error || t('extract.queueError', lang)) : t(`extract.queue${item.status.charAt(0).toUpperCase() + item.status.slice(1)}` as Parameters<typeof t>[0], lang)}
+                </span>
+                {item.status === 'done' && item.results && (
+                  <span style={{ fontSize: 11, color: '#16a34a', flexShrink: 0 }}>
+                    ({item.results.filter(r => r.queryType === 'effect_size').length} {lang === 'zh' ? '个结局' : 'outcomes'})
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {!batchProcessing && queue.some(q => q.status === 'done') && (
+            <button onClick={addBatchToStudies} style={primaryBtnStyle}>
+              {t('extract.batchAdd', lang)}
+            </button>
           )}
         </div>
       )}

@@ -29,6 +29,7 @@ import { metaAnalysis, eggersTest, beggsTest, metaRegression as runMetaRegressio
 import type { TrimAndFillResult } from './lib/statistics';
 import { generateReportHTML, type ReportSections } from './lib/report-export';
 import { generateReportDOCX } from './lib/report-docx';
+import { generateReportMarkdown } from './lib/report-markdown';
 import { t, type Lang } from './lib/i18n';
 import { trackPageView, trackTabSwitch } from './lib/analytics';
 import { exportJSON } from './lib/csv';
@@ -46,6 +47,17 @@ const MEASURES: { value: EffectMeasure; label: string; desc: string }[] = [
 ];
 
 const TAB_KEYS = ['protocol', 'search', 'extract', 'input', 'results', 'forest', 'funnel', 'galbraith', 'labbe', 'baujat', 'cumulative', 'sensitivity', 'influence', 'loo', 'network', 'doseresponse', 'subgroup', 'metareg', 'grade', 'rob', 'prisma'] as const;
+
+const TAB_GROUPS = [
+  { key: 'prepare', step: 1, tabs: ['protocol', 'search', 'extract'] as const },
+  { key: 'data', step: 2, tabs: ['input', 'results'] as const },
+  { key: 'analysis', step: 3, tabs: ['forest', 'funnel', 'galbraith', 'labbe', 'baujat', 'cumulative', 'sensitivity', 'influence', 'loo', 'network', 'doseresponse', 'subgroup', 'metareg'] as const },
+  { key: 'report', step: 4, tabs: ['grade', 'rob', 'prisma'] as const },
+] as const;
+
+function getTabGroup(tab: string) {
+  return TAB_GROUPS.find(g => (g.tabs as readonly string[]).includes(tab)) || TAB_GROUPS[0];
+}
 
 function ForestPlotControls({ lang, onDownloadSVG, onDownloadPNG }: { lang: Lang; onDownloadSVG: () => void; onDownloadPNG: () => void }) {
   const { plotSettings, setPlotSettings } = useUIStore();
@@ -628,6 +640,36 @@ export default function App() {
     setTimeout(() => URL.revokeObjectURL(url), 10000);
   }, [result, title, pico, prisma, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, cumulativeResults, measure, model, studies, robAssessments]);
 
+  const exportMarkdown = useCallback((sections?: ReportSections) => {
+    if (!result) return;
+    const influenceData = studies.length >= 3 ? computeInfluence(studies, measure, model) : [];
+    const gradeData = result ? computeGrade({ result, eggers, beggs, trimFill: trimFillResult }) : null;
+    const md = generateReportMarkdown({
+      title,
+      pico,
+      result,
+      eggers,
+      beggs,
+      subgroupResult,
+      sensitivityResults,
+      trimFillResult,
+      metaRegression,
+      influenceDiagnostics: influenceData,
+      gradeAssessment: gradeData,
+      robAssessments,
+      studies,
+      cumulativeResults,
+      sections,
+    });
+    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${title || 'metareview-report'}.md`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }, [result, title, pico, eggers, beggs, subgroupResult, sensitivityResults, trimFillResult, metaRegression, cumulativeResults, measure, model, studies, robAssessments]);
+
   const exportJSONHandler = useCallback(() => {
     if (!result) return;
     const influenceData = studies.length >= 3 ? computeInfluence(studies, measure, model) : [];
@@ -770,6 +812,51 @@ export default function App() {
         </div>
       </header>
 
+      {/* Phase progress bar */}
+      {(() => {
+        const currentGroup = getTabGroup(activeTab);
+        const visibleGroups = readOnly ? TAB_GROUPS.filter(g => g.key !== 'prepare') : TAB_GROUPS;
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 0, marginBottom: 6, padding: '0 4px' }}>
+            {visibleGroups.map((group, gi) => {
+              const isCurrent = group.key === currentGroup.key;
+              const isPast = group.step < currentGroup.step;
+              return (
+                <div key={group.key} style={{ display: 'flex', alignItems: 'center', flex: group.key === 'analysis' ? 2 : 1 }}>
+                  {gi > 0 && (
+                    <div style={{ width: 24, height: 1, background: isPast || isCurrent ? '#2563eb' : '#e5e7eb', flexShrink: 0 }} />
+                  )}
+                  <button
+                    onClick={() => setActiveTab(group.tabs[0])}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      padding: '5px 10px', borderRadius: 6, border: 'none',
+                      background: isCurrent ? '#eff6ff' : 'transparent',
+                      cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
+                    }}
+                  >
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      width: 20, height: 20, borderRadius: '50%', fontSize: 11, fontWeight: 600,
+                      background: isCurrent ? '#2563eb' : isPast ? '#2563eb' : '#e5e7eb',
+                      color: isCurrent || isPast ? '#fff' : '#9ca3af',
+                    }}>
+                      {isPast ? '\u2713' : gi + 1}
+                    </span>
+                    <span style={{
+                      fontSize: 12, fontWeight: isCurrent ? 600 : 400,
+                      color: isCurrent ? '#2563eb' : isPast ? '#374151' : '#9ca3af',
+                    }}>
+                      {t(`tabGroup.${group.key}`, lang)}
+                    </span>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })()}
+
       {/* Tab navigation */}
       <nav
         role="tablist"
@@ -798,13 +885,15 @@ export default function App() {
               ? enabledTabs[(idx + 1) % enabledTabs.length]
               : enabledTabs[(idx - 1 + enabledTabs.length) % enabledTabs.length];
             setActiveTab(next);
-            // Focus the new tab button
             const btn = document.getElementById(`tab-${next}`);
             if (btn) btn.focus();
           }
         }}
       >
         {TAB_KEYS.filter(tab => !(readOnly && (tab === 'search' || tab === 'extract' || tab === 'protocol'))).map((tab) => {
+          const group = getTabGroup(tab);
+          const isFirstInGroup = (group.tabs as readonly string[])[0] === tab;
+          const groupIndex = TAB_GROUPS.indexOf(group);
           const isAlwaysEnabled = tab === 'prisma' || tab === 'rob' || tab === 'search' || tab === 'input' || tab === 'extract' || tab === 'protocol';
           const isSubgroup = tab === 'subgroup';
           const isSensitivity = tab === 'sensitivity';
@@ -827,32 +916,38 @@ export default function App() {
             || (isDoseResponse && studies.filter(s => s.dose != null && !isNaN(s.dose!)).length < 3)
           );
           return (
-            <button
-              key={tab}
-              id={`tab-${tab}`}
-              role="tab"
-              aria-selected={activeTab === tab}
-              aria-controls={`tabpanel-${tab}`}
-              tabIndex={activeTab === tab ? 0 : -1}
-              data-tour={`tab-${tab}`}
-              onClick={() => setActiveTab(tab)}
-              style={{
-                padding: '10px 16px',
-                border: 'none',
-                borderBottom: activeTab === tab ? '2px solid #2563eb' : '2px solid transparent',
-                background: 'none',
-                cursor: disabled ? 'default' : 'pointer',
-                fontSize: 13,
-                fontWeight: activeTab === tab ? 600 : 400,
-                color: disabled ? '#d1d5db' : activeTab === tab ? '#2563eb' : '#6b7280',
-                marginBottom: -2,
-                whiteSpace: 'nowrap',
-                flexShrink: 0,
-              }}
-              disabled={disabled}
-            >
-              {t(`tab.${tab}`, lang)}
-            </button>
+            <span key={tab} style={{ display: 'contents' }}>
+              {isFirstInGroup && groupIndex > 0 && (
+                <span aria-hidden="true" style={{ display: 'inline-flex', alignItems: 'center', padding: '0 2px', flexShrink: 0 }}>
+                  <span style={{ width: 1, height: 20, background: '#e5e7eb' }} />
+                </span>
+              )}
+              <button
+                id={`tab-${tab}`}
+                role="tab"
+                aria-selected={activeTab === tab}
+                aria-controls={`tabpanel-${tab}`}
+                tabIndex={activeTab === tab ? 0 : -1}
+                data-tour={`tab-${tab}`}
+                onClick={() => setActiveTab(tab)}
+                style={{
+                  padding: '10px 16px',
+                  border: 'none',
+                  borderBottom: activeTab === tab ? '2px solid #2563eb' : '2px solid transparent',
+                  background: 'none',
+                  cursor: disabled ? 'default' : 'pointer',
+                  fontSize: 13,
+                  fontWeight: activeTab === tab ? 600 : 400,
+                  color: disabled ? '#d1d5db' : activeTab === tab ? '#2563eb' : '#6b7280',
+                  marginBottom: -2,
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                }}
+                disabled={disabled}
+              >
+                {t(`tab.${tab}`, lang)}
+              </button>
+            </span>
           );
         })}
       </nav>
@@ -872,7 +967,7 @@ export default function App() {
             pico={pico}
             onStudiesChange={setStudies}
             onSwitchToInput={() => setActiveTab('input')}
-            onSwitchToExtract={() => setActiveTab('input')}
+            onSwitchToExtract={() => setActiveTab('extract')}
             onPRISMAUpdate={(updates) => setPRISMA({ ...prisma, ...updates })}
           />
         </Suspense>
@@ -969,7 +1064,7 @@ export default function App() {
 
       {/* Results Tab */}
       {activeTab === 'results' && result && (
-        <ResultsSummary result={result} eggers={eggers} subgroupResult={subgroupResult} sensitivityResults={sensitivityResults} lang={lang} onExportReport={exportReport} onExportDOCX={exportDOCX} onExportJSON={exportJSONHandler} />
+        <ResultsSummary result={result} eggers={eggers} subgroupResult={subgroupResult} sensitivityResults={sensitivityResults} lang={lang} onExportReport={exportReport} onExportDOCX={exportDOCX} onExportMarkdown={exportMarkdown} onExportJSON={exportJSONHandler} />
       )}
 
       {/* Forest Plot Tab */}
