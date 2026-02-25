@@ -56,20 +56,20 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
     lines.push(`- **Effect measure**: ${measure}`);
     lines.push(`- **Model**: ${r.model === 'fixed' ? 'Fixed-effects' : 'Random-effects (DerSimonian-Laird)'}`);
     lines.push(`- **Number of studies**: ${r.studies.length}`);
-    lines.push(`- **Pooled estimate**: ${fmt(r.overall)} (95% CI: ${fmt(r.ciLower)}–${fmt(r.ciUpper)})`);
+    lines.push(`- **Pooled estimate**: ${fmt(r.effect)} (95% CI: ${fmt(r.ciLower)}–${fmt(r.ciUpper)})`);
     lines.push(`- **p-value**: ${fmtP(r.pValue)}`);
-    lines.push(`- **Heterogeneity**: Q = ${fmt(r.Q)}, df = ${r.studies.length - 1}, p = ${fmtP(r.Qp)}`);
-    lines.push(`- **I²**: ${fmt(r.I2, 1)}%`);
-    lines.push(`- **τ²**: ${fmt(r.tau2, 4)}`);
+    lines.push(`- **Heterogeneity**: Q = ${fmt(r.heterogeneity.Q)}, df = ${r.studies.length - 1}, p = ${fmtP(r.heterogeneity.pValue)}`);
+    lines.push(`- **I²**: ${fmt(r.heterogeneity.I2, 1)}%`);
+    lines.push(`- **τ²**: ${fmt(r.heterogeneity.tau2, 4)}`);
     if (r.predictionInterval) {
-      lines.push(`- **Prediction interval**: ${fmt(r.predictionInterval[0])}–${fmt(r.predictionInterval[1])}`);
+      lines.push(`- **Prediction interval**: ${fmt(r.predictionInterval.lower)}–${fmt(r.predictionInterval.upper)}`);
     }
 
     // NNT/NNH
     if (studies) {
       const nnt = calculateNNT(r, studies);
       if (nnt) {
-        lines.push(`- **${nnt.isHarm ? 'NNH' : 'NNT'}**: ${fmt(nnt.nnt, 1)} (95% CI: ${nnt.ciLower === Infinity ? '∞' : fmt(nnt.ciLower, 1)}–${nnt.ciUpper === Infinity ? '∞' : fmt(nnt.ciUpper, 1)})`);
+        lines.push(`- **${nnt.isHarm ? 'NNH' : 'NNT'}**: ${fmt(nnt.nnt, 1)} (95% CI: ${nnt.nntCILower === Infinity ? '∞' : fmt(nnt.nntCILower, 1)}–${nnt.nntCIUpper === Infinity ? '∞' : fmt(nnt.nntCIUpper, 1)})`);
       }
     }
 
@@ -77,19 +77,21 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
 
     // Interpretation
     if (sec.interpretation) {
-      const direction = r.overall > nullVal ? 'higher' : 'lower';
+      const direction = r.effect > nullVal ? 'higher' : 'lower';
       const sig = r.pValue < 0.05 ? 'statistically significant' : 'not statistically significant';
-      lines.push(`**Interpretation**: The pooled ${measure} is ${fmt(r.overall)} (95% CI: ${fmt(r.ciLower)}–${fmt(r.ciUpper)}), which is ${sig} (p = ${fmtP(r.pValue)}). The point estimate suggests a ${direction} effect in the intervention group. Heterogeneity is ${r.I2 < 25 ? 'low' : r.I2 < 75 ? 'moderate' : 'high'} (I² = ${fmt(r.I2, 1)}%).\n`);
+      lines.push(`**Interpretation**: The pooled ${measure} is ${fmt(r.effect)} (95% CI: ${fmt(r.ciLower)}–${fmt(r.ciUpper)}), which is ${sig} (p = ${fmtP(r.pValue)}). The point estimate suggests a ${direction} effect in the intervention group. Heterogeneity is ${r.heterogeneity.I2 < 25 ? 'low' : r.heterogeneity.I2 < 75 ? 'moderate' : 'high'} (I² = ${fmt(r.heterogeneity.I2, 1)}%).\n`);
     }
   }
 
   // Study table
   if (sec.studyTable && result.studies.length > 0) {
     lines.push('## Individual Studies\n');
+    const useRandom = result.model === 'random';
     lines.push(`| Study | ${measure} | 95% CI | Weight |`);
     lines.push(`|-------|${'-'.repeat(measure.length + 2)}|--------|--------|`);
     for (const s of result.studies) {
-      lines.push(`| ${s.name} | ${fmt(s.yi)} | ${fmt(s.ciLower)}–${fmt(s.ciUpper)} | ${fmt(s.weight, 1)}% |`);
+      const w = useRandom ? s.weightRandom : s.weightFixed;
+      lines.push(`| ${s.name} | ${fmt(s.yi)} | ${fmt(s.ciLower)}–${fmt(s.ciUpper)} | ${fmt(w, 1)}% |`);
     }
     lines.push('');
   }
@@ -98,14 +100,14 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
   if ((sec.eggers && eggers) || (sec.beggs && beggs)) {
     lines.push('## Publication Bias\n');
     if (eggers) {
-      lines.push(`- **Egger's test**: intercept = ${fmt(eggers.intercept, 3)}, t = ${fmt(eggers.t, 3)}, p = ${fmtP(eggers.p)}`);
-      lines.push(`  - ${eggers.p < 0.05 ? '⚠️ Significant asymmetry detected' : 'No significant asymmetry'}`);
+      lines.push(`- **Egger's test**: intercept = ${fmt(eggers.intercept, 3)}, t = ${fmt(eggers.tValue, 3)}, p = ${fmtP(eggers.pValue)}`);
+      lines.push(`  - ${eggers.pValue < 0.05 ? '⚠️ Significant asymmetry detected' : 'No significant asymmetry'}`);
     }
     if (beggs) {
-      lines.push(`- **Begg's test**: τ = ${fmt(beggs.tau, 3)}, p = ${fmtP(beggs.p)}`);
+      lines.push(`- **Begg's test**: τ = ${fmt(beggs.tau, 3)}, p = ${fmtP(beggs.pValue)}`);
     }
     if (trimFillResult && trimFillResult.k0 > 0) {
-      lines.push(`- **Trim-and-Fill**: ${trimFillResult.k0} imputed studies, adjusted estimate = ${fmt(trimFillResult.overall)}`);
+      lines.push(`- **Trim-and-Fill**: ${trimFillResult.k0} imputed studies, adjusted estimate = ${fmt(trimFillResult.adjustedEffect)}`);
     }
     lines.push('');
   }
@@ -113,14 +115,13 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
   // Subgroup analysis
   if (sec.subgroup && subgroupResult) {
     lines.push('## Subgroup Analysis\n');
-    lines.push(`Grouping variable: ${subgroupResult.variable}\n`);
     lines.push(`| Subgroup | k | ${measure} | 95% CI | I² |`);
     lines.push(`|----------|---|${'-'.repeat(measure.length + 2)}|--------|-----|`);
-    for (const g of subgroupResult.groups) {
-      lines.push(`| ${g.name} | ${g.k} | ${fmt(g.overall)} | ${fmt(g.ciLower)}–${fmt(g.ciUpper)} | ${fmt(g.I2, 1)}% |`);
+    for (const g of subgroupResult.subgroups) {
+      lines.push(`| ${g.name} | ${g.result.studies.length} | ${fmt(g.result.effect)} | ${fmt(g.result.ciLower)}–${fmt(g.result.ciUpper)} | ${fmt(g.result.heterogeneity.I2, 1)}% |`);
     }
-    if (subgroupResult.interactionP != null) {
-      lines.push(`\nInteraction test: Q = ${fmt(subgroupResult.interactionQ)}, p = ${fmtP(subgroupResult.interactionP)}`);
+    if (subgroupResult.test.pValue != null) {
+      lines.push(`\nInteraction test: Q = ${fmt(subgroupResult.test.Q)}, p = ${fmtP(subgroupResult.test.pValue)}`);
     }
     lines.push('');
   }
@@ -131,7 +132,7 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
     lines.push(`| Omitted | ${measure} | 95% CI | I² |`);
     lines.push(`|---------|${'-'.repeat(measure.length + 2)}|--------|-----|`);
     for (const s of sensitivityResults) {
-      lines.push(`| ${s.omittedStudy} | ${fmt(s.overall)} | ${fmt(s.ciLower)}–${fmt(s.ciUpper)} | ${fmt(s.I2, 1)}% |`);
+      lines.push(`| ${s.omittedStudy} | ${fmt(s.effect)} | ${fmt(s.ciLower)}–${fmt(s.ciUpper)} | ${fmt(s.I2, 1)}% |`);
     }
     lines.push('');
   }
@@ -141,8 +142,8 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
     lines.push('## Meta-Regression\n');
     lines.push(`- **Covariate**: ${metaRegression.covariate}`);
     lines.push(`- **Intercept**: ${fmt(metaRegression.intercept, 4)}`);
-    lines.push(`- **Slope**: ${fmt(metaRegression.slope, 4)}`);
-    lines.push(`- **p-value**: ${fmtP(metaRegression.p)}`);
+    lines.push(`- **Coefficient**: ${fmt(metaRegression.coefficient, 4)}`);
+    lines.push(`- **p-value**: ${fmtP(metaRegression.pValue)}`);
     lines.push(`- **R²**: ${fmt((metaRegression.R2 ?? 0) * 100, 1)}%`);
     lines.push('');
   }
@@ -150,9 +151,11 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
   // Influence diagnostics
   if (sec.influence && influenceDiagnostics && influenceDiagnostics.length > 0) {
     lines.push('## Influence Diagnostics\n');
-    const influential = influenceDiagnostics.filter(d => d.isInfluential);
+    const k = influenceDiagnostics.length;
+    const threshold = 4 / k;
+    const influential = influenceDiagnostics.filter(d => d.cooksDistance > threshold);
     if (influential.length > 0) {
-      lines.push(`**Potentially influential studies**: ${influential.map(d => d.studyName).join(', ')}\n`);
+      lines.push(`**Potentially influential studies**: ${influential.map(d => d.name).join(', ')}\n`);
     } else {
       lines.push('No individually influential studies detected.\n');
     }
@@ -162,10 +165,17 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
   if (sec.grade && gradeAssessment) {
     lines.push('## GRADE Assessment\n');
     lines.push(`**Overall certainty**: ${gradeAssessment.overall.toUpperCase()}\n`);
+    const GRADE_LABELS: Record<string, string> = {
+      riskOfBias: 'Risk of Bias',
+      inconsistency: 'Inconsistency',
+      indirectness: 'Indirectness',
+      imprecision: 'Imprecision',
+      publicationBias: 'Publication Bias',
+    };
     lines.push(`| Domain | Rating | Reason |`);
     lines.push(`|--------|--------|--------|`);
-    for (const d of gradeAssessment.domains) {
-      lines.push(`| ${d.domain} | ${d.rating} | ${d.reason || '—'} |`);
+    for (const [key, factor] of Object.entries(gradeAssessment.factors)) {
+      lines.push(`| ${GRADE_LABELS[key] || key} | ${factor.level} | ${factor.reasoning || '—'} |`);
     }
     lines.push('');
   }
@@ -173,9 +183,9 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
   // RoB
   if (sec.rob && robAssessments && Object.keys(robAssessments).length > 0) {
     lines.push('## Risk of Bias\n');
-    const DOMAINS: RobDomain[] = ['D1', 'D2', 'D3', 'D4', 'D5'];
+    const DOMAINS: RobDomain[] = ['d1_randomization', 'd2_deviations', 'd3_missing', 'd4_measurement', 'd5_selection'];
     const DOMAIN_LABELS: Record<RobDomain, string> = {
-      D1: 'Randomization', D2: 'Deviations', D3: 'Missing data', D4: 'Measurement', D5: 'Selection',
+      d1_randomization: 'Randomization', d2_deviations: 'Deviations', d3_missing: 'Missing data', d4_measurement: 'Measurement', d5_selection: 'Selection',
     };
     lines.push(`| Study | ${DOMAINS.map(d => DOMAIN_LABELS[d]).join(' | ')} | Overall |`);
     lines.push(`|-------|${DOMAINS.map(() => '---').join('|')}|---------|`);
@@ -192,7 +202,7 @@ export function generateReportMarkdown(data: MarkdownReportData): string {
     lines.push(`| Added Study | ${measure} | 95% CI |`);
     lines.push(`|-------------|${'-'.repeat(measure.length + 2)}|--------|`);
     for (const c of cumulativeResults) {
-      lines.push(`| ${c.addedStudy} | ${fmt(c.overall)} | ${fmt(c.ciLower)}–${fmt(c.ciUpper)} |`);
+      lines.push(`| ${c.addedStudy} | ${fmt(c.effect)} | ${fmt(c.ciLower)}–${fmt(c.ciUpper)} |`);
     }
     lines.push('');
   }

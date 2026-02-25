@@ -19,10 +19,8 @@
 //   abs(metareview - metafor) < 1e-4  OR  |relative_diff| < 0.1%
 //
 // Known differences between MetaReview and metafor:
-//   - SMD variance: MetaReview uses Borenstein et al. approximation;
-//     metafor uses exact Hedges formula. Difference is O(1e-3) for typical N.
-//   - SMD J correction: MetaReview uses 1-3/(4*df-1) approximation;
-//     metafor uses exact gamma-based formula. Difference is O(1e-5).
+//   - SMD: MetaReview now uses the exact gamma-based J correction and exact
+//     Hedges variance formula, matching metafor. Differences are O(1e-5).
 //   - CI bounds: MetaReview uses z=1.96; metafor uses qnorm(0.975)=1.959964.
 //     Difference is negligible for practical purposes.
 //   - OR, RR, MD: formulas are mathematically identical, should match exactly.
@@ -227,9 +225,12 @@ function hedgesG(d) {
   const df = d.n1 + d.n2 - 2;
   const sp = Math.sqrt(((d.n1 - 1) * d.sd1 * d.sd1 + (d.n2 - 1) * d.sd2 * d.sd2) / df);
   const cohenD = (d.mean1 - d.mean2) / sp;
-  const J = 1 - 3 / (4 * df - 1);
+  // Exact Hedges' correction factor via gamma function (matches R metafor)
+  const J = Math.exp(logGamma(df / 2) - 0.5 * Math.log(df / 2) - logGamma((df - 1) / 2));
   const yi = cohenD * J;
-  const sei = Math.sqrt((d.n1 + d.n2) / (d.n1 * d.n2) + yi * yi / (2 * (d.n1 + d.n2))) * J;
+  // Exact variance formula (matches R metafor: Viechtbauer 2005)
+  const vi = 1 / d.n1 + 1 / d.n2 + (1 - (df - 2) / (df * J * J)) * yi * yi;
+  const sei = Math.sqrt(vi);
   return { yi, sei };
 }
 
@@ -482,14 +483,13 @@ try {
 // =============================================================================
 // Computed using metafor's exact formulas (DerSimonian-Laird, Inverse Variance,
 // standard escalc formulas). For OR/RR/MD the formulas are identical to MetaReview.
-// For SMD, metafor uses the exact Hedges variance formula:
+// For SMD, both MetaReview and metafor now use the exact Hedges variance formula:
 //   vi = 1/n1 + 1/n2 + (1 - (df-2)/(df * J^2)) * yi^2
-// while MetaReview uses the Borenstein et al. approximation:
-//   vi = ((n1+n2)/(n1*n2) + yi^2/(2*(n1+n2))) * J^2
+// with exact gamma-based J correction factor.
 //
-// NOTE: These values use the approximate J = 1 - 3/(4*df - 1). Actual metafor
-// uses the exact gamma-based J, so small differences (O(1e-5)) are expected
-// even in these hardcoded values. The definitive reference requires running R.
+// NOTE: These hardcoded values use the approximate J = 1 - 3/(4*df - 1).
+// MetaReview uses the exact gamma-based J, so tiny differences (O(1e-5))
+// are expected. The definitive reference requires running R.
 
 const HARDCODED = {
   scenario_1_or_aspirin: {

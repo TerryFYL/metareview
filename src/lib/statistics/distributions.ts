@@ -136,7 +136,7 @@ export function tQuantile(p: number, df: number): number {
 // --- Helper functions ---
 
 /** Log-gamma function (Lanczos approximation) */
-function logGamma(x: number): number {
+export function logGamma(x: number): number {
   const g = 7;
   const coef = [
     0.99999999999980993, 676.5203681218851, -1259.1392167224028,

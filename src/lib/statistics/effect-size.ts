@@ -1,5 +1,6 @@
 // Effect size calculations for meta-analysis
 import type { BinaryData, ContinuousData, GenericData, HRData, EffectMeasure } from '../types';
+import { logGamma } from './distributions';
 
 /** Computed effect size with SE on log/raw scale */
 export interface EffectSizeResult {
@@ -69,7 +70,11 @@ export function logHazardRatio(d: HRData): EffectSizeResult {
   return { yi, sei };
 }
 
-/** Standardized Mean Difference (Hedges' g) and SE */
+/** Standardized Mean Difference (Hedges' g) and SE
+ *  Uses exact correction factor and variance formula matching R metafor.
+ *  J_exact = Γ(df/2) / (√(df/2) · Γ((df-1)/2))
+ *  V(g) = 1/n1 + 1/n2 + (1 - (df-2)/(df·J²)) · g²
+ */
 export function hedgesG(d: ContinuousData): EffectSizeResult {
   const n1 = d.n1;
   const n2 = d.n2;
@@ -83,16 +88,17 @@ export function hedgesG(d: ContinuousData): EffectSizeResult {
   // Cohen's d
   const cohenD = (d.mean1 - d.mean2) / sp;
 
-  // Hedges' correction factor J
-  const J = 1 - 3 / (4 * df - 1);
+  // Exact Hedges' correction factor via gamma function (matches R metafor)
+  const J = Math.exp(
+    logGamma(df / 2) - 0.5 * Math.log(df / 2) - logGamma((df - 1) / 2)
+  );
 
   // Hedges' g
   const yi = cohenD * J;
 
-  // SE of Hedges' g
-  const sei = Math.sqrt(
-    (n1 + n2) / (n1 * n2) + (yi * yi) / (2 * (n1 + n2))
-  ) * J;
+  // Exact variance formula (matches R metafor: Viechtbauer 2005)
+  const vi = 1 / n1 + 1 / n2 + (1 - (df - 2) / (df * J * J)) * yi * yi;
+  const sei = Math.sqrt(vi);
 
   return { yi, sei };
 }
