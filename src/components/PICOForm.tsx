@@ -53,12 +53,14 @@ function Field({
   value: string;
   onChange: (v: string) => void;
 }) {
+  const fieldId = `pico-${label.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}`;
   return (
     <div>
-      <label style={{ fontSize: 12, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 4 }}>
+      <label htmlFor={fieldId} style={{ fontSize: 12, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 4 }}>
         {label}
       </label>
       <input
+        id={fieldId}
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}

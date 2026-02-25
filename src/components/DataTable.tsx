@@ -156,6 +156,13 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
       const imported = importCSV(text, measure);
       if (imported.length > 0) {
         onStudiesChange([...studies, ...imported]);
+        const msg = t('table.pasteHint', lang).replace('{n}', String(imported.length));
+        setPasteToast(msg);
+        setTimeout(() => setPasteToast(null), 3000);
+      } else {
+        const msg = lang === 'zh' ? 'CSV 文件中未找到可导入的数据' : 'No importable data found in CSV file';
+        setPasteToast(msg);
+        setTimeout(() => setPasteToast(null), 4000);
       }
     };
     reader.readAsText(file);
@@ -708,22 +715,23 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
         <table ref={tableRef} style={{ borderCollapse: 'collapse', width: '100%', fontSize: 13, minWidth: 520 }}>
           <thead>
             <tr>
-              <th style={{ ...thStyle, width: '28px', padding: '8px 2px' }}>
+              <th scope="col" style={{ ...thStyle, width: '28px', padding: '8px 2px' }}>
                 <input
                   type="checkbox"
                   checked={allSelected}
                   onChange={toggleSelectAll}
+                  aria-label={t('table.selectAll', lang)}
                   title={t('table.selectAll', lang)}
                   style={{ cursor: 'pointer' }}
                 />
               </th>
-              <th style={thStyle}>#</th>
+              <th scope="col" style={thStyle}>#</th>
               {columns.map((col) => (
-                <th key={col.key} style={{ ...thStyle, width: col.width }}>
+                <th key={col.key} scope="col" style={{ ...thStyle, width: col.width }}>
                   {col.label}
                 </th>
               ))}
-              <th style={thStyle}></th>
+              <th scope="col" style={thStyle}></th>
             </tr>
           </thead>
           <tbody>
@@ -794,6 +802,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
                           opacity: isExtracting || !!extractingId ? 0.5 : 1,
                           cursor: isExtracting || !!extractingId ? 'default' : 'pointer',
                         }}
+                        aria-label={`${t('table.extractPdf', lang)} ${study.name || `Study ${idx + 1}`}`}
                         title={t('table.extractPdf', lang)}
                       >
                         {isExtracting ? (
@@ -811,6 +820,7 @@ export default function DataTable({ studies, measure, onStudiesChange, lang, onU
                     <button
                       onClick={() => removeStudy(study.id)}
                       style={deleteBtnStyle}
+                      aria-label={`Remove ${study.name || `Study ${idx + 1}`}`}
                       title="Remove study"
                       tabIndex={-1}
                     >

@@ -106,15 +106,26 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
   // PICO scoring: compute scores for all results
   const hasPICO = !!(pico.population.trim() || pico.intervention.trim() || pico.comparison.trim() || pico.outcome.trim());
 
+  // Incremental PICO scoring cache — avoids re-scoring all articles when only one abstract changes
+  const scoreCacheRef = useRef<Map<string, { picoKey: string; absLen: number; score: ScreeningScore }>>(new Map());
+
   const scores = useMemo<Record<string, ScreeningScore>>(() => {
     if (!hasPICO || results.length === 0) return {};
     const map: Record<string, ScreeningScore> = {};
+    const cache = scoreCacheRef.current;
+    const picoKey = `${pico.population}|${pico.intervention}|${pico.comparison}|${pico.outcome}`;
+
     for (const article of results) {
-      map[article.pmid] = scorePICORelevance(
-        article.title,
-        abstracts[article.pmid] || '',
-        pico
-      );
+      const abstract = abstracts[article.pmid] || '';
+      const cached = cache.get(article.pmid);
+
+      if (cached && cached.picoKey === picoKey && cached.absLen === abstract.length) {
+        map[article.pmid] = cached.score;
+      } else {
+        const score = scorePICORelevance(article.title, abstract, pico);
+        cache.set(article.pmid, { picoKey, absLen: abstract.length, score });
+        map[article.pmid] = score;
+      }
     }
     return map;
   }, [results, pico, hasPICO, abstracts]);

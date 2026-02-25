@@ -532,10 +532,17 @@ export default function DataExtraction({ lang, measure, studies, onStudiesChange
           <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 12 }}>
             {t('extract.extracting', lang)}
           </div>
-          <div style={progressBarContainerStyle}>
+          <div
+            role="progressbar"
+            aria-valuenow={progress.current}
+            aria-valuemin={0}
+            aria-valuemax={progress.total}
+            aria-label={`${progress.current} / ${progress.total} — ${progress.currentQuery}`}
+            style={progressBarContainerStyle}
+          >
             <div style={{ ...progressBarStyle, width: `${(progress.current / progress.total) * 100}%` }} />
           </div>
-          <div style={{ fontSize: 12, color: '#6b7280', marginTop: 8 }}>
+          <div style={{ fontSize: 12, color: '#6b7280', marginTop: 8 }} aria-hidden="true">
             {progress.current} / {progress.total} — {progress.currentQuery}
           </div>
           <button onClick={cancelExtraction} style={{ ...secondaryBtnStyle, marginTop: 12 }}>
