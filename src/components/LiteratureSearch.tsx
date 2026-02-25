@@ -7,6 +7,9 @@ import type { PRISMAData } from './PRISMAFlow';
 import { scorePICORelevance } from '../lib/screening/pico-scorer';
 import { batchScreen } from '../lib/screening/ai-screener';
 import type { AIScreeningResult } from '../lib/screening/ai-screener';
+import { rerank, computeStats } from '../lib/screening/active-learner';
+import type { ALArticle, ScreeningDecision, ScreeningStats } from '../lib/screening/active-learner';
+import { trackFeature, trackEvent } from '../lib/analytics';
 
 interface PubMedArticle {
   pmid: string;
@@ -76,6 +79,12 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
   const [aiDone, setAiDone] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  // Active Learning screening state
+  const [alMode, setAlMode] = useState(false);
+  const [alDecisions, setAlDecisions] = useState<Map<string, ScreeningDecision>>(new Map());
+  const [alRanked, setAlRanked] = useState(false);
+  const STOPPING_THRESHOLD = 10;
 
   // Search history
   const [history, setHistory] = useState<string[]>(loadHistory);
@@ -148,6 +157,86 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
       .map(r => r.pmid);
     setSelected(new Set(pmids));
   }, [results, aiResults]);
+
+  // Active Learning: build ALArticle array from results + decisions
+  const alArticles = useMemo<ALArticle[]>(() => {
+    if (!alMode) return [];
+    return results.map(r => ({
+      pmid: r.pmid,
+      title: r.title,
+      abstract: abstracts[r.pmid] || '',
+      decision: alDecisions.get(r.pmid) || null,
+      alScore: 50,
+    }));
+  }, [alMode, results, abstracts, alDecisions]);
+
+  // Active Learning: statistics
+  const alStats = useMemo<ScreeningStats | null>(() => {
+    if (!alMode || alArticles.length === 0) return null;
+    return computeStats(alArticles, STOPPING_THRESHOLD);
+  }, [alMode, alArticles]);
+
+  // Active Learning: re-ranked and sorted articles
+  const alSortedResults = useMemo(() => {
+    if (!alMode || !alRanked || alArticles.length === 0) return results;
+    const ranked = rerank(alArticles);
+    const scoreMap = new Map(ranked.map(a => [a.pmid, a.alScore]));
+    return [...results].sort((a, b) => {
+      const sa = scoreMap.get(a.pmid) ?? 50;
+      const sb = scoreMap.get(b.pmid) ?? 50;
+      // Unreviewed first, sorted by AL score
+      const da = alDecisions.has(a.pmid) ? 1 : 0;
+      const db = alDecisions.has(b.pmid) ? 1 : 0;
+      if (da !== db) return da - db;
+      return sb - sa;
+    });
+  }, [alMode, alRanked, alArticles, results, alDecisions]);
+
+  // AL: included count for import
+  const alIncludedCount = useMemo(() => {
+    let count = 0;
+    for (const d of alDecisions.values()) {
+      if (d === 'include') count++;
+    }
+    return count;
+  }, [alDecisions]);
+
+  // AL: label an article
+  const alLabel = useCallback((pmid: string, decision: ScreeningDecision) => {
+    setAlDecisions(prev => {
+      const next = new Map(prev);
+      next.set(pmid, decision);
+      return next;
+    });
+    // Auto re-rank after labeling
+    setAlRanked(true);
+    trackEvent('al_label', { decision });
+  }, []);
+
+  // AL: undo label
+  const alUndoLabel = useCallback((pmid: string) => {
+    setAlDecisions(prev => {
+      const next = new Map(prev);
+      next.delete(pmid);
+      return next;
+    });
+  }, []);
+
+  // AL: select all included for import
+  const alSelectIncluded = useCallback(() => {
+    const pmids = new Set<string>();
+    for (const [pmid, decision] of alDecisions.entries()) {
+      if (decision === 'include') pmids.add(pmid);
+    }
+    setSelected(pmids);
+  }, [alDecisions]);
+
+  // AL: exit mode
+  const alExit = useCallback(() => {
+    setAlMode(false);
+    setAlRanked(false);
+    trackEvent('al_exit', { labels: String(alDecisions.size) });
+  }, [alDecisions.size]);
 
   // Batch fetch abstracts for articles that don't have them yet
   const fetchAbstractsBatch = useCallback(async (pmids: string[]): Promise<Record<string, string>> => {
@@ -761,6 +850,121 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
         </div>
       )}
 
+      {/* Active Learning controls */}
+      {hasResults && hasPICO && !alMode && (
+        <div style={{ marginBottom: 12 }}>
+          <button
+            onClick={() => {
+              setAlMode(true);
+              trackFeature('al_screening_start');
+              // Batch load abstracts for re-ranking quality
+              fetchAbstractsBatch(results.map(r => r.pmid));
+            }}
+            style={alStartBtnStyle}
+          >
+            {t('screening.alStart', lang)}
+          </button>
+          <span style={{ fontSize: 11, color: '#9ca3af', marginLeft: 8 }}>
+            {t('screening.alDesc', lang)}
+          </span>
+        </div>
+      )}
+
+      {/* Active Learning mode UI */}
+      {alMode && hasResults && (
+        <div style={{ marginBottom: 12 }}>
+          {/* Stats bar */}
+          {alStats && (
+            <div style={{
+              padding: '10px 14px',
+              background: '#f0f9ff',
+              border: '1px solid #bae6fd',
+              borderRadius: 8,
+              marginBottom: 10,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 8,
+            }}>
+              <span style={{ fontSize: 12, color: '#0369a1' }}>
+                {t('screening.alStats', lang)
+                  .replace('{reviewed}', String(alStats.reviewed))
+                  .replace('{total}', String(alStats.total))
+                  .replace('{included}', String(alStats.included))
+                  .replace('{excluded}', String(alStats.excluded))
+                  .replace('{uncertain}', String(alStats.uncertain))}
+              </span>
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                {alIncludedCount > 0 && (
+                  <button onClick={alSelectIncluded} style={screeningSelectStyle}>
+                    {t('screening.alImportIncluded', lang).replace('{n}', String(alIncludedCount))}
+                  </button>
+                )}
+                <button onClick={alExit} style={alExitBtnStyle}>
+                  {t('screening.alExit', lang)}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Stopping indicator */}
+          {alStats && alStats.reviewed > 0 && (
+            <div style={{
+              padding: '8px 14px',
+              background: alStats.stoppingReached ? '#f0fdf4' : '#fffbeb',
+              border: `1px solid ${alStats.stoppingReached ? '#bbf7d0' : '#fde68a'}`,
+              borderRadius: 8,
+              marginBottom: 10,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+            }}>
+              {/* Stopping circle */}
+              <div style={{ position: 'relative', width: 36, height: 36, flexShrink: 0 }}>
+                <svg width="36" height="36" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="15" fill="none" stroke="#e5e7eb" strokeWidth="3" />
+                  <circle
+                    cx="18" cy="18" r="15"
+                    fill="none"
+                    stroke={alStats.stoppingReached ? '#22c55e' : '#f59e0b'}
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeDasharray={`${(alStats.consecutiveExcludes / STOPPING_THRESHOLD) * 94.2} 94.2`}
+                    transform="rotate(-90 18 18)"
+                    style={{ transition: 'stroke-dasharray 0.3s ease' }}
+                  />
+                </svg>
+                <span style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: alStats.stoppingReached ? '#16a34a' : '#d97706',
+                }}>
+                  {alStats.consecutiveExcludes}
+                </span>
+              </div>
+              <div style={{ flex: 1 }}>
+                {alStats.stoppingReached ? (
+                  <div style={{ fontSize: 12, color: '#16a34a', fontWeight: 600 }}>
+                    {t('screening.alStoppingReached', lang).replace('{threshold}', String(STOPPING_THRESHOLD))}
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 12, color: '#92400e' }}>
+                    {t('screening.alStoppingDesc', lang)
+                      .replace('{count}', String(alStats.consecutiveExcludes))
+                      .replace('{threshold}', String(STOPPING_THRESHOLD))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* No results */}
       {!loading && totalCount === 0 && query.trim() && results.length === 0 && !error && (
         <div style={{ padding: '24px 16px', textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>
@@ -778,24 +982,33 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
       {/* Results list */}
       {!loading && hasResults && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-          {sortedResults.map((article) => {
+          {(alMode ? alSortedResults : sortedResults).map((article) => {
             const score = scores[article.pmid];
             const bucketStyle = score ? BUCKET_STYLES[score.bucket] : null;
             const aiResult = aiResults.get(article.pmid);
             const aiVerdictStyle = aiResult ? AI_VERDICT_STYLES[aiResult.verdict] : null;
-            // AI result takes priority for border color when available
-            const borderColor = aiVerdictStyle ? aiVerdictStyle.border : (bucketStyle ? bucketStyle.border : undefined);
+            const alDecision = alDecisions.get(article.pmid);
+            const alDecisionStyle = alDecision ? AL_DECISION_STYLES[alDecision] : null;
+            // AL decision > AI result > PICO score for border color
+            const borderColor = alDecisionStyle ? alDecisionStyle.border
+              : aiVerdictStyle ? aiVerdictStyle.border
+              : (bucketStyle ? bucketStyle.border : undefined);
 
             return (
               <div
                 key={article.pmid}
                 style={{
                   padding: '12px 14px',
-                  background: selected.has(article.pmid) ? '#eff6ff' : '#fff',
+                  background: alDecision === 'include' ? '#f0fdf4'
+                    : alDecision === 'exclude' ? '#fef2f2'
+                    : selected.has(article.pmid) ? '#eff6ff'
+                    : '#fff',
                   border: `1px solid ${selected.has(article.pmid) ? '#bfdbfe' : '#e5e7eb'}`,
                   borderRadius: 6,
                   marginBottom: 6,
                   borderLeft: borderColor ? `3px solid ${borderColor}` : undefined,
+                  opacity: alMode && alDecision === 'exclude' ? 0.6 : 1,
+                  transition: 'opacity 0.2s, background 0.2s',
                 }}
               >
                 <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
@@ -810,9 +1023,23 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
                       <div style={{ fontSize: 14, fontWeight: 500, color: '#111827', lineHeight: 1.4 }}>
                         {article.title}
                       </div>
-                      <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
-                        {/* AI verdict badge (takes priority when present) */}
-                        {aiResult && (
+                      <div style={{ display: 'flex', gap: 4, flexShrink: 0, alignItems: 'center' }}>
+                        {/* AL decision badge (highest priority) */}
+                        {alDecision && (
+                          <span style={{
+                            padding: '2px 8px',
+                            borderRadius: 10,
+                            fontSize: 11,
+                            fontWeight: 600,
+                            background: alDecisionStyle!.bg,
+                            color: alDecisionStyle!.text,
+                            whiteSpace: 'nowrap',
+                          }}>
+                            {t(`screening.al${alDecision.charAt(0).toUpperCase() + alDecision.slice(1)}`, lang)}
+                          </span>
+                        )}
+                        {/* AI verdict badge */}
+                        {aiResult && !alDecision && (
                           <span style={{
                             padding: '2px 8px',
                             borderRadius: 10,
@@ -827,7 +1054,7 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
                           </span>
                         )}
                         {/* PICO keyword badge */}
-                        {score && hasPICO && !aiResult && (
+                        {score && hasPICO && !aiResult && !alDecision && (
                           <span style={{
                             padding: '2px 8px',
                             borderRadius: 10,
@@ -887,6 +1114,41 @@ export default function LiteratureSearch({ lang, measure, studies, pico, onStudi
                         overflowY: 'auto',
                       }}>
                         {abstracts[article.pmid]}
+                      </div>
+                    )}
+
+                    {/* Active Learning decision buttons */}
+                    {alMode && (
+                      <div style={{ marginTop: 8, display: 'flex', gap: 6, alignItems: 'center' }}>
+                        {alDecision ? (
+                          <button
+                            onClick={() => alUndoLabel(article.pmid)}
+                            style={alUndoBtnStyle}
+                          >
+                            {t('screening.alUndo', lang)}
+                          </button>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => alLabel(article.pmid, 'include')}
+                              style={alIncludeBtnStyle}
+                            >
+                              {t('screening.alInclude', lang)}
+                            </button>
+                            <button
+                              onClick={() => alLabel(article.pmid, 'exclude')}
+                              style={alExcludeBtnStyle}
+                            >
+                              {t('screening.alExclude', lang)}
+                            </button>
+                            <button
+                              onClick={() => alLabel(article.pmid, 'uncertain')}
+                              style={alUncertainBtnStyle}
+                            >
+                              {t('screening.alUncertain', lang)}
+                            </button>
+                          </>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1070,5 +1332,77 @@ const aiCancelBtnStyle: React.CSSProperties = {
   border: '1px solid #d1d5db',
   borderRadius: 6,
   fontSize: 12,
+  cursor: 'pointer',
+};
+
+// Active Learning styles
+const AL_DECISION_STYLES = {
+  include: { bg: '#dcfce7', text: '#15803d', border: '#22c55e' },
+  exclude: { bg: '#fee2e2', text: '#991b1b', border: '#ef4444' },
+  uncertain: { bg: '#fef3c7', text: '#92400e', border: '#f59e0b' },
+} as const;
+
+const alStartBtnStyle: React.CSSProperties = {
+  padding: '8px 18px',
+  background: 'linear-gradient(135deg, #059669, #0d9488)',
+  color: '#fff',
+  border: 'none',
+  borderRadius: 8,
+  fontSize: 13,
+  fontWeight: 600,
+  cursor: 'pointer',
+  letterSpacing: 0.3,
+};
+
+const alIncludeBtnStyle: React.CSSProperties = {
+  padding: '4px 12px',
+  background: '#dcfce7',
+  color: '#15803d',
+  border: '1px solid #86efac',
+  borderRadius: 6,
+  fontSize: 11,
+  fontWeight: 600,
+  cursor: 'pointer',
+};
+
+const alExcludeBtnStyle: React.CSSProperties = {
+  padding: '4px 12px',
+  background: '#fee2e2',
+  color: '#991b1b',
+  border: '1px solid #fca5a5',
+  borderRadius: 6,
+  fontSize: 11,
+  fontWeight: 600,
+  cursor: 'pointer',
+};
+
+const alUncertainBtnStyle: React.CSSProperties = {
+  padding: '4px 12px',
+  background: '#fef3c7',
+  color: '#92400e',
+  border: '1px solid #fcd34d',
+  borderRadius: 6,
+  fontSize: 11,
+  fontWeight: 600,
+  cursor: 'pointer',
+};
+
+const alUndoBtnStyle: React.CSSProperties = {
+  padding: '4px 12px',
+  background: '#f3f4f6',
+  color: '#6b7280',
+  border: '1px solid #d1d5db',
+  borderRadius: 6,
+  fontSize: 11,
+  cursor: 'pointer',
+};
+
+const alExitBtnStyle: React.CSSProperties = {
+  padding: '4px 12px',
+  background: '#f3f4f6',
+  color: '#6b7280',
+  border: '1px solid #d1d5db',
+  borderRadius: 6,
+  fontSize: 11,
   cursor: 'pointer',
 };
