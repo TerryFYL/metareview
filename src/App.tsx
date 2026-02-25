@@ -13,6 +13,7 @@ import PRISMAFlow from './components/PRISMAFlow';
 const LiteratureSearch = lazy(() => import('./components/LiteratureSearch'));
 import OnboardingTour from './components/OnboardingTour';
 import CumulativeMeta from './components/CumulativeMeta';
+import { brandSvgForExport } from './lib/svg-brand';
 import GalbraithPlot from './components/GalbraithPlot';
 import LabbePlot from './components/LabbePlot';
 import BaujatPlot from './components/BaujatPlot';
@@ -166,8 +167,7 @@ function FunnelPlotControls({ lang }: { lang: Lang }) {
   const downloadFunnelSVG = useCallback(() => {
     const svg = document.querySelector('.funnel-plot-container svg');
     if (!svg) return;
-    const serializer = new XMLSerializer();
-    const source = serializer.serializeToString(svg);
+    const source = brandSvgForExport(svg);
     const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -485,8 +485,7 @@ export default function App() {
   const downloadSVG = useCallback(() => {
     const svg = document.querySelector('.forest-plot-container svg');
     if (!svg) return;
-    const serializer = new XMLSerializer();
-    const source = serializer.serializeToString(svg);
+    const source = brandSvgForExport(svg);
     const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -500,14 +499,13 @@ export default function App() {
     const svgEl = document.querySelector('.forest-plot-container svg') as SVGSVGElement | null;
     if (!svgEl) return;
     const scale = 2; // 2x retina
-    const w = svgEl.width.baseVal.value;
-    const h = svgEl.height.baseVal.value;
-    const serializer = new XMLSerializer();
-    let source = serializer.serializeToString(svgEl);
-    // Ensure xmlns is present
-    if (!source.includes('xmlns=')) {
-      source = source.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
-    }
+    const source = brandSvgForExport(svgEl);
+    // Parse branded SVG dimensions
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(source, 'image/svg+xml');
+    const brandedSvg = doc.documentElement;
+    const w = parseFloat(brandedSvg.getAttribute('width') || String(svgEl.width.baseVal.value));
+    const h = parseFloat(brandedSvg.getAttribute('height') || String(svgEl.height.baseVal.value));
     const canvas = document.createElement('canvas');
     canvas.width = w * scale;
     canvas.height = h * scale;
