@@ -584,6 +584,12 @@ const translations = {
   'email.privacy.zh': '我们不会发送垃圾邮件，随时可退订。',
   'email.privacy.en': 'No spam, unsubscribe anytime.',
 
+  // Email CTA in results page
+  'email.results.title.zh': '分析完成！订阅获取更多',
+  'email.results.title.en': 'Analysis Complete! Stay Updated',
+  'email.results.desc.zh': '获取新统计方法、功能更新和 Meta 分析技巧。',
+  'email.results.desc.en': 'Get notified about new statistical methods, features, and meta-analysis tips.',
+
   // Paste import
   'table.pasteHint.zh': '已从剪贴板粘贴 {n} 行数据',
   'table.pasteHint.en': 'Pasted {n} rows from clipboard',

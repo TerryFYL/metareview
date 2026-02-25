@@ -41,10 +41,14 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     const summaryPromises = dateKeys.map(dk =>
       context.env.ANALYTICS.get(`${dk}:_summary`)
     );
+    const referrerPromises = dateKeys.map(dk =>
+      context.env.ANALYTICS.get(`${dk}:_referrers`)
+    );
     const emailCountPromise = context.env.EMAILS.get('_count');
 
-    const [summaries, emailCountStr] = await Promise.all([
+    const [summaries, referrerData, emailCountStr] = await Promise.all([
       Promise.all(summaryPromises),
+      Promise.all(referrerPromises),
       emailCountPromise,
     ]);
 
@@ -57,11 +61,24 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       }
     }
 
+    // Aggregate referrer sources
+    const referrers: Record<string, number> = {};
+    for (let i = 0; i < dateKeys.length; i++) {
+      const raw = referrerData[i];
+      if (raw) {
+        const refs: Record<string, number> = JSON.parse(raw);
+        for (const [src, cnt] of Object.entries(refs)) {
+          referrers[src] = (referrers[src] || 0) + cnt;
+        }
+      }
+    }
+
     const emailSubscribers = emailCountStr ? parseInt(emailCountStr, 10) : 0;
 
     return Response.json({
       range: { from: dateKeys[dateKeys.length - 1], to: dateKeys[0], days },
       totals,
+      referrers,
       emailSubscribers,
       daily: dailyData,
     }, { headers: CORS_HEADERS });

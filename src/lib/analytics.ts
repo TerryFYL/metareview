@@ -29,7 +29,24 @@ export function trackEvent(event: string, props?: Record<string, string>) {
 export function trackPageView() {
   if (sent) return;
   sent = true;
-  trackEvent('page_view');
+  const props: Record<string, string> = {};
+  // Capture referrer domain (strip path for privacy)
+  try {
+    const ref = document.referrer;
+    if (ref) {
+      const host = new URL(ref).hostname;
+      if (host && host !== location.hostname) {
+        props.referrer = host;
+      }
+    }
+  } catch { /* invalid referrer URL */ }
+  // Capture UTM params if present
+  const params = new URLSearchParams(location.search);
+  for (const key of ['utm_source', 'utm_medium', 'utm_campaign']) {
+    const val = params.get(key);
+    if (val) props[key] = val;
+  }
+  trackEvent('page_view', Object.keys(props).length > 0 ? props : undefined);
 }
 
 export function trackTabSwitch(tab: string) {

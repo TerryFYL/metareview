@@ -52,6 +52,20 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       expirationTtl: 60 * 60 * 24 * 90,
     });
 
+    // Store referrer/UTM data for page_view events
+    if (body.event === 'page_view' && body.props) {
+      const source = body.props.utm_source || body.props.referrer || null;
+      if (source) {
+        const refKey = `${day}:_referrers`;
+        const refRaw = await context.env.ANALYTICS.get(refKey);
+        const refs: Record<string, number> = refRaw ? JSON.parse(refRaw) : {};
+        refs[source] = (refs[source] || 0) + 1;
+        await context.env.ANALYTICS.put(refKey, JSON.stringify(refs), {
+          expirationTtl: 60 * 60 * 24 * 90,
+        });
+      }
+    }
+
     return Response.json({ ok: true }, { headers: CORS_HEADERS });
   } catch {
     return Response.json({ ok: false }, { status: 500, headers: CORS_HEADERS });

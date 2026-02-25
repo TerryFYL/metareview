@@ -286,6 +286,9 @@ export default function ResultsSummary({ result, eggers, subgroupResult, sensiti
           })()}
         </p>
       </div>
+
+      {/* Email subscription CTA */}
+      <ResultsEmailCTA lang={lang} />
     </div>
   );
 }
@@ -503,6 +506,72 @@ function HeterogeneityInterpretation({ I2, lang }: { I2: number; lang: Lang }) {
     <p style={{ fontSize: 12, color, fontWeight: 500, marginTop: 8 }}>
       {t(key, lang)} (Higgins et al., 2003)
     </p>
+  );
+}
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function ResultsEmailCTA({ lang }: { lang: Lang }) {
+  const [email, setEmail] = useState('');
+  const [state, setState] = useState<'idle' | 'submitting' | 'success' | 'already' | 'error' | 'invalid'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!EMAIL_REGEX.test(email)) { setState('invalid'); return; }
+    setState('submitting');
+    try {
+      const res = await fetch('/api/emails/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'results', lang }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setState(data.already ? 'already' : 'success');
+        trackFeature('email_subscribe_results');
+      } else {
+        setState(data.error === 'invalid_email' ? 'invalid' : 'error');
+      }
+    } catch { setState('error'); }
+  };
+
+  if (state === 'success' || state === 'already') {
+    return (
+      <div style={{ ...cardStyle, background: '#ecfdf5', borderColor: '#a7f3d0', textAlign: 'center' }}>
+        <p style={{ fontSize: 13, color: '#065f46', fontWeight: 500, margin: 0 }}>
+          {t(state === 'already' ? 'email.already' : 'email.success', lang)}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ ...cardStyle, background: '#f0f9ff', borderColor: '#bfdbfe' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <div style={{ flex: '1 1 200px', minWidth: 0 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: '#111827', marginBottom: 2 }}>
+            {t('email.results.title', lang)}
+          </div>
+          <div style={{ fontSize: 12, color: '#4b5563', lineHeight: 1.4 }}>
+            {t('email.results.desc', lang)}
+          </div>
+        </div>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 6, flex: '0 0 auto' }}>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => { setEmail(e.target.value); if (state === 'invalid' || state === 'error') setState('idle'); }}
+            placeholder={t('email.placeholder', lang)}
+            style={{ padding: '6px 10px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 12, width: 180, outline: 'none' }}
+          />
+          <button type="submit" disabled={state === 'submitting'} style={{ padding: '6px 14px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer', opacity: state === 'submitting' ? 0.7 : 1, whiteSpace: 'nowrap' }}>
+            {t(state === 'submitting' ? 'email.submitting' : 'email.submit', lang)}
+          </button>
+        </form>
+      </div>
+      {state === 'invalid' && <p style={{ fontSize: 11, color: '#dc2626', margin: '6px 0 0' }}>{t('email.invalid', lang)}</p>}
+      {state === 'error' && <p style={{ fontSize: 11, color: '#dc2626', margin: '6px 0 0' }}>{t('email.error', lang)}</p>}
+    </div>
   );
 }
 
