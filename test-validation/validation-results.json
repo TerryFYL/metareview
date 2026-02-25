@@ -1,0 +1,186 @@
+[
+  {
+    "paper": "paper1",
+    "queryType": "outcomes",
+    "outcome": "",
+    "http_code": "200",
+    "response": {
+      "outcomes": [
+        "MACE",
+        "myocardial infarction",
+        "ischemic stroke",
+        "major bleeding events",
+        "intracranial bleeding",
+        "all-cause mortality",
+        "cardiovascular mortality"
+      ]
+    }
+  },
+  {
+    "paper": "paper1",
+    "queryType": "sample_sizes",
+    "outcome": "",
+    "http_code": "200",
+    "response": {
+      "error": "parse_failed",
+      "raw": "{\n  \"treatment_n\": 15,480 + 9,525 + 6,270,\n  \"control_n\": 15,480 + 9,589 + 6,276,\n  \"source_quote\": \"The ASCEND trial enrolled 15,480 patients with diabetes: aspirin group 7,740 and placebo group 7,740. The ARRIVE trial had 12,546 patients: aspirin 6,270, placebo 6,276. The ASPREE trial included 19,114 participants: aspirin 9,525, placebo 9,589.\"\n}"
+    }
+  },
+  {
+    "paper": "paper1",
+    "queryType": "effect_size",
+    "outcome": "MACE",
+    "http_code": "200",
+    "response": {
+      "type": "RR",
+      "value": 0.87,
+      "ci_lower": 0.79,
+      "ci_upper": 0.96,
+      "source_quote": "In patients with diabetes, aspirin reduced MACE (RR 0.87, 95% CI 0.79-0.96) with increased bleeding risk."
+    }
+  },
+  {
+    "paper": "paper1",
+    "queryType": "effect_size",
+    "outcome": "myocardial infarction",
+    "http_code": "200",
+    "response": {
+      "type": "RR",
+      "value": 0.82,
+      "ci_lower": 0.71,
+      "ci_upper": 0.94,
+      "source_quote": "Aspirin significantly reduced the risk of myocardial infarction (RR 0.82, 95% CI 0.71-0.94, p=0.006, I2=27%)"
+    }
+  },
+  {
+    "paper": "paper1",
+    "queryType": "events",
+    "outcome": "major bleeding",
+    "http_code": "200",
+    "response": {
+      "treatment_events": 210,
+      "control_events": 0,
+      "source_quote": "However, aspirin significantly increased the risk of major bleeding events (RR 1.47, 95% CI 1.31-1.65, I2=0%, number needed to harm NNH=210)"
+    }
+  },
+  {
+    "paper": "paper2",
+    "queryType": "outcomes",
+    "outcome": "",
+    "http_code": "200",
+    "response": {
+      "outcomes": [
+        "prevalence of hypertension",
+        "prevalence of diabetes",
+        "prevalence of cardiovascular disease",
+        "pooled OR for hypertension",
+        "pooled OR for diabetes",
+        "pooled OR for cardiovascular disease",
+        "OR for hypertension in Wuhan subgroup",
+        "OR for hypertension in non-Wuhan subgroup",
+        "OR for hypertension in younger patients",
+        "publication bias for hypertension",
+        "publication bias for diabetes",
+        "publication bias for cardiovascular disease"
+      ]
+    }
+  },
+  {
+    "paper": "paper2",
+    "queryType": "sample_sizes",
+    "outcome": "",
+    "http_code": "200",
+    "response": {
+      "treatment_n": null,
+      "control_n": null,
+      "source_quote": "Total patients: severe group 507, non-severe group 2,779."
+    }
+  },
+  {
+    "paper": "paper2",
+    "queryType": "effect_size",
+    "outcome": "hypertension",
+    "http_code": "200",
+    "response": {
+      "type": "OR",
+      "value": 2.98,
+      "ci_lower": 2.37,
+      "ci_upper": 3.75,
+      "source_quote": "Compared with non-severe patients, severe patients had a significantly higher prevalence of hypertension (pooled OR=2.98, 95% CI: 2.37-3.75, p<.001, I2=15.4%)"
+    }
+  },
+  {
+    "paper": "paper2",
+    "queryType": "effect_size",
+    "outcome": "diabetes",
+    "http_code": "200",
+    "response": {
+      "type": "OR",
+      "value": 2.75,
+      "ci_lower": 2.09,
+      "ci_upper": 3.62,
+      "source_quote": "Compared with non-severe patients, severe patients had a significantly higher prevalence of diabetes (pooled OR=2.75, 95% CI: 2.09-3.62, p<.001, I2=26.1%)."
+    }
+  },
+  {
+    "paper": "paper2",
+    "queryType": "effect_size",
+    "outcome": "cardiovascular disease",
+    "http_code": "200",
+    "response": {
+      "type": "OR",
+      "value": 4.78,
+      "ci_lower": 2.71,
+      "ci_upper": 8.42,
+      "source_quote": "Compared with non-severe patients, severe patients had a significantly higher prevalence of hypertension (pooled OR=2.98, 95% CI: 2.37-3.75, p<.001, I2=15.4%), diabetes (pooled OR=2.75, 95% CI: 2.09-3.62, p<.001, I2=26.1%), and cardiovascular disease (pooled OR=4.78, 95% CI: 2.71-8.42, p<.001, I2=52.5%)."
+    }
+  },
+  {
+    "paper": "paper3",
+    "queryType": "sample_sizes",
+    "outcome": "",
+    "http_code": "200",
+    "response": {
+      "treatment_n": 733,
+      "control_n": 946,
+      "source_quote": "Treatment group total in severity cohort: severe N=733, non-severe N=4,125. For the mortality cohort: non-survivors N=213, survivors N=946."
+    }
+  },
+  {
+    "paper": "paper3",
+    "queryType": "effect_size",
+    "outcome": "severe COVID-19",
+    "http_code": "200",
+    "response": {
+      "type": "OR",
+      "value": 2.56,
+      "ci_lower": 1.82,
+      "ci_upper": 3.59,
+      "source_quote": "Hypertension was also associated with severe disease (OR=2.56, 95% CI: 1.82-3.59)."
+    }
+  },
+  {
+    "paper": "paper3",
+    "queryType": "effect_size",
+    "outcome": "death from COVID-19",
+    "http_code": "200",
+    "response": {
+      "type": "OR",
+      "value": 11.08,
+      "ci_lower": 2.59,
+      "ci_upper": 47.32,
+      "source_quote": "In the mortality analysis (6 studies, 1,159 patients), CVD was associated with significantly increased risk of death from COVID-19 (pooled OR=11.08, 95% CI: 2.59-47.32, p=0.001, I2=67%)."
+    }
+  },
+  {
+    "paper": "paper3",
+    "queryType": "events",
+    "outcome": "severe COVID-19",
+    "http_code": "200",
+    "response": {
+      "treatment_events": 733,
+      "control_events": 4125,
+      "source_quote": "Treatment group total in severity cohort: severe N=733, non-severe N=4,125."
+    }
+  }
+]
